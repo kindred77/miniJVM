@@ -8,7 +8,7 @@
 #include "jvm.h"
 #include "jvm_util.h"
 
-#if defined(__JVM_OS_MINGW__) || defined(__JVM_OS_CYGWIN__) || defined(__JVM_OS_VS__)
+#if defined(__JVM_OS_MINGW__) || defined(__JVM_OS_VS__)
 #else
 
 #include <unistd.h>
