@@ -197,9 +197,9 @@ public class SimplePanel extends GOpenGLPanel {
     }
 
     public void gl_init() {
-        glFrameBuffer = new GLFrameBuffer((int) getW(), (int) getH());
-        glFrameBuffer.gl_init();
-        setGlRendereredImg(glFrameBuffer.getFboimg());
+        //glFrameBuffer = new GLFrameBuffer((int) getW(), (int) getH());
+        //glFrameBuffer.gl_init();
+        //setGlRendereredImg(glFrameBuffer.getFboimg());
 
         /*ourShader = loadShader(gl3_to_gles3(getGLVersion(), VertexShaderT), gl3_to_gles3(getGLVersion(), FragmentShaderT));
 
@@ -225,11 +225,15 @@ public class SimplePanel extends GOpenGLPanel {
         int[] whd = {0, 0, 0};
         texture1[0] = gl_image_load(GToolkit.readFileFromJar("/res/fern.png"), whd);
 
-        texture2[0] = gl_image_load(GToolkit.readFileFromJar("/res/pine.png"), whd);
+        //texture2[0] = gl_image_load(GToolkit.readFileFromJar("/res/pine.png"), whd);
 
-        glEnable(GL_DEPTH_TEST);
+        //glEnable(GL_DEPTH_TEST);
 
         //checkGlError("gl_init");
+
+        glEnable(GL_TEXTURE_2D);
+	    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	    glOrtho(0, (double)1024, (double)768, 0, -1, 1);
     }
 
     @Override
@@ -244,69 +248,33 @@ public class SimplePanel extends GOpenGLPanel {
 
     @Override
     public void gl_paint() {
-        glFrameBuffer.begin();
+        // glClearColor(0.5f, 0.5f, 1.0f, 1.0f);
+		// glClear(GL_COLOR_BUFFER_BIT);
+		// glDisable(GL_BLEND);
+        // glEnable(GL_TEXTURE_2D);
+        // glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        // glBindTexture(GL_TEXTURE_2D, texture1[0]);
+		// glBegin(GL_QUADS);
+        // //glDrawElements(GL_TRIANGLES, 5, GL_UNSIGNED_SHORT, null, 0);
+        // glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+		// glEnd();
+        // GForm.flush();
 
-        glEnable(GL_DEPTH_TEST);
-        //glEnable(GL_CULL_FACE);
-        glCullFace(GL_BACK);
-        glFrontFace(GL_CCW);
-
-        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-
-        // Activate shader
-        //glUseProgram(ourShader);
-
-        // Bind Textures using texture units
-        glActiveTexture(GL_TEXTURE0);
+        glClearColor(0.5f, 0.5f, 1.0f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT);
+		glDisable(GL_BLEND);
         glBindTexture(GL_TEXTURE_2D, texture1[0]);
-        //int location = glGetUniformLocation(ourShader, toCstyleBytes("ourTexture1"));
-        //glUniform1i(location, 0);
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, texture2[0]);
-        //location = glGetUniformLocation(ourShader, toCstyleBytes("ourTexture2"));
-        //glUniform1i(location, 1);
-
-
-        // Camera/View transformation
-        /*float[] view = new float[16];
-        float radius = 10.0f;
-        time += 1f / 60f;
-        float camX = (float) Math.sin(time) * radius;
-        float camZ = (float) Math.cos(time) * radius;
-        //view = glm::lookAt (glm::vec3 (camX, 0.0f, camZ),glm::vec3 (0.0f, 0.0f, 0.0f),glm::vec3 (0.0f, 1.0f, 0.0f));
-        GLMath.mat4x4_look_at(view
-                , new float[]{camX, 0.0f, camZ}
-                , new float[]{0.0f, 0.0f, 0.0f}
-                , new float[]{0.0f, 1.0f, 0.0f});
-        // Projection
-        float[] projection = new float[16];
-        //projection = glm::perspective (45.0f, (GLfloat) WIDTH / (GLfloat) HEIGHT, 0.1f, 100.0f);
-        GLMath.mat4x4_perspective(projection, 45.0f, getW() / getH(), 0.1f, 100.0f);
-        // Get the uniform locations
-        int modelLoc = glGetUniformLocation(ourShader, toCstyleBytes("model"));
-        int viewLoc = glGetUniformLocation(ourShader, toCstyleBytes("view"));
-        int projLoc = glGetUniformLocation(ourShader, toCstyleBytes("projection"));
-        // Pass the matrices to the shader
-        glUniformMatrix4fv(viewLoc, 1, GL_FALSE, view, 0);
-        glUniformMatrix4fv(projLoc, 1, GL_FALSE, projection, 0);
-
-        float[] model = new float[16];
-        float[] modelr = new float[16];
-        glBindVertexArray(VAO[0]);
-        for (int i = 0; i < 10; i++) {
-            // Calculate the model matrix for each object and pass it to shader before drawing
-            mat4x4_translate(model, cubePositions[i][0], cubePositions[i][1], cubePositions[i][2]);
-            float angle = 0.f * 1;
-            mat4x4_rotate(modelr, model, 1.0f, 1.0f, 1.0f, angle);
-            glUniformMatrix4fv(modelLoc, 1, GL_FALSE, modelr, 0);
-
-            glDrawArrays(GL_TRIANGLES, 0, 36);
-        }
-        glBindVertexArray(0);*/
-
-        glFrameBuffer.end();
+        glBegin(GL_QUADS);
+		glTexCoord2f(0.0f, 0.0f);
+		glVertex2i(50, 50);
+		glTexCoord2f(1.0f, 0.0f);
+		glVertex2i(50, 50);
+		glTexCoord2f(1.0f, 1.0f);
+		glVertex2i(50, 50);
+		glTexCoord2f(0.0f, 1.0f);
+		glVertex2i(50, 50);
+		glEnd();
+        glFlush();
         GForm.flush();
     }
 

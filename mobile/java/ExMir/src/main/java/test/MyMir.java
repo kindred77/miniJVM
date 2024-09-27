@@ -33,7 +33,7 @@ public class MyMir extends GApplication {
         XContainer xc = (XContainer) XContainer.parseXml(uit.parse(), assist);
         int screenW = GCallBack.getInstance().getDeviceWidth();
         int screenH = GCallBack.getInstance().getDeviceHeight();
-
+        System.out.println("kindred-----windows size: "+screenW+", "+screenH);
         //build gui with event handler
         xc.build(screenW, screenH, new XEventHandler() {
             @Override
@@ -58,7 +58,6 @@ public class MyMir extends GApplication {
         form.setSizeChangeListener((width, height) -> {
             SimplePanel sp = form.findByName("GLP_SIMPLE");
             if (sp != null) {
-                System.out.println("kindred-----panel resize...");
                 sp.reSize();
             }
         });
