@@ -234,13 +234,14 @@ public class MirTest {
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-
+        glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, rendertarget[0]);
 
         glUseProgram(program);
         glBindVertexArray(VAOs[0]);
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, null, 0);
-
+        //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, null, 0);
+        glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+        glBindVertexArray(0);
         glfwSwapBuffers(win);
 
         try {
