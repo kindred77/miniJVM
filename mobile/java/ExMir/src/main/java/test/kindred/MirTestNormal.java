@@ -1,9 +1,11 @@
-package test;
+package test.kindred;
 
 import org.mini.gl.GL;
 
 import static org.mini.gl.GL.*;
 import static org.mini.glfw.Glfw.*;
+
+import test.*;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -14,7 +16,7 @@ import static org.mini.glfw.Glfw.*;
  *
  * @author gust
  */
-public class MirTest {
+public class MirTestNormal {
 
     boolean exit = false;
     long curWin;
@@ -109,7 +111,7 @@ public class MirTest {
             + "TexCoord = vec2(aTexCoord.x, aTexCoord.y); \n"
             + "} \n";
 
-    /* String s_f = "#version 330 \n"
+    String s_f = "#version 330 \n"
             + "out vec4 FragColor; \n"
             + "\n"
             + "in vec3 ourColor; \n"
@@ -117,23 +119,23 @@ public class MirTest {
             + "uniform sampler2D texture1; \n"
             + "void main(){ \n"
             + "FragColor = texture(texture1, TexCoord); \n"
-            + "} \n"; */
-    
-    String s_f = "#version 330 \n"
-            + "out vec4 FragColor; \n"
-            + "in vec2 TexCoord; \n"
-            + "\n"
-            + "uniform sampler2D ourTexture; \n"
-            + "uniform float brightness; \n"
-            + "\n"
-            + "void main(){ \n"
-            + "vec4 texColor = texture(ourTexture, TexCoord); \n"
-            // 应用亮度调整
-            + "vec3 processedColor = texColor.rgb * brightness; \n"
-            // 确保颜色值在0到1之间
-            + "processedColor = clamp(processedColor, 0.0, 1.0); \n"
-            + "FragColor = vec4(processedColor, texColor.a); \n"
             + "} \n";
+    
+    // String s_f = "#version 330 \n"
+    //         + "out vec4 FragColor; \n"
+    //         + "in vec2 TexCoord; \n"
+    //         + "\n"
+    //         + "uniform sampler2D ourTexture; \n"
+    //         + "uniform float brightness; \n"
+    //         + "\n"
+    //         + "void main(){ \n"
+    //         + "vec4 texColor = texture(ourTexture, TexCoord); \n"
+    //         // 应用亮度调整
+    //         + "vec3 processedColor = texColor.rgb * brightness; \n"
+    //         // 确保颜色值在0到1之间
+    //         + "processedColor = clamp(processedColor, 0.0, 1.0); \n"
+    //         + "FragColor = vec4(processedColor, texColor.a); \n"
+    //         + "} \n";
 
     //int vaoIndex = 0, vaoCount = 1;
     //int bufIndex = 0, bufCount = 1;
@@ -147,7 +149,7 @@ public class MirTest {
     int[] rendertarget = {0};
     //int VBO, VAO,EBO;
 
-    int brightnessLoc = 0;
+    //int brightnessLoc = 0;
 
     int vecCount = 6;
         // 我们首先指定了要渲染的两个三角形的位置信息.  
@@ -232,7 +234,7 @@ public class MirTest {
         fragment_shader = loadShader(GL_FRAGMENT_SHADER, s_f);
         program = linkProgram(vertex_shader, fragment_shader);
 
-        brightnessLoc = glGetUniformLocation(program, GToolkit.toCstyleBytes("brightness"));
+        //brightnessLoc = glGetUniformLocation(program, GToolkit.toCstyleBytes("brightness"));
         //glUseProgram(program);
         // 最后这部分我们成为shader plumbing,  
         // 我们把需要的数据和shader程序中的变量关联在一起,后面会详细讲述  
@@ -253,24 +255,21 @@ public class MirTest {
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
+        glEnable(GL_BLEND); // 启用混合
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // 设置源因子和目标因子
+
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, rendertarget[0]);
 
         glUseProgram(program);
 
-        glUniform1f(brightnessLoc, 1.5f);
+        //glUniform1f(brightnessLoc, 1.5f);
 
         glBindVertexArray(VAOs[0]);
         //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, null, 0);
         glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
         glBindVertexArray(0);
-        glfwSwapBuffers(win);
-
-        try {
-            Thread.sleep(10);
-        } catch (InterruptedException ex) {
-        }
-
+        //glfwSwapBuffers(win);
     }
 
     void t1() {
@@ -312,7 +311,7 @@ public class MirTest {
     }
 
     public static void main(String[] args) {
-        MirTest gt = new MirTest();
+        MirTestNormal gt = new MirTestNormal();
         gt.t1();
 
     }
