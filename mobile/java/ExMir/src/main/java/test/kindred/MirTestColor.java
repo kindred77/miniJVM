@@ -118,6 +118,8 @@ public class MirTestColor {
             + "\n"
             + "uniform sampler2D textureSampler; \n"
             + "\n"
+            + "uniform vec4 colorTint; // 用于调整颜色的向量 \n"
+            + "\n"
             + "void main(){ \n"
             + "vec4 originalColor = texture(textureSampler, TexCoord); \n"
             //红绿蓝颜色处理
@@ -132,10 +134,12 @@ public class MirTestColor {
             //+ "FragColor = vec4(grayscale, originalColor.a); \n"
 
             //半透明
-            + "float alpha = 0.5; \n"
-            + "if (originalColor.a < alpha) alpha = originalColor.a; \n"
-            + "FragColor = vec4(originalColor.r, originalColor.g, originalColor.b, alpha); \n"
+            //+ "float alpha = 0.5; \n"
+            //+ "if (originalColor.a < alpha) alpha = originalColor.a; \n"
+            //+ "FragColor = vec4(originalColor.r, originalColor.g, originalColor.b, alpha); \n"
 
+            //另外一种实现颜色处理的方法
+            + "FragColor = originalColor * colorTint; \n"
             + "} \n";
 
     //int vaoIndex = 0, vaoCount = 1;
@@ -215,7 +219,7 @@ public class MirTestColor {
 
         int[] whd = {0, 0, 0};
         //texture1[0] = gl_image_load(GToolkit.readFileFromJar("/res/fern.png"), whd);
-        byte[] d = GToolkit.image_parse_from_file_path("C:/mywork/projects/java/miniJVM/mobile/java/ExMir/src/main/resource/res/pine.png", whd);
+        byte[] d = GToolkit.image_parse_from_file_path("C:/mywork/projects/java/miniJVM/mobile/java/ExMir/src/main/resource/res/fern.png", whd);
         if (d != null)
         {
             int format = whd[2] < 4 ? GL_RGB : GL_RGBA;
@@ -268,6 +272,9 @@ public class MirTestColor {
         //glUniform1f(brightnessLoc, 1.5f);
         // 设置纹理采样器的位置
         glUniform1i(glGetUniformLocation(program, GToolkit.toCstyleBytes("textureSampler")), 0);
+
+        //设置颜色处理
+        glUniform4f(glGetUniformLocation(program, GToolkit.toCstyleBytes("colorTint")), 1.0f, 0.5f, 0.0f, 1.0f);
 
         glBindVertexArray(VAOs[0]);
         //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, null, 0);
