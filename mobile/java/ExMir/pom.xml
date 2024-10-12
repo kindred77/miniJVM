@@ -23,7 +23,10 @@
         <finalName>${project.artifactId}</finalName>
         <plugins>
             <plugin>
+                <!-- <artifactId>maven-antrun-plugin</artifactId> -->
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.8</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -31,7 +34,7 @@
                             <goal>run</goal>
                         </goals>
                         <configuration>
-                            <!--<tasks>-->
+                            <tasks>
                                 <!--  copy to binary lib dir -->
 <!--                                <mkdir dir="../../assets/resfiles"/>-->
 <!--                                <copy todir="../../assets/resfiles/" overwrite="true">-->
@@ -52,7 +55,14 @@
 <!--                                        <include name="${project.artifactId}.jar"/>-->
 <!--                                    </fileset>-->
 <!--                                </copy>-->
-                            <!--</tasks>-->
+
+
+                                <copy todir="${basedir}/../../../binary/libex/" overwrite="true">
+                                    <fileset dir="${project.build.directory}" erroronmissingdir="false">
+                                        <include name="${project.artifactId}.jar"/>
+                                    </fileset>
+                                </copy>
+                            </tasks>
                         </configuration>
                     </execution>
                 </executions>

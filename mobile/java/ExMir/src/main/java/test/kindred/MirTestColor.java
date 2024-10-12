@@ -120,36 +120,48 @@ public class MirTestColor {
             + "\n"
             + "void main(){ \n"
             + "vec4 originalColor = texture(textureSampler, TexCoord); \n"
-            + "vec3 blueOnly = vec3(0.0, 0.0, originalColor.b); \n"
+            //红绿蓝颜色处理
+            //+ "vec3 blueOnly = vec3(0.0, 0.0, originalColor.b); \n"
             //+ "vec3 redOnly = vec3(originalColor.r, 0.0, 0.0); \n"
             //+ "vec3 greenOnly = vec3(0.0, originalColor.g, 0.0); \n"
-            + "FragColor = vec4(blueOnly, originalColor.a); // 保持原来的alpha值 \n"
+            //+ "FragColor = vec4(blueOnly, originalColor.a); // 保持原来的alpha值 \n"
+
+            //灰白处理
+            //+ "float gray = (originalColor.r + originalColor.g + originalColor.b) / 3.0; \n"
+            //+ "vec3 grayscale = vec3(gray); \n"
+            //+ "FragColor = vec4(grayscale, originalColor.a); \n"
+
+            //半透明
+            + "float alpha = 0.5; \n"
+            + "if (originalColor.a < alpha) alpha = originalColor.a; \n"
+            + "FragColor = vec4(originalColor.r, originalColor.g, originalColor.b, alpha); \n"
+
             + "} \n";
 
     //int vaoIndex = 0, vaoCount = 1;
     //int bufIndex = 0, bufCount = 1;
     //int eboIndex = 0, eboCount = 1;
-    int vPosition = 0;
+    //int vPosition = 0;
 
     int[] VAOs = {0};
     int[] BOs = {0};
-    int[] EBOs = {0};
+    //int[] EBOs = {0};
 
     int[] rendertarget = {0};
     //int VBO, VAO,EBO;
 
     //int brightnessLoc = 0;
 
-    int vecCount = 6;
-        // 我们首先指定了要渲染的两个三角形的位置信息.  
-        float[] vertices = new float[]{
-            -0.90f, -0.90f, 0, // Triangle 1  
-            0.85f, -0.90f, 0,
-            -0.90f, 0.85f, 0,
-            0.90f, -0.85f, 0, // Triangle 2  
-            0.90f, 0.90f, 0,
-            -0.85f, 0.90f, 0
-        };
+    // int vecCount = 6;
+    //     // 我们首先指定了要渲染的两个三角形的位置信息.  
+    //     float[] vertices = new float[]{
+    //         -0.90f, -0.90f, 0, // Triangle 1  
+    //         0.85f, -0.90f, 0,
+    //         -0.90f, 0.85f, 0,
+    //         0.90f, -0.85f, 0, // Triangle 2  
+    //         0.90f, 0.90f, 0,
+    //         -0.85f, 0.90f, 0
+    //     };
 
         int program;
 
@@ -161,24 +173,24 @@ public class MirTestColor {
             -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // bottom left
             -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f  // top left 
         };
-        int indices[] = {
-            0, 1, 3, // first triangle
-            1, 2, 3  // second triangle
-        };
+        // int indices[] = {
+        //     0, 1, 3, // first triangle
+        //     1, 2, 3  // second triangle
+        // };
 
         //glGenVertexArrays(1, &VAO);
         glGenVertexArrays(1, VAOs, 0);
         //glGenBuffers(1, &VBO);
         glGenBuffers(1, BOs, 0);
         //glGenBuffers(1, &EBO);
-        glGenBuffers(1, EBOs, 0);
+        //glGenBuffers(1, EBOs, 0);
 
         glBindVertexArray(VAOs[0]);
         glBindBuffer(GL_ARRAY_BUFFER, BOs[0]);
         glBufferData(GL_ARRAY_BUFFER, (long) (vertices.length * 4), vertices, 0, GL_STATIC_DRAW);
 
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBOs[0]);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, (long) (indices.length * 4), indices, 0, GL_STATIC_DRAW);
+        //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBOs[0]);
+        //glBufferData(GL_ELEMENT_ARRAY_BUFFER, (long) (indices.length * 4), indices, 0, GL_STATIC_DRAW);
 
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * 4, null, 0);
         glEnableVertexAttribArray(0);
