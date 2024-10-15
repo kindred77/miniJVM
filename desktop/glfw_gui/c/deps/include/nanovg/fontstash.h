@@ -464,6 +464,11 @@ int fons__tt_getGlyphKernAdvance(FONSttFontImpl *font, int glyph1, int glyph2)
 
 static void* fons__tmpalloc(size_t size, void* up)
 {
+	//added by kindred
+	//to avoid stb_truetype conflicting.
+	//causing sign 11
+	if (!up) return 0;
+
 	unsigned char* ptr;
 	FONScontext* stash = (FONScontext*)up;
 

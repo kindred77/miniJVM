@@ -46,6 +46,19 @@ int org_mini_nanovg_Nanovg_stbtt_InitFont(Runtime *runtime, JClass *clazz) {
     return 0;
 }
 
+int org_mini_nanovg_Nanovg_stbtt_FindGlyphIndex(Runtime *runtime, JClass *clazz) {
+    JniEnv *env = runtime->jnienv;
+    s32 pos = 0;
+    
+    intptr_t pinfo = env->localvar_getLong_2slot(runtime->localvar, pos);pos += 2;
+    s32 pcodepoint = env->localvar_getInt(runtime->localvar, pos++);
+
+    int _re_val = stbtt_FindGlyphIndex((stbtt_fontinfo*/*ptr*/)(pinfo), (int)pcodepoint);
+    s32 ret_value = (s32)_re_val;env->push_int(runtime->stack, ret_value);
+    
+    return 0;
+}
+
 int org_mini_nanovg_Nanovg_stbtt_ScaleForPixelHeight(Runtime *runtime, JClass *clazz) {
     JniEnv *env = runtime->jnienv;
     s32 pos = 0;
@@ -121,6 +134,41 @@ int org_mini_nanovg_Nanovg_stbtt_GetCodepointBitmapBox(Runtime *runtime, JClass 
     return 0;
 }
 
+int org_mini_nanovg_Nanovg_stbtt_GetGlyphBitmapBox(Runtime *runtime, JClass *clazz) {
+    JniEnv *env = runtime->jnienv;
+    s32 pos = 0;
+    
+    intptr_t pfont = env->localvar_getLong_2slot(runtime->localvar, pos);pos += 2;
+    s32 glyph = env->localvar_getInt(runtime->localvar, pos++);
+    Int2Float pscale_x;pscale_x.i = env->localvar_getInt(runtime->localvar, pos++);
+    Int2Float pscale_y;pscale_y.i = env->localvar_getInt(runtime->localvar, pos++);
+    Instance *pix0 = env->localvar_getRefer(runtime->localvar, pos++);
+    __refer ptr_pix0 = NULL;
+    if(pix0){
+        ptr_pix0 = pix0->arr_body;
+    }
+    Instance *piy0 = env->localvar_getRefer(runtime->localvar, pos++);
+    __refer ptr_piy0 = NULL;
+    if(piy0){
+        ptr_piy0 = piy0->arr_body;
+    }
+    Instance *pix1 = env->localvar_getRefer(runtime->localvar, pos++);
+    __refer ptr_pix1 = NULL;
+    if(pix1){
+        ptr_pix1 = pix1->arr_body;
+    }
+    Instance *piy1 = env->localvar_getRefer(runtime->localvar, pos++);
+    __refer ptr_piy1 = NULL;
+    if(piy1){
+        ptr_piy1 = piy1->arr_body;
+    }
+
+    stbtt_GetGlyphBitmapBox((const stbtt_fontinfo*/*ptr*/)(pfont), (int)glyph, (float)pscale_x.f, (float)pscale_y.f, (int*)(ptr_pix0), (int*)(ptr_piy0), (int*)(ptr_pix1), (int*)(ptr_piy1));
+    
+    
+    return 0;
+}
+
 int org_mini_nanovg_Nanovg_stbtt_MakeCodepointBitmapOffset(Runtime *runtime, JClass *clazz) {
     JniEnv *env = runtime->jnienv;
     s32 pos = 0;
@@ -140,6 +188,29 @@ int org_mini_nanovg_Nanovg_stbtt_MakeCodepointBitmapOffset(Runtime *runtime, JCl
     s32 pcodepoint = env->localvar_getInt(runtime->localvar, pos++);
 
     stbtt_MakeCodepointBitmapOffset((const stbtt_fontinfo*/*ptr*/)(pinfo), (unsigned char*)(ptr_poutput), (int)poutput_offset, (int)pout_w, (int)pout_h, (int)pout_stride, (float)pscale_x.f, (float)pscale_y.f, (int)pcodepoint);
+    
+    
+    return 0;
+}
+
+int org_mini_nanovg_Nanovg_stbtt_MakeGlyphBitmap(Runtime *runtime, JClass *clazz) {
+    JniEnv *env = runtime->jnienv;
+    s32 pos = 0;
+    
+    intptr_t pinfo = env->localvar_getLong_2slot(runtime->localvar, pos);pos += 2;
+    Instance *poutput = env->localvar_getRefer(runtime->localvar, pos++);
+    __refer ptr_poutput = NULL;
+    if(poutput){
+        ptr_poutput = poutput->arr_body;
+    }
+    s32 pout_w = env->localvar_getInt(runtime->localvar, pos++);
+    s32 pout_h = env->localvar_getInt(runtime->localvar, pos++);
+    s32 pout_stride = env->localvar_getInt(runtime->localvar, pos++);
+    Int2Float pscale_x;pscale_x.i = env->localvar_getInt(runtime->localvar, pos++);
+    Int2Float pscale_y;pscale_y.i = env->localvar_getInt(runtime->localvar, pos++);
+    s32 glyph_index = env->localvar_getInt(runtime->localvar, pos++);
+
+    stbtt_MakeGlyphBitmap((const stbtt_fontinfo*/*ptr*/)(pinfo), (unsigned char*)(ptr_poutput), (int)pout_w, (int)pout_h, (int)pout_stride, (int)pscale_x.f, (float)pscale_y.f, (float)glyph_index);
     
     
     return 0;
@@ -2234,10 +2305,13 @@ int org_mini_nanovg_Nanovg_nvgTextGlyphPositionsJni(Runtime *runtime, JClass *cl
 static java_native_method method_nutil_table[] = {
 
 {"org/mini/nanovg/Nanovg",  "stbtt_InitFont",  "(J[BI)I",  org_mini_nanovg_Nanovg_stbtt_InitFont},
+{"org/mini/nanovg/Nanovg",  "stbtt_FindGlyphIndex",  "(JI)I",  org_mini_nanovg_Nanovg_stbtt_FindGlyphIndex},
 {"org/mini/nanovg/Nanovg",  "stbtt_ScaleForPixelHeight",  "(JF)F",  org_mini_nanovg_Nanovg_stbtt_ScaleForPixelHeight},
 {"org/mini/nanovg/Nanovg",  "stbtt_GetFontVMetrics",  "(J[I[I[I)V",  org_mini_nanovg_Nanovg_stbtt_GetFontVMetrics},
 {"org/mini/nanovg/Nanovg",  "stbtt_GetCodepointBitmapBox",  "(JIFF[I[I[I[I)V",  org_mini_nanovg_Nanovg_stbtt_GetCodepointBitmapBox},
+{"org/mini/nanovg/Nanovg",  "stbtt_GetGlyphBitmapBox",  "(JIFF[I[I[I[I)V",  org_mini_nanovg_Nanovg_stbtt_GetGlyphBitmapBox},
 {"org/mini/nanovg/Nanovg",  "stbtt_MakeCodepointBitmapOffset",  "(J[BIIIIFFI)V",  org_mini_nanovg_Nanovg_stbtt_MakeCodepointBitmapOffset},
+{"org/mini/nanovg/Nanovg",  "stbtt_MakeGlyphBitmap",  "(J[BIIIFFI)V",  org_mini_nanovg_Nanovg_stbtt_MakeGlyphBitmap},
 {"org/mini/nanovg/Nanovg",  "stbtt_GetCodepointHMetrics",  "(JI[I[I)V",  org_mini_nanovg_Nanovg_stbtt_GetCodepointHMetrics},
 {"org/mini/nanovg/Nanovg",  "stbtt_GetCodepointKernAdvance",  "(JII)I",  org_mini_nanovg_Nanovg_stbtt_GetCodepointKernAdvance},
 {"org/mini/nanovg/Nanovg",  "stbtt_MakeFontInfo",  "()[B",  org_mini_nanovg_Nanovg_stbtt_MakeFontInfo},

@@ -12,10 +12,26 @@
     </properties>
 
     <dependencies>
+
+        <dependency>
+            <groupId>io.github.digitalgust</groupId>
+            <artifactId>glfw_gui</artifactId>
+            <version>1.1.7</version>
+            <scope>system</scope>
+            <systemPath>C:/mywork/projects/java/miniJVM/binary/libex/glfw_gui.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>io.github.digitalgust</groupId>
+            <artifactId>glfm_gui</artifactId>
+            <version>1.1.7</version>
+        </dependency>
+
         <dependency>
             <groupId>io.github.digitalgust</groupId>
             <artifactId>xgui</artifactId>
             <version>1.1.0</version>
+            <scope>system</scope>
+            <systemPath>C:/mywork/projects/java/miniJVM/binary/libex/xgui.jar</systemPath>
         </dependency>
     </dependencies>
 
