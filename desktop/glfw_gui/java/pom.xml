@@ -150,18 +150,18 @@
     
 
     <dependencies>
-<!--        <dependency>-->
-<!--            <groupId>org.minijvm</groupId>  -->
-<!--            <artifactId>minijvm_rt</artifactId>   -->
-<!--            <version>1.0</version>-->
-<!--            <scope>system</scope> -->
-<!--            <systemPath>${basedir}/../../../binary/lib/minijvm_rt.jar</systemPath> -->
-<!--        </dependency> -->
         <dependency>
+            <groupId>org.minijvm</groupId>
+            <artifactId>minijvm_rt</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/../../../binary/lib/minijvm_rt.jar</systemPath>
+        </dependency>
+        <!-- <dependency>
             <groupId>io.github.digitalgust</groupId>
             <artifactId>minijvm_rt</artifactId>
             <version>1.1.7</version>
-        </dependency>
+        </dependency> -->
     </dependencies>
     
     <build>

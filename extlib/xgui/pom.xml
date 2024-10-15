@@ -150,27 +150,31 @@
 
 
     <dependencies>
-        <!--        <dependency>-->
-        <!--            <groupId>io.github.digitalgust</groupId>-->
-        <!--            <artifactId>glfw_gui_loc</artifactId>-->
-        <!--            <version>1.0</version>-->
-        <!--            <scope>system</scope>-->
-        <!--            <systemPath>${basedir}/../../binary/libex/glfw_gui.jar</systemPath>-->
-        <!--        </dependency>-->
-        <!--        <dependency>-->
-        <!--            <groupId>io.github.digitalgust</groupId>-->
-        <!--            <artifactId>glfm_gui_loc</artifactId>-->
-        <!--            <version>1.0</version>-->
-        <!--            <scope>system</scope>-->
-        <!--            <systemPath>${basedir}/../../mobile/assets/resfiles/glfm_gui.jar</systemPath>-->
-        <!--        </dependency>-->
+                <dependency>
+                    <groupId>io.github.digitalgust</groupId>
+                    <artifactId>glfw_gui</artifactId>
+                    <version>1.1.7</version>
+                    <scope>system</scope>
+                    <systemPath>${basedir}/../../binary/libex/glfw_gui.jar</systemPath>
+                </dependency>
 
-        <!--        <dependency>-->
-        <!--            <groupId>io.github.digitalgust</groupId>-->
-        <!--            <artifactId>minijvm_rt</artifactId>-->
-        <!--            <version>1.0</version>-->
-        <!--        </dependency>-->
-        <dependency>
+                <!-- <dependency>
+                    <groupId>io.github.digitalgust</groupId>
+                    <artifactId>glfm_gui_loc</artifactId>
+                    <version>1.0</version>
+                    <scope>system</scope>
+                    <systemPath>${basedir}/../../mobile/assets/resfiles/glfm_gui.jar</systemPath>
+                </dependency> -->
+
+                <dependency>
+                    <groupId>io.github.digitalgust</groupId>
+                    <artifactId>minijvm_rt</artifactId>
+                    <version>1.0</version>
+                    <scope>system</scope>
+                    <systemPath>${basedir}/../../binary/lib/minijvm_rt.jar</systemPath>
+                </dependency>
+
+        <!-- <dependency>
             <groupId>io.github.digitalgust</groupId>
             <artifactId>glfw_gui</artifactId>
             <version>1.1.7</version>
@@ -181,7 +185,7 @@
             <groupId>io.github.digitalgust</groupId>
             <artifactId>glfm_gui</artifactId>
             <version>1.1.7</version>
-        </dependency>
+        </dependency> -->
     </dependencies>
 
     <build>

@@ -90,13 +90,10 @@ public class Nanovg {
     public static final int NSVG_SHADER_IMG = 3;
 
     public static native int stbtt_InitFont(long pinfo, byte[] pdata2, int pfontstart); //stbtt_fontinfo*/*ptr*/,const unsigned char*,int, //int
-    public static native int stbtt_FindGlyphIndex(long pinfo, int pcodepoint); //stbtt_fontinfo*/*ptr*/,int, //int
     public static native float stbtt_ScaleForPixelHeight(long pinfo, float ppixels); //const stbtt_fontinfo*/*ptr*/,float, //float
     public static native void stbtt_GetFontVMetrics(long pinfo, int[] pascent, int[] pdescent, int[] plineGap); //const stbtt_fontinfo*/*ptr*/,int*,int*,int*, //void
     public static native void stbtt_GetCodepointBitmapBox(long pfont, int pcodepoint, float pscale_x, float pscale_y, int[] pix0, int[] piy0, int[] pix1, int[] piy1); //const stbtt_fontinfo*/*ptr*/,int,float,float,int*,int*,int*,int*, //void
-    public static native void stbtt_GetGlyphBitmapBox(long pfont, int glyph, float pscale_x, float pscale_y, int[] pix0, int[] piy0, int[] pix1, int[] piy1); //const stbtt_fontinfo*/*ptr*/,int,float,float,int*,int*,int*,int*, //void
     public static native void stbtt_MakeCodepointBitmapOffset(long pinfo, byte[] poutput, int poutput_offset, int pout_w, int pout_h, int pout_stride, float pscale_x, float pscale_y, int pcodepoint); //const stbtt_fontinfo*/*ptr*/,unsigned char*,int,int,int,int,float,float,int, //void
-    public static native void stbtt_MakeGlyphBitmap(long pinfo, byte[] poutput, int pout_w, int pout_h, int pout_stride, float pscale_x, float pscale_y, int glyph_index); //const stbtt_fontinfo*/*ptr*/,unsigned char*,int,int,int,int,float,float,int, //void
     public static native void stbtt_GetCodepointHMetrics(long pinfo, int pcodepoint, int[] padvanceWidth, int[] pleftSideBearing); //const stbtt_fontinfo*/*ptr*/,int,int*,int*, //void
     public static native int stbtt_GetCodepointKernAdvance(long pinfo, int pch1, int pch2); //const stbtt_fontinfo*/*ptr*/,int,int, //int
     public static native byte[]  stbtt_MakeFontInfo(); // //struct stbtt_fontinfo/*none_ptr*/ 
