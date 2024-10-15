@@ -467,7 +467,11 @@ static void* fons__tmpalloc(size_t size, void* up)
 	//added by kindred
 	//to avoid stb_truetype conflicting.
 	//causing sign 11
-	if (!up) return 0;
+	if (!up)
+	{
+		   (void)(up);
+		   return malloc(size);
+	}
 
 	unsigned char* ptr;
 	FONScontext* stash = (FONScontext*)up;
@@ -487,6 +491,15 @@ static void* fons__tmpalloc(size_t size, void* up)
 
 static void fons__tmpfree(void* ptr, void* up)
 {
+	//added by kindred
+	//to avoid stb_truetype conflicting.
+	//causing sign 11
+	if (!up)
+	{
+		   (void)(up);
+		   free(ptr);
+	}
+
 	(void)ptr;
 	(void)up;
 	// empty

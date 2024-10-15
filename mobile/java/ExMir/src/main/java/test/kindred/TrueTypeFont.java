@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package test;
+package test.kindred;
 
 import org.mini.glfw.Glfw;
 import static org.mini.nanovg.Nanovg.stbi_write_png;
@@ -17,6 +17,8 @@ import static org.mini.nanovg.Nanovg.stbtt_MakeFontInfo;
 import static org.mini.nanovg.Nanovg.stbtt_ScaleForPixelHeight;
 
 import static org.mini.nanovg.Nanovg.stbtt_FindGlyphIndex;
+
+import test.*;
 
 /**
  *
@@ -67,7 +69,7 @@ public class TrueTypeFont {
         System.out.println("----1111---");
         /* calculate font scaling */
         float scale = stbtt_ScaleForPixelHeight(infoPtr, l_h);
-        String word = "唐";
+        String word = "hello，my name is 唐晔 ~!@#$%^&*()_+{}|:\"?><";
         System.out.println("----2222---scale: "+scale);
         int x = 0;
 
