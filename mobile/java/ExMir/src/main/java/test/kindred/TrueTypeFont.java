@@ -43,7 +43,7 @@ public class TrueTypeFont {
 
         //fontBuffer = GToolkit.readFileFromJar("/res/NotoEmoji+NotoSansCJKSC-Regular.ttf");
         //fontBuffer = GToolkit.readFileFromFile("NotoEmoji+NotoSansCJKSC-Regular.ttf");
-        fontBuffer = GToolkit.readFileFromFile("C:/Windows/Fonts/STXINGKA.TTF");
+        fontBuffer = GToolkit.readFileFromFile("C:/Windows/Fonts/simkai.TTF");
         if (fontBuffer != null)
         {
             System.out.println("ttf file size: " + fontBuffer.length);
@@ -54,9 +54,9 @@ public class TrueTypeFont {
         if (stbtt_InitFont(infoPtr, fontBuffer, 0) == 0) {
             System.out.println("failed\n");
         }
-        int b_w = 2560;
+        int b_w = 1400;
         /* bitmap width */
-        int b_h = 128;
+        int b_h = 64;
         /* bitmap height */
         int l_h = 64;
         /* line height */
