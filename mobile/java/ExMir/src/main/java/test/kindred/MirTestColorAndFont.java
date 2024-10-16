@@ -155,8 +155,9 @@ public class MirTestColorAndFont {
             + "uniform vec3 textColor; \n"
             + "\n"
             + "void main(){ \n"
-            + "vec4 sampled = vec4(1.0, 1.0, 1.0, texture(text, TexCoord).r); \n"
-            + "color = vec4(textColor, 1.0) * sampled; \n"
+            + "vec4 sampled = vec4(0.0, 1.0, 1.0, texture(text, TexCoord).r); \n"
+            //+ "color = vec4(textColor, 1.0) * sampled; \n"
+            + "color = sampled; \n"
             + "} \n";
 
     int[] VAOs = {0,0};
@@ -186,7 +187,7 @@ public class MirTestColorAndFont {
         }
         int b_w = 1400;
         /* bitmap width */
-        int b_h = 64;
+        int b_h = 66;
         /* bitmap height */
         int l_h = 64;
         /* line height */
@@ -389,7 +390,7 @@ public class MirTestColorAndFont {
         // 设置纹理采样器的位置
         glUniform1i(glGetUniformLocation(program, GToolkit.toCstyleBytes("text")), 0);
         //设置颜色处理
-        glUniform3f(glGetUniformLocation(program, GToolkit.toCstyleBytes("textColor")), 1.0f, 0.5f, 0.5f);
+        glUniform3f(glGetUniformLocation(program, GToolkit.toCstyleBytes("textColor")), 1.0f, 1.0f, 1.0f);
 
         glBindVertexArray(VAOs[1]);
         glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
