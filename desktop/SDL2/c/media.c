@@ -9,6 +9,7 @@
 
 
 void JNI_OnLoad(MiniJVM *jvm) {
+    printf("---JNI_OnLoad---000--");
     memset(&refers, 0, sizeof(GlobeRefer));
     JniEnv *env = jvm->env;
     refers.jvm = jvm;
