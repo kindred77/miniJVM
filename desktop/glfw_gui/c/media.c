@@ -51,3 +51,8 @@ Runtime *getRuntimeCurThread(JniEnv *env) {
  *                          DEMO
  *
  * ===============================================================*/
+
+int main(void) {
+
+    return 0;
+}
