@@ -23,6 +23,22 @@
  */
 int main(int argc, char **argv) {
 
+#if  defined(__JVM_OS_MINGW__)
+    jvm_printf("Compiled by: __JVM_OS_MINGW__\n");
+#elif defined(__JVM_OS_LINUX__)
+    jvm_printf("Compiled by: __JVM_OS_LINUX__\n");
+#elif defined(__JVM_OS_CYGWIN__)
+    jvm_printf("Compiled by: __JVM_OS_CYGWIN__\n");
+#elif defined(__JVM_OS_VS__)
+    jvm_printf("Compiled by: __JVM_OS_VS__\n");
+#elif defined(__JVM_OS_MAC__)
+    jvm_printf("Compiled by: __JVM_OS_MAC__\n");
+#elif defined(__JVM_OS_IOS__)
+    jvm_printf("Compiled by: __JVM_OS_IOS__\n");
+#else
+    jvm_printf("Compiled by: others\n");
+#endif
+
     c8 *bootclasspath = NULL;
     c8 *classpath = NULL;
     c8 *main_name = NULL;
