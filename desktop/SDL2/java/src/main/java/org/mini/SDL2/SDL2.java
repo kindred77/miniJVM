@@ -24,7 +24,7 @@ public class SDL2 {
     public static void loadLib() {
         if (!loaded) {
             System.setProperty("java.library.path", "./");
-            System.loadLibrary("sdl2");
+            System.loadLibrary("jni_sdl2");
             //System.load("libsdl2.dll");
 
         }
@@ -86,68 +86,80 @@ public class SDL2 {
         return barr;
     }
 
-    public static void main(String args[]) throws Exception
+    public static void main(String args[])
     {
-        System.out.println("--00--");
-        int result = SDL_Init(SdlSubSystemConst.SDL_INIT_EVERYTHING);
-        System.out.println("--11--");
-        if (result != 0) {
-            throw new IllegalStateException("Unable to initialize SDL library (Error code " + result + "): " + SDL_GetError());
-        }
-        System.out.println("--22--");
-        // Create and init the window
-        long win_id = SDL_CreateWindow(toCstyleBytes("Demo SDL2"), 0, 0, 1024, 768, SDLWindowFlags.SDL_WINDOW_SHOWN | SDLWindowFlags.SDL_WINDOW_RESIZABLE);
-        System.out.println("--33--");
-        if (win_id == 0) {
-            throw new IllegalStateException("Unable to create SDL window: " + SDL_GetError());
-        }
+        try
+        {
+            System.out.println("--00--");
+            int result = SDL_Init(SdlSubSystemConst.SDL_INIT_EVERYTHING);
+            System.out.println("--11--");
+            if (result != 0) {
+                throw new IllegalStateException("Unable to initialize SDL library (Error code " + result + "): " + SDL_GetError());
+            }
+            System.out.println("--22--");
+            // Create and init the window
+            long win_id = SDL_CreateWindow(toCstyleBytes("Demo SDL2"), 0, 0, 1024, 768, SDLWindowFlags.SDL_WINDOW_SHOWN | SDLWindowFlags.SDL_WINDOW_RESIZABLE);
+            System.out.println("--33--");
+            if (win_id == 0) {
+                throw new IllegalStateException("Unable to create SDL window: " + SDL_GetError());
+            }
 
-        long renderer_id = SDL_CreateRenderer(win_id, -1, SDLRendererFlags.SDL_RENDERER_ACCELERATED);
-        if (renderer_id == 0) {
-            throw new IllegalStateException("Unable to create SDL renderer: " + SDL_GetError());
-        }
+            long renderer_id = SDL_CreateRenderer(win_id, -1, SDLRendererFlags.SDL_RENDERER_ACCELERATED);
+            if (renderer_id == 0) {
+                throw new IllegalStateException("Unable to create SDL renderer: " + SDL_GetError());
+            }
 
-        MirLib mir_lib =new MirLib("/home/kindred/mywork/projects/cpp/devilutionX_kindred/my_asset/Prguse2_png.Lib");
-        mir_lib.Initialize();
-        MirImage img = mir_lib.GetMirImage(542);
+            MirLib mir_lib =new MirLib("C:/mywork/projects/cpp/devilutionX/kindred/devilutionX/my_asset/Prguse2_png.Lib");
+            mir_lib.Initialize();
+            MirImage img = mir_lib.GetMirImage(542);
 
-        long rwops_id = SDL_RWFromConstMem(img.data, img.header.length);
-        long surface_id = SDL_IMG_LoadPNG_RW(rwops_id);
+            long rwops_id = SDL_RWFromConstMem(img.data, img.header.length);
+            if (rwops_id == 0) {
+                throw new IllegalStateException("Unable to create rwops from image data: " + SDL_GetError());
+            }
+            long surface_id = SDL_IMG_LoadPNG_RW(rwops_id);
+            if (surface_id == 0) {
+                throw new IllegalStateException("Unable to create surce from rwops: " + SDL_GetError());
+            }
+            SDL_RWclose(rwops_id);
 
-        SDL_RWclose(rwops_id);
+            long testTexture_id = SDL_CreateTextureFromSurface(renderer_id, surface_id);
+            if (testTexture_id == 0) {
+                throw new IllegalStateException("Unable to create texture from surface: " + SDL_GetError());
+            }
+            SDL_SetTextureColorMod(testTexture_id, (byte)255, (byte)0, (byte)255);
+            SDL_SetTextureBlendMode(testTexture_id, SDLBlendMode.SDL_BLENDMODE_BLEND);
+            SDL_SetTextureAlphaMod(testTexture_id, (byte)255);
+            int[] dstRect = {0, 0, SDL_GetSurfaceWidth(surface_id), SDL_GetSurfaceHeight(surface_id)};
+            SDL_RenderCopy(renderer_id, testTexture_id, null, dstRect);
 
-        long testTexture_id = SDL_CreateTextureFromSurface(renderer_id, surface_id);
-        SDL_SetTextureColorMod(testTexture_id, (byte)255, (byte)0, (byte)255);
-        SDL_SetTextureBlendMode(testTexture_id, SDLBlendMode.SDL_BLENDMODE_BLEND);
-        SDL_SetTextureAlphaMod(testTexture_id, (byte)255);
-        int[] dstRect = {0, 0, SDL_GetSurfaceWidth(surface_id), SDL_GetSurfaceHeight(surface_id)};
-        SDL_RenderCopy(renderer_id, testTexture_id, null, dstRect);
+            SDL_RenderClear(renderer_id);
+            SDL_RenderPresent(renderer_id);
 
-        SDL_RenderClear(renderer_id);
-        SDL_RenderPresent(renderer_id);
-
-        boolean shouldRun = true;
-        long event_id = SDL_CreateEvent();
-        while (shouldRun) {
-            while (SDL_PollEvent(event_id) != 0) {
-                switch (SDL_GetEventType(event_id)) {
-                    case SDLEventType.SDL_QUIT:
-                        shouldRun = false;
-                        break;
-                    case SDLEventType.SDL_KEYDOWN:
-                        if (SDL_GetKeyEventKeySym(event_id) == SDLKeyCode.SDLK_SPACE) {
-                            System.out.println("SPACE pressed");
-                        }
-                        break;
-                    case SDLEventType.SDL_WINDOWEVENT:
-                        System.out.println("Window event " + SDL_GetWindowEvent(event_id));
-                    default:
-                        break;
+            boolean shouldRun = true;
+            long event_id = SDL_CreateEvent();
+            while (shouldRun) {
+                while (SDL_PollEvent(event_id) != 0) {
+                    switch (SDL_GetEventType(event_id)) {
+                        case SDLEventType.SDL_QUIT:
+                            shouldRun = false;
+                            break;
+                        case SDLEventType.SDL_KEYDOWN:
+                            if (SDL_GetKeyEventKeySym(event_id) == SDLKeyCode.SDLK_SPACE) {
+                                System.out.println("SPACE pressed");
+                            }
+                            break;
+                        case SDLEventType.SDL_WINDOWEVENT:
+                            System.out.println("Window event " + SDL_GetWindowEvent(event_id));
+                        default:
+                            break;
+                    }
                 }
             }
+
+            SDL_Quit();
+        }catch(Exception e){
+            e.printStackTrace();
         }
-
-        SDL_Quit();
-
     }
 }

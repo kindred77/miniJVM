@@ -110,7 +110,7 @@ int org_mini_SDL2_SDL2_SDL_CreateTextureFromSurface(Runtime *runtime, JClass *cl
 
     SDL_Texture *texture = SDL_CreateTextureFromSurface(render, surface);
     if (!texture) {
-        fprintf(stderr, "Failed to create texture\n");
+        fprintf(stderr, "Failed to create texture from surface. \n");
     }
 
     env->push_long(runtime->stack, (s64) (intptr_t) texture);

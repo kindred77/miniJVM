@@ -14,7 +14,7 @@ set(SOURCE_FILES
         )
 #add_executable(test_sdl2 ${SOURCE_FILES})
 
-add_library(sdl2 SHARED ${SOURCE_FILES})
+add_library(jni_sdl2 SHARED ${SOURCE_FILES})
 
 
 #find_package(OpenGL REQUIRED)
@@ -28,7 +28,7 @@ MESSAGE(STATUS "CMAKE_SOURCE_DIR  :${CMAKE_SOURCE_DIR}")
 
 
 IF (APPLE)
-    MESSAGE("apple os here.")
+    MESSAGE("apple os here(not supported yet).")
     find_library(SDL2_LIB libsdl2.a depends/lib/mac_x64/)
     MARK_AS_ADVANCED(SDL2_LIB)
     SET(EXTRA_LIBS ${SDL2_LIB})
@@ -37,7 +37,7 @@ IF (APPLE)
     TARGET_LINK_LIBRARIES(test_sdl2 ${EXTRA_LIBS})
     SET(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/../../../binary/mac_x64)
 ELSEIF (UNIX)
-    MESSAGE("linux os here.")
+    MESSAGE("linux os here(not supported yet).")
     find_library(SDL2_LIB libsdl2.a "${CMAKE_SOURCE_DIR}/depends/lib/centos_x64/")
     MARK_AS_ADVANCED(SDL2_LIB)
     TARGET_LINK_LIBRARIES(sdl2 ${SDL2_LIB})
@@ -48,20 +48,51 @@ ELSEIF (MINGW)
         message("32bit")
         find_library(SDL2_LIB libsdl2.a "${CMAKE_SOURCE_DIR}/depends/lib/win_i686/")
         SET(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/../../../binary/win32)
+        SET(DEPLIBS_SOURCE_PATH ${CMAKE_SOURCE_DIR}/depends/lib/win_i686)
     elseif (CMAKE_SIZEOF_VOID_P EQUAL 8)
         message("64bit")
-        find_library(SDL2_LIB libSDL2.a "${CMAKE_SOURCE_DIR}/depends/lib/win_x64/")
-        find_library(SDL2_IMG_LIB libSDL2_image.a "${CMAKE_SOURCE_DIR}/depends/lib/win_x64/")
+        find_library(SDL2_LIB SDL2.dll "${CMAKE_SOURCE_DIR}/depends/lib/win_x64/")
+        find_library(SDL2_IMG_LIB SDL2_image.dll "${CMAKE_SOURCE_DIR}/depends/lib/win_x64/")
         SET(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/../../../binary/win_x64)
+        SET(DEPLIBS_SOURCE_PATH ${CMAKE_SOURCE_DIR}/depends/lib/win_x64)
     endif ()
     message(${SDL2_LIB})
-    MARK_AS_ADVANCED(SDL2_LIB SDL2_IMG_LIB)
-    TARGET_LINK_LIBRARIES(sdl2 ${SDL2_LIB} ${SDL2_IMG_LIB})
-    TARGET_LINK_LIBRARIES(sdl2 kernel32 user32 gdi32 winmm imm32 ole32 oleaut32 version uuid advapi32 setupapi shell32)
-    #TARGET_LINK_LIBRARIES(test_sdl2 winmm imm32)
+    MARK_AS_ADVANCED(SDL2_LIB)
+    TARGET_LINK_LIBRARIES(jni_sdl2 PUBLIC ${SDL2_LIB} PUBLIC ${SDL2_IMG_LIB}
+                PRIVATE winmm
+                PRIVATE imm32
+                PRIVATE setupapi
+                PRIVATE version)
 
+    #all: TARGET_LINK_LIBRARIES(jni_sdl2 kernel32 user32 gdi32 winmm imm32 ole32 oleaut32 version uuid advapi32 setupapi shell32)
+
+    #TARGET_LINK_LIBRARIES(test_sdl2 winmm imm32)
     #TARGET_LINK_LIBRARIES(test_sdl2 ${SDL2_LIB})
     set(CMAKE_EXE_LINKER_FLAGS "-mwindows")
+
+    #copy SDL2 and SDL2_image dll to target
+    set(OUTPUT_DIR ${PROJECT_SOURCE_DIR}/../../../binary/win_x64)
+
+    add_custom_command(
+        OUTPUT ${OUTPUT_DIR}/SDL2.dll
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            ${DEPLIBS_SOURCE_PATH}/SDL2.dll
+            ${OUTPUT_DIR}/SDL2.dll
+        DEPENDS jni_sdl2
+        COMMENT "Copying file SDL2.dll to output directory"
+    )
+    add_custom_target(copy_sdl_dll ALL DEPENDS ${OUTPUT_DIR}/SDL2.dll)
+
+    add_custom_command(
+        OUTPUT ${OUTPUT_DIR}/SDL2_image.dll
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            ${DEPLIBS_SOURCE_PATH}/SDL2_image.dll
+            ${OUTPUT_DIR}/SDL2_image.dll
+        DEPENDS jni_sdl2
+        COMMENT "Copying file SDL2_image.dll to output directory"
+    )
+    add_custom_target(copy_sdl_img_dlls ALL DEPENDS ${OUTPUT_DIR}/SDL2_image.dll)
+
 ENDIF ()
 
 message(${LIBRARY_OUTPUT_PATH})
