@@ -74,7 +74,7 @@ import java.io.OutputStream;
 public class InnerFile {
 
     InnerFileStat fs;
-    long filePointer;
+    long fileHandler;
     String path;
     FileDescriptor fd;
     String mode;
@@ -122,17 +122,17 @@ public class InnerFile {
         }
         byte[] mode = append ? SocketNative.toCStyle("a+b") : SocketNative.toCStyle("w+b");
         if (fd != null) {
-            filePointer = openFD(fd.getFD(), mode);
+            fileHandler = openFD(fd.getFD(), mode);
         } else {
-            filePointer = openFile(SocketNative.toCStyle(path), mode);
-            int fileno = fileno(filePointer);
+            fileHandler = openFile(SocketNative.toCStyle(path), mode);
+            int fileno = fileno(fileHandler);
             fd = new FileDescriptor(fileno);
         }
         ;
-        if (filePointer == 0) {
+        if (fileHandler == 0) {
             throw new IOException("open file error:" + path);
         }
-        ifos = new InnerFileOutputStream(filePointer);
+        ifos = new InnerFileOutputStream(fileHandler);
         return ifos;
     }
 
@@ -142,16 +142,16 @@ public class InnerFile {
         }
         byte[] mode = SocketNative.toCStyle("rb");
         if (fd != null) {
-            filePointer = openFD(fd.getFD(), mode);
+            fileHandler = openFD(fd.getFD(), mode);
         } else {
-            filePointer = openFile(SocketNative.toCStyle(path), mode);
-            int fileno = fileno(filePointer);
+            fileHandler = openFile(SocketNative.toCStyle(path), mode);
+            int fileno = fileno(fileHandler);
             fd = new FileDescriptor(fileno);
         }
-        if (filePointer == 0) {
+        if (fileHandler == 0) {
             throw new IOException("open file error:" + path);
         }
-        return new InnerFileInputStream(filePointer);
+        return new InnerFileInputStream(fileHandler);
     }
 
     public class InnerFileInputStream extends InputStream {
@@ -165,23 +165,23 @@ public class InnerFile {
         }
 
         public int available() throws IOException {
-            return available0(getFilePointer());
+            return available0(getFileHandler());
         }
 
         @Override
         public int read() throws IOException {
-            return read0(getFilePointer());
+            return read0(getFileHandler());
         }
 
         @Override
         public int read(byte b[], int off, int len) throws IOException {
-            return readbuf(getFilePointer(), b, off, len);
+            return readbuf(getFileHandler(), b, off, len);
         }
 
         @Override
         public void close() throws IOException {
-            closeFile(getFilePointer());
-            filePointer = 0;
+            closeFile(getFileHandler());
+            fileHandler = 0l;
         }
 
     }
@@ -198,7 +198,7 @@ public class InnerFile {
 
         @Override
         public void write(int b) throws IOException {
-            int ret = write0(getFilePointer(), b);
+            int ret = write0(getFileHandler(), b);
             if (ret < 0) {
                 throw new IOException("write file error: " + path);
             }
@@ -208,19 +208,19 @@ public class InnerFile {
         public void write(byte[] b, int offset, int len) {
             int wrote = 0;
             while (wrote < len) {
-                wrote += writebuf(getFilePointer(), b, offset + wrote, len - wrote);
+                wrote += writebuf(getFileHandler(), b, offset + wrote, len - wrote);
             }
         }
 
         @Override
         public void close() throws IOException {
-            closeFile(getFilePointer());
-            filePointer = 0;
+            closeFile(getFileHandler());
+            fileHandler = 0l;
         }
     }
 
     public int read() throws IOException {
-        int ret = read0(filePointer);
+        int ret = read0(fileHandler);
         if (ret < 0) {
             throw new IOException("read file error: " + path);
         }
@@ -228,26 +228,31 @@ public class InnerFile {
     }
 
     public void write(int b) throws IOException {
-        int ret = write0(filePointer, b);
+        int ret = write0(fileHandler, b);
         if (ret < 0) {
             throw new IOException("write file error: " + path);
         }
     }
 
     public void close() throws IOException {
-        closeFile(filePointer);
-        filePointer = 0;
+        closeFile(fileHandler);
+        fileHandler = 0l;
     }
 
     /**
      * @return the filePointer
      */
     public long getFilePointer() {
-        return filePointer;
+        long pos = tell0(fileHandler);
+        return pos;
     }
 
-    public void setFilePointer(long fd) {
-        filePointer = fd;
+    // public void setFilePointer(long fd) {
+    //     filePointer = fd;
+    // }
+
+    public long getFileHandler() {
+        return fileHandler;
     }
 
     public FileDescriptor getFD() {
@@ -291,6 +296,8 @@ public class InnerFile {
     public static native int available0(long fileHandle);
 
     public static native int seek0(long fileHandle, long pos);
+
+    public static native long tell0(long fileHandle);
 
     public static native int setLength0(long fileHandle, long len);
 

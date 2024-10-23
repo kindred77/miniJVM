@@ -886,7 +886,6 @@ s32 org_mini_fs_InnerFile_openFile(Runtime *runtime, JClass *clazz) {
         Utf8String *filepath = utf8_create_c(name_arr->arr_body);
         ByteBuf *platformPath = bytebuf_create(0);
         conv_utf8_2_platform_encoding(platformPath, filepath);
-
         FILE *fd = fopen(platformPath->buf, mode_arr->arr_body);
         push_long(runtime->stack, (s64) (intptr_t) fd);
 
@@ -1012,10 +1011,19 @@ s32 org_mini_fs_InnerFile_readbuf(Runtime *runtime, JClass *clazz) {
     s32 len = localvar_getInt(runtime->localvar, pos++);
     s32 ret = -1;
     if (fd && bytes_arr) {
-        ret = (s32) fread(bytes_arr->arr_body + offset, 1, len, fd);
+        size_t ret_val = fread(bytes_arr->arr_body + offset, 1, len, fd);
+        ret = (s32) ret_val;
     }
     if (ret == 0) {
-        ret = -1;
+        if (feof(fd)) {
+            //end of file
+            ret = -1;
+        }
+        
+        int err = ferror(fd);
+        if (err) {
+            jvm_printf("fread error: %d \n", err);
+        }
     }
     push_int(runtime->stack, ret);
 
@@ -1055,22 +1063,47 @@ s32 org_mini_fs_InnerFile_writebuf(Runtime *runtime, JClass *clazz) {
 
 s32 org_mini_fs_InnerFile_seek0(Runtime *runtime, JClass *clazz) {
     s32 pos = 0;
-    Long2Double l2d;
-    l2d.l = localvar_getLong(runtime->localvar, pos);
+    Long2Double fd_n;
+    fd_n.l = localvar_getLong(runtime->localvar, pos);
     pos += 2;
-    FILE *fd = (FILE *) (intptr_t) l2d.l;
-    l2d.l = localvar_getLong(runtime->localvar, pos);
+    FILE *fd = (FILE *) (intptr_t) fd_n.l;
+    Long2Double pos_n;
+    pos_n.l = localvar_getLong(runtime->localvar, pos);
     pos += 2;
-    s64 filepos = l2d.l;
+    s64 filepos = pos_n.l;
     s32 ret = -1;
     if (fd) {
         ret = fseek(fd, (long) filepos, SEEK_SET);
+
+        if (ret < 0) {
+            perror("fseek");
+        }
+    }
+    else {
+        jvm_printf("FD is null when fseek. \n");
     }
     push_int(runtime->stack, ret);
 #if _JVM_DEBUG_LOG_LEVEL > 5
     invoke_deepth(runtime);
     jvm_printf("org_mini_fs_InnerFile_seek0  \n");
 #endif
+    return 0;
+}
+
+s32 org_mini_fs_InnerFile_tell0(Runtime *runtime, JClass *clazz) {
+    s32 pos = 0;
+    Long2Double l2d;
+    l2d.l = localvar_getLong(runtime->localvar, pos);
+    pos += 2;
+    FILE *fd = (FILE *) (intptr_t) l2d.l;
+
+    s64 ret = 0l;
+    if (fd) {
+        ret = (s64) ftell(fd);
+    }
+
+    push_long(runtime->stack, ret);
+
     return 0;
 }
 
@@ -1792,6 +1825,7 @@ static java_native_method METHODS_IO_TABLE[] = {
         {"org/mini/fs/InnerFile",     "readbuf",              "(J[BII)I",                         org_mini_fs_InnerFile_readbuf},
         {"org/mini/fs/InnerFile",     "writebuf",             "(J[BII)I",                         org_mini_fs_InnerFile_writebuf},
         {"org/mini/fs/InnerFile",     "seek0",                "(JJ)I",                            org_mini_fs_InnerFile_seek0},
+        {"org/mini/fs/InnerFile",     "tell0",                "(J)J",                             org_mini_fs_InnerFile_tell0},
         {"org/mini/fs/InnerFile",     "available0",           "(J)I",                             org_mini_fs_InnerFile_available0},
         {"org/mini/fs/InnerFile",     "setLength0",           "(JJ)I",                            org_mini_fs_InnerFile_setLength0},
         {"org/mini/fs/InnerFile",     "flush0",               "(J)I",                             org_mini_fs_InnerFile_flush0},

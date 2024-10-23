@@ -62,38 +62,38 @@ public class InnerRandomAccessFile extends InnerFile {
         } else {
             this.mode = "rb+";
         }
-        filePointer = openFile(SocketNative.toCStyle(path), mode.getBytes());
-        if (filePointer == 0 && "rb+".equals(this.mode)) {// file not exists , create new 
+        fileHandler = openFile(SocketNative.toCStyle(path), mode.getBytes());
+        if (fileHandler == 0 && "rb+".equals(this.mode)) {// file not exists , create new 
             this.mode = "wb+";
-            filePointer = openFile(SocketNative.toCStyle(path), mode.getBytes());
+            fileHandler = openFile(SocketNative.toCStyle(path), mode.getBytes());
         }
-        if (filePointer == 0) {
+        if (fileHandler == 0) {
             throw new RuntimeException("open file error:" + path);
         }
     }
 
-    public void close() throws IOException {
-        closeFile(getFilePointer());
-        filePointer = 0;
-    }
+    // public void close() throws IOException {
+    //     closeFile(getFileHandler());
+    //     fileHandler = 0;
+    // }
 
     public int read(byte[] b, int off, int len) throws IOException {
-        return readbuf(getFilePointer(), b, off, len);
+        return readbuf(getFileHandler(), b, off, len);
     }
 
     public int write(byte[] b, int off, int len) throws IOException {
-        int ret = writebuf(getFilePointer(), b, off, len);
+        int ret = writebuf(getFileHandler(), b, off, len);
         if (flush) {
-            flush0(getFilePointer());
+            flush0(getFileHandler());
         }
         return ret;
     }
 
     public int seek(long pos) throws IOException {
-        return seek0(getFilePointer(), pos);
+        return seek0(getFileHandler(), pos);
     }
 
     public int setLength(long length) throws IOException {
-        return setLength0(getFilePointer(), length);
+        return setLength0(getFileHandler(), length);
     }
 }

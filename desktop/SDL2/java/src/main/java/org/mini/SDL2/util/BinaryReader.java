@@ -148,7 +148,7 @@ public final class BinaryReader extends RandomAccessFile {
 		return Double.longBitsToDouble(readLongLE());
 	}
 
-	private byte[] preReadBuffer = new byte[1024 * 4]; // 预读4k
+	private byte[] preReadBuffer = new byte[1024 * 1024]; // 预读4k
 	private int posInBuffer = 0; // 当前读取的指针数据在预读缓冲区的索引
 	private int bufferContentLen = 0; // 缓冲区有效数据长度
 
