@@ -73,11 +73,11 @@ int org_mini_SDL2_SDL2_SDL_CreateRenderer(Runtime *runtime, JClass *clazz) {
 int org_mini_SDL2_SDL2_SDL_RWFromConstMem(Runtime *runtime, JClass *clazz) {
     JniEnv *env = runtime->jnienv;
     s32 pos = 0;
-    Instance *title_arr = env->localvar_getRefer(runtime->localvar, pos++);
+    Instance *img_data_arr = env->localvar_getRefer(runtime->localvar, pos++);
     s32 size = env->localvar_getInt(runtime->localvar, pos++);
-    c8 *title = title_arr->arr_body;
-
-    SDL_RWops * res = SDL_RWFromConstMem((void *)title, size);
+    c8 *data = img_data_arr->arr_body;
+    printf("data: %lld, size: %d\n", data, size);
+    SDL_RWops * res = SDL_RWFromConstMem((void *)data, size);
     if (!res) {
         fprintf(stderr, "Failed to create RWops\n");
     }

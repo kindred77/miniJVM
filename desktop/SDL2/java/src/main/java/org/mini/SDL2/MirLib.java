@@ -120,6 +120,11 @@ public class MirLib {
         return images[index];
     }
 
+    public int GetImageCount()
+    {
+        return imageCnt;
+    }
+
     public String GetFilName()
     {
         return file_name;
