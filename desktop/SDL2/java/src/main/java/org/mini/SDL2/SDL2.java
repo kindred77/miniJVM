@@ -111,8 +111,9 @@ public class SDL2 {
 
             MirLib mir_lib =new MirLib("C:/mywork/projects/cpp/devilutionX/kindred/devilutionX/my_asset/Prguse2_png.Lib");
             mir_lib.Initialize();
-            System.out.println("--44--image count: "+mir_lib.GetImageCount()+", img.data.length: "+img.data.length+", img.header.length: "+img.header.length);
+            
             MirImage img = mir_lib.GetMirImage(542);
+            System.out.println("--44--image count: "+mir_lib.GetImageCount()+", img.data.length: "+img.data.length+", img.header.length: "+img.header.length);
 
             long rwops_id = SDL_RWFromConstMem(img.data, img.header.length);
             if (rwops_id == 0) {
