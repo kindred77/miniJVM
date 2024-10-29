@@ -127,7 +127,7 @@ int org_mini_SDL2_SDL2_SDL_SetTextureColorMod(Runtime *runtime, JClass *clazz) {
     s32 g = env->localvar_getInt(runtime->localvar, pos++);
     s32 b = env->localvar_getInt(runtime->localvar, pos++);
 
-    int res = SDL_SetTextureColorMod(texture, r, g, b);
+    int res = SDL_SetTextureColorMod(texture, (Uint8)r, (Uint8)g, (Uint8)b);
     env->push_int(runtime->stack, res);
     return 0;
 }
@@ -310,6 +310,26 @@ int org_mini_SDL2_SDL2_SDL_Quit(Runtime *runtime, JClass *clazz) {
     return 0;
 }
 
+int org_mini_SDL2_SDL2_SDL_RWFromFile(Runtime *runtime, JClass *clazz) {
+    JniEnv *env = runtime->jnienv;
+    s32 pos = 0;
+
+    Instance *file_name_inst = env->localvar_getRefer(runtime->localvar, pos++);
+    c8 *file_name = file_name_inst->arr_body;
+
+    Instance *mode_inst = env->localvar_getRefer(runtime->localvar, pos++);
+    c8 *mode = mode_inst->arr_body;
+
+    SDL_RWops * ops= SDL_RWFromFile(file_name, mode);
+    if (!ops) {
+        fprintf(stderr, "Failed to create RWops from file: %s. \n", file_name);
+    }
+
+    env->push_long(runtime->stack, (s64) (intptr_t) ops);
+
+    return 0;
+}
+
 int org_mini_SDL2_SDL2_SDL_IMG_LoadPNG_RW(Runtime *runtime, JClass *clazz) {
     JniEnv *env = runtime->jnienv;
     s32 pos = 0;
@@ -371,7 +391,8 @@ static java_native_method method_sdl_table[] = {
     
     {"org/mini/SDL2/SDL2", "SDL_Quit",                       "()V",                        org_mini_SDL2_SDL2_SDL_Quit},
 
-    {"org/mini/SDL2/SDL2", "SDL_IMG_LoadPNG_RW",              "(J)J",                       org_mini_SDL2_SDL2_SDL_IMG_LoadPNG_RW},
+    {"org/mini/SDL2/SDL2", "SDL_IMG_LoadPNG_RW",             "(J)J",                       org_mini_SDL2_SDL2_SDL_IMG_LoadPNG_RW},
+    {"org/mini/SDL2/SDL2", "SDL_RWFromFile",                 "([B[B)J",                    org_mini_SDL2_SDL2_SDL_RWFromFile},
     {"org/mini/SDL2/SDL2", "SDL_GetSurfaceWidth",            "(J)I",                       org_mini_SDL2_SDL2_SDL_GetSurfaceWidth},
     {"org/mini/SDL2/SDL2", "SDL_GetSurfaceHeight",           "(J)I",                       org_mini_SDL2_SDL2_SDL_GetSurfaceHeight},
 };

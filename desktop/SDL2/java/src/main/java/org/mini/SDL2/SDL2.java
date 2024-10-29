@@ -45,7 +45,7 @@ public class SDL2 {
 
     public static native long SDL_CreateTextureFromSurface(long render_id, long surface_id);
 
-    public static native int SDL_SetTextureColorMod(long texture_id, byte r, byte g, byte b);
+    public static native int SDL_SetTextureColorMod(long texture_id, int r, int g, int b);
 
     public static native int SDL_SetTextureBlendMode(long texture_id, int blend_mod);
 
@@ -69,6 +69,7 @@ public class SDL2 {
 
     public static native int SDL_GetSurfaceWidth(long surface_id);
     public static native int SDL_GetSurfaceHeight(long surface_id);
+    public static native long SDL_RWFromFile(byte[] file_name, byte[] mode);
     public static native long SDL_IMG_LoadPNG_RW(long rwops_id);
 
     static public byte[] toCstyleBytes(String s) {
@@ -115,7 +116,8 @@ public class SDL2 {
             MirImage img = mir_lib.GetMirImage(542);
             System.out.println("--44--image count: "+mir_lib.GetImageCount()+", img.data.length: "+img.data.length+", img.header.length: "+img.header.length);
 
-            long rwops_id = SDL_RWFromConstMem(img.data, img.header.length);
+            //long rwops_id = SDL_RWFromConstMem(img.data, img.header.length);
+            long rwops_id = SDL_RWFromFile(toCstyleBytes("C:\\mywork\\projects\\java\\miniJVM\\mobile\\java\\ExMir\\src\\main\\resource\\res\\fern.png"), toCstyleBytes("rb"));
             if (rwops_id == 0) {
                 throw new IllegalStateException("Unable to create rwops from image data: " + SDL_GetError());
             }
@@ -123,15 +125,16 @@ public class SDL2 {
             if (surface_id == 0) {
                 throw new IllegalStateException("Unable to create surce from rwops: " + SDL_GetError());
             }
+            System.out.println("surface width: "+SDL_GetSurfaceWidth(surface_id)+", height: "+SDL_GetSurfaceHeight(surface_id));
             SDL_RWclose(rwops_id);
 
             long testTexture_id = SDL_CreateTextureFromSurface(renderer_id, surface_id);
             if (testTexture_id == 0) {
                 throw new IllegalStateException("Unable to create texture from surface: " + SDL_GetError());
             }
-            SDL_SetTextureColorMod(testTexture_id, (byte)255, (byte)0, (byte)255);
-            SDL_SetTextureBlendMode(testTexture_id, SDLBlendMode.SDL_BLENDMODE_BLEND);
-            SDL_SetTextureAlphaMod(testTexture_id, (byte)255);
+            //SDL_SetTextureColorMod(testTexture_id, 255, 0, 255);
+            //SDL_SetTextureBlendMode(testTexture_id, SDLBlendMode.SDL_BLENDMODE_BLEND);
+            //SDL_SetTextureAlphaMod(testTexture_id, 255);
             int[] dstRect = {0, 0, SDL_GetSurfaceWidth(surface_id), SDL_GetSurfaceHeight(surface_id)};
             SDL_RenderCopy(renderer_id, testTexture_id, null, dstRect);
 
