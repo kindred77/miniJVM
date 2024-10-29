@@ -113,8 +113,8 @@ public class SDL2 {
             mir_lib.Initialize();
             
             MirImage img = mir_lib.GetMirImage(542);
-            FileOutputStream fos = new FileOutputStream("test.png", false);
-            fos.write(img.data);
+            //FileOutputStream fos = new FileOutputStream("test.png", false);
+            //fos.write(img.data);
 
             long rwops_id = SDL_RWFromConstMem(img.data, img.header.length);
             //long rwops_id = SDL_RWFromFile(toCstyleBytes("C:\\mywork\\projects\\java\\miniJVM\\mobile\\java\\ExMir\\src\\main\\resource\\res\\fern.png"), toCstyleBytes("rb"));
