@@ -201,6 +201,22 @@ int org_mini_SDL2_SDL2_SDL_RenderCopy(Runtime *runtime, JClass *clazz) {
     return 0;
 }
 
+int org_mini_SDL2_SDL2_SDL_SetRenderDrawColor(Runtime *runtime, JClass *clazz) {
+    JniEnv *env = runtime->jnienv;
+    s32 pos = 0;
+
+    SDL_Renderer *render = (__refer) (intptr_t) env->localvar_getLong_2slot(runtime->localvar, pos);
+    pos += 2;
+    s32 r = env->localvar_getInt(runtime->localvar, pos++);
+    s32 g = env->localvar_getInt(runtime->localvar, pos++);
+    s32 b = env->localvar_getInt(runtime->localvar, pos++);
+    s32 alpha = env->localvar_getInt(runtime->localvar, pos++);
+
+    int res = SDL_SetRenderDrawColor(render, r, g, b, alpha);
+    env->push_int(runtime->stack, res);
+    return 0;
+}
+
 int org_mini_SDL2_SDL2_SDL_RenderClear(Runtime *runtime, JClass *clazz) {
     JniEnv *env = runtime->jnienv;
     s32 pos = 0;
@@ -381,7 +397,8 @@ static java_native_method method_sdl_table[] = {
     {"org/mini/SDL2/SDL2", "SDL_RenderCopy",                 "(JJ[I[I)I",                  org_mini_SDL2_SDL2_SDL_RenderCopy},
     {"org/mini/SDL2/SDL2", "SDL_RenderClear",                "(J)I",                       org_mini_SDL2_SDL2_SDL_RenderClear},
     {"org/mini/SDL2/SDL2", "SDL_RenderPresent",              "(J)V",                       org_mini_SDL2_SDL2_SDL_RenderPresent},
-    
+    {"org/mini/SDL2/SDL2", "SDL_SetRenderDrawColor",         "(JIIII)I",                   org_mini_SDL2_SDL2_SDL_SetRenderDrawColor},
+
     {"org/mini/SDL2/SDL2", "SDL_CreateEvent",                "()J",                        org_mini_SDL2_SDL2_SDL_CreateEvent},
     {"org/mini/SDL2/SDL2", "SDL_FreeEvent",                  "(J)V",                       org_mini_SDL2_SDL2_SDL_FreeEvent},
     {"org/mini/SDL2/SDL2", "SDL_GetKeyEventKeySym",          "(J)I",                       org_mini_SDL2_SDL2_SDL_GetKeyEventKeySym},

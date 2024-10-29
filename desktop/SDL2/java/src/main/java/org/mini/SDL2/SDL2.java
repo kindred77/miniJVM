@@ -53,6 +53,7 @@ public class SDL2 {
 
     public static native int SDL_RenderCopy(long renderer_id, long texture_id, int[] src_rect, int[] dst_rect);
 
+    public static native int SDL_SetRenderDrawColor(long renderer_id, int r, int g, int b, int alpha);
     public static native int SDL_RenderClear(long renderer_id);
 
     public static native void SDL_RenderPresent(long renderer_id);
@@ -132,13 +133,17 @@ public class SDL2 {
             if (testTexture_id == 0) {
                 throw new IllegalStateException("Unable to create texture from surface: " + SDL_GetError());
             }
+
+            SDL_SetRenderDrawColor(renderer_id, 255, 0, 255, 255);
+            SDL_RenderClear(renderer_id);
+
             SDL_SetTextureColorMod(testTexture_id, 255, 0, 255);
+            //SDL_SetTextureBlendMode(testTexture_id, SDLBlendMode.SDL_BLENDMODE_NONE);
             SDL_SetTextureBlendMode(testTexture_id, SDLBlendMode.SDL_BLENDMODE_BLEND);
             SDL_SetTextureAlphaMod(testTexture_id, 255);
             int[] dstRect = {0, 0, SDL_GetSurfaceWidth(surface_id), SDL_GetSurfaceHeight(surface_id)};
             SDL_RenderCopy(renderer_id, testTexture_id, null, dstRect);
 
-            //SDL_RenderClear(renderer_id);
             SDL_RenderPresent(renderer_id);
 
             boolean shouldRun = true;
