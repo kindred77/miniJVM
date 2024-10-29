@@ -1,7 +1,6 @@
 package org.mini.SDL2;
 
-import org.mini.SDL2.util.BinaryReader;
-
+import org.mini.SDL2.util.MyRandomAccessFile;
 import java.io.File;
 
 public class MirLib {
@@ -10,7 +9,7 @@ public class MirLib {
     private int imageCnt = 0;
     private String file_name;
     private File file=null;
-    private BinaryReader br=null;
+    private MyRandomAccessFile myRAF=null;
 
     private MirImage[] images;
     private int[] indexList;
@@ -32,31 +31,26 @@ public class MirLib {
             throw new Exception("Image must be constructed.");
         }
         image.header=new MirImageHeader();
-        image.header.width=br.readShortLE();
-        image.header.height=br.readShortLE();
-        image.header.x=br.readShortLE();
-        image.header.y=br.readShortLE();
-        image.header.shadowX=br.readShortLE();
-        image.header.shadowY=br.readShortLE();
-        image.header.shadow=br.readByte();
-        image.header.length=br.readIntLE();
-        System.out.println("x: "+image.header.x+", y: "+image.header.y+", width: "+image.header.width+", height: "+image.header.height+", length: "+image.header.length);
+        image.header.width=myRAF.readShortLE();
+        image.header.height=myRAF.readShortLE();
+        image.header.x=myRAF.readShortLE();
+        image.header.y=myRAF.readShortLE();
+        image.header.shadowX=myRAF.readShortLE();
+        image.header.shadowY=myRAF.readShortLE();
+        image.header.shadow=myRAF.readByte();
+        image.header.length=myRAF.readIntLE();
         return true;
     }
 
-    private boolean initializeImage(int index) throws Exception
+    private synchronized boolean initializeImage(int index) throws Exception
     {
-        if (!initialized)
-        {
-            throw new Exception("Lib not initialized.");
-        }
         if (images == null || index < 0 || index >= imageCnt)
         {
             throw new Exception("Can not initialize image, mirlib do not initialized or invalid index "+index);
         }
         if (images[index]==null || !images[index].initialized)
         {
-            br.seek(indexList[index]);
+            myRAF.seek(indexList[index]);
             if (images[index]==null)
             {
                 images[index]=new MirImage();
@@ -66,7 +60,7 @@ public class MirLib {
                 throw new Exception("Image header init failed, mir lib file "+file_name+". image index: "+index);
             }
             images[index].data = new byte[images[index].header.length];
-            int read_len = br.read(images[index].data);
+            int read_len = myRAF.read(images[index].data);
             if(read_len != images[index].data.length)
             {
                 throw new Exception("Read failed, expected: "+images[index].data.length+", read: "+read_len);
@@ -95,18 +89,18 @@ public class MirLib {
             throw new Exception("File is not file: "+file_name);
         }
 
-        br = new BinaryReader(file);
-        int libVersion = br.readIntLE();
+        myRAF = new MyRandomAccessFile(file, "r");
+        int libVersion = myRAF.readIntLE();
         if (libVersion != LibVersion)
         {
             throw new Exception("Invalid mir lib file "+file_name+". Wrong version: "+libVersion);
         }
-        imageCnt = br.readIntLE();
+        imageCnt = myRAF.readIntLE();
         images = new MirImage[imageCnt];
         indexList = new int[imageCnt];
         for(int i = 0; i < indexList.length; ++i)
         {
-            indexList[i] = br.readIntLE();
+            indexList[i] = myRAF.readIntLE();
         }
 
         initialized=true;
@@ -116,6 +110,10 @@ public class MirLib {
 
     public MirImage GetMirImage(int index) throws Exception
     {
+        if (!initialized)
+        {
+            throw new Exception("Lib not initialized.");
+        }
         initializeImage(index);
         return images[index];
     }

@@ -13,6 +13,8 @@ import org.mini.SDL2.constcode.SDLRendererFlags;
 import org.mini.SDL2.constcode.SdlSubSystemConst;
 import org.mini.SDL2.constcode.SDLWindowFlags;
 
+import java.io.FileOutputStream;
+
 public class SDL2 {
 
     static {
@@ -92,16 +94,12 @@ public class SDL2 {
     {
         try
         {
-            System.out.println("--00--");
             int result = SDL_Init(SdlSubSystemConst.SDL_INIT_EVERYTHING);
-            System.out.println("--11--");
             if (result != 0) {
                 throw new IllegalStateException("Unable to initialize SDL library (Error code " + result + "): " + SDL_GetError());
             }
-            System.out.println("--22--");
             // Create and init the window
-            long win_id = SDL_CreateWindow(toCstyleBytes("Demo SDL2"), 0, 0, 1024, 768, SDLWindowFlags.SDL_WINDOW_SHOWN | SDLWindowFlags.SDL_WINDOW_RESIZABLE);
-            System.out.println("--33--");
+            long win_id = SDL_CreateWindow(toCstyleBytes("窗口-kindred"), 0, 0, 1024, 768, SDLWindowFlags.SDL_WINDOW_SHOWN | SDLWindowFlags.SDL_WINDOW_RESIZABLE);
             if (win_id == 0) {
                 throw new IllegalStateException("Unable to create SDL window: " + SDL_GetError());
             }
@@ -115,10 +113,12 @@ public class SDL2 {
             mir_lib.Initialize();
             
             MirImage img = mir_lib.GetMirImage(542);
-            System.out.println("--44--image count: "+mir_lib.GetImageCount()+", img.data.length: "+img.data.length+", img.header.length: "+img.header.length);
+            FileOutputStream fos = new FileOutputStream("test.png", false);
+            fos.write(img.data);
 
-            //long rwops_id = SDL_RWFromConstMem(img.data, img.header.length);
-            long rwops_id = SDL_RWFromFile(toCstyleBytes("C:\\mywork\\projects\\java\\miniJVM\\mobile\\java\\ExMir\\src\\main\\resource\\res\\fern.png"), toCstyleBytes("rb"));
+            long rwops_id = SDL_RWFromConstMem(img.data, img.header.length);
+            //long rwops_id = SDL_RWFromFile(toCstyleBytes("C:\\mywork\\projects\\java\\miniJVM\\mobile\\java\\ExMir\\src\\main\\resource\\res\\fern.png"), toCstyleBytes("rb"));
+            //long rwops_id = SDL_RWFromFile(toCstyleBytes("C:\\mywork\\projects\\cpp\\devilutionX\\kindred\\devilutionX\\my_asset\\930.png"), toCstyleBytes("rb"));
             if (rwops_id == 0) {
                 throw new IllegalStateException("Unable to create rwops from image data: " + SDL_GetError());
             }
