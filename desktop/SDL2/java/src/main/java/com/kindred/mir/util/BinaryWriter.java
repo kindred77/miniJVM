@@ -14,7 +14,7 @@
  * 
  * Support: https://github.com/jootnet/mir2.core
  */
-package org.mini.SDL2.util;
+package com.kindred.mir.util;
 
 import java.io.File;
 import java.io.FileNotFoundException;

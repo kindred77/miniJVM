@@ -1,4 +1,4 @@
-package org.mini.SDL2;
+package com.kindred.mir.libs;
 
 class MirImageHeader
 {
@@ -12,4 +12,9 @@ public class MirImage {
     public boolean initialized = false;
     //const int index = -1;
     public byte[] data;
+
+    public int getDataLengthInHeader()
+    {
+        return header.length;
+    }
 }

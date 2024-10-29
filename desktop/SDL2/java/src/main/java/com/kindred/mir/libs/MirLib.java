@@ -1,6 +1,6 @@
-package org.mini.SDL2;
+package com.kindred.mir.libs;
 
-import org.mini.SDL2.util.MyRandomAccessFile;
+import com.kindred.mir.util.MyRandomAccessFile;
 import java.io.File;
 
 public class MirLib {

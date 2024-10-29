@@ -1,4 +1,4 @@
-package org.mini.SDL2.constcode;
+package com.kindred.mir.constcode;
 
 public class SDLRendererFlags {
     /** The renderer is a software fallback */

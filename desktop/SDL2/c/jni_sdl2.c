@@ -9,7 +9,7 @@
 
 GlobeRefer refers;
 
-int org_mini_SDL2_SDL2_SDL_Init(Runtime *runtime, JClass *clazz)
+int com_kindred_sdl_SDL_SDL_Init(Runtime *runtime, JClass *clazz)
 {
     JniEnv *env = runtime->jnienv;
     s32 pos = 0;
@@ -19,7 +19,7 @@ int org_mini_SDL2_SDL2_SDL_Init(Runtime *runtime, JClass *clazz)
     return 0;
 }
 
-int org_mini_SDL2_SDL2_SDL_CreateWindow(Runtime *runtime, JClass *clazz) {
+int com_kindred_sdl_SDL_SDL_CreateWindow(Runtime *runtime, JClass *clazz) {
     JniEnv *env = runtime->jnienv;
     s32 pos = 0;
     Instance *title_arr = env->localvar_getRefer(runtime->localvar, pos++);
@@ -39,7 +39,7 @@ int org_mini_SDL2_SDL2_SDL_CreateWindow(Runtime *runtime, JClass *clazz) {
     return 0;
 }
 
-int org_mini_SDL2_SDL2_SDL_GetError(Runtime *runtime, JClass *clazz) {
+int com_kindred_sdl_SDL_SDL_GetError(Runtime *runtime, JClass *clazz) {
     JniEnv *env = runtime->jnienv;
     c8 *cstr = (c8 *) SDL_GetError();
     if (cstr) {
@@ -53,7 +53,7 @@ int org_mini_SDL2_SDL2_SDL_GetError(Runtime *runtime, JClass *clazz) {
     return 0;
 }
 
-int org_mini_SDL2_SDL2_SDL_CreateRenderer(Runtime *runtime, JClass *clazz) {
+int com_kindred_sdl_SDL_SDL_CreateRenderer(Runtime *runtime, JClass *clazz) {
     JniEnv *env = runtime->jnienv;
     s32 pos = 0;
 
@@ -70,7 +70,7 @@ int org_mini_SDL2_SDL2_SDL_CreateRenderer(Runtime *runtime, JClass *clazz) {
     return 0;
 }
 
-int org_mini_SDL2_SDL2_SDL_RWFromConstMem(Runtime *runtime, JClass *clazz) {
+int com_kindred_sdl_SDL_SDL_RWFromConstMem(Runtime *runtime, JClass *clazz) {
     JniEnv *env = runtime->jnienv;
     s32 pos = 0;
     Instance *img_data_arr = env->localvar_getRefer(runtime->localvar, pos++);
@@ -86,7 +86,7 @@ int org_mini_SDL2_SDL2_SDL_RWFromConstMem(Runtime *runtime, JClass *clazz) {
     return 0;
 }
 
-int org_mini_SDL2_SDL2_SDL_RWclose(Runtime *runtime, JClass *clazz) {
+int com_kindred_sdl_SDL_SDL_RWclose(Runtime *runtime, JClass *clazz) {
     JniEnv *env = runtime->jnienv;
     s32 pos = 0;
 
@@ -98,7 +98,7 @@ int org_mini_SDL2_SDL2_SDL_RWclose(Runtime *runtime, JClass *clazz) {
     return 0;
 }
 
-int org_mini_SDL2_SDL2_SDL_CreateTextureFromSurface(Runtime *runtime, JClass *clazz) {
+int com_kindred_sdl_SDL_SDL_CreateTextureFromSurface(Runtime *runtime, JClass *clazz) {
     JniEnv *env = runtime->jnienv;
     s32 pos = 0;
 
@@ -117,7 +117,7 @@ int org_mini_SDL2_SDL2_SDL_CreateTextureFromSurface(Runtime *runtime, JClass *cl
     return 0;
 }
 
-int org_mini_SDL2_SDL2_SDL_SetTextureColorMod(Runtime *runtime, JClass *clazz) {
+int com_kindred_sdl_SDL_SDL_SetTextureColorMod(Runtime *runtime, JClass *clazz) {
     JniEnv *env = runtime->jnienv;
     s32 pos = 0;
 
@@ -132,7 +132,7 @@ int org_mini_SDL2_SDL2_SDL_SetTextureColorMod(Runtime *runtime, JClass *clazz) {
     return 0;
 }
 
-int org_mini_SDL2_SDL2_SDL_SetTextureBlendMode(Runtime *runtime, JClass *clazz) {
+int com_kindred_sdl_SDL_SDL_SetTextureBlendMode(Runtime *runtime, JClass *clazz) {
     JniEnv *env = runtime->jnienv;
     s32 pos = 0;
 
@@ -144,7 +144,7 @@ int org_mini_SDL2_SDL2_SDL_SetTextureBlendMode(Runtime *runtime, JClass *clazz) 
     return 0;
 }
 
-int org_mini_SDL2_SDL2_SDL_SetTextureAlphaMod(Runtime *runtime, JClass *clazz) {
+int com_kindred_sdl_SDL_SDL_SetTextureAlphaMod(Runtime *runtime, JClass *clazz) {
     JniEnv *env = runtime->jnienv;
     s32 pos = 0;
 
@@ -156,7 +156,7 @@ int org_mini_SDL2_SDL2_SDL_SetTextureAlphaMod(Runtime *runtime, JClass *clazz) {
     return 0;
 } 
 
-int org_mini_SDL2_SDL2_SDL_RenderCopy(Runtime *runtime, JClass *clazz) {
+int com_kindred_sdl_SDL_SDL_RenderCopy(Runtime *runtime, JClass *clazz) {
     JniEnv *env = runtime->jnienv;
     s32 pos = 0;
 
@@ -201,7 +201,7 @@ int org_mini_SDL2_SDL2_SDL_RenderCopy(Runtime *runtime, JClass *clazz) {
     return 0;
 }
 
-int org_mini_SDL2_SDL2_SDL_SetRenderDrawColor(Runtime *runtime, JClass *clazz) {
+int com_kindred_sdl_SDL_SDL_SetRenderDrawColor(Runtime *runtime, JClass *clazz) {
     JniEnv *env = runtime->jnienv;
     s32 pos = 0;
 
@@ -217,7 +217,7 @@ int org_mini_SDL2_SDL2_SDL_SetRenderDrawColor(Runtime *runtime, JClass *clazz) {
     return 0;
 }
 
-int org_mini_SDL2_SDL2_SDL_RenderClear(Runtime *runtime, JClass *clazz) {
+int com_kindred_sdl_SDL_SDL_RenderClear(Runtime *runtime, JClass *clazz) {
     JniEnv *env = runtime->jnienv;
     s32 pos = 0;
 
@@ -229,7 +229,7 @@ int org_mini_SDL2_SDL2_SDL_RenderClear(Runtime *runtime, JClass *clazz) {
     return 0;
 }
 
-int org_mini_SDL2_SDL2_SDL_RenderPresent(Runtime *runtime, JClass *clazz) {
+int com_kindred_sdl_SDL_SDL_RenderPresent(Runtime *runtime, JClass *clazz) {
     JniEnv *env = runtime->jnienv;
     s32 pos = 0;
 
@@ -241,7 +241,7 @@ int org_mini_SDL2_SDL2_SDL_RenderPresent(Runtime *runtime, JClass *clazz) {
     return 0;
 }
 
-int org_mini_SDL2_SDL2_SDL_CreateEvent(Runtime *runtime, JClass *clazz) {
+int com_kindred_sdl_SDL_SDL_CreateEvent(Runtime *runtime, JClass *clazz) {
     JniEnv *env = runtime->jnienv;
     s32 pos = 0;
 
@@ -252,7 +252,7 @@ int org_mini_SDL2_SDL2_SDL_CreateEvent(Runtime *runtime, JClass *clazz) {
     return 0;
 }
 
-int org_mini_SDL2_SDL2_SDL_FreeEvent(Runtime *runtime, JClass *clazz) {
+int com_kindred_sdl_SDL_SDL_FreeEvent(Runtime *runtime, JClass *clazz) {
     JniEnv *env = runtime->jnienv;
     s32 pos = 0;
 
@@ -264,7 +264,7 @@ int org_mini_SDL2_SDL2_SDL_FreeEvent(Runtime *runtime, JClass *clazz) {
     return 0;
 }
 
-int org_mini_SDL2_SDL2_SDL_PollEvent(Runtime *runtime, JClass *clazz) {
+int com_kindred_sdl_SDL_SDL_PollEvent(Runtime *runtime, JClass *clazz) {
     JniEnv *env = runtime->jnienv;
     s32 pos = 0;
 
@@ -277,7 +277,7 @@ int org_mini_SDL2_SDL2_SDL_PollEvent(Runtime *runtime, JClass *clazz) {
     return 0;
 }
 
-int org_mini_SDL2_SDL2_SDL_GetEventType(Runtime *runtime, JClass *clazz) {
+int com_kindred_sdl_SDL_SDL_GetEventType(Runtime *runtime, JClass *clazz) {
     JniEnv *env = runtime->jnienv;
     s32 pos = 0;
 
@@ -289,7 +289,7 @@ int org_mini_SDL2_SDL2_SDL_GetEventType(Runtime *runtime, JClass *clazz) {
     return 0;
 }
 
-int org_mini_SDL2_SDL2_SDL_GetKeyEventKeySym(Runtime *runtime, JClass *clazz) {
+int com_kindred_sdl_SDL_SDL_GetKeyEventKeySym(Runtime *runtime, JClass *clazz) {
     JniEnv *env = runtime->jnienv;
     s32 pos = 0;
 
@@ -303,7 +303,7 @@ int org_mini_SDL2_SDL2_SDL_GetKeyEventKeySym(Runtime *runtime, JClass *clazz) {
     return 0;
 }
 
-int org_mini_SDL2_SDL2_SDL_GetWindowEvent(Runtime *runtime, JClass *clazz) {
+int com_kindred_sdl_SDL_SDL_GetWindowEvent(Runtime *runtime, JClass *clazz) {
     JniEnv *env = runtime->jnienv;
     s32 pos = 0;
 
@@ -317,7 +317,7 @@ int org_mini_SDL2_SDL2_SDL_GetWindowEvent(Runtime *runtime, JClass *clazz) {
     return 0;
 }
 
-int org_mini_SDL2_SDL2_SDL_Quit(Runtime *runtime, JClass *clazz) {
+int com_kindred_sdl_SDL_SDL_Quit(Runtime *runtime, JClass *clazz) {
     JniEnv *env = runtime->jnienv;
     s32 pos = 0;
 
@@ -326,7 +326,7 @@ int org_mini_SDL2_SDL2_SDL_Quit(Runtime *runtime, JClass *clazz) {
     return 0;
 }
 
-int org_mini_SDL2_SDL2_SDL_RWFromFile(Runtime *runtime, JClass *clazz) {
+int com_kindred_sdl_SDL_SDL_RWFromFile(Runtime *runtime, JClass *clazz) {
     JniEnv *env = runtime->jnienv;
     s32 pos = 0;
 
@@ -346,7 +346,7 @@ int org_mini_SDL2_SDL2_SDL_RWFromFile(Runtime *runtime, JClass *clazz) {
     return 0;
 }
 
-int org_mini_SDL2_SDL2_SDL_IMG_LoadPNG_RW(Runtime *runtime, JClass *clazz) {
+int com_kindred_sdl_SDL_SDL_IMG_LoadPNG_RW(Runtime *runtime, JClass *clazz) {
     JniEnv *env = runtime->jnienv;
     s32 pos = 0;
 
@@ -359,7 +359,7 @@ int org_mini_SDL2_SDL2_SDL_IMG_LoadPNG_RW(Runtime *runtime, JClass *clazz) {
     return 0;
 }
 
-int org_mini_SDL2_SDL2_SDL_GetSurfaceWidth(Runtime *runtime, JClass *clazz) {
+int com_kindred_sdl_SDL_SDL_GetSurfaceWidth(Runtime *runtime, JClass *clazz) {
     JniEnv *env = runtime->jnienv;
     s32 pos = 0;
 
@@ -371,7 +371,7 @@ int org_mini_SDL2_SDL2_SDL_GetSurfaceWidth(Runtime *runtime, JClass *clazz) {
     return 0;
 }
 
-int org_mini_SDL2_SDL2_SDL_GetSurfaceHeight(Runtime *runtime, JClass *clazz) {
+int com_kindred_sdl_SDL_SDL_GetSurfaceHeight(Runtime *runtime, JClass *clazz) {
     JniEnv *env = runtime->jnienv;
     s32 pos = 0;
 
@@ -384,34 +384,34 @@ int org_mini_SDL2_SDL2_SDL_GetSurfaceHeight(Runtime *runtime, JClass *clazz) {
 }
 
 static java_native_method method_sdl_table[] = {
-    {"org/mini/SDL2/SDL2", "SDL_Init",                       "(I)I",                       org_mini_SDL2_SDL2_SDL_Init},
-    {"org/mini/SDL2/SDL2", "SDL_CreateWindow",               "([BIIIII)J",                 org_mini_SDL2_SDL2_SDL_CreateWindow},
-    {"org/mini/SDL2/SDL2", "SDL_GetError",                   "()Ljava/lang/String;",       org_mini_SDL2_SDL2_SDL_GetError},
-    {"org/mini/SDL2/SDL2", "SDL_CreateRenderer",             "(JII)J",                     org_mini_SDL2_SDL2_SDL_CreateRenderer},
-    {"org/mini/SDL2/SDL2", "SDL_RWFromConstMem",             "([BI)J",                     org_mini_SDL2_SDL2_SDL_RWFromConstMem},
-    {"org/mini/SDL2/SDL2", "SDL_RWclose",                    "(J)I",                       org_mini_SDL2_SDL2_SDL_RWclose},
-    {"org/mini/SDL2/SDL2", "SDL_CreateTextureFromSurface",   "(JJ)J",                      org_mini_SDL2_SDL2_SDL_CreateTextureFromSurface},
-    {"org/mini/SDL2/SDL2", "SDL_SetTextureColorMod",         "(JIII)I",                    org_mini_SDL2_SDL2_SDL_SetTextureColorMod},
-    {"org/mini/SDL2/SDL2", "SDL_SetTextureBlendMode",        "(JI)I",                      org_mini_SDL2_SDL2_SDL_SetTextureBlendMode},
-    {"org/mini/SDL2/SDL2", "SDL_SetTextureAlphaMod",         "(JI)I",                      org_mini_SDL2_SDL2_SDL_SetTextureAlphaMod},
-    {"org/mini/SDL2/SDL2", "SDL_RenderCopy",                 "(JJ[I[I)I",                  org_mini_SDL2_SDL2_SDL_RenderCopy},
-    {"org/mini/SDL2/SDL2", "SDL_RenderClear",                "(J)I",                       org_mini_SDL2_SDL2_SDL_RenderClear},
-    {"org/mini/SDL2/SDL2", "SDL_RenderPresent",              "(J)V",                       org_mini_SDL2_SDL2_SDL_RenderPresent},
-    {"org/mini/SDL2/SDL2", "SDL_SetRenderDrawColor",         "(JIIII)I",                   org_mini_SDL2_SDL2_SDL_SetRenderDrawColor},
+    {"com/kindred/sdl/SDL", "SDL_Init",                       "(I)I",                       com_kindred_sdl_SDL_SDL_Init},
+    {"com/kindred/sdl/SDL", "SDL_CreateWindow",               "([BIIIII)J",                 com_kindred_sdl_SDL_SDL_CreateWindow},
+    {"com/kindred/sdl/SDL", "SDL_GetError",                   "()Ljava/lang/String;",       com_kindred_sdl_SDL_SDL_GetError},
+    {"com/kindred/sdl/SDL", "SDL_CreateRenderer",             "(JII)J",                     com_kindred_sdl_SDL_SDL_CreateRenderer},
+    {"com/kindred/sdl/SDL", "SDL_RWFromConstMem",             "([BI)J",                     com_kindred_sdl_SDL_SDL_RWFromConstMem},
+    {"com/kindred/sdl/SDL", "SDL_RWclose",                    "(J)I",                       com_kindred_sdl_SDL_SDL_RWclose},
+    {"com/kindred/sdl/SDL", "SDL_CreateTextureFromSurface",   "(JJ)J",                      com_kindred_sdl_SDL_SDL_CreateTextureFromSurface},
+    {"com/kindred/sdl/SDL", "SDL_SetTextureColorMod",         "(JIII)I",                    com_kindred_sdl_SDL_SDL_SetTextureColorMod},
+    {"com/kindred/sdl/SDL", "SDL_SetTextureBlendMode",        "(JI)I",                      com_kindred_sdl_SDL_SDL_SetTextureBlendMode},
+    {"com/kindred/sdl/SDL", "SDL_SetTextureAlphaMod",         "(JI)I",                      com_kindred_sdl_SDL_SDL_SetTextureAlphaMod},
+    {"com/kindred/sdl/SDL", "SDL_RenderCopy",                 "(JJ[I[I)I",                  com_kindred_sdl_SDL_SDL_RenderCopy},
+    {"com/kindred/sdl/SDL", "SDL_RenderClear",                "(J)I",                       com_kindred_sdl_SDL_SDL_RenderClear},
+    {"com/kindred/sdl/SDL", "SDL_RenderPresent",              "(J)V",                       com_kindred_sdl_SDL_SDL_RenderPresent},
+    {"com/kindred/sdl/SDL", "SDL_SetRenderDrawColor",         "(JIIII)I",                   com_kindred_sdl_SDL_SDL_SetRenderDrawColor},
 
-    {"org/mini/SDL2/SDL2", "SDL_CreateEvent",                "()J",                        org_mini_SDL2_SDL2_SDL_CreateEvent},
-    {"org/mini/SDL2/SDL2", "SDL_FreeEvent",                  "(J)V",                       org_mini_SDL2_SDL2_SDL_FreeEvent},
-    {"org/mini/SDL2/SDL2", "SDL_GetKeyEventKeySym",          "(J)I",                       org_mini_SDL2_SDL2_SDL_GetKeyEventKeySym},
-    {"org/mini/SDL2/SDL2", "SDL_GetEventType",               "(J)I",                       org_mini_SDL2_SDL2_SDL_GetEventType},
-    {"org/mini/SDL2/SDL2", "SDL_GetWindowEvent",             "(J)I",                       org_mini_SDL2_SDL2_SDL_GetWindowEvent},
-    {"org/mini/SDL2/SDL2", "SDL_PollEvent",                  "(J)I",                       org_mini_SDL2_SDL2_SDL_PollEvent},
+    {"com/kindred/sdl/SDL", "SDL_CreateEvent",                "()J",                        com_kindred_sdl_SDL_SDL_CreateEvent},
+    {"com/kindred/sdl/SDL", "SDL_FreeEvent",                  "(J)V",                       com_kindred_sdl_SDL_SDL_FreeEvent},
+    {"com/kindred/sdl/SDL", "SDL_GetKeyEventKeySym",          "(J)I",                       com_kindred_sdl_SDL_SDL_GetKeyEventKeySym},
+    {"com/kindred/sdl/SDL", "SDL_GetEventType",               "(J)I",                       com_kindred_sdl_SDL_SDL_GetEventType},
+    {"com/kindred/sdl/SDL", "SDL_GetWindowEvent",             "(J)I",                       com_kindred_sdl_SDL_SDL_GetWindowEvent},
+    {"com/kindred/sdl/SDL", "SDL_PollEvent",                  "(J)I",                       com_kindred_sdl_SDL_SDL_PollEvent},
     
-    {"org/mini/SDL2/SDL2", "SDL_Quit",                       "()V",                        org_mini_SDL2_SDL2_SDL_Quit},
+    {"com/kindred/sdl/SDL", "SDL_Quit",                       "()V",                        com_kindred_sdl_SDL_SDL_Quit},
 
-    {"org/mini/SDL2/SDL2", "SDL_IMG_LoadPNG_RW",             "(J)J",                       org_mini_SDL2_SDL2_SDL_IMG_LoadPNG_RW},
-    {"org/mini/SDL2/SDL2", "SDL_RWFromFile",                 "([B[B)J",                    org_mini_SDL2_SDL2_SDL_RWFromFile},
-    {"org/mini/SDL2/SDL2", "SDL_GetSurfaceWidth",            "(J)I",                       org_mini_SDL2_SDL2_SDL_GetSurfaceWidth},
-    {"org/mini/SDL2/SDL2", "SDL_GetSurfaceHeight",           "(J)I",                       org_mini_SDL2_SDL2_SDL_GetSurfaceHeight},
+    {"com/kindred/sdl/SDL", "SDL_IMG_LoadPNG_RW",             "(J)J",                       com_kindred_sdl_SDL_SDL_IMG_LoadPNG_RW},
+    {"com/kindred/sdl/SDL", "SDL_RWFromFile",                 "([B[B)J",                    com_kindred_sdl_SDL_SDL_RWFromFile},
+    {"com/kindred/sdl/SDL", "SDL_GetSurfaceWidth",            "(J)I",                       com_kindred_sdl_SDL_SDL_GetSurfaceWidth},
+    {"com/kindred/sdl/SDL", "SDL_GetSurfaceHeight",           "(J)I",                       com_kindred_sdl_SDL_SDL_GetSurfaceHeight},
 };
 
 s32 count_SDL2FuncTable() {
