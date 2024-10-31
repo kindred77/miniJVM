@@ -1,4 +1,4 @@
-package com.kindred.mir.constcode;
+package com.kindred.sdl.constcode;
 
 public class SdlSubSystemConst {
     public static final int SDL_INIT_TIMER = 0x00000001;

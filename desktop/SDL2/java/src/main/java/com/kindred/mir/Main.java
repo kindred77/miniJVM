@@ -2,19 +2,16 @@
 package com.kindred.mir;
 
 import java.io.UnsupportedEncodingException;
-import java.io.FileOutputStream;
 
 import com.kindred.mir.libs.MirImage;
 import com.kindred.mir.libs.MirLib;
 
-import com.kindred.mir.constcode.SDLBlendMode;
-import com.kindred.mir.constcode.SDLRendererFlags;
-import com.kindred.mir.constcode.SDLBlendMode;
-import com.kindred.mir.constcode.SDLEventType;
-import com.kindred.mir.constcode.SDLKeyCode;
-import com.kindred.mir.constcode.SDLRendererFlags;
-import com.kindred.mir.constcode.SdlSubSystemConst;
-import com.kindred.mir.constcode.SDLWindowFlags;
+import com.kindred.sdl.constcode.SDLBlendMode;
+import com.kindred.sdl.constcode.SDLRendererFlags;
+import com.kindred.sdl.constcode.SDLEventType;
+import com.kindred.sdl.constcode.SDLKeyCode;
+import com.kindred.sdl.constcode.SdlSubSystemConst;
+import com.kindred.sdl.constcode.SDLWindowFlags;
 
 import static com.kindred.sdl.SDL.SDL_Init;
 import static com.kindred.sdl.SDL.SDL_CreateWindow;
@@ -34,12 +31,10 @@ import static com.kindred.sdl.SDL.SDL_CreateEvent;
 import static com.kindred.sdl.SDL.SDL_GetEventType;
 import static com.kindred.sdl.SDL.SDL_GetWindowEvent;
 import static com.kindred.sdl.SDL.SDL_GetKeyEventKeySym;
-import static com.kindred.sdl.SDL.SDL_FreeEvent;
 import static com.kindred.sdl.SDL.SDL_PollEvent;
 import static com.kindred.sdl.SDL.SDL_Quit;
 import static com.kindred.sdl.SDL.SDL_GetSurfaceWidth;
 import static com.kindred.sdl.SDL.SDL_GetSurfaceHeight;
-import static com.kindred.sdl.SDL.SDL_RWFromFile;
 import static com.kindred.sdl.SDL.SDL_IMG_LoadPNG_RW;
 
 public class Main {
