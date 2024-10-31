@@ -13,7 +13,7 @@ public class MirImageControl extends MirControl{
     private boolean isDrawImage;
     private ControlCommonListener drawImageChanged;
 
-    private int index;
+    protected int index;
     private ControlCommonListener indexChanged;
 
     private boolean isPixelDetect;

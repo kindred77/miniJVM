@@ -26,7 +26,7 @@ public class MirControl implements AutoCloseable {
     protected float blendingRate;
     private MirBlendMode.BlendMode blendMode;
 
-    private Color backColor;
+    protected Color backColor;
     private ControlCommonListener backColorChanged;
 
     private Rectangle borderRectangle;
@@ -50,7 +50,7 @@ public class MirControl implements AutoCloseable {
     private ControlCommonListener enabledChanged;
 
     protected boolean isHasShown;
-    private ControlCommonListener click , doubleClick, beforeDraw , afterDraw , mouseEnter , mouseLeave , shown , beforeShown, disposing;
+    protected ControlCommonListener click , doubleClick, beforeDraw , afterDraw , mouseEnter , mouseLeave , shown , beforeShown, disposing;
     private MouseEventHandler mouseWheel,mouseMove, mouseDown, mouseUp;
     private KeyEventHandler keyDown , keyUp;
     private KeyPressEventHandler keyPress;
@@ -82,10 +82,10 @@ public class MirControl implements AutoCloseable {
     private boolean isSort;
     private ControlCommonListener sortChanged;
 
-    private boolean isVisible;
+    protected boolean isVisible;
     private ControlCommonListener visibleChanged;
 
-    private boolean isDisposed;
+    protected boolean isDisposed;
 
     public MirControl getParent()
     {

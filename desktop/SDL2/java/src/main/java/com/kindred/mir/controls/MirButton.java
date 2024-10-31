@@ -7,12 +7,12 @@ import java.util.Optional;
 
 public class MirButton extends MirImageControl {
 
-    private MirLabel label;
+    protected MirLabel label;
 
-    private int hoverIndex;
+    protected int hoverIndex;
     public ControlCommonListener hoverIndexChanged;
 
-    private int pressedIndex;
+    protected int pressedIndex;
     public ControlCommonListener pressedIndexChanged;
 
     private boolean isCenterText;
@@ -114,6 +114,7 @@ public class MirButton extends MirImageControl {
 
     public MirButton()
     {
+        index = -1;
         hoverIndex = -1;
         pressedIndex = -1;
         sound = SoundList.ButtonB;
