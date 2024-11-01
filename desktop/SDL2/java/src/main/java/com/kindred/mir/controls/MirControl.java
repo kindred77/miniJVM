@@ -729,7 +729,7 @@ public class MirControl implements AutoCloseable {
         sound = SoundList.None;
     }
 
-    public void draw()
+    public final void draw()
     {
         if (isDisposed || !isVisible /*|| Size.Width == 0 || Size.Height == 0*/ || size.getWidth() > Settings.ScreenWidth || size.getHeight() > Settings.ScreenHeight)
             return;
@@ -738,7 +738,7 @@ public class MirControl implements AutoCloseable {
 
         beforeDrawControl();
         drawControl();
-        drawChildControls();
+        drawChildren();
         drawBorder();
         afterDrawControl();
 

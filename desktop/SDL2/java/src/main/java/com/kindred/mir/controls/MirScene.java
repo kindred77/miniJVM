@@ -6,7 +6,7 @@ import com.sun.scenario.Settings;
 
 public abstract class MirScene extends MirControl {
 
-    public static MirScene ActiveScene = new LoginScene();
+    public static MirScene ActiveScene = null;
 
     private static MouseButtons mouseButtons;
     private static long lastClickTime;
@@ -101,7 +101,7 @@ public abstract class MirScene extends MirControl {
         if (!getIsEnabled())
             return;
 
-        if (MouseControl != null && MouseControl != this && MouseControl.Moving)
+        if (MouseControl != null && MouseControl != this && MouseControl.isMoving)
             MouseControl.onMouseMove(e);
         else
             super.onMouseMove(e);
@@ -175,81 +175,6 @@ public abstract class MirScene extends MirControl {
     public void redraw()
     {
         isTextureValid = false;
-    }
-
-    public void processPacket(Packet p)
-    {
-        switch (p.Index)
-        {
-            case (short)ServerPacketIds.Disconnect: // Disconnected
-                Disconnect((S.Disconnect) p);
-                Network.Disconnect();
-                break;
-            case (short)ServerPacketIds.NewItemInfo:
-                NewItemInfo((S.NewItemInfo) p);
-                break;
-            case (short)ServerPacketIds.NewQuestInfo:
-                NewQuestInfo((S.NewQuestInfo)p);
-                break;
-        }
-    }
-
-    private void newItemInfo(S.NewItemInfo info)
-    {
-        GameScene.ItemInfoList.Add(info.Info);
-    }
-
-    private void newQuestInfo(S.NewQuestInfo info)
-    {
-        GameScene.QuestInfoList.Add(info.Info);
-    }
-
-    private static void disconnect(S.Disconnect p)
-    {
-        switch (p.Reason)
-        {
-            case 0:
-                MirMessageBox.Show("连接关闭: 服务器关闭.", true);
-                break;
-            case 1:
-                MirMessageBox.Show("连接关闭: 重复登录.", true);
-                break;
-            case 2:
-                MirMessageBox.Show("连接关闭: 聊天消息过长.", true);
-                break;
-            case 3:
-                MirMessageBox.Show("连接关闭: 服务器崩溃.", true);
-                break;
-            case 4:
-                MirMessageBox.Show("连接关闭: 被管理员踢出.", true);
-                break;
-            case 5:
-                MirMessageBox.Show("连接关闭: 已达到最大连接数.", true);
-                break;
-            case 6:
-                MirMessageBox.Show("连接关闭: 消息处理异常.", true);
-                break;
-            case 10:
-                MirMessageBox.Show("连接关闭: 已达到最大连接数.", true);
-                break;
-            case 20:
-                MirMessageBox.Show("连接关闭: 失去用户连接.", true);
-                break;
-            case 21:
-                MirMessageBox.Show("连接关闭: 连接超时.", true);
-                break;
-            case 22:
-                MirMessageBox.Show("连接关闭: 用户关闭游戏.", true);
-                break;
-            case 23:
-                MirMessageBox.Show("连接关闭: 用户退出到选择角色.", true);
-                break;
-            default:
-                MirMessageBox.Show("连接关闭: 未知原因.", true);
-                break;
-        }
-
-        GameScene.LogTime = 0;
     }
 
     public abstract void process();

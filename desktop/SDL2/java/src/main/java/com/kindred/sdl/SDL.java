@@ -10,7 +10,7 @@ public class SDL {
 
     public static void loadLib() {
         if (!loaded) {
-            System.setProperty("java.library.path", "./");
+            System.setProperty("java.library.path", "./;C:/mywork/projects/java/miniJVM/binary/win_x64/");
             System.loadLibrary("jni_sdl2");
         }
         loaded = true;
@@ -57,4 +57,5 @@ public class SDL {
     public static native int SDL_GetSurfaceHeight(long surface_id);
     public static native long SDL_RWFromFile(byte[] file_name, byte[] mode);
     public static native long SDL_IMG_LoadPNG_RW(long rwops_id);
+    public static native int SDL_GetWindowPixelFormat(long window_id);
 }

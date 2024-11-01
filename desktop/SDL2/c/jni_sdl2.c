@@ -383,6 +383,24 @@ int com_kindred_sdl_SDL_SDL_GetSurfaceHeight(Runtime *runtime, JClass *clazz) {
     return 0;
 }
 
+int com_kindred_sdl_SDL_SDL_GetWindowPixelFormat(Runtime *runtime, JClass *clazz) {
+    JniEnv *env = runtime->jnienv;
+    s32 pos = 0;
+
+    SDL_Window *window = (__refer) (intptr_t) env->localvar_getLong_2slot(runtime->localvar, pos);
+    pos += 2;
+
+    int ret = SDL_GetWindowPixelFormat(window);
+
+    if(!ret)
+    {
+        fprintf( "Unable to get pixel form from window! SDL Error: %s\n", SDL_GetError() );
+    }
+    env->push_int(runtime->stack, ret);
+
+    return 0;
+}
+
 static java_native_method method_sdl_table[] = {
     {"com/kindred/sdl/SDL", "SDL_Init",                       "(I)I",                       com_kindred_sdl_SDL_SDL_Init},
     {"com/kindred/sdl/SDL", "SDL_CreateWindow",               "([BIIIII)J",                 com_kindred_sdl_SDL_SDL_CreateWindow},
@@ -412,6 +430,7 @@ static java_native_method method_sdl_table[] = {
     {"com/kindred/sdl/SDL", "SDL_RWFromFile",                 "([B[B)J",                    com_kindred_sdl_SDL_SDL_RWFromFile},
     {"com/kindred/sdl/SDL", "SDL_GetSurfaceWidth",            "(J)I",                       com_kindred_sdl_SDL_SDL_GetSurfaceWidth},
     {"com/kindred/sdl/SDL", "SDL_GetSurfaceHeight",           "(J)I",                       com_kindred_sdl_SDL_SDL_GetSurfaceHeight},
+    {"com/kindred/sdl/SDL", "SDL_GetWindowPixelFormat",       "(J)I",                       com_kindred_sdl_SDL_SDL_GetWindowPixelFormat},
 };
 
 s32 count_SDL2FuncTable() {
