@@ -10,7 +10,7 @@ public class SDL {
 
     public static void loadLib() {
         if (!loaded) {
-            System.setProperty("java.library.path", "./;C:/mywork/projects/java/miniJVM/binary/win_x64/");
+            System.setProperty("java.library.path", "./");
             System.loadLibrary("jni_sdl2");
         }
         loaded = true;
