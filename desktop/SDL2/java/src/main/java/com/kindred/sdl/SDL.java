@@ -55,9 +55,21 @@ public class SDL {
 
     public static native int SDL_GetSurfaceWidth(long surface_id);
     public static native int SDL_GetSurfaceHeight(long surface_id);
+    public static native int SDL_GetSurfacePitch(long surface_id);
     public static native long SDL_RWFromFile(byte[] file_name, byte[] mode);
     public static native long SDL_IMG_LoadPNG_RW(long rwops_id);
     public static native int SDL_GetWindowPixelFormat(long window_id);
     public static native int SDL_GetSurfacePixelFormat(long surface_id);
     public static native long SDL_ConvertSurfaceFormat(long surface_id, int pixel_format, int flags);
+    //public static native byte[] SDL_GetSurfacePixelData(long surface_id);
+    public static native int SDL_LockSurface(long surface_id);
+    public static native void SDL_UnlockSurface(long surface_id);
+    public static native int Mir_SurfaceToGray(long surface_id);
+    public static native int Mir_SurfaceBlackEffect(long surface_id);
+    public static native int Mir_SurfaceInverse(long surface_id);
+    public static native int Mir_SurfaceAlpha(long surface_id, float alpha);
+    public static native int Mir_SurfaceBlendNormal(long dst_surface_id, long src_surface_id, int x, int y, float alpha);
+    public static native int Mir_SurfaceBlendNormalTransparent(long dst_surface_id, long src_surface_id, int x, int y, float alpha, int r, int g, int b);
+    public static native int Mir_SurfaceBlendAdd(long dst_surface_id, long src_surface_id, int x, int y, float alpha);
+    public static native int Mir_SurfaceBlendAddTransparent(long dst_surface_id, long src_surface_id, int x, int y, float alpha, int r, int g, int b);
 }
