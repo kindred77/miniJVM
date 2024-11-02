@@ -14,7 +14,7 @@
  *
  * Support: https://github.com/jootnet/mir2.core
  */
-package com.github.jootnet.mir2.core;
+package com.kindred.mir.engine;
 
 /**
  * 热血传奇图片数据<br>
@@ -30,8 +30,9 @@ public final class Texture implements Cloneable {
     /**
      * 空图片
      */
-    public static final Texture EMPTY = new Texture(new byte[] { SDK.palletes[EMPTY_COLOR_INDEX][1],
-            SDK.palletes[EMPTY_COLOR_INDEX][2], SDK.palletes[EMPTY_COLOR_INDEX][3] }, 1, 1);
+    //public static final Texture EMPTY = new Texture(new byte[] { SDK.palletes[EMPTY_COLOR_INDEX][1],
+    //        SDK.palletes[EMPTY_COLOR_INDEX][2], SDK.palletes[EMPTY_COLOR_INDEX][3] }, 1, 1);
+    public static final Texture EMPTY = new Texture(null, 0, 0);
 
     private byte[] pixels;
     private int width;

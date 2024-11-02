@@ -2,6 +2,7 @@ package com.kindred.mir.controls;
 
 import com.kindred.mir.constcode.MirBlendMode;
 import com.kindred.mir.controls.listener.ControlCommonListener;
+import com.kindred.mir.engine.Texture;
 import com.kindred.mir.util.*;
 
 import java.util.ArrayList;
@@ -51,9 +52,9 @@ public class MirControl implements AutoCloseable {
 
     protected boolean isHasShown;
     protected ControlCommonListener click , doubleClick, beforeDraw , afterDraw , mouseEnter , mouseLeave , shown , beforeShown, disposing;
-    private MouseEventHandler mouseWheel,mouseMove, mouseDown, mouseUp;
-    private KeyEventHandler keyDown , keyUp;
-    private KeyPressEventHandler keyPress;
+    //private MouseEventHandler mouseWheel,mouseMove, mouseDown, mouseUp;
+    //private KeyEventHandler keyDown , keyUp;
+    //private KeyPressEventHandler keyPress;
 
     protected Color foreColor;
     private ControlCommonListener foreColorChanged;
@@ -68,7 +69,7 @@ public class MirControl implements AutoCloseable {
     private boolean isMovable;
     private Point movePoint;
     private ControlCommonListener movableChanged;
-    private MouseEventHandler onMoving;
+    //private MouseEventHandler onMoving;
 
     protected boolean isNotControl;
     private ControlCommonListener notControlChanged;
@@ -309,27 +310,27 @@ public class MirControl implements AutoCloseable {
 
     protected void createTexture()
     {
-        if (controlTexture != null && !controlTexture.Disposed && size != textureSize)
-            controlTexture.Dispose();
-
-        if (controlTexture == null || controlTexture.Disposed)
-        {
-            DXManager.ControlList.Add(this);
-            controlTexture = new Texture(DXManager.Device, size.getWidth(), size.getHeight(), 1, Usage.RenderTarget, Format.A8R8G8B8, Pool.Default);
-            controlTexture.Disposing += ControlTexture_Disposing;
-            textureSize = size;
-        }
-
-        Surface oldSurface = DXManager.CurrentSurface;
-        Surface surface = controlTexture.GetSurfaceLevel(0);
-        DXManager.SetSurface(surface);
-        DXManager.Device.Clear(ClearFlags.Target, backColor, 0, 0);
-        DXManager.SetSurface(oldSurface);
-
-        isTextureValid = true;
-        surface.Dispose();
+//        if (controlTexture != null && !controlTexture.Disposed && size != textureSize)
+//            controlTexture.Dispose();
+//
+//        if (controlTexture == null || controlTexture.Disposed)
+//        {
+//            DXManager.ControlList.Add(this);
+//            controlTexture = new Texture(DXManager.Device, size.getWidth(), size.getHeight(), 1, Usage.RenderTarget, Format.A8R8G8B8, Pool.Default);
+//            controlTexture.Disposing += ControlTexture_Disposing;
+//            textureSize = size;
+//        }
+//
+//        Surface oldSurface = DXManager.CurrentSurface;
+//        Surface surface = controlTexture.GetSurfaceLevel(0);
+//        DXManager.SetSurface(surface);
+//        DXManager.Device.Clear(ClearFlags.Target, backColor, 0, 0);
+//        DXManager.SetSurface(oldSurface);
+//
+//        isTextureValid = true;
+//        surface.Dispose();
     }
-    protected void controlTexture_Disposing(object sender, EventArgs e)
+    protected void controlTexture_Disposing()
     {
         controlTexture = null;
         isTextureValid = false;
@@ -339,9 +340,9 @@ public class MirControl implements AutoCloseable {
     }
     private void disposeTexture()
     {
-        if (controlTexture == null || controlTexture.Disposed) return;
-
-        controlTexture.Dispose();
+//        if (controlTexture == null || controlTexture.Disposed) return;
+//
+//        controlTexture.Dispose();
     }
 
     public List<MirControl> getChildren()
@@ -626,9 +627,9 @@ public class MirControl implements AutoCloseable {
             dehighlight();
             deactivate();
         }
-        else if (isMouseOver(CMain.MPoint)) {
-            highlight();
-        }
+        //else if (isMouseOver(CMain.MPoint)) {
+        //    highlight();
+        //}
 
 
         if (children != null)
@@ -642,8 +643,8 @@ public class MirControl implements AutoCloseable {
         if (isHasShown)
             return;
 
-        if (isVisible && isMouseOver(CMain.MPoint))
-            highlight();
+//        if (isVisible && isMouseOver(CMain.MPoint))
+//            highlight();
 
         if (beforeShown != null)
             beforeShown.doAction(this, null);
@@ -665,27 +666,32 @@ public class MirControl implements AutoCloseable {
 
     protected Point Center()
     {
-        return new Point((Settings.ScreenWidth - size.getWidth()) / 2, (Settings.ScreenHeight - size.getHeight()) / 2);
+        //return new Point((Settings.ScreenWidth - size.getWidth()) / 2, (Settings.ScreenHeight - size.getHeight()) / 2);
+        return null;
     }
 
     protected Point Left()
     {
-        return new Point(0, (Settings.ScreenHeight - size.getHeight()) / 2);
+        //return new Point(0, (Settings.ScreenHeight - size.getHeight()) / 2);
+        return null;
     }
 
     protected Point Top()
     {
-        return new Point((Settings.ScreenWidth - size.getWidth()) / 2, 0);
+        //return new Point((Settings.ScreenWidth - size.getWidth()) / 2, 0);
+        return null;
     }
 
     protected Point Right()
     {
-        return new Point(Settings.ScreenWidth - size.getWidth(), (Settings.ScreenHeight - size.getHeight()) / 2);
+        //return new Point(Settings.ScreenWidth - size.getWidth(), (Settings.ScreenHeight - size.getHeight()) / 2);
+        return null;
     }
 
     protected Point Bottom()
     {
-        return new Point((Settings.ScreenWidth - size.getWidth()) / 2, Settings.ScreenHeight - size.getHeight());
+        //return new Point((Settings.ScreenWidth - size.getWidth()) / 2, Settings.ScreenHeight - size.getHeight());
+        return null;
     }
 
     protected Point TopLeft()
@@ -695,17 +701,20 @@ public class MirControl implements AutoCloseable {
 
     protected Point TopRight()
     {
-        return new Point(Settings.ScreenWidth - size.getWidth(), 0);
+        //return new Point(Settings.ScreenWidth - size.getWidth(), 0);
+        return null;
     }
 
     protected Point BottomRight()
     {
-        return new Point(Settings.ScreenWidth - size.getWidth(), Settings.ScreenHeight - size.getHeight());
+        //return new Point(Settings.ScreenWidth - size.getWidth(), Settings.ScreenHeight - size.getHeight());
+        return null;
     }
 
     protected Point BottomLeft()
     {
-        return new Point(0, Settings.ScreenHeight - size.getHeight());
+        //return new Point(0, Settings.ScreenHeight - size.getHeight());
+        return null;
     }
 
     public void bringToFront()
@@ -726,13 +735,13 @@ public class MirControl implements AutoCloseable {
         isEnabled = true;
         foreColor = Color.White;
         isVisible = true;
-        sound = SoundList.None;
+        //sound = SoundList.None;
     }
 
     public final void draw()
     {
-        if (isDisposed || !isVisible /*|| Size.Width == 0 || Size.Height == 0*/ || size.getWidth() > Settings.ScreenWidth || size.getHeight() > Settings.ScreenHeight)
-            return;
+        //if (isDisposed || !isVisible /*|| Size.Width == 0 || Size.Height == 0*/ || size.getWidth() > Settings.ScreenWidth || size.getHeight() > Settings.ScreenHeight)
+        //    return;
 
         onBeforeShown();
 
@@ -742,7 +751,7 @@ public class MirControl implements AutoCloseable {
         drawBorder();
         afterDrawControl();
 
-        cleanTime = CMain.Time + Settings.CleanDelay;
+        //cleanTime = CMain.Time + Settings.CleanDelay;
 
         onShown();
     }
@@ -760,16 +769,16 @@ public class MirControl implements AutoCloseable {
         if (!isTextureValid)
             createTexture();
 
-        if (controlTexture == null || controlTexture.Disposed)
-            return;
+        //if (controlTexture == null || controlTexture.Disposed)
+        //    return;
 
-        float oldOpacity = DXManager.Opacity;
+        //float oldOpacity = DXManager.Opacity;
 
-        DXManager.SetOpacity(opacity);
-        DXManager.Sprite.Draw2D(controlTexture, Point.Empty, 0F, DisplayLocation, Color.White);
-        DXManager.SetOpacity(oldOpacity);
+        //DXManager.SetOpacity(opacity);
+        //DXManager.Sprite.Draw2D(controlTexture, Point.Empty, 0F, DisplayLocation, Color.White);
+        //DXManager.SetOpacity(oldOpacity);
 
-        cleanTime = CMain.Time + Settings.CleanDelay;
+        //cleanTime = CMain.Time + Settings.CleanDelay;
     }
     protected void drawChildren()
     {
@@ -782,8 +791,8 @@ public class MirControl implements AutoCloseable {
     {
         if (!isBorder || borderInfo == null)
             return;
-        DXManager.Sprite.Flush();
-        DXManager.Line.Draw(borderInfo, borderColor);
+        //DXManager.Sprite.Flush();
+        //DXManager.Line.Draw(borderInfo, borderColor);
     }
     protected void afterDrawControl()
     {
@@ -858,183 +867,183 @@ public class MirControl implements AutoCloseable {
         if (mouseLeave != null)
             mouseLeave.doAction(this, null);
     }
-    public void onMouseClick(MouseEventArgs e)
-    {
-        if (!isEnabled)
-            return;
-
-        if (sound != SoundList.None)
-            SoundManager.PlaySound(sound);
-
-        if (click != null)
-            invokeMouseClick(e);
-    }
-    public void onMouseDoubleClick(MouseEventArgs e)
-    {
-        if (!isEnabled)
-            return;
-
-        if (doubleClick != null)
-        {
-            if (sound != SoundList.None)
-                SoundManager.PlaySound(sound);
-            invokeMouseDoubleClick(e);
-        }
-        else
-            onMouseClick(e);
-    }
-    public void invokeMouseClick(EventArgs e)
-    {
-        if (click != null)
-            click.doAction(this, e);
-    }
-    public void invokeMouseDoubleClick(EventArgs e)
-    {
-        doubleClick.invoke(this, e);
-    }
-    public void onMouseMove(MouseEventArgs e)
-    {
-        if (!isEnabled)
-            return;
-
-
-        if (isMoving)
-        {
-            Point tempPoint = CMain.MPoint.subtract(movePoint);
-            Size trueSize=getTrueSize();
-
-            if (parent == null)
-            {
-                if (tempPoint.getY() + trueSize.getHeight() > Settings.ScreenHeight)
-                    tempPoint.setY(Settings.ScreenHeight - trueSize.getHeight() - 1);
-
-                if (tempPoint.getX() + trueSize.getWidth() > Settings.ScreenWidth)
-                    tempPoint.setX(Settings.ScreenWidth - trueSize.getWidth() - 1);
-            }
-            else
-            {
-                Size parentTrueSize=parent.getTrueSize();
-                if (tempPoint.getY() + trueSize.getHeight() > parentTrueSize.getHeight())
-                    tempPoint.setY(parentTrueSize.getHeight() - trueSize.getHeight());
-
-                if (tempPoint.getX() + trueSize.getWidth() > parentTrueSize.getWidth())
-                    tempPoint.setX(parentTrueSize.getWidth() - trueSize.getWidth());
-            }
-
-            if (tempPoint.getX() < 0)
-                tempPoint.setX(0);
-            if (tempPoint.getY() < 0)
-                tempPoint.setY(0);
-
-            setLocation(tempPoint);
-            if (onMoving != null)
-                onMoving.invoke(this, e);
-            return;
-        }
-
-        if (children != null)
-            for (int i = children.size() - 1; i >= 0; i--)
-                if (children.get(i).isMouseOver(CMain.MPoint))
-                {
-                    children.get(i).onMouseMove(e);
-                    return;
-                }
-
-        highlight();
-
-        if (mouseMove != null)
-            mouseMove.invoke(this, e);
-    }
-    public void onMouseDown(MouseEventArgs e)
-    {
-        if (!isEnabled)
-            return;
-
-        activate();
-
-        trySort();
-
-        if (isMovable)
-        {
-            isMoving = true;
-            movePoint = CMain.MPoint.subtract(location);
-        }
-
-        if (mouseDown != null)
-            mouseDown.invoke(this, e);
-    }
-    public void onMouseUp(MouseEventArgs e)
-    {
-        if (!isEnabled)
-            return;
-
-        if (isMoving)
-        {
-            isMoving = false;
-            movePoint = Point.Empty;
-        }
-
-        if (ActiveControl != null) ActiveControl.deactivate();
-
-        if (mouseUp != null)
-            mouseUp.invoke(this, e);
-    }
-    public void onMouseWheel(MouseEventArgs e)
-    {
-        if (!isEnabled)
-            return;
-
-        if (mouseWheel != null)
-            mouseWheel(this, e);
-    }
-    public void onKeyPress(KeyPressEventArgs e)
-    {
-        if (!isEnabled)
-            return;
-
-        if (children != null)
-            for (int i = children.size() - 1; i >= 0; i--)
-                if (e.Handled)
-                    return;
-                else
-                    children.get(i).onKeyPress(e);
-
-        if (keyPress == null)
-            return;
-        keyPress.invoke(this, e);
-    }
-    public void onKeyDown(KeyEventArgs e)
-    {
-        if (!isEnabled)
-            return;
-
-        if (children != null)
-            for (int i = children.size() - 1; i >= 0; i--)
-                if (e.Handled)
-                    return;
-                else
-                    children.get(i).onKeyDown(e);
-
-        if (keyDown == null)
-            return;
-        keyDown.invoke(this, e);
-    }
-    public void onKeyUp(KeyEventArgs e)
-    {
-        if (!isEnabled)
-            return;
-
-        if (children != null)
-            for (int i = children.size() - 1; i >= 0; i--)
-                if (e.Handled)
-                    return;
-                else
-                    children.get(i).onKeyUp(e);
-
-        if (keyUp == null)
-            return;
-        keyUp.invoke(this, e);
-    }
+//    public void onMouseClick(MouseEventArgs e)
+//    {
+//        if (!isEnabled)
+//            return;
+//
+//        if (sound != SoundList.None)
+//            SoundManager.PlaySound(sound);
+//
+//        if (click != null)
+//            invokeMouseClick(e);
+//    }
+//    public void onMouseDoubleClick(MouseEventArgs e)
+//    {
+//        if (!isEnabled)
+//            return;
+//
+//        if (doubleClick != null)
+//        {
+//            if (sound != SoundList.None)
+//                SoundManager.PlaySound(sound);
+//            invokeMouseDoubleClick(e);
+//        }
+//        else
+//            onMouseClick(e);
+//    }
+//    public void invokeMouseClick(EventArgs e)
+//    {
+//        if (click != null)
+//            click.doAction(this, e);
+//    }
+//    public void invokeMouseDoubleClick(EventArgs e)
+//    {
+//        doubleClick.invoke(this, e);
+//    }
+//    public void onMouseMove(MouseEventArgs e)
+//    {
+//        if (!isEnabled)
+//            return;
+//
+//
+//        if (isMoving)
+//        {
+//            Point tempPoint = CMain.MPoint.subtract(movePoint);
+//            Size trueSize=getTrueSize();
+//
+//            if (parent == null)
+//            {
+//                if (tempPoint.getY() + trueSize.getHeight() > Settings.ScreenHeight)
+//                    tempPoint.setY(Settings.ScreenHeight - trueSize.getHeight() - 1);
+//
+//                if (tempPoint.getX() + trueSize.getWidth() > Settings.ScreenWidth)
+//                    tempPoint.setX(Settings.ScreenWidth - trueSize.getWidth() - 1);
+//            }
+//            else
+//            {
+//                Size parentTrueSize=parent.getTrueSize();
+//                if (tempPoint.getY() + trueSize.getHeight() > parentTrueSize.getHeight())
+//                    tempPoint.setY(parentTrueSize.getHeight() - trueSize.getHeight());
+//
+//                if (tempPoint.getX() + trueSize.getWidth() > parentTrueSize.getWidth())
+//                    tempPoint.setX(parentTrueSize.getWidth() - trueSize.getWidth());
+//            }
+//
+//            if (tempPoint.getX() < 0)
+//                tempPoint.setX(0);
+//            if (tempPoint.getY() < 0)
+//                tempPoint.setY(0);
+//
+//            setLocation(tempPoint);
+//            if (onMoving != null)
+//                onMoving.invoke(this, e);
+//            return;
+//        }
+//
+//        if (children != null)
+//            for (int i = children.size() - 1; i >= 0; i--)
+//                if (children.get(i).isMouseOver(CMain.MPoint))
+//                {
+//                    children.get(i).onMouseMove(e);
+//                    return;
+//                }
+//
+//        highlight();
+//
+//        if (mouseMove != null)
+//            mouseMove.invoke(this, e);
+//    }
+//    public void onMouseDown(MouseEventArgs e)
+//    {
+//        if (!isEnabled)
+//            return;
+//
+//        activate();
+//
+//        trySort();
+//
+//        if (isMovable)
+//        {
+//            isMoving = true;
+//            movePoint = CMain.MPoint.subtract(location);
+//        }
+//
+//        if (mouseDown != null)
+//            mouseDown.invoke(this, e);
+//    }
+//    public void onMouseUp(MouseEventArgs e)
+//    {
+//        if (!isEnabled)
+//            return;
+//
+//        if (isMoving)
+//        {
+//            isMoving = false;
+//            movePoint = Point.Empty;
+//        }
+//
+//        if (ActiveControl != null) ActiveControl.deactivate();
+//
+//        if (mouseUp != null)
+//            mouseUp.invoke(this, e);
+//    }
+//    public void onMouseWheel(MouseEventArgs e)
+//    {
+//        if (!isEnabled)
+//            return;
+//
+//        if (mouseWheel != null)
+//            mouseWheel(this, e);
+//    }
+//    public void onKeyPress(KeyPressEventArgs e)
+//    {
+//        if (!isEnabled)
+//            return;
+//
+//        if (children != null)
+//            for (int i = children.size() - 1; i >= 0; i--)
+//                if (e.Handled)
+//                    return;
+//                else
+//                    children.get(i).onKeyPress(e);
+//
+//        if (keyPress == null)
+//            return;
+//        keyPress.invoke(this, e);
+//    }
+//    public void onKeyDown(KeyEventArgs e)
+//    {
+//        if (!isEnabled)
+//            return;
+//
+//        if (children != null)
+//            for (int i = children.size() - 1; i >= 0; i--)
+//                if (e.Handled)
+//                    return;
+//                else
+//                    children.get(i).onKeyDown(e);
+//
+//        if (keyDown == null)
+//            return;
+//        keyDown.invoke(this, e);
+//    }
+//    public void onKeyUp(KeyEventArgs e)
+//    {
+//        if (!isEnabled)
+//            return;
+//
+//        if (children != null)
+//            for (int i = children.size() - 1; i >= 0; i--)
+//                if (e.Handled)
+//                    return;
+//                else
+//                    children.get(i).onKeyUp(e);
+//
+//        if (keyUp == null)
+//            return;
+//        keyUp.invoke(this, e);
+//    }
 
     public void redraw()
     {
@@ -1074,8 +1083,8 @@ public class MirControl implements AutoCloseable {
             borderColor = Color.Empty;
 
             isDrawControlTexture = false;
-            if (controlTexture != null && !controlTexture.isDisposed)
-                controlTexture.dispose();
+            //if (controlTexture != null && !controlTexture.isDisposed)
+            //    controlTexture.dispose();
             controlTexture = null;
             isTextureValid = false;
 
@@ -1106,14 +1115,14 @@ public class MirControl implements AutoCloseable {
             doubleClick = null;
             mouseEnter = null;
             mouseLeave = null;
-            mouseMove = null;
-            mouseDown = null;
-            mouseUp = null;
-            mouseWheel = null;
-
-            keyPress = null;
-            keyUp = null;
-            keyDown = null;
+//            mouseMove = null;
+//            mouseDown = null;
+//            mouseUp = null;
+//            mouseWheel = null;
+//
+//            keyPress = null;
+//            keyUp = null;
+//            keyDown = null;
 
             foreColorChanged = null;
             foreColor = Color.Empty;
@@ -1127,7 +1136,7 @@ public class MirControl implements AutoCloseable {
             movableChanged = null;
             movePoint = Point.Empty;
             isMoving = false;
-            onMoving = null;
+            //onMoving = null;
             isMovable = false;
 
             notControlChanged = null;

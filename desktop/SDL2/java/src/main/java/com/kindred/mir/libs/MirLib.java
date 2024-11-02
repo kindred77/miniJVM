@@ -1,6 +1,9 @@
 package com.kindred.mir.libs;
 
 import com.kindred.mir.util.MyRandomAccessFile;
+import com.kindred.mir.util.Point;
+import com.kindred.mir.util.Size;
+
 import java.io.File;
 
 public class MirLib {
@@ -126,5 +129,20 @@ public class MirLib {
     public String GetFilName()
     {
         return file_name;
+    }
+
+    public Point getOffset(int index)
+    {
+        return null;
+    }
+
+    public Size getTrueSize(int index)
+    {
+        return null;
+    }
+
+    public boolean visiblePixel(int index, Point pt, boolean b)
+    {
+        return false;
     }
 }

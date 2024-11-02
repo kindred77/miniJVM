@@ -6,36 +6,9 @@ import java.io.UnsupportedEncodingException;
 import com.kindred.mir.libs.MirImage;
 import com.kindred.mir.libs.MirLib;
 
-import com.kindred.sdl.constcode.SDLBlendMode;
-import com.kindred.sdl.constcode.SDLRendererFlags;
-import com.kindred.sdl.constcode.SDLEventType;
-import com.kindred.sdl.constcode.SDLKeyCode;
-import com.kindred.sdl.constcode.SdlSubSystemConst;
-import com.kindred.sdl.constcode.SDLWindowFlags;
+import com.kindred.sdl.constcode.*;
 
-import static com.kindred.sdl.SDL.SDL_Init;
-import static com.kindred.sdl.SDL.SDL_CreateWindow;
-import static com.kindred.sdl.SDL.SDL_GetError;
-import static com.kindred.sdl.SDL.SDL_CreateRenderer;
-import static com.kindred.sdl.SDL.SDL_RWFromConstMem;
-import static com.kindred.sdl.SDL.SDL_RWclose;
-import static com.kindred.sdl.SDL.SDL_CreateTextureFromSurface;
-import static com.kindred.sdl.SDL.SDL_SetTextureColorMod;
-import static com.kindred.sdl.SDL.SDL_SetTextureBlendMode;
-import static com.kindred.sdl.SDL.SDL_SetTextureAlphaMod;
-import static com.kindred.sdl.SDL.SDL_RenderCopy;
-import static com.kindred.sdl.SDL.SDL_SetRenderDrawColor;
-import static com.kindred.sdl.SDL.SDL_RenderClear;
-import static com.kindred.sdl.SDL.SDL_RenderPresent;
-import static com.kindred.sdl.SDL.SDL_CreateEvent;
-import static com.kindred.sdl.SDL.SDL_GetEventType;
-import static com.kindred.sdl.SDL.SDL_GetWindowEvent;
-import static com.kindred.sdl.SDL.SDL_GetKeyEventKeySym;
-import static com.kindred.sdl.SDL.SDL_PollEvent;
-import static com.kindred.sdl.SDL.SDL_Quit;
-import static com.kindred.sdl.SDL.SDL_GetSurfaceWidth;
-import static com.kindred.sdl.SDL.SDL_GetSurfaceHeight;
-import static com.kindred.sdl.SDL.SDL_IMG_LoadPNG_RW;
+import static com.kindred.sdl.SDL.*;
 
 public class Main {
 
@@ -68,12 +41,15 @@ public class Main {
                 throw new IllegalStateException("Unable to create SDL window: " + SDL_GetError());
             }
 
+            int win_pf = SDL_GetWindowPixelFormat(win_id);
+            System.out.println("----windows---pixelformat: "+ SDL_PixelFormatEnum.toString(win_pf));
+
             long renderer_id = SDL_CreateRenderer(win_id, -1, SDLRendererFlags.SDL_RENDERER_ACCELERATED);
             if (renderer_id == 0) {
                 throw new IllegalStateException("Unable to create SDL renderer: " + SDL_GetError());
             }
 
-            MirLib mir_lib =new MirLib("C:/mywork/projects/cpp/devilutionX/kindred/devilutionX/my_asset/Prguse2_png.Lib");
+            MirLib mir_lib =new MirLib("D:\\mywork\\projects\\cpp\\devilutionX\\my_asset\\Prguse2_png.Lib");
             mir_lib.Initialize();
             
             MirImage img = mir_lib.GetMirImage(542);
@@ -90,7 +66,11 @@ public class Main {
             if (surface_id == 0) {
                 throw new IllegalStateException("Unable to create surce from rwops: " + SDL_GetError());
             }
-            System.out.println("surface width: "+SDL_GetSurfaceWidth(surface_id)+", height: "+SDL_GetSurfaceHeight(surface_id));
+            System.out.println("surface width: "+SDL_GetSurfaceWidth(surface_id)+", height: "+SDL_GetSurfaceHeight(surface_id)+", pixel format: "+SDL_PixelFormatEnum.toString(SDL_GetSurfacePixelFormat(surface_id)));
+            long surface_convert = SDL_ConvertSurfaceFormat(surface_id, win_pf, 0);
+            if (surface_convert == 0) {
+                throw new IllegalStateException("Unable to convert surface from : " + SDL_GetSurfacePixelFormat(surface_id)+" to "+ SDL_PixelFormatEnum.toString(win_pf)+ ", because of : "+ SDL_GetError());
+            }
             SDL_RWclose(rwops_id);
 
             long testTexture_id = SDL_CreateTextureFromSurface(renderer_id, surface_id);

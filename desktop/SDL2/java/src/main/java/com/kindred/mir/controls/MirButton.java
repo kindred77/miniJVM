@@ -72,7 +72,7 @@ public class MirButton extends MirImageControl {
         if (this.isCenterText)
         {
             label.setSize(size);
-            label.setDrawFormat(TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
+            //label.setDrawFormat(TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
         }
         else
             label.setIsAutoSize(true);
@@ -117,7 +117,7 @@ public class MirButton extends MirImageControl {
         index = -1;
         hoverIndex = -1;
         pressedIndex = -1;
-        sound = SoundList.ButtonB;
+        //sound = SoundList.ButtonB;
 
         label = new MirLabel();
         label.setIsNotControl(true);

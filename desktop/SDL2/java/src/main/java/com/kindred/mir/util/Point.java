@@ -95,6 +95,11 @@ public class Point {
         return new Point(pt.getX() - sz.getWidth(), pt.getY() - sz.getHeight());
     }
 
+    public static Point subtract(Point pt, Point pt2)
+    {
+        return new Point(pt.getX() - pt2.getX(), pt.getY() - pt2.getY());
+    }
+
     public static Point ceiling(PointF value)
     {
         return new Point((int)Math.ceil(value.getX()), (int)Math.ceil(value.getY()));

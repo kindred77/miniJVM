@@ -58,4 +58,6 @@ public class SDL {
     public static native long SDL_RWFromFile(byte[] file_name, byte[] mode);
     public static native long SDL_IMG_LoadPNG_RW(long rwops_id);
     public static native int SDL_GetWindowPixelFormat(long window_id);
+    public static native int SDL_GetSurfacePixelFormat(long surface_id);
+    public static native long SDL_ConvertSurfaceFormat(long surface_id, int pixel_format, int flags);
 }

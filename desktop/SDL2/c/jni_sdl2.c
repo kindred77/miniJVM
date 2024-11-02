@@ -383,6 +383,18 @@ int com_kindred_sdl_SDL_SDL_GetSurfaceHeight(Runtime *runtime, JClass *clazz) {
     return 0;
 }
 
+int com_kindred_sdl_SDL_SDL_GetSurfacePixelFormat(Runtime *runtime, JClass *clazz) {
+    JniEnv *env = runtime->jnienv;
+    s32 pos = 0;
+
+    SDL_Surface *surface = (__refer) (intptr_t) env->localvar_getLong_2slot(runtime->localvar, pos);
+    pos += 2;
+
+    env->push_int(runtime->stack, surface->format->format);
+
+    return 0;
+}
+
 int com_kindred_sdl_SDL_SDL_GetWindowPixelFormat(Runtime *runtime, JClass *clazz) {
     JniEnv *env = runtime->jnienv;
     s32 pos = 0;
@@ -394,9 +406,26 @@ int com_kindred_sdl_SDL_SDL_GetWindowPixelFormat(Runtime *runtime, JClass *clazz
 
     if(!ret)
     {
-        fprintf( "Unable to get pixel form from window! SDL Error: %s\n", SDL_GetError() );
+        fprintf(stderr, "Unable to get pixel form from window! SDL Error: %s\n", SDL_GetError() );
     }
     env->push_int(runtime->stack, ret);
+
+    return 0;
+}
+
+int com_kindred_sdl_SDL_SDL_ConvertSurfaceFormat(Runtime *runtime, JClass *clazz) {
+    JniEnv *env = runtime->jnienv;
+    s32 pos = 0;
+
+    SDL_Surface *surface = (__refer) (intptr_t) env->localvar_getLong_2slot(runtime->localvar, pos);
+    pos += 2;
+
+    s32 pixel_format = env->localvar_getInt(runtime->localvar, pos++);
+    s32 flags = env->localvar_getInt(runtime->localvar, pos++);
+
+    SDL_Surface *dst_surface = SDL_ConvertSurfaceFormat(surface, pixel_format, flags);
+
+    env->push_long(runtime->stack, (s64) (intptr_t) dst_surface);
 
     return 0;
 }
@@ -430,7 +459,9 @@ static java_native_method method_sdl_table[] = {
     {"com/kindred/sdl/SDL", "SDL_RWFromFile",                 "([B[B)J",                    com_kindred_sdl_SDL_SDL_RWFromFile},
     {"com/kindred/sdl/SDL", "SDL_GetSurfaceWidth",            "(J)I",                       com_kindred_sdl_SDL_SDL_GetSurfaceWidth},
     {"com/kindred/sdl/SDL", "SDL_GetSurfaceHeight",           "(J)I",                       com_kindred_sdl_SDL_SDL_GetSurfaceHeight},
+    {"com/kindred/sdl/SDL", "SDL_GetSurfacePixelFormat",      "(J)I",                       com_kindred_sdl_SDL_SDL_GetSurfacePixelFormat},
     {"com/kindred/sdl/SDL", "SDL_GetWindowPixelFormat",       "(J)I",                       com_kindred_sdl_SDL_SDL_GetWindowPixelFormat},
+    {"com/kindred/sdl/SDL", "SDL_ConvertSurfaceFormat",       "(JII)J",                     com_kindred_sdl_SDL_SDL_ConvertSurfaceFormat},
 };
 
 s32 count_SDL2FuncTable() {

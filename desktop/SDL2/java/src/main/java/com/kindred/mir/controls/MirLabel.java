@@ -1,6 +1,8 @@
 package com.kindred.mir.controls;
 
 import com.kindred.mir.controls.listener.ControlCommonListener;
+import com.kindred.mir.engine.Font;
+import com.kindred.mir.engine.TextFormatFlags;
 import com.kindred.mir.util.Color;
 import com.kindred.mir.util.Size;
 
@@ -47,11 +49,11 @@ public class MirLabel extends MirControl{
             size = Size.Empty;
         else
         {
-            size = TextRenderer.MeasureText(CMain.Graphics, text, Font);
+            //size = TextRenderer.MeasureText(CMain.Graphics, text, Font);
             //Size = new Size(Size.Width, Size.Height + 5);
 
-            if (OutLine && size != Size.Empty)
-                size = new Size(size.getWidth() + 2, size.getHeight() + 2);
+            //if (OutLine && size != Size.Empty)
+            //    size = new Size(size.getWidth() + 2, size.getHeight() + 2);
         }
     }
 
@@ -180,7 +182,7 @@ public class MirLabel extends MirControl{
         isDrawControlTexture = true;
         drawFormat = TextFormatFlags.WordBreak;
 
-        font = new Font(Settings.FontName, 8F);
+        //font = new Font(Settings.FontName, 8F);
         isOutLine = true;
         outLineColor = Color.Black;
         text = "";
@@ -196,50 +198,50 @@ public class MirLabel extends MirControl{
         if (size.getWidth() == 0 || size.getHeight() == 0)
             return;
 
-        if (controlTexture != null && !controlTexture.Disposed && textureSize != size)
-            controlTexture.Dispose();
-
-        if (controlTexture == null || controlTexture.Disposed)
-        {
-            DXManager.ControlList.Add(this);
-
-            controlTexture = new Texture(DXManager.Device, Size.Width, Size.Height, 1, Usage.None, Format.A8R8G8B8, Pool.Managed);
-            controlTexture.Disposing += ControlTexture_Disposing;
-            textureSize = size;
-        }
-
-        using (GraphicsStream stream = ControlTexture.LockRectangle(0, LockFlags.Discard))
-        using (Bitmap image = new Bitmap(Size.Width, Size.Height, Size.Width * 4, PixelFormat.Format32bppArgb, (IntPtr) stream.InternalDataPointer))
-        {
-            using (Graphics graphics = Graphics.FromImage(image))
-            {
-                graphics.SmoothingMode = SmoothingMode.AntiAlias;
-                graphics.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
-                graphics.CompositingQuality = CompositingQuality.HighQuality;
-                graphics.InterpolationMode = InterpolationMode.NearestNeighbor;
-                graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
-                graphics.TextContrast = 0;
-                graphics.Clear(BackColour);
-
-
-                if (OutLine)
-                {
-                    TextRenderer.DrawText(graphics, Text, Font, new Rectangle(1, 0, Size.Width, Size.Height), OutLineColour, DrawFormat);
-                    TextRenderer.DrawText(graphics, Text, Font, new Rectangle(0, 1, Size.Width, Size.Height), OutLineColour, DrawFormat);
-                    TextRenderer.DrawText(graphics, Text, Font, new Rectangle(2, 1, Size.Width, Size.Height), OutLineColour, DrawFormat);
-                    TextRenderer.DrawText(graphics, Text, Font, new Rectangle(1, 2, Size.Width, Size.Height), OutLineColour, DrawFormat);
-                    TextRenderer.DrawText(graphics, Text, Font, new Rectangle(1, 1, Size.Width, Size.Height), ForeColour, DrawFormat);
-
-                    //LinearGradientBrush brush = new LinearGradientBrush(new Rectangle(0, 0, this.Size.Width, this.Size.Height), Color.FromArgb(239, 243, 239), Color.White, LinearGradientMode.Vertical);
-                    ////graphics.DrawString(Text, Font, brush, 37, 9);
-                    ////graphics.DrawString(this.Text, this.Font, new SolidBrush(Color.Black), 39, 9, StringFormat.GenericDefault);
-                }
-                else
-                    TextRenderer.DrawText(graphics, Text, Font, new Rectangle(1, 0, Size.Width, Size.Height), ForeColour, DrawFormat);
-            }
-        }
-        ControlTexture.UnlockRectangle(0);
-        DXManager.Sprite.Flush();
+//        if (controlTexture != null && !controlTexture.Disposed && textureSize != size)
+//            controlTexture.Dispose();
+//
+//        if (controlTexture == null || controlTexture.Disposed)
+//        {
+//            DXManager.ControlList.Add(this);
+//
+//            controlTexture = new Texture(DXManager.Device, Size.Width, Size.Height, 1, Usage.None, Format.A8R8G8B8, Pool.Managed);
+//            controlTexture.Disposing += ControlTexture_Disposing;
+//            textureSize = size;
+//        }
+//
+//        using (GraphicsStream stream = ControlTexture.LockRectangle(0, LockFlags.Discard))
+//        using (Bitmap image = new Bitmap(Size.Width, Size.Height, Size.Width * 4, PixelFormat.Format32bppArgb, (IntPtr) stream.InternalDataPointer))
+//        {
+//            using (Graphics graphics = Graphics.FromImage(image))
+//            {
+//                graphics.SmoothingMode = SmoothingMode.AntiAlias;
+//                graphics.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
+//                graphics.CompositingQuality = CompositingQuality.HighQuality;
+//                graphics.InterpolationMode = InterpolationMode.NearestNeighbor;
+//                graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+//                graphics.TextContrast = 0;
+//                graphics.Clear(BackColour);
+//
+//
+//                if (OutLine)
+//                {
+//                    TextRenderer.DrawText(graphics, Text, Font, new Rectangle(1, 0, Size.Width, Size.Height), OutLineColour, DrawFormat);
+//                    TextRenderer.DrawText(graphics, Text, Font, new Rectangle(0, 1, Size.Width, Size.Height), OutLineColour, DrawFormat);
+//                    TextRenderer.DrawText(graphics, Text, Font, new Rectangle(2, 1, Size.Width, Size.Height), OutLineColour, DrawFormat);
+//                    TextRenderer.DrawText(graphics, Text, Font, new Rectangle(1, 2, Size.Width, Size.Height), OutLineColour, DrawFormat);
+//                    TextRenderer.DrawText(graphics, Text, Font, new Rectangle(1, 1, Size.Width, Size.Height), ForeColour, DrawFormat);
+//
+//                    //LinearGradientBrush brush = new LinearGradientBrush(new Rectangle(0, 0, this.Size.Width, this.Size.Height), Color.FromArgb(239, 243, 239), Color.White, LinearGradientMode.Vertical);
+//                    ////graphics.DrawString(Text, Font, brush, 37, 9);
+//                    ////graphics.DrawString(this.Text, this.Font, new SolidBrush(Color.Black), 39, 9, StringFormat.GenericDefault);
+//                }
+//                else
+//                    TextRenderer.DrawText(graphics, Text, Font, new Rectangle(1, 0, Size.Width, Size.Height), ForeColour, DrawFormat);
+//            }
+//        }
+//        ControlTexture.UnlockRectangle(0);
+//        DXManager.Sprite.Flush();
         isTextureValid = true;
     }
 
@@ -254,7 +256,7 @@ public class MirLabel extends MirControl{
         isAutoSize = false;
 
         drawFormatChanged = null;
-        drawFormat = 0;
+        //drawFormat = 0;
 
         fontChanged = null;
         font = null;

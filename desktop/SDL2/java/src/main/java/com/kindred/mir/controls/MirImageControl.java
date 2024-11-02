@@ -1,6 +1,7 @@
 package com.kindred.mir.controls;
 
 import com.kindred.mir.controls.listener.ControlCommonListener;
+import com.kindred.mir.libs.MirLib;
 import com.kindred.mir.util.Color;
 import com.kindred.mir.util.Point;
 import com.kindred.mir.util.Size;
@@ -19,10 +20,12 @@ public class MirImageControl extends MirControl{
     private boolean isPixelDetect;
     public ControlCommonListener pixelDetectChanged;
 
+    private MirLib mirLib;
+
     @Override
     public Point getDisplayLocation()
     {
-        return isUseOffSet ? Point.add(super.getDisplayLocation(), Library.GetOffSet(Index)) : super.getDisplayLocation();
+        return isUseOffSet ? Point.add(super.getDisplayLocation(), mirLib.getOffset(index)) : super.getDisplayLocation();
     }
 
     public Point getDisplayLocationWithoutOffSet()
@@ -105,8 +108,8 @@ public class MirImageControl extends MirControl{
     @Override
     public Size getSize()
     {
-        if (Library != null && index >= 0)
-            return Library.GetTrueSize(index);
+        if (mirLib != null && index >= 0)
+            return mirLib.getTrueSize(index);
         return super.getSize();
     }
 
@@ -119,8 +122,8 @@ public class MirImageControl extends MirControl{
     @Override
     public Size getTrueSize()
     {
-        if (Library != null && index >= 0)
-            return Library.GetTrueSize(index);
+        if (mirLib != null && index >= 0)
+            return mirLib.getTrueSize(index);
         return super.getTrueSize();
     }
 
@@ -136,19 +139,19 @@ public class MirImageControl extends MirControl{
     {
         super.drawControl();
 
-        if (isDrawImage && Library != null)
+        if (isDrawImage && mirLib != null)
         {
-            if (isGrayScale) DXManager.SetGrayscale(1F, Color.White);
-            else if (isBlending) Library.DrawBlend(index, DisplayLocation, foreColor, false, blendingRate);
-            else Library.Draw(index, DisplayLocation, foreColor, false, opacity);
-            if (isGrayScale) DXManager.SetNormal(1F, Color.White);
+//            if (isGrayScale) DXManager.SetGrayscale(1F, Color.White);
+//            else if (isBlending) Library.DrawBlend(index, DisplayLocation, foreColor, false, blendingRate);
+//            else Library.Draw(index, DisplayLocation, foreColor, false, opacity);
+//            if (isGrayScale) DXManager.SetNormal(1F, Color.White);
         }
     }
 
     @Override
     public boolean isMouseOver(Point p)
     {
-        return super.isMouseOver(p) && (!isPixelDetect || Library.VisiblePixel(index, Point.subtract(p, DisplayLocation),true) || isMoving);
+        return super.isMouseOver(p) && (!isPixelDetect || mirLib.visiblePixel(index, Point.subtract(p, getDisplayLocation()),true) || isMoving);
     }
 
     @Override
