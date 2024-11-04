@@ -488,22 +488,96 @@ int com_kindred_sdl_SDL_SDL_UnlockSurface(Runtime *runtime, JClass *clazz) {
     return 0;
 }
 
-void surfaceToGray_ABGR8888(Uint32 * pixels, int width, int height, int pitch) {
+int com_kindred_sdl_SDL_SDL_FreeSurface(Runtime *runtime, JClass *clazz) {
+    JniEnv *env = runtime->jnienv;
+    s32 pos = 0;
+
+    SDL_Surface *surface = (__refer) (intptr_t) env->localvar_getLong_2slot(runtime->localvar, pos);
+    pos += 2;
+
+    SDL_FreeSurface(surface);
+
+    return 0;
+}
+
+int com_kindred_sdl_SDL_SDL_CreateTexture(Runtime *runtime, JClass *clazz) {
+    JniEnv *env = runtime->jnienv;
+    s32 pos = 0;
+
+    SDL_Renderer *renderer = (__refer) (intptr_t) env->localvar_getLong_2slot(runtime->localvar, pos);
+    pos += 2;
+    s32 pixel_format = env->localvar_getInt(runtime->localvar, pos++);
+    s32 access_method = env->localvar_getInt(runtime->localvar, pos++);
+    s32 width = env->localvar_getInt(runtime->localvar, pos++);
+    s32 height = env->localvar_getInt(runtime->localvar, pos++);
+
+    SDL_Texture * texture = SDL_CreateTexture(renderer, pixel_format, access_method, width, height);
+    if(!texture)
+    {
+        fprintf(stderr, "Unable to create texture! SDL Error: %s\n", SDL_GetError() );
+    }
+
+    env->push_long(runtime->stack, (s64) (intptr_t) texture);
+    return 0;
+}
+
+int com_kindred_sdl_SDL_SDL_UpdateTexture(Runtime *runtime, JClass *clazz) {
+    JniEnv *env = runtime->jnienv;
+    s32 pos = 0;
+
+    SDL_Texture *texture = (__refer) (intptr_t) env->localvar_getLong_2slot(runtime->localvar, pos);
+    pos += 2;
+    
+    Instance *rect_ref = env->localvar_getRefer(runtime->localvar, pos++);
+    __refer ptr_rect = NULL;
+    if (rect_ref) {
+        ptr_rect = rect_ref->arr_body;
+    }
+
+    SDL_Rect rect;
+
+    if (ptr_rect) {
+        rect.x = ((int*)ptr_rect)[0];
+        rect.y = ((int*)ptr_rect)[1];
+        rect.w = ((int*)ptr_rect)[2];
+        rect.h = ((int*)ptr_rect)[3];
+    }
+
+    Instance *pixel_data_arr = env->localvar_getRefer(runtime->localvar, pos++);
+    c8 *data = NULL;
+    int ret = -1;
+    if (pixel_data_arr) {
+        data = pixel_data_arr->arr_body;
+        s32 pitch = env->localvar_getInt(runtime->localvar, pos++);
+        ret = SDL_UpdateTexture(texture, &rect, data, pitch);
+    }
+    else {
+        fprintf(stderr, "Pixel data is empty, do nothing. \n");
+    }
+    if(ret) {
+        fprintf(stderr, "Unable to update texture! SDL Error: %s\n", SDL_GetError() );
+    }
+    env->push_int(runtime->stack, ret);
+
+    return 0;
+}
+
+void surfaceToGray_ARGB8888(Uint32 * pixels, int width, int height, int pitch) {
     for (int y = 0; y < height; y++) {
         for (int x = 0; x < width; x++) {
             // 计算当前像素在像素数据中的索引
             int index = y * width + x;
             // 获取当前像素的红、绿、蓝颜色通道值
-            Uint8 alpha = (pixels[index] & 0xff000000) >> 24;
-            Uint8 blue = (pixels[index] & 0x000000ff);
-            Uint8 green = (pixels[index] & 0x0000ff00) >> 8;
-            Uint8 red = (pixels[index] & 0x00ff0000) >> 16;
+            Uint8 alpha = pixels[index] >> 24 & 0xFF;
+            Uint8 red = pixels[index] >> 16 & 0xFF;
+            Uint8 green = pixels[index] >> 8 & 0xFF;
+            Uint8 blue = pixels[index] & 0xFF;
 
             red *= 0.299;
             green *= 0.587;
             blue *= 0.114;
 
-            pixels[index] = (alpha << 24) | blue | (green << 8) | (red << 16);
+            pixels[index] = (alpha << 24) | (red << 16) | (green << 8) | blue;
         }
     }
 }
@@ -557,14 +631,12 @@ int com_kindred_sdl_SDL_Mir_SurfaceToGray(Runtime *runtime, JClass *clazz) {
     int pitch = surface->pitch;
     
     if (surface->format->format == SDL_PIXELFORMAT_RGB24) {
-        fprintf(stdout, "----c-----rgb24 \n");
         Uint8 * pixels = ((Uint8*)surface->pixels);
         surfaceToGray_RGB24(pixels, width, height, pitch);
     }
-    else if (surface->format->format == SDL_PIXELFORMAT_ABGR8888) {
-        fprintf(stdout, "----c-----abgr8888 \n");
+    else if (surface->format->format == SDL_PIXELFORMAT_ARGB8888) {
         Uint32 * pixels = ((Uint32*)surface->pixels);
-        surfaceToGray_ABGR8888(pixels, width, height, pitch);
+        surfaceToGray_ARGB8888(pixels, width, height, pitch);
     }
     else {
         fprintf(stderr, "Unable to convert surface, pixel format unsupported! \n");
@@ -579,28 +651,28 @@ int com_kindred_sdl_SDL_Mir_SurfaceToGray(Runtime *runtime, JClass *clazz) {
     return 0;
 }
 
-void surfaceToBlackEffect_ABGR8888(Uint32 * pixels, int width, int height, int pitch) {
+void surfaceBlackEffect_ARGB8888(Uint32 * pixels, int width, int height, int pitch) {
     for (int y = 0; y < height; y++) {
         for (int x = 0; x < width; x++) {
             // 计算当前像素在像素数据中的索引
             int index = y * width + x;
             // 获取当前像素的红、绿、蓝颜色通道值
-            Uint8 alpha = (pixels[index] & 0xff000000) >> 24;
-            Uint8 blue = (pixels[index] & 0x000000ff);
-            Uint8 green = (pixels[index] & 0x0000ff00) >> 8;
-            Uint8 red = (pixels[index] & 0x00ff0000) >> 16;
+            Uint8 alpha = pixels[index] >> 24 & 0xFF;
+            Uint8 red = pixels[index] >> 16 & 0xFF;
+            Uint8 green = pixels[index] >> 8 & 0xFF;
+            Uint8 blue = pixels[index] & 0xFF;
 
             int a4=(int)((double)((red+green+blue)/3*0.6)+0.5);
             red=max(a4,1);
             green=red;
             blue=red;
 
-            pixels[index] = (alpha << 24) | blue | (green << 8) | (red << 16);
+            pixels[index] = (alpha << 24) | (red << 16) | (green << 8) | blue;
         }
     }
 }
 
-void surfaceToBlackEffect_RGB24(Uint8 * pixels, int width, int height, int pitch) {
+void surfaceBlackEffect_RGB24(Uint8 * pixels, int width, int height, int pitch) {
     for (int y = 0; y < height; y++) {
         for (int x = 0; x < width; x++) {
             // 计算当前像素在像素数据中的索引
@@ -651,11 +723,11 @@ int com_kindred_sdl_SDL_Mir_SurfaceBlackEffect(Runtime *runtime, JClass *clazz) 
     
     if (surface->format->format == SDL_PIXELFORMAT_RGB24) {
         Uint8 * pixels = ((Uint8*)surface->pixels);
-        surfaceToBlackEffect_RGB24(pixels, width, height, pitch);
+        surfaceBlackEffect_RGB24(pixels, width, height, pitch);
     }
-    else if (surface->format->format == SDL_PIXELFORMAT_ABGR8888) {
+    else if (surface->format->format == SDL_PIXELFORMAT_ARGB8888) {
         Uint32 * pixels = ((Uint32*)surface->pixels);
-        surfaceToBlackEffect_ABGR8888(pixels, width, height, pitch);
+        surfaceBlackEffect_ARGB8888(pixels, width, height, pitch);
     }
     else {
         fprintf(stderr, "Unable to convert surface, pixel format unsupported! \n");
@@ -670,22 +742,22 @@ int com_kindred_sdl_SDL_Mir_SurfaceBlackEffect(Runtime *runtime, JClass *clazz) 
     return 0;
 }
 
-void surfaceInverse_ABGR8888(Uint32 * pixels, int width, int height, int pitch) {
+void surfaceInverse_ARGB8888(Uint32 * pixels, int width, int height, int pitch) {
     for (int y = 0; y < height; y++) {
         for (int x = 0; x < width; x++) {
             // 计算当前像素在像素数据中的索引
             int index = y * width + x;
             // 获取当前像素的红、绿、蓝颜色通道值
-            Uint8 alpha = (pixels[index] & 0xff000000) >> 24;
-            Uint8 blue = (pixels[index] & 0x000000ff);
-            Uint8 green = (pixels[index] & 0x0000ff00) >> 8;
-            Uint8 red = (pixels[index] & 0x00ff0000) >> 16;
+            Uint8 alpha = pixels[index] >> 24 & 0xFF;
+            Uint8 red = pixels[index] >> 16 & 0xFF;
+            Uint8 green = pixels[index] >> 8 & 0xFF;
+            Uint8 blue = pixels[index] & 0xFF;
 
             red ^= 0xff;
             green ^= 0xff;
             blue ^= 0xff;
 
-            pixels[index] = (alpha << 24) | blue | (green << 8) | (red << 16);
+            pixels[index] = (alpha << 24) | (red << 16) | (green << 8) | blue;
         }
     }
 }
@@ -718,9 +790,9 @@ int com_kindred_sdl_SDL_Mir_SurfaceInverse(Runtime *runtime, JClass *clazz) {
         Uint8 * pixels = ((Uint8*)surface->pixels);
         surfaceInverse_RGB24(pixels, width, height, pitch);
     }
-    else if (surface->format->format == SDL_PIXELFORMAT_ABGR8888) {
+    else if (surface->format->format == SDL_PIXELFORMAT_ARGB8888) {
         Uint32 * pixels = ((Uint32*)surface->pixels);
-        surfaceInverse_ABGR8888(pixels, width, height, pitch);
+        surfaceInverse_ARGB8888(pixels, width, height, pitch);
     }
     else {
         fprintf(stderr, "Unable to convert surface, pixel format unsupported! \n");
@@ -735,20 +807,20 @@ int com_kindred_sdl_SDL_Mir_SurfaceInverse(Runtime *runtime, JClass *clazz) {
     return 0;
 }
 
-void surfaceAlpha_ABGR8888(Uint32 * pixels, float alpha_convert, int width, int height, int pitch) {
+void surfaceAlpha_ARGB8888(Uint32 * pixels, float alpha_convert, int width, int height, int pitch) {
     for (int y = 0; y < height; y++) {
         for (int x = 0; x < width; x++) {
             // 计算当前像素在像素数据中的索引
             int index = y * width + x;
             // 获取当前像素的红、绿、蓝颜色通道值
-            Uint8 alpha = (pixels[index] & 0xff000000) >> 24;
-            Uint8 blue = (pixels[index] & 0x000000ff);
-            Uint8 green = (pixels[index] & 0x0000ff00) >> 8;
-            Uint8 red = (pixels[index] & 0x00ff0000) >> 16;
+            Uint8 alpha = pixels[index] >> 24 & 0xFF;
+            Uint8 red = pixels[index] >> 16 & 0xFF;
+            Uint8 green = pixels[index] >> 8 & 0xFF;
+            Uint8 blue = pixels[index] & 0xFF;
 
             alpha *= alpha_convert;
 
-            pixels[index] = (alpha << 24) | blue | (green << 8) | (red << 16);
+            pixels[index] = (alpha << 24) | (red << 16) | (green << 8) | blue;
         }
     }
 }
@@ -784,9 +856,9 @@ int com_kindred_sdl_SDL_Mir_SurfaceAlpha(Runtime *runtime, JClass *clazz) {
         Uint8 * pixels = ((Uint8*)surface->pixels);
         surfaceAlpha_RGB24(pixels, alpha, width, height, pitch);
     }
-    else if (surface->format->format == SDL_PIXELFORMAT_ABGR8888) {
+    else if (surface->format->format == SDL_PIXELFORMAT_ARGB8888) {
         Uint32 * pixels = ((Uint32*)surface->pixels);
-        surfaceAlpha_ABGR8888(pixels, alpha, width, height, pitch);
+        surfaceAlpha_ARGB8888(pixels, alpha, width, height, pitch);
     }
     else {
         fprintf(stderr, "Unable to convert surface, pixel format unsupported! \n");
@@ -1149,6 +1221,12 @@ static java_native_method method_sdl_table[] = {
     {"com/kindred/sdl/SDL", "SDL_ConvertSurfaceFormat",       "(JII)J",                     com_kindred_sdl_SDL_SDL_ConvertSurfaceFormat},
     {"com/kindred/sdl/SDL", "SDL_LockSurface",                "(J)I",                       com_kindred_sdl_SDL_SDL_LockSurface},
     {"com/kindred/sdl/SDL", "SDL_UnlockSurface",              "(J)V",                       com_kindred_sdl_SDL_SDL_UnlockSurface},
+    {"com/kindred/sdl/SDL", "SDL_FreeSurface",                "(J)V",                       com_kindred_sdl_SDL_SDL_FreeSurface},
+    {"com/kindred/sdl/SDL", "SDL_CreateTexture",              "(JIIII)J",                   com_kindred_sdl_SDL_SDL_CreateTexture},
+    {"com/kindred/sdl/SDL", "SDL_UpdateTexture",              "(J[I[BI)I",                  com_kindred_sdl_SDL_SDL_UpdateTexture},
+    
+    
+    
     {"com/kindred/sdl/SDL", "Mir_SurfaceToGray",              "(J)I",                       com_kindred_sdl_SDL_Mir_SurfaceToGray},
     {"com/kindred/sdl/SDL", "Mir_SurfaceBlackEffect",         "(J)I",                       com_kindred_sdl_SDL_Mir_SurfaceBlackEffect},
     {"com/kindred/sdl/SDL", "Mir_SurfaceInverse",             "(J)I",                       com_kindred_sdl_SDL_Mir_SurfaceInverse},

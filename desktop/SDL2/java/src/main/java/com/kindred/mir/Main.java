@@ -55,28 +55,6 @@ public class Main {
             
             MirImage img = mir_lib.GetMirImage(1205);
             MirImage img2 = mir_lib.GetMirImage(930);
-            //FileOutputStream fos = new FileOutputStream("test.png", false);
-            //fos.write(img.data);
-
-            long rwops_id = SDL_RWFromConstMem(img.data, img.getDataLengthInHeader());
-            long rwops2_id = SDL_RWFromConstMem(img2.data, img2.getDataLengthInHeader());
-            //long rwops_id = SDL_RWFromFile(toCstyleBytes("C:\\mywork\\projects\\java\\miniJVM\\mobile\\java\\ExMir\\src\\main\\resource\\res\\fern.png"), toCstyleBytes("rb"));
-            //long rwops2_id = SDL_RWFromFile(toCstyleBytes("D:\\mywork\\projects\\cpp\\devilutionX\\my_asset\\930.png"), toCstyleBytes("rb"));
-            if (rwops_id == 0) {
-                throw new IllegalStateException("Unable to create rwops from image data: " + SDL_GetError());
-            }
-            if (rwops2_id == 0) {
-                throw new IllegalStateException("Unable to create rwops from image data: " + SDL_GetError());
-            }
-            long surface_id = SDL_IMG_LoadPNG_RW(rwops_id);
-            long surface2_id = SDL_IMG_LoadPNG_RW(rwops2_id);
-            if (surface_id == 0) {
-                throw new IllegalStateException("Unable to create surce from rwops: " + SDL_GetError());
-            }
-            if (surface2_id == 0) {
-                throw new IllegalStateException("Unable to create surce from rwops: " + SDL_GetError());
-            }
-            System.out.println("surface width: "+SDL_GetSurfaceWidth(surface_id)+", height: "+SDL_GetSurfaceHeight(surface_id)+", pixel format: "+SDL_PixelFormatEnum.toString(SDL_GetSurfacePixelFormat(surface_id)));
 
             //convert pixel format
 //            System.out.println("convert to SDL_PIXELFORMAT_RGB24...");
@@ -88,14 +66,14 @@ public class Main {
 
             //--------------start--------do something
             //Texture java_texture=new Texture(SDL_GetSurfaceWidth(surface_rgb24), SDL_GetSurfaceHeight(surface_rgb24));
-            //int ret = Mir_SurfaceToGray(surface_id);
-            //int ret = Mir_SurfaceInverse(surface_id);
-            //int ret = Mir_SurfaceAlpha(surface_id, 0.4f);
-            int ret = Mir_SurfaceBlackEffect(surface_id);
+            //int ret = Mir_SurfaceToGray(img.surface_id);
+            //int ret = Mir_SurfaceInverse(img.surface_id);
+            int ret = Mir_SurfaceAlpha(img.surface_id, 0.4f);
+            //int ret = Mir_SurfaceBlackEffect(img.surface_id);
 
-            long surface2_rgb24 = SDL_ConvertSurfaceFormat(surface2_id, SDL_PixelFormatEnum.SDL_PIXELFORMAT_RGB24, 0);
+            long surface2_rgb24 = SDL_ConvertSurfaceFormat(img2.surface_id, SDL_PixelFormatEnum.SDL_PIXELFORMAT_RGB24, 0);
             if (surface2_rgb24 == 0) {
-                throw new IllegalStateException("Unable to convert surface from : " + SDL_GetSurfacePixelFormat(surface2_id)+" to "+ SDL_PixelFormatEnum.toString(SDL_PixelFormatEnum.SDL_PIXELFORMAT_RGB24)+ ", because of : "+ SDL_GetError());
+                throw new IllegalStateException("Unable to convert surface from : " + SDL_GetSurfacePixelFormat(img2.surface_id)+" to "+ SDL_PixelFormatEnum.toString(SDL_PixelFormatEnum.SDL_PIXELFORMAT_RGB24)+ ", because of : "+ SDL_GetError());
             }
             //int ret = Mir_SurfaceBlendNormal(surface_rgb24, surface2_rgb24, 0, 0, 0.5f);
             //int ret = Mir_SurfaceBlendNormalTransparent(surface_rgb24, surface2_rgb24, 0, 0, 0.5f, 0, 0, 0);
@@ -110,9 +88,8 @@ public class Main {
 //                throw new IllegalStateException("Unable to convert surface from : " + SDL_GetSurfacePixelFormat(surface_id)+" to "+ SDL_PixelFormatEnum.toString(win_pf)+ ", because of : "+ SDL_GetError());
 //            }
 //            System.out.println("after convert2, surface width: "+SDL_GetSurfaceWidth(surface_convert)+", height: "+SDL_GetSurfaceHeight(surface_convert)+", pixel format: "+SDL_PixelFormatEnum.toString(SDL_GetSurfacePixelFormat(surface_convert)));
-            SDL_RWclose(rwops_id);
 
-            long draw_surface = surface_id;
+            long draw_surface = img.surface_id;
             //draw with texture
             long testTexture_id = SDL_CreateTextureFromSurface(renderer_id, draw_surface);
             if (testTexture_id == 0) {

@@ -23,52 +23,23 @@ public class MirLib {
         this.file=new File(file_name);
     }
 
-    private boolean initImageHeader(MirImage image) throws Exception
-    {
-        if (!initialized)
-        {
-            throw new Exception("Lib not initialized.");
-        }
-        if (image==null)
-        {
-            throw new Exception("Image must be constructed.");
-        }
-        image.header=new MirImageHeader();
-        image.header.width=myRAF.readShortLE();
-        image.header.height=myRAF.readShortLE();
-        image.header.x=myRAF.readShortLE();
-        image.header.y=myRAF.readShortLE();
-        image.header.shadowX=myRAF.readShortLE();
-        image.header.shadowY=myRAF.readShortLE();
-        image.header.shadow=myRAF.readByte();
-        image.header.length=myRAF.readIntLE();
-        return true;
-    }
-
     private synchronized boolean initializeImage(int index) throws Exception
     {
         if (images == null || index < 0 || index >= imageCnt)
         {
             throw new Exception("Can not initialize image, mirlib do not initialized or invalid index "+index);
         }
-        if (images[index]==null || !images[index].initialized)
+        if (images[index]==null)
         {
             myRAF.seek(indexList[index]);
-            if (images[index]==null)
+            try
             {
-                images[index]=new MirImage();
+                images[index]=new MirImage(myRAF, index);
             }
-            if (!initImageHeader(images[index]))
+            catch(Exception e)
             {
-                throw new Exception("Image header init failed, mir lib file "+file_name+". image index: "+index);
+                throw new Exception("Can not initialize image, lib name: "+file_name+", index "+index);
             }
-            images[index].data = new byte[images[index].header.length];
-            int read_len = myRAF.read(images[index].data);
-            if(read_len != images[index].data.length)
-            {
-                throw new Exception("Read failed, expected: "+images[index].data.length+", read: "+read_len);
-            }
-            images[index].initialized = true;
         }
         return true;
     }

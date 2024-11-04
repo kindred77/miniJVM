@@ -64,6 +64,10 @@ public class SDL {
     //public static native byte[] SDL_GetSurfacePixelData(long surface_id);
     public static native int SDL_LockSurface(long surface_id);
     public static native void SDL_UnlockSurface(long surface_id);
+    public static native void SDL_FreeSurface(long surface_id);
+    public static native long SDL_CreateTexture(long renderer_id, int pixel_format, int access_method, int width, int height);
+    public static native int SDL_UpdateTexture(long texture_id, int[] rect, byte[] pixel, int pitch);
+
     public static native int Mir_SurfaceToGray(long surface_id);
     public static native int Mir_SurfaceBlackEffect(long surface_id);
     public static native int Mir_SurfaceInverse(long surface_id);
