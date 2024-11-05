@@ -11,7 +11,7 @@ public class SDL {
     public static void loadLib() {
         if (!loaded) {
             System.setProperty("java.library.path", "./");
-            System.loadLibrary("jni_sdl2");
+            System.loadLibrary("jni_mir");
         }
         loaded = true;
     }
@@ -68,12 +68,4 @@ public class SDL {
     public static native long SDL_CreateTexture(long renderer_id, int pixel_format, int access_method, int width, int height);
     public static native int SDL_UpdateTexture(long texture_id, int[] rect, byte[] pixel, int pitch);
 
-    public static native int Mir_SurfaceToGray(long surface_id);
-    public static native int Mir_SurfaceBlackEffect(long surface_id);
-    public static native int Mir_SurfaceInverse(long surface_id);
-    public static native int Mir_SurfaceAlpha(long surface_id, float alpha);
-    public static native int Mir_SurfaceBlendNormal(long dst_surface_id, long src_surface_id, int x, int y, float alpha);
-    public static native int Mir_SurfaceBlendNormalTransparent(long dst_surface_id, long src_surface_id, int x, int y, float alpha, int r, int g, int b);
-    public static native int Mir_SurfaceBlendAdd(long dst_surface_id, long src_surface_id, int x, int y, float alpha);
-    public static native int Mir_SurfaceBlendAddTransparent(long dst_surface_id, long src_surface_id, int x, int y, float alpha, int r, int g, int b);
 }

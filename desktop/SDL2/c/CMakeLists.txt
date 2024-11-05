@@ -10,11 +10,12 @@ include_directories(depends/include/ ../../../minijvm/c/jvm)
 set(SOURCE_FILES
         media.h
         jni_sdl2.c
+        jni_mir.c
         media.c
         )
 #add_executable(test_sdl2 ${SOURCE_FILES})
 
-add_library(jni_sdl2 SHARED ${SOURCE_FILES})
+add_library(jni_mir SHARED ${SOURCE_FILES})
 
 
 #find_package(OpenGL REQUIRED)
@@ -58,13 +59,13 @@ ELSEIF (MINGW)
     endif ()
     message(${SDL2_LIB})
     MARK_AS_ADVANCED(SDL2_LIB)
-    TARGET_LINK_LIBRARIES(jni_sdl2 PUBLIC ${SDL2_LIB} PUBLIC ${SDL2_IMG_LIB}
+    TARGET_LINK_LIBRARIES(jni_mir PUBLIC ${SDL2_LIB} PUBLIC ${SDL2_IMG_LIB}
                 PRIVATE winmm
                 PRIVATE imm32
                 PRIVATE setupapi
                 PRIVATE version)
 
-    #all: TARGET_LINK_LIBRARIES(jni_sdl2 kernel32 user32 gdi32 winmm imm32 ole32 oleaut32 version uuid advapi32 setupapi shell32)
+    #all: TARGET_LINK_LIBRARIES(jni_mir kernel32 user32 gdi32 winmm imm32 ole32 oleaut32 version uuid advapi32 setupapi shell32)
 
     #TARGET_LINK_LIBRARIES(test_sdl2 winmm imm32)
     #TARGET_LINK_LIBRARIES(test_sdl2 ${SDL2_LIB})
@@ -78,7 +79,7 @@ ELSEIF (MINGW)
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
             ${DEPLIBS_SOURCE_PATH}/SDL2.dll
             ${OUTPUT_DIR}/SDL2.dll
-        DEPENDS jni_sdl2
+        DEPENDS jni_mir
         COMMENT "Copying file SDL2.dll to output directory"
     )
     add_custom_target(copy_sdl_dll ALL DEPENDS ${OUTPUT_DIR}/SDL2.dll)
@@ -88,7 +89,7 @@ ELSEIF (MINGW)
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
             ${DEPLIBS_SOURCE_PATH}/SDL2_image.dll
             ${OUTPUT_DIR}/SDL2_image.dll
-        DEPENDS jni_sdl2
+        DEPENDS jni_mir
         COMMENT "Copying file SDL2_image.dll to output directory"
     )
     add_custom_target(copy_sdl_img_dlls ALL DEPENDS ${OUTPUT_DIR}/SDL2_image.dll)

@@ -2,8 +2,8 @@
 // Created by gust on 2018/1/17.
 //
 
-#ifndef JNI_GUI_JNI_SDL2_H
-#define JNI_GUI_JNI_SDL2_H
+#ifndef JNI_GUI_MEDIA_H
+#define JNI_GUI_MEDIA_H
 
 //tag dont delete this line, builder will auto insert here
 
@@ -19,10 +19,14 @@ __refer ptr_SDLFuncTable();
 
 s32 count_SDL2FuncTable();
 
+__refer ptr_MIRFuncTable();
+
+s32 count_MIRFuncTable();
+
 //
 Runtime *getRuntimeCurThread(JniEnv *env);
 
-static void init(){}
+//static void init(){}
 
 struct _GlobeRefer {
     MiniJVM *jvm;

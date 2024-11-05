@@ -7,6 +7,7 @@
 #include "jvm.h"
 #include "media.h"
 
+GlobeRefer refers;
 
 void JNI_OnLoad(MiniJVM *jvm) {
     memset(&refers, 0, sizeof(GlobeRefer));
@@ -16,11 +17,13 @@ void JNI_OnLoad(MiniJVM *jvm) {
 
     refers.runtime_list = env->pairlist_create(10);
     env->native_reg_lib(jvm, ptr_SDLFuncTable(), count_SDL2FuncTable());
+    env->native_reg_lib(jvm, ptr_MIRFuncTable(), count_MIRFuncTable());
 }
 
 void JNI_OnUnload(MiniJVM *jvm) {
     JniEnv *env = jvm->env;
     env->native_remove_lib(jvm, ptr_SDLFuncTable());
+    env->native_remove_lib(jvm, ptr_MIRFuncTable());
 }
 
 Runtime *getRuntimeCurThread(JniEnv *env) {
