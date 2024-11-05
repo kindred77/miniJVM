@@ -260,6 +260,684 @@ int com_kindred_sdl_SDL_Mir_SurfaceBlackEffect(Runtime *runtime, JClass *clazz) 
     return 0;
 }
 
+void surfaceWhiteEffect_ARGB8888(Uint32 * pixels, int width, int height, int pitch) {
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+            // 计算当前像素在像素数据中的索引
+            int index = y * width + x;
+            // 获取当前像素的红、绿、蓝颜色通道值
+            Uint8 alpha = pixels[index] >> 24 & 0xFF;
+            Uint8 red = pixels[index] >> 16 & 0xFF;
+            Uint8 green = pixels[index] >> 8 & 0xFF;
+            Uint8 blue = pixels[index] & 0xFF;
+
+            int a4=(int)((double)((red+green+blue)/3*0.6)+0.5);
+            red=min(a4,255);
+            green=red;
+            blue=red;
+
+            pixels[index] = (alpha << 24) | (red << 16) | (green << 8) | blue;
+        }
+    }
+}
+
+void surfaceWhiteEffect_RGB24(Uint8 * pixels, int width, int height, int pitch) {
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+            // 计算当前像素在像素数据中的索引
+            int index = y * pitch + x * 3;
+
+            // 获取当前像素的红、绿、蓝颜色通道值
+            Uint8 red = pixels[index];
+            Uint8 green = pixels[index + 1];
+            Uint8 blue = pixels[index + 2];
+
+            int a4=(int)((double)((red+green+blue)/3*0.6)+0.5);
+            red=min(a4,255);
+            green=red;
+            blue=red;
+
+            // 将处理后的颜色值重新写回像素数据
+            pixels[index] = red;
+            pixels[index + 1] = green;
+            pixels[index + 2] = blue;
+
+        }
+    }
+}
+
+int com_kindred_sdl_SDL_Mir_SurfaceWhiteEffect(Runtime *runtime, JClass *clazz) {
+    JniEnv *env = runtime->jnienv;
+    s32 pos = 0;
+
+    SDL_Surface *surface = (__refer) (intptr_t) env->localvar_getLong_2slot(runtime->localvar, pos);
+    pos += 2;
+
+    int ret = SDL_LockSurface(surface);
+    if (ret) {
+        fprintf(stderr, "Unable to lock surface! SDL Error: %s\n", SDL_GetError() );
+        env->push_int(runtime->stack, -1);
+        return 0;
+    }
+
+    int width = surface->w;
+    int height = surface->h;
+    int pitch = surface->pitch;
+    
+    if (surface->format->format == SDL_PIXELFORMAT_RGB24) {
+        Uint8 * pixels = ((Uint8*)surface->pixels);
+        surfaceWhiteEffect_RGB24(pixels, width, height, pitch);
+    }
+    else if (surface->format->format == SDL_PIXELFORMAT_ARGB8888) {
+        Uint32 * pixels = ((Uint32*)surface->pixels);
+        surfaceWhiteEffect_ARGB8888(pixels, width, height, pitch);
+    }
+    else {
+        fprintf(stderr, "Unable to convert surface, pixel format unsupported! \n");
+        env->push_int(runtime->stack, -1);
+        return 0;
+    }
+
+    SDL_UnlockSurface(surface);
+
+    env->push_int(runtime->stack, ret);
+
+    return 0;
+}
+
+void surfaceRedEffect_ARGB8888(Uint32 * pixels, int width, int height, int pitch) {
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+            // 计算当前像素在像素数据中的索引
+            int index = y * width + x;
+            // 获取当前像素的红、绿、蓝颜色通道值
+            Uint8 alpha = pixels[index] >> 24 & 0xFF;
+            Uint8 red = pixels[index] >> 16 & 0xFF;
+            Uint8 green = pixels[index] >> 8 & 0xFF;
+            Uint8 blue = pixels[index] & 0xFF;
+
+            int a4=(int)((double)(red+green+blue)/3 + 0.5);
+            red=max(a4,0x20);
+            green=0;
+            blue=0;
+
+            pixels[index] = (alpha << 24) | (red << 16) | (green << 8) | blue;
+        }
+    }
+}
+
+void surfaceRedEffect_RGB24(Uint8 * pixels, int width, int height, int pitch) {
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+            // 计算当前像素在像素数据中的索引
+            int index = y * pitch + x * 3;
+
+            // 获取当前像素的红、绿、蓝颜色通道值
+            Uint8 red = pixels[index];
+            Uint8 green = pixels[index + 1];
+            Uint8 blue = pixels[index + 2];
+
+            int a4=(int)((double)(red+green+blue)/3 + 0.5);
+            red=max(a4,0x20);
+            green=0;
+            blue=0;
+
+            // 将处理后的颜色值重新写回像素数据
+            pixels[index] = red;
+            pixels[index + 1] = green;
+            pixels[index + 2] = blue;
+
+        }
+    }
+}
+
+int com_kindred_sdl_SDL_Mir_SurfaceRedEffect(Runtime *runtime, JClass *clazz) {
+    JniEnv *env = runtime->jnienv;
+    s32 pos = 0;
+
+    SDL_Surface *surface = (__refer) (intptr_t) env->localvar_getLong_2slot(runtime->localvar, pos);
+    pos += 2;
+
+    int ret = SDL_LockSurface(surface);
+    if (ret) {
+        fprintf(stderr, "Unable to lock surface! SDL Error: %s\n", SDL_GetError() );
+        env->push_int(runtime->stack, -1);
+        return 0;
+    }
+
+    int width = surface->w;
+    int height = surface->h;
+    int pitch = surface->pitch;
+    
+    if (surface->format->format == SDL_PIXELFORMAT_RGB24) {
+        Uint8 * pixels = ((Uint8*)surface->pixels);
+        surfaceRedEffect_RGB24(pixels, width, height, pitch);
+    }
+    else if (surface->format->format == SDL_PIXELFORMAT_ARGB8888) {
+        Uint32 * pixels = ((Uint32*)surface->pixels);
+        surfaceRedEffect_ARGB8888(pixels, width, height, pitch);
+    }
+    else {
+        fprintf(stderr, "Unable to convert surface, pixel format unsupported! \n");
+        env->push_int(runtime->stack, -1);
+        return 0;
+    }
+
+    SDL_UnlockSurface(surface);
+
+    env->push_int(runtime->stack, ret);
+
+    return 0;
+}
+
+void surfaceGreenEffect_ARGB8888(Uint32 * pixels, int width, int height, int pitch) {
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+            // 计算当前像素在像素数据中的索引
+            int index = y * width + x;
+            // 获取当前像素的红、绿、蓝颜色通道值
+            Uint8 alpha = pixels[index] >> 24 & 0xFF;
+            Uint8 red = pixels[index] >> 16 & 0xFF;
+            Uint8 green = pixels[index] >> 8 & 0xFF;
+            Uint8 blue = pixels[index] & 0xFF;
+
+            int a4=(int)((double)(red+green+blue)/3 + 0.5);
+            red=0;
+            green=max(a4,0x20);
+            blue=0;
+
+            pixels[index] = (alpha << 24) | (red << 16) | (green << 8) | blue;
+        }
+    }
+}
+
+void surfaceGreenEffect_RGB24(Uint8 * pixels, int width, int height, int pitch) {
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+            // 计算当前像素在像素数据中的索引
+            int index = y * pitch + x * 3;
+
+            // 获取当前像素的红、绿、蓝颜色通道值
+            Uint8 red = pixels[index];
+            Uint8 green = pixels[index + 1];
+            Uint8 blue = pixels[index + 2];
+
+            int a4=(int)((double)(red+green+blue)/3+0.5);
+            red=0;
+            green=max(a4,0x20);
+            blue=0;
+
+            // 将处理后的颜色值重新写回像素数据
+            pixels[index] = red;
+            pixels[index + 1] = green;
+            pixels[index + 2] = blue;
+
+        }
+    }
+}
+
+int com_kindred_sdl_SDL_Mir_SurfaceGreenEffect(Runtime *runtime, JClass *clazz) {
+    JniEnv *env = runtime->jnienv;
+    s32 pos = 0;
+
+    SDL_Surface *surface = (__refer) (intptr_t) env->localvar_getLong_2slot(runtime->localvar, pos);
+    pos += 2;
+
+    int ret = SDL_LockSurface(surface);
+    if (ret) {
+        fprintf(stderr, "Unable to lock surface! SDL Error: %s\n", SDL_GetError() );
+        env->push_int(runtime->stack, -1);
+        return 0;
+    }
+
+    int width = surface->w;
+    int height = surface->h;
+    int pitch = surface->pitch;
+    
+    if (surface->format->format == SDL_PIXELFORMAT_RGB24) {
+        Uint8 * pixels = ((Uint8*)surface->pixels);
+        surfaceGreenEffect_RGB24(pixels, width, height, pitch);
+    }
+    else if (surface->format->format == SDL_PIXELFORMAT_ARGB8888) {
+        Uint32 * pixels = ((Uint32*)surface->pixels);
+        surfaceGreenEffect_ARGB8888(pixels, width, height, pitch);
+    }
+    else {
+        fprintf(stderr, "Unable to convert surface, pixel format unsupported! \n");
+        env->push_int(runtime->stack, -1);
+        return 0;
+    }
+
+    SDL_UnlockSurface(surface);
+
+    env->push_int(runtime->stack, ret);
+
+    return 0;
+}
+
+void surfaceBlueEffect_ARGB8888(Uint32 * pixels, int width, int height, int pitch) {
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+            // 计算当前像素在像素数据中的索引
+            int index = y * width + x;
+            // 获取当前像素的红、绿、蓝颜色通道值
+            Uint8 alpha = pixels[index] >> 24 & 0xFF;
+            Uint8 red = pixels[index] >> 16 & 0xFF;
+            Uint8 green = pixels[index] >> 8 & 0xFF;
+            Uint8 blue = pixels[index] & 0xFF;
+
+            int a4=(int)((double)(red+green+blue)/3 + 0.5);
+            red=0;
+            green=0;
+            blue=max(a4,0x08);
+
+            pixels[index] = (alpha << 24) | (red << 16) | (green << 8) | blue;
+        }
+    }
+}
+
+void surfaceBlueEffect_RGB24(Uint8 * pixels, int width, int height, int pitch) {
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+            // 计算当前像素在像素数据中的索引
+            int index = y * pitch + x * 3;
+
+            // 获取当前像素的红、绿、蓝颜色通道值
+            Uint8 red = pixels[index];
+            Uint8 green = pixels[index + 1];
+            Uint8 blue = pixels[index + 2];
+
+            int a4=(int)((double)(red+green+blue)/3+0.5);
+            red=0;
+            green=0;
+            blue=max(a4,0x08);
+
+            // 将处理后的颜色值重新写回像素数据
+            pixels[index] = red;
+            pixels[index + 1] = green;
+            pixels[index + 2] = blue;
+
+        }
+    }
+}
+
+int com_kindred_sdl_SDL_Mir_SurfaceBlueEffect(Runtime *runtime, JClass *clazz) {
+    JniEnv *env = runtime->jnienv;
+    s32 pos = 0;
+
+    SDL_Surface *surface = (__refer) (intptr_t) env->localvar_getLong_2slot(runtime->localvar, pos);
+    pos += 2;
+
+    int ret = SDL_LockSurface(surface);
+    if (ret) {
+        fprintf(stderr, "Unable to lock surface! SDL Error: %s\n", SDL_GetError() );
+        env->push_int(runtime->stack, -1);
+        return 0;
+    }
+
+    int width = surface->w;
+    int height = surface->h;
+    int pitch = surface->pitch;
+    
+    if (surface->format->format == SDL_PIXELFORMAT_RGB24) {
+        Uint8 * pixels = ((Uint8*)surface->pixels);
+        surfaceBlueEffect_RGB24(pixels, width, height, pitch);
+    }
+    else if (surface->format->format == SDL_PIXELFORMAT_ARGB8888) {
+        Uint32 * pixels = ((Uint32*)surface->pixels);
+        surfaceBlueEffect_ARGB8888(pixels, width, height, pitch);
+    }
+    else {
+        fprintf(stderr, "Unable to convert surface, pixel format unsupported! \n");
+        env->push_int(runtime->stack, -1);
+        return 0;
+    }
+
+    SDL_UnlockSurface(surface);
+
+    env->push_int(runtime->stack, ret);
+
+    return 0;
+}
+
+void surfaceYellowEffect_ARGB8888(Uint32 * pixels, int width, int height, int pitch) {
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+            // 计算当前像素在像素数据中的索引
+            int index = y * width + x;
+            // 获取当前像素的红、绿、蓝颜色通道值
+            Uint8 alpha = pixels[index] >> 24 & 0xFF;
+            Uint8 red = pixels[index] >> 16 & 0xFF;
+            Uint8 green = pixels[index] >> 8 & 0xFF;
+            Uint8 blue = pixels[index] & 0xFF;
+
+            int a4=(int)((double)(red+green+blue)/3 + 0.5);
+            red=a4;
+            green=red;
+            blue=0;
+
+            pixels[index] = (alpha << 24) | (red << 16) | (green << 8) | blue;
+        }
+    }
+}
+
+void surfaceYellowEffect_RGB24(Uint8 * pixels, int width, int height, int pitch) {
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+            // 计算当前像素在像素数据中的索引
+            int index = y * pitch + x * 3;
+
+            // 获取当前像素的红、绿、蓝颜色通道值
+            Uint8 red = pixels[index];
+            Uint8 green = pixels[index + 1];
+            Uint8 blue = pixels[index + 2];
+
+            int a4=(int)((double)(red+green+blue)/3+0.5);
+            red=a4;
+            green=red;
+            blue=0;
+
+            // 将处理后的颜色值重新写回像素数据
+            pixels[index] = red;
+            pixels[index + 1] = green;
+            pixels[index + 2] = blue;
+
+        }
+    }
+}
+
+int com_kindred_sdl_SDL_Mir_SurfaceYellowEffect(Runtime *runtime, JClass *clazz) {
+    JniEnv *env = runtime->jnienv;
+    s32 pos = 0;
+
+    SDL_Surface *surface = (__refer) (intptr_t) env->localvar_getLong_2slot(runtime->localvar, pos);
+    pos += 2;
+
+    int ret = SDL_LockSurface(surface);
+    if (ret) {
+        fprintf(stderr, "Unable to lock surface! SDL Error: %s\n", SDL_GetError() );
+        env->push_int(runtime->stack, -1);
+        return 0;
+    }
+
+    int width = surface->w;
+    int height = surface->h;
+    int pitch = surface->pitch;
+    
+    if (surface->format->format == SDL_PIXELFORMAT_RGB24) {
+        Uint8 * pixels = ((Uint8*)surface->pixels);
+        surfaceYellowEffect_RGB24(pixels, width, height, pitch);
+    }
+    else if (surface->format->format == SDL_PIXELFORMAT_ARGB8888) {
+        Uint32 * pixels = ((Uint32*)surface->pixels);
+        surfaceYellowEffect_ARGB8888(pixels, width, height, pitch);
+    }
+    else {
+        fprintf(stderr, "Unable to convert surface, pixel format unsupported! \n");
+        env->push_int(runtime->stack, -1);
+        return 0;
+    }
+
+    SDL_UnlockSurface(surface);
+
+    env->push_int(runtime->stack, ret);
+
+    return 0;
+}
+
+void surfaceFuchsiaEffect_ARGB8888(Uint32 * pixels, int width, int height, int pitch) {
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+            // 计算当前像素在像素数据中的索引
+            int index = y * width + x;
+            // 获取当前像素的红、绿、蓝颜色通道值
+            Uint8 alpha = pixels[index] >> 24 & 0xFF;
+            Uint8 red = pixels[index] >> 16 & 0xFF;
+            Uint8 green = pixels[index] >> 8 & 0xFF;
+            Uint8 blue = pixels[index] & 0xFF;
+
+            int a4=(int)((double)(red+green+blue)/3 + 0.5);
+            red=a4;
+            //green=green;
+            blue=red;
+
+            pixels[index] = (alpha << 24) | (red << 16) | (green << 8) | blue;
+        }
+    }
+}
+
+void surfaceFuchsiaEffect_RGB24(Uint8 * pixels, int width, int height, int pitch) {
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+            // 计算当前像素在像素数据中的索引
+            int index = y * pitch + x * 3;
+
+            // 获取当前像素的红、绿、蓝颜色通道值
+            Uint8 red = pixels[index];
+            Uint8 green = pixels[index + 1];
+            Uint8 blue = pixels[index + 2];
+
+            int a4=(int)((double)(red+green+blue)/3+0.5);
+            red=a4;
+            //green=green;
+            blue=red;
+
+            // 将处理后的颜色值重新写回像素数据
+            pixels[index] = red;
+            pixels[index + 1] = green;
+            pixels[index + 2] = blue;
+
+        }
+    }
+}
+
+int com_kindred_sdl_SDL_Mir_SurfaceFuchsiaEffect(Runtime *runtime, JClass *clazz) {
+    JniEnv *env = runtime->jnienv;
+    s32 pos = 0;
+
+    SDL_Surface *surface = (__refer) (intptr_t) env->localvar_getLong_2slot(runtime->localvar, pos);
+    pos += 2;
+
+    int ret = SDL_LockSurface(surface);
+    if (ret) {
+        fprintf(stderr, "Unable to lock surface! SDL Error: %s\n", SDL_GetError() );
+        env->push_int(runtime->stack, -1);
+        return 0;
+    }
+
+    int width = surface->w;
+    int height = surface->h;
+    int pitch = surface->pitch;
+    
+    if (surface->format->format == SDL_PIXELFORMAT_RGB24) {
+        Uint8 * pixels = ((Uint8*)surface->pixels);
+        surfaceFuchsiaEffect_RGB24(pixels, width, height, pitch);
+    }
+    else if (surface->format->format == SDL_PIXELFORMAT_ARGB8888) {
+        Uint32 * pixels = ((Uint32*)surface->pixels);
+        surfaceFuchsiaEffect_ARGB8888(pixels, width, height, pitch);
+    }
+    else {
+        fprintf(stderr, "Unable to convert surface, pixel format unsupported! \n");
+        env->push_int(runtime->stack, -1);
+        return 0;
+    }
+
+    SDL_UnlockSurface(surface);
+
+    env->push_int(runtime->stack, ret);
+
+    return 0;
+}
+
+void surfaceBrightEffect_ARGB8888(Uint32 * pixels, int width, int height, int pitch) {
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+            // 计算当前像素在像素数据中的索引
+            int index = y * width + x;
+            // 获取当前像素的红、绿、蓝颜色通道值
+            Uint8 alpha = pixels[index] >> 24 & 0xFF;
+            Uint8 red = pixels[index] >> 16 & 0xFF;
+            Uint8 green = pixels[index] >> 8 & 0xFF;
+            Uint8 blue = pixels[index] & 0xFF;
+
+            red=(Uint8)min((int)((double)(red*1.3)+0.5),255);
+            green=(Uint8)min((int)((double)(green*1.3)+0.5),255);
+            blue=(Uint8)min((int)((double)(blue*1.3)+0.5),255);
+
+            pixels[index] = (alpha << 24) | (red << 16) | (green << 8) | blue;
+        }
+    }
+}
+
+void surfaceBrightEffect_RGB24(Uint8 * pixels, int width, int height, int pitch) {
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+            // 计算当前像素在像素数据中的索引
+            int index = y * pitch + x * 3;
+
+            // 获取当前像素的红、绿、蓝颜色通道值
+            Uint8 red = pixels[index];
+            Uint8 green = pixels[index + 1];
+            Uint8 blue = pixels[index + 2];
+
+            red=(Uint8)min((int)((double)(red*1.3)+0.5),255);
+            green=(Uint8)min((int)((double)(green*1.3)+0.5),255);
+            blue=(Uint8)min((int)((double)(blue*1.3)+0.5),255);
+
+            // 将处理后的颜色值重新写回像素数据
+            pixels[index] = red;
+            pixels[index + 1] = green;
+            pixels[index + 2] = blue;
+
+        }
+    }
+}
+
+int com_kindred_sdl_SDL_Mir_SurfaceBrightEffect(Runtime *runtime, JClass *clazz) {
+    JniEnv *env = runtime->jnienv;
+    s32 pos = 0;
+
+    SDL_Surface *surface = (__refer) (intptr_t) env->localvar_getLong_2slot(runtime->localvar, pos);
+    pos += 2;
+
+    int ret = SDL_LockSurface(surface);
+    if (ret) {
+        fprintf(stderr, "Unable to lock surface! SDL Error: %s\n", SDL_GetError() );
+        env->push_int(runtime->stack, -1);
+        return 0;
+    }
+
+    int width = surface->w;
+    int height = surface->h;
+    int pitch = surface->pitch;
+    
+    if (surface->format->format == SDL_PIXELFORMAT_RGB24) {
+        Uint8 * pixels = ((Uint8*)surface->pixels);
+        surfaceBrightEffect_RGB24(pixels, width, height, pitch);
+    }
+    else if (surface->format->format == SDL_PIXELFORMAT_ARGB8888) {
+        Uint32 * pixels = ((Uint32*)surface->pixels);
+        surfaceBrightEffect_ARGB8888(pixels, width, height, pitch);
+    }
+    else {
+        fprintf(stderr, "Unable to convert surface, pixel format unsupported! \n");
+        env->push_int(runtime->stack, -1);
+        return 0;
+    }
+
+    SDL_UnlockSurface(surface);
+
+    env->push_int(runtime->stack, ret);
+
+    return 0;
+}
+
+void surfaceGrayEffect_ARGB8888(Uint32 * pixels, int width, int height, int pitch) {
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+            // 计算当前像素在像素数据中的索引
+            int index = y * width + x;
+            // 获取当前像素的红、绿、蓝颜色通道值
+            Uint8 alpha = pixels[index] >> 24 & 0xFF;
+            Uint8 red = pixels[index] >> 16 & 0xFF;
+            Uint8 green = pixels[index] >> 8 & 0xFF;
+            Uint8 blue = pixels[index] & 0xFF;
+
+            int a4=(int)((double)(red+green+blue)/3+0.5);
+            red=(Uint8)a4;
+            green=red;
+            blue=red;
+
+            pixels[index] = (alpha << 24) | (red << 16) | (green << 8) | blue;
+        }
+    }
+}
+
+void surfaceGrayEffect_RGB24(Uint8 * pixels, int width, int height, int pitch) {
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+            // 计算当前像素在像素数据中的索引
+            int index = y * pitch + x * 3;
+
+            // 获取当前像素的红、绿、蓝颜色通道值
+            Uint8 red = pixels[index];
+            Uint8 green = pixels[index + 1];
+            Uint8 blue = pixels[index + 2];
+
+            int a4=(int)((double)(red+green+blue)/3+0.5);
+            red=(Uint8)a4;
+            green=red;
+            blue=red;
+
+            // 将处理后的颜色值重新写回像素数据
+            pixels[index] = red;
+            pixels[index + 1] = green;
+            pixels[index + 2] = blue;
+
+        }
+    }
+}
+
+int com_kindred_sdl_SDL_Mir_SurfaceGrayEffect(Runtime *runtime, JClass *clazz) {
+    JniEnv *env = runtime->jnienv;
+    s32 pos = 0;
+
+    SDL_Surface *surface = (__refer) (intptr_t) env->localvar_getLong_2slot(runtime->localvar, pos);
+    pos += 2;
+
+    int ret = SDL_LockSurface(surface);
+    if (ret) {
+        fprintf(stderr, "Unable to lock surface! SDL Error: %s\n", SDL_GetError() );
+        env->push_int(runtime->stack, -1);
+        return 0;
+    }
+
+    int width = surface->w;
+    int height = surface->h;
+    int pitch = surface->pitch;
+    
+    if (surface->format->format == SDL_PIXELFORMAT_RGB24) {
+        Uint8 * pixels = ((Uint8*)surface->pixels);
+        surfaceGrayEffect_RGB24(pixels, width, height, pitch);
+    }
+    else if (surface->format->format == SDL_PIXELFORMAT_ARGB8888) {
+        Uint32 * pixels = ((Uint32*)surface->pixels);
+        surfaceGrayEffect_ARGB8888(pixels, width, height, pitch);
+    }
+    else {
+        fprintf(stderr, "Unable to convert surface, pixel format unsupported! \n");
+        env->push_int(runtime->stack, -1);
+        return 0;
+    }
+
+    SDL_UnlockSurface(surface);
+
+    env->push_int(runtime->stack, ret);
+
+    return 0;
+}
+
 int com_kindred_sdl_SDL_Mir_TextureBlackEffect(Runtime *runtime, JClass *clazz) {
     JniEnv *env = runtime->jnienv;
     s32 pos = 0;
@@ -529,18 +1207,19 @@ int com_kindred_sdl_SDL_Mir_SurfaceBlendNormal(Runtime *runtime, JClass *clazz) 
     psize.i = env->localvar_getInt(runtime->localvar, pos++);
     float alpha = (float)psize.f;
 
-    Uint8 * dst_pixels = ((Uint8*)dst_surface->pixels);
+    Uint32 * dst_pixels = ((Uint32*)dst_surface->pixels);
     int dst_width = dst_surface->w;
     int dst_height = dst_surface->h;
     int dst_pitch = dst_surface->pitch;
 
-    Uint8 * src_pixels = ((Uint8*)src_surface->pixels);
+    Uint32 * src_pixels = ((Uint32*)src_surface->pixels);
     int src_width = src_surface->w;
     int src_height = src_surface->h;
     int src_pitch = src_surface->pitch;
 
     if (x > dst_width || y > dst_height || (x < 0 && -x >= src_width) || (y < 0 && -y >= src_height)) {
         fprintf(stdout, "Do noting. \n");
+        env->push_int(runtime->stack, 0);
         return 0;
     }
 
@@ -551,8 +1230,8 @@ int com_kindred_sdl_SDL_Mir_SurfaceBlendNormal(Runtime *runtime, JClass *clazz) 
         return 0;
     }
     
-    if (dst_surface->format->format == SDL_PIXELFORMAT_RGB24
-        && src_surface->format->format == SDL_PIXELFORMAT_RGB24) {
+    if (dst_surface->format->format == SDL_PIXELFORMAT_ARGB8888
+        && src_surface->format->format == SDL_PIXELFORMAT_ARGB8888) {
         
         int left = x < 0 ? 0 : x;
         int top = y < 0 ? 0 : y;
@@ -566,16 +1245,34 @@ int com_kindred_sdl_SDL_Mir_SurfaceBlendNormal(Runtime *runtime, JClass *clazz) 
             by = dst_height - 1;
         for (int i = top; i < by; ++i) {
             for (int j = left; j < rx; ++j) {
-                int _idx_this = (j + i * dst_width) * 3;
-                int _idx_that = (j - left + tarleft + (i - top + tartop) * src_width) * 3;
-                dst_pixels[_idx_this] = (Uint8) (src_pixels[_idx_that] * alpha);
-                dst_pixels[_idx_this + 1] = (Uint8) (src_pixels[_idx_that + 1] * alpha);
-                dst_pixels[_idx_this + 2] = (Uint8) (src_pixels[_idx_that + 2] * alpha);
+                
+                int _idx_this = (j + i * dst_width);
+                int _idx_that = (j - left + tarleft + (i - top + tartop) * src_width);
+
+                Uint32 d = dst_pixels[_idx_this];
+                Uint32 s = src_pixels[_idx_that];
+                // 提取ARGB分量
+                Uint8 da = (d >> 24) & 0xFF;
+                Uint8 dr = (d >> 16) & 0xFF;
+                Uint8 dg = (d >> 8) & 0xFF;
+                Uint8 db = d & 0xFF;
+
+                Uint8 sa = (s >> 24) & 0xFF;
+                Uint8 sr = (s >> 16) & 0xFF;
+                Uint8 sg = (s >> 8) & 0xFF;
+                Uint8 sb = s & 0xFF;
+
+                Uint8 a = da;
+                Uint8 r = sr * alpha;
+                Uint8 g = sg * alpha;
+                Uint8 b = sb * alpha;
+
+                dst_pixels[_idx_this] = (a << 24) | (r << 16) | (g << 8) | b;
             }
         }
     }
     else {
-        fprintf(stderr, "Unable to convert surface, pixel format unsupported! \n");
+        fprintf(stderr, "Unable to blend surfaces, pixel format unsupported, both must be SDL_PIXELFORMAT_ARGB8888! \n");
         env->push_int(runtime->stack, -1);
         return 0;
     }
@@ -604,18 +1301,19 @@ int com_kindred_sdl_SDL_Mir_SurfaceBlendNormalTransparent(Runtime *runtime, JCla
     s32 g = env->localvar_getInt(runtime->localvar, pos++);
     s32 b = env->localvar_getInt(runtime->localvar, pos++);
 
-    Uint8 * dst_pixels = ((Uint8*)dst_surface->pixels);
+    Uint32 * dst_pixels = ((Uint32*)dst_surface->pixels);
     int dst_width = dst_surface->w;
     int dst_height = dst_surface->h;
     int dst_pitch = dst_surface->pitch;
 
-    Uint8 * src_pixels = ((Uint8*)src_surface->pixels);
+    Uint32 * src_pixels = ((Uint32*)src_surface->pixels);
     int src_width = src_surface->w;
     int src_height = src_surface->h;
     int src_pitch = src_surface->pitch;
 
     if (x > dst_width || y > dst_height || (x < 0 && -x >= src_width) || (y < 0 && -y >= src_height)) {
         fprintf(stdout, "Do noting. \n");
+        env->push_int(runtime->stack, 0);
         return 0;
     }
 
@@ -626,8 +1324,8 @@ int com_kindred_sdl_SDL_Mir_SurfaceBlendNormalTransparent(Runtime *runtime, JCla
         return 0;
     }
     
-    if (dst_surface->format->format == SDL_PIXELFORMAT_RGB24
-        && src_surface->format->format == SDL_PIXELFORMAT_RGB24) {
+    if (dst_surface->format->format == SDL_PIXELFORMAT_ARGB8888
+        && src_surface->format->format == SDL_PIXELFORMAT_ARGB8888) {
         
         int left = x < 0 ? 0 : x;
         int top = y < 0 ? 0 : y;
@@ -641,21 +1339,35 @@ int com_kindred_sdl_SDL_Mir_SurfaceBlendNormalTransparent(Runtime *runtime, JCla
             by = dst_height - 1;
         for (int i = top; i < by; ++i) {
             for (int j = left; j < rx; ++j) {
-                int _idx_this = (j + i * dst_width) * 3;
-                int _idx_that = (j - left + tarleft + (i - top + tartop) * src_width) * 3;
-                Uint8 _r = src_pixels[_idx_that];
-                Uint8 _g = src_pixels[_idx_that + 1];
-                Uint8 _b = src_pixels[_idx_that + 2];
-                if (r != _r || _g != g || _b != b) {
-                    dst_pixels[_idx_this] = (Uint8) (_r * alpha);
-                    dst_pixels[_idx_this + 1] = (Uint8) (_g * alpha);
-                    dst_pixels[_idx_this + 2] = (Uint8) (_b * alpha);
-                }
+
+                int _idx_this = (j + i * dst_width);
+                int _idx_that = (j - left + tarleft + (i - top + tartop) * src_width);
+
+                Uint32 d = dst_pixels[_idx_this];
+                Uint32 s = src_pixels[_idx_that];
+                // 提取ARGB分量
+                Uint8 da = (d >> 24) & 0xFF;
+                // Uint8 dr = (d >> 16) & 0xFF;
+                // Uint8 dg = (d >> 8) & 0xFF;
+                // Uint8 db = d & 0xFF;
+
+                Uint8 sa = (s >> 24) & 0xFF;
+                Uint8 sr = (s >> 16) & 0xFF;
+                Uint8 sg = (s >> 8) & 0xFF;
+                Uint8 sb = s & 0xFF;
+
+                if (r == sr && g == sg && b == sb || !sa) continue;
+
+                //依然用dst的alpha值
+                sr *= alpha;
+                sg *= alpha;
+                sb *= alpha;
+                dst_pixels[_idx_this] = (da << 24) | (sr << 16) | (sg << 8) | sb;
             }
         }
     }
     else {
-        fprintf(stderr, "Unable to convert surface, pixel format unsupported! \n");
+        fprintf(stderr, "Unable to blend surface, pixel format unsupported, both must be SDL_PIXELFORMAT_ARGB8888! \n");
         env->push_int(runtime->stack, -1);
         return 0;
     }
@@ -681,18 +1393,19 @@ int com_kindred_sdl_SDL_Mir_SurfaceBlendAdd(Runtime *runtime, JClass *clazz) {
     psize.i = env->localvar_getInt(runtime->localvar, pos++);
     float alpha = (float)psize.f;
 
-    Uint8 * dst_pixels = ((Uint8*)dst_surface->pixels);
+    Uint32 * dst_pixels = ((Uint32*)dst_surface->pixels);
     int dst_width = dst_surface->w;
     int dst_height = dst_surface->h;
     int dst_pitch = dst_surface->pitch;
 
-    Uint8 * src_pixels = ((Uint8*)src_surface->pixels);
+    Uint32 * src_pixels = ((Uint32*)src_surface->pixels);
     int src_width = src_surface->w;
     int src_height = src_surface->h;
     int src_pitch = src_surface->pitch;
 
     if (x > dst_width || y > dst_height || (x < 0 && -x >= src_width) || (y < 0 && -y >= src_height)) {
         fprintf(stdout, "Do noting. \n");
+        env->push_int(runtime->stack, 0);
         return 0;
     }
 
@@ -703,8 +1416,8 @@ int com_kindred_sdl_SDL_Mir_SurfaceBlendAdd(Runtime *runtime, JClass *clazz) {
         return 0;
     }
     
-    if (dst_surface->format->format == SDL_PIXELFORMAT_RGB24
-        && src_surface->format->format == SDL_PIXELFORMAT_RGB24) {
+    if (dst_surface->format->format == SDL_PIXELFORMAT_ARGB8888
+        && src_surface->format->format == SDL_PIXELFORMAT_ARGB8888) {
         
         int left = x < 0 ? 0 : x;
         int top = y < 0 ? 0 : y;
@@ -718,22 +1431,36 @@ int com_kindred_sdl_SDL_Mir_SurfaceBlendAdd(Runtime *runtime, JClass *clazz) {
             by = dst_height - 1;
         for (int i = top; i < by; ++i) {
             for (int j = left; j < rx; ++j) {
-                int _idx_this = (j + i * dst_width) * 3;
-                int _idx_that = (j - left + tarleft + (i - top + tartop) * src_width) * 3;
-                float Rd = (src_pixels[_idx_that] & 0xff) * alpha;
-                float Gd = (src_pixels[_idx_that + 1] & 0xff) * alpha;
-                float Bd = (src_pixels[_idx_that + 2] & 0xff) * alpha;
-                int Rs = dst_pixels[_idx_this] & 0xff;
-                int Gs = dst_pixels[_idx_this + 1] & 0xff;
-                int Bs = dst_pixels[_idx_this + 2] & 0xff;
-                dst_pixels[_idx_this] = (Uint8) min(255, Rd*Rd/255+Rs);
-                dst_pixels[_idx_this + 1] = (Uint8) min(255, Gd*Gd/255+Gs);
-                dst_pixels[_idx_this + 2] = (Uint8) min(255, Bd*Bd/255+Bs);
+
+                int _idx_this = (j + i * dst_width);
+                int _idx_that = (j - left + tarleft + (i - top + tartop) * src_width);
+
+                Uint32 d = dst_pixels[_idx_this];
+                Uint32 s = src_pixels[_idx_that];
+                // 提取ARGB分量
+                Uint8 da = (d >> 24) & 0xFF;
+                Uint8 dr = (d >> 16) & 0xFF;
+                Uint8 dg = (d >> 8) & 0xFF;
+                Uint8 db = d & 0xFF;
+
+                Uint8 sa = (s >> 24) & 0xFF;
+                Uint8 sr = (s >> 16) & 0xFF;
+                Uint8 sg = (s >> 8) & 0xFF;
+                Uint8 sb = s & 0xFF;
+
+                float fr = sr * alpha;
+                float fg = sg * alpha;
+                float fb = sb * alpha;
+
+                dst_pixels[_idx_this] = (da << 24) | ((Uint8) min(255, fr*fr/255+dr) << 16) 
+                    | ((Uint8) min(255, fg*fg/255+dg) << 8) 
+                    | (Uint8) min(255, fb*fb/255+db);
+
             }
         }
     }
     else {
-        fprintf(stderr, "Unable to convert surface, pixel format unsupported! \n");
+        fprintf(stderr, "Unable to blend surface, pixel format unsupported, both must be SDL_PIXELFORMAT_ARGB8888! \n");
         env->push_int(runtime->stack, -1);
         return 0;
     }
@@ -762,18 +1489,19 @@ int com_kindred_sdl_SDL_Mir_SurfaceBlendAddTransparent(Runtime *runtime, JClass 
     s32 g = env->localvar_getInt(runtime->localvar, pos++);
     s32 b = env->localvar_getInt(runtime->localvar, pos++);
 
-    Uint8 * dst_pixels = ((Uint8*)dst_surface->pixels);
+    Uint32 * dst_pixels = ((Uint32*)dst_surface->pixels);
     int dst_width = dst_surface->w;
     int dst_height = dst_surface->h;
     int dst_pitch = dst_surface->pitch;
 
-    Uint8 * src_pixels = ((Uint8*)src_surface->pixels);
+    Uint32 * src_pixels = ((Uint32*)src_surface->pixels);
     int src_width = src_surface->w;
     int src_height = src_surface->h;
     int src_pitch = src_surface->pitch;
 
     if (x > dst_width || y > dst_height || (x < 0 && -x >= src_width) || (y < 0 && -y >= src_height)) {
         fprintf(stdout, "Do noting. \n");
+        env->push_int(runtime->stack, 0);
         return 0;
     }
 
@@ -784,8 +1512,8 @@ int com_kindred_sdl_SDL_Mir_SurfaceBlendAddTransparent(Runtime *runtime, JClass 
         return 0;
     }
     
-    if (dst_surface->format->format == SDL_PIXELFORMAT_RGB24
-        && src_surface->format->format == SDL_PIXELFORMAT_RGB24) {
+    if (dst_surface->format->format == SDL_PIXELFORMAT_ARGB8888
+        && src_surface->format->format == SDL_PIXELFORMAT_ARGB8888) {
         
         int left = x < 0 ? 0 : x;
         int top = y < 0 ? 0 : y;
@@ -799,23 +1527,37 @@ int com_kindred_sdl_SDL_Mir_SurfaceBlendAddTransparent(Runtime *runtime, JClass 
             by = dst_height - 1;
         for (int i = top; i < by; ++i) {
             for (int j = left; j < rx; ++j) {
-                int _idx_this = (j + i * dst_width) * 3;
-                int _idx_that = (j - left + tarleft + (i - top + tartop) * src_width) * 3;
-                if(src_pixels[_idx_that] == r && src_pixels[_idx_that + 1] == g && src_pixels[_idx_that + 2] == b) continue;
-                float Rd = (src_pixels[_idx_that] & 0xff) * alpha;
-                float Gd = (src_pixels[_idx_that + 1] & 0xff) * alpha;
-                float Bd = (src_pixels[_idx_that + 2] & 0xff) * alpha;
-                int Rs = dst_pixels[_idx_this] & 0xff;
-                int Gs = dst_pixels[_idx_this + 1] & 0xff;
-                int Bs = dst_pixels[_idx_this + 2] & 0xff;
-                dst_pixels[_idx_this] = (Uint8) min(255, Rd*Rd/255+Rs);
-                dst_pixels[_idx_this + 1] = (Uint8) min(255, Gd*Gd/255+Gs);
-                dst_pixels[_idx_this + 2] = (Uint8) min(255, Bd*Bd/255+Bs);
+
+                int _idx_this = (j + i * dst_width);
+                int _idx_that = (j - left + tarleft + (i - top + tartop) * src_width);
+
+                Uint32 d = dst_pixels[_idx_this];
+                Uint32 s = src_pixels[_idx_that];
+                // 提取ARGB分量
+                Uint8 da = (d >> 24) & 0xFF;
+                Uint8 dr = (d >> 16) & 0xFF;
+                Uint8 dg = (d >> 8) & 0xFF;
+                Uint8 db = d & 0xFF;
+
+                Uint8 sa = (s >> 24) & 0xFF;
+                Uint8 sr = (s >> 16) & 0xFF;
+                Uint8 sg = (s >> 8) & 0xFF;
+                Uint8 sb = s & 0xFF;
+
+                float fr = sr * alpha;
+                float fg = sg * alpha;
+                float fb = sb * alpha;
+
+                if (r == sr && g == sg && b == sb || !sa) continue;
+
+                dst_pixels[_idx_this] = (da << 24) | ((Uint8) min(255, fr*fr/255+dr) << 16) 
+                    | ((Uint8) min(255, fg*fg/255+dg) << 8) 
+                    | (Uint8) min(255, fb*fb/255+db);
             }
         }
     }
     else {
-        fprintf(stderr, "Unable to convert surface, pixel format unsupported! \n");
+        fprintf(stderr, "Unable to blend surface, pixel format unsupported, both must be SDL_PIXELFORMAT_ARGB8888! \n");
         env->push_int(runtime->stack, -1);
         return 0;
     }
@@ -828,8 +1570,25 @@ int com_kindred_sdl_SDL_Mir_SurfaceBlendAddTransparent(Runtime *runtime, JClass 
 }
 
 static java_native_method method_mir_table[] = {
+
+    //for test and use in future
+    {"com/kindred/mir/engine/MirJNI", "SDL_UpdateTextureWithSurface",   "(JJ[I)I",                    com_kindred_sdl_SDL_SDL_UpdateTextureWithSurface},
+    {"com/kindred/mir/engine/MirJNI", "Mir_TextureToGray",              "(J)I",                       com_kindred_sdl_SDL_Mir_TextureToGray},
+    {"com/kindred/mir/engine/MirJNI", "Mir_TextureBlackEffect",         "(J)I",                       com_kindred_sdl_SDL_Mir_TextureBlackEffect},
+    {"com/kindred/mir/engine/MirJNI", "Mir_TextureInverse",             "(J)I",                       com_kindred_sdl_SDL_Mir_TextureInverse},
+    {"com/kindred/mir/engine/MirJNI", "Mir_TextureAlpha",               "(JF)I",                      com_kindred_sdl_SDL_Mir_TextureAlpha},
+
     {"com/kindred/mir/engine/MirJNI", "Mir_SurfaceToGray",              "(J)I",                       com_kindred_sdl_SDL_Mir_SurfaceToGray},
     {"com/kindred/mir/engine/MirJNI", "Mir_SurfaceBlackEffect",         "(J)I",                       com_kindred_sdl_SDL_Mir_SurfaceBlackEffect},
+    {"com/kindred/mir/engine/MirJNI", "Mir_SurfaceWhiteEffect",         "(J)I",                       com_kindred_sdl_SDL_Mir_SurfaceWhiteEffect},
+    {"com/kindred/mir/engine/MirJNI", "Mir_SurfaceRedEffect",           "(J)I",                       com_kindred_sdl_SDL_Mir_SurfaceRedEffect},
+    {"com/kindred/mir/engine/MirJNI", "Mir_SurfaceGreenEffect",         "(J)I",                       com_kindred_sdl_SDL_Mir_SurfaceGreenEffect},
+    {"com/kindred/mir/engine/MirJNI", "Mir_SurfaceBlueEffect",          "(J)I",                       com_kindred_sdl_SDL_Mir_SurfaceBlueEffect},
+    {"com/kindred/mir/engine/MirJNI", "Mir_SurfaceYellowEffect",        "(J)I",                       com_kindred_sdl_SDL_Mir_SurfaceYellowEffect},
+    {"com/kindred/mir/engine/MirJNI", "Mir_SurfaceFuchsiaEffect",       "(J)I",                       com_kindred_sdl_SDL_Mir_SurfaceFuchsiaEffect},
+    {"com/kindred/mir/engine/MirJNI", "Mir_SurfaceBrightEffect",        "(J)I",                       com_kindred_sdl_SDL_Mir_SurfaceBrightEffect},
+    {"com/kindred/mir/engine/MirJNI", "Mir_SurfaceGrayEffect",          "(J)I",                       com_kindred_sdl_SDL_Mir_SurfaceGrayEffect},
+    
     {"com/kindred/mir/engine/MirJNI", "Mir_SurfaceInverse",             "(J)I",                       com_kindred_sdl_SDL_Mir_SurfaceInverse},
     {"com/kindred/mir/engine/MirJNI", "Mir_SurfaceAlpha",               "(JF)I",                      com_kindred_sdl_SDL_Mir_SurfaceAlpha},
     {"com/kindred/mir/engine/MirJNI", "Mir_SurfaceBlendNormal",         "(JJIIF)I",                   com_kindred_sdl_SDL_Mir_SurfaceBlendNormal},
@@ -837,12 +1596,6 @@ static java_native_method method_mir_table[] = {
     {"com/kindred/mir/engine/MirJNI", "Mir_SurfaceBlendAdd",            "(JJIIF)I",                   com_kindred_sdl_SDL_Mir_SurfaceBlendAdd},
     {"com/kindred/mir/engine/MirJNI", "Mir_SurfaceBlendAddTransparent", "(JJIIFIII)I",                com_kindred_sdl_SDL_Mir_SurfaceBlendAddTransparent},
 
-    {"com/kindred/mir/engine/MirJNI", "SDL_UpdateTextureWithSurface",   "(JJ[I)I",                    com_kindred_sdl_SDL_SDL_UpdateTextureWithSurface},
-
-    {"com/kindred/mir/engine/MirJNI", "Mir_TextureToGray",              "(J)I",                       com_kindred_sdl_SDL_Mir_TextureToGray},
-    {"com/kindred/mir/engine/MirJNI", "Mir_TextureBlackEffect",         "(J)I",                       com_kindred_sdl_SDL_Mir_TextureBlackEffect},
-    {"com/kindred/mir/engine/MirJNI", "Mir_TextureInverse",             "(J)I",                       com_kindred_sdl_SDL_Mir_TextureInverse},
-    {"com/kindred/mir/engine/MirJNI", "Mir_TextureAlpha",               "(JF)I",                      com_kindred_sdl_SDL_Mir_TextureAlpha},
 
 };
 

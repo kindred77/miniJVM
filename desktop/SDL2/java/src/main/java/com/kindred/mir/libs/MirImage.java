@@ -17,6 +17,8 @@ class MirImageHeader
 
 public class MirImage {
 
+    //we use SDL_PIXELFORMAT_ARGB8888
+    //will be converted if not.
     public static final int DEFAULT_PIXEL_FORMAT = SDL_PIXELFORMAT_ARGB8888;
     public MirImageHeader header;
     //public boolean initialized = false;

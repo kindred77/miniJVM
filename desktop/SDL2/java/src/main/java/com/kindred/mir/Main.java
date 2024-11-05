@@ -4,15 +4,11 @@ package com.kindred.mir;
 import java.io.UnsupportedEncodingException;
 
 import com.kindred.mir.engine.MirJNI;
-import com.kindred.mir.engine.Texture;
 import com.kindred.mir.libs.MirImage;
 import com.kindred.mir.libs.MirLib;
 
 import com.kindred.sdl.constcode.*;
 
-import com.kindred.mir.engine.*;
-
-import static com.kindred.mir.engine.MirJNI.Mir_TextureInverse;
 
 public class Main {
 
@@ -56,43 +52,38 @@ public class Main {
             MirLib mir_lib =new MirLib("C:\\mywork\\projects\\cpp\\devilutionX\\kindred\\devilutionX\\my_asset\\Prguse2_png.Lib");
             mir_lib.Initialize();
             
-            MirImage img = mir_lib.GetMirImage(1205);
-            MirImage img2 = mir_lib.GetMirImage(930);
+            MirImage img = mir_lib.GetMirImage(1360);
+            MirImage img2 = mir_lib.GetMirImage(1205);
 
-            //convert pixel format
-//            System.out.println("convert to SDL_PIXELFORMAT_RGB24...");
-//            long surface_rgb24 = SDL_ConvertSurfaceFormat(surface_id, SDL_PixelFormatEnum.SDL_PIXELFORMAT_RGB24, 0);
-//            if (surface_rgb24 == 0) {
-//                throw new IllegalStateException("Unable to convert surface from : " + SDL_GetSurfacePixelFormat(surface_id)+" to "+ SDL_PixelFormatEnum.toString(SDL_PixelFormatEnum.SDL_PIXELFORMAT_RGB24)+ ", because of : "+ SDL_GetError());
-//            }
-//            System.out.println("after convert, surface width: "+SDL_GetSurfaceWidth(surface_rgb24)+", height: "+SDL_GetSurfaceHeight(surface_rgb24)+", pixel format: "+SDL_PixelFormatEnum.toString(SDL_GetSurfacePixelFormat(surface_rgb24)));
-
-            //--------------start--------do something
-            //Texture java_texture=new Texture(SDL_GetSurfaceWidth(surface_rgb24), SDL_GetSurfaceHeight(surface_rgb24));
-            int ret = MirJNI.Mir_SurfaceToGray(img.getSurface());
+            //effect
             //int ret = MirJNI.Mir_SurfaceInverse(img.getSurface());
             //int ret = MirJNI.Mir_SurfaceAlpha(img.getSurface(), 0.4f);
             //int ret = MirJNI.Mir_SurfaceBlackEffect(img.getSurface());
+            //int ret = MirJNI.Mir_SurfaceWhiteEffect(img.getSurface());
+            //int ret = MirJNI.Mir_SurfaceGreenEffect(img.getSurface());
+            //int ret = MirJNI.Mir_SurfaceBlueEffect(img.getSurface());
+            //int ret = MirJNI.Mir_SurfaceYellowEffect(img.getSurface());
+            //int ret = MirJNI.Mir_SurfaceFuchsiaEffect(img.getSurface());
+            //int ret = MirJNI.Mir_SurfaceBrightEffect(img.getSurface());
+            //int ret = MirJNI.Mir_SurfaceGrayEffect(img.getSurface());
+            int ret = MirJNI.Mir_SurfaceRedEffect(img.getSurface());
+            //int ret = MirJNI.Mir_SurfaceToGray(img.getSurface());
+            if (ret != 0) {
+                throw new IllegalStateException("Unable to convert surface.");
+            }
 
+
+            //test texture
             //int ret = Mir_TextureInverse(img.getTexture());
 
-            long surface2_rgb24 = MirJNI.SDL_ConvertSurfaceFormat(img2.getSurface(), SDL_PixelFormatEnum.SDL_PIXELFORMAT_RGB24, 0);
-            if (surface2_rgb24 == 0) {
-                throw new IllegalStateException("Unable to convert surface from : " + MirJNI.SDL_GetSurfacePixelFormat(img2.getSurface())+" to "+ SDL_PixelFormatEnum.toString(SDL_PixelFormatEnum.SDL_PIXELFORMAT_RGB24)+ ", because of : "+ MirJNI.SDL_GetError());
-            }
-            //int ret = Mir_SurfaceBlendNormal(surface_rgb24, surface2_rgb24, 0, 0, 0.5f);
-            //int ret = Mir_SurfaceBlendNormalTransparent(surface_rgb24, surface2_rgb24, 0, 0, 0.5f, 0, 0, 0);
-            //int ret = Mir_SurfaceBlendAdd(surface_rgb24, surface2_rgb24, 0, 0, 1.0f);
-            //int ret = Mir_SurfaceBlendAddTransparent(surface_rgb24, surface2_rgb24, 0, 0, 0.5f, 0, 0, 0);
+            //blend
+            //ret = MirJNI.Mir_SurfaceBlendNormal(img.getSurface(), img2.getSurface(), 50, 50, 0.5f);
+            //ret = MirJNI.Mir_SurfaceBlendNormalTransparent(img.getSurface(), img2.getSurface(), 50, 50, 0.5f, 0, 0, 0);
+            //ret = MirJNI.Mir_SurfaceBlendAdd(img.getSurface(), img2.getSurface(), 50, 50, 1f);
+            ret = MirJNI.Mir_SurfaceBlendAddTransparent(img.getSurface(), img2.getSurface(), 60, 60, 1f, 0, 0, 0);
             if (ret != 0) {
-                throw new IllegalStateException("Unable to cconvert surface to gray.");
+                throw new IllegalStateException("Unable to blend surface.");
             }
-            //--------------end
-//            long surface_convert = SDL_ConvertSurfaceFormat(surface_rgb24, win_pf, 0);
-//            if (surface_convert == 0) {
-//                throw new IllegalStateException("Unable to convert surface from : " + SDL_GetSurfacePixelFormat(surface_id)+" to "+ SDL_PixelFormatEnum.toString(win_pf)+ ", because of : "+ SDL_GetError());
-//            }
-//            System.out.println("after convert2, surface width: "+SDL_GetSurfaceWidth(surface_convert)+", height: "+SDL_GetSurfaceHeight(surface_convert)+", pixel format: "+SDL_PixelFormatEnum.toString(SDL_GetSurfacePixelFormat(surface_convert)));
 
             long draw_surface = img.getSurface();
             //draw with texture
