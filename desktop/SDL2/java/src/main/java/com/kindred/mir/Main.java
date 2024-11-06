@@ -48,10 +48,6 @@ public class Main {
                 throw new IllegalStateException("Unable to create SDL window: " + MirJNI.SDL_GetError());
             }
 
-            //test imgui
-            MirJNI.ImGui_SDL2_Init(win_id);
-            //---------------------
-
             int win_pf = MirJNI.SDL_GetWindowPixelFormat(win_id);
             System.out.println("----windows---pixelformat: "+ SDL_PixelFormatEnum.toString(win_pf));
 
@@ -59,6 +55,10 @@ public class Main {
             if (renderer_id == 0) {
                 throw new IllegalStateException("Unable to create SDL renderer: " + MirJNI.SDL_GetError());
             }
+
+            //test imgui
+            MirJNI.ImGui_SDL2_Init(win_id, renderer_id);
+            //---------------------
 
             MirLib mir_lib =new MirLib("C:\\mywork\\projects\\cpp\\devilutionX\\kindred\\devilutionX\\my_asset\\Prguse2_png.Lib");
             mir_lib.Initialize();
@@ -111,9 +111,7 @@ public class Main {
             MirJNI.SDL_SetTextureBlendMode(testTexture_id, SDLBlendMode.SDL_BLENDMODE_BLEND);
             //SDL_SetTextureAlphaMod(testTexture_id, 255);
             int[] dstRect = {0, 0, img.getWidth(), img.getHeight()};
-            MirJNI.SDL_RenderCopy(renderer_id, testTexture_id, null, dstRect);
 
-            MirJNI.SDL_RenderPresent(renderer_id);
 
             boolean shouldRun = true;
             long event_id = MirJNI.SDL_CreateEvent();
@@ -150,19 +148,27 @@ public class Main {
 //                    continue;
 //                }
 
-                MirJNI.ImGui_OpenGL3_NewFrame();
+                MirJNI.ImGui_SDLRenderer2_NewFrame();
                 MirJNI.ImGui_SDL2_NewFrame();
                 MirJNI.ImGui_NewFrame();
 
                 MirJNI.ImGui_Begin();
                 MirJNI.ImGui_Text();
+                byte[] buf=new byte[64];
+                MirJNI.ImGui_InputText(toCstyleBytes("编辑-kindred"),buf);
                 MirJNI.ImGui_End();
 
-                MirJNI.ImGui_Render(win_id);
+                MirJNI.SDL_RenderCopy(renderer_id, testTexture_id, null, dstRect);
+
+                MirJNI.ImGui_Render(renderer_id);
+
+                MirJNI.SDL_RenderPresent(renderer_id);
             }
 
             MirJNI.ImGui_Destroy();
 
+            MirJNI.SDL_DestroyRenderer(renderer_id);
+            MirJNI.SDL_DestroyWindow(win_id);
             MirJNI.SDL_Quit();
         }catch(Exception e){
             e.printStackTrace();

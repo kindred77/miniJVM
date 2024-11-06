@@ -1571,15 +1571,16 @@ int com_kindred_sdl_SDL_Mir_SurfaceBlendAddTransparent(Runtime *runtime, JClass 
 
 
 
-void Mir_ImGui_SDL2_Init(SDL_Window * window);
+void Mir_ImGui_SDL2_Init(SDL_Window * window, SDL_Renderer *renderer);
 int Mir_ImGui_SDL2_ProcessEvent(SDL_Event * event);
-void Mir_ImGui_OpenGL3_NewFrame();
+void Mir_ImGui_SDLRenderer2_NewFrame();
 void Mir_ImGui_SDL2_NewFrame();
 void Mir_ImGui_NewFrame();
 int Mir_ImGui_Begin();
 void Mir_ImGui_Text();
+void Mir_ImGui_InputText(const char * title, char * buf, int length);
 void Mir_ImGui_End();
-void Mir_ImGui_Render(SDL_Window * window);
+void Mir_ImGui_Render(SDL_Renderer * renderer);
 void Mir_ImGui_Destroy();
 
 int com_kindred_sdl_SDL_ImGui_SDL2_Init(Runtime *runtime, JClass *clazz) {
@@ -1587,7 +1588,9 @@ int com_kindred_sdl_SDL_ImGui_SDL2_Init(Runtime *runtime, JClass *clazz) {
     s32 pos = 0;
     SDL_Window *window = (__refer) (intptr_t) env->localvar_getLong_2slot(runtime->localvar, pos);
     pos += 2;
-    Mir_ImGui_SDL2_Init(window);
+    SDL_Renderer *renderer = (__refer) (intptr_t) env->localvar_getLong_2slot(runtime->localvar, pos);
+    pos += 2;
+    Mir_ImGui_SDL2_Init(window, renderer);
     return 0;
 }
 
@@ -1601,8 +1604,8 @@ int com_kindred_sdl_SDL_ImGui_SDL2_ProcessEvent(Runtime *runtime, JClass *clazz)
     return 0;
 }
 
-int com_kindred_sdl_SDL_ImGui_OpenGL3_NewFrame(Runtime *runtime, JClass *clazz) {
-    Mir_ImGui_OpenGL3_NewFrame();
+int com_kindred_sdl_SDL_ImGui_SDLRenderer2_NewFrame(Runtime *runtime, JClass *clazz) {
+    Mir_ImGui_SDLRenderer2_NewFrame();
     return 0;
 }
 
@@ -1629,6 +1632,20 @@ int com_kindred_sdl_SDL_ImGui_Text(Runtime *runtime, JClass *clazz) {
     return 0;
 }
 
+int com_kindred_sdl_SDL_ImGui_InputText(Runtime *runtime, JClass *clazz) {
+    JniEnv *env = runtime->jnienv;
+    s32 pos = 0;
+
+    Instance *title_arr = env->localvar_getRefer(runtime->localvar, pos++);
+    c8 *title = title_arr->arr_body;
+
+    Instance *buf_arr = env->localvar_getRefer(runtime->localvar, pos++);
+    c8 *buf = buf_arr->arr_body;
+
+    Mir_ImGui_InputText(title, buf, buf_arr->arr_length);
+    return 0;
+}
+
 int com_kindred_sdl_SDL_ImGui_End(Runtime *runtime, JClass *clazz) {
     Mir_ImGui_End();
     return 0;
@@ -1637,9 +1654,9 @@ int com_kindred_sdl_SDL_ImGui_End(Runtime *runtime, JClass *clazz) {
 int com_kindred_sdl_SDL_ImGui_Render(Runtime *runtime, JClass *clazz) {
     JniEnv *env = runtime->jnienv;
     s32 pos = 0;
-    SDL_Window *window = (__refer) (intptr_t) env->localvar_getLong_2slot(runtime->localvar, pos);
+    SDL_Renderer *renderer = (__refer) (intptr_t) env->localvar_getLong_2slot(runtime->localvar, pos);
     pos += 2;
-    Mir_ImGui_Render(window);
+    Mir_ImGui_Render(renderer);
     return 0;
 }
 
@@ -1676,13 +1693,14 @@ static java_native_method method_mir_table[] = {
     {"com/kindred/mir/engine/MirJNI", "Mir_SurfaceBlendAddTransparent", "(JJIIFIII)I",                com_kindred_sdl_SDL_Mir_SurfaceBlendAddTransparent},
 
     //test imgui
-    {"com/kindred/mir/engine/MirJNI", "ImGui_SDL2_Init", "(J)V",                com_kindred_sdl_SDL_ImGui_SDL2_Init},
+    {"com/kindred/mir/engine/MirJNI", "ImGui_SDL2_Init", "(JJ)V",                com_kindred_sdl_SDL_ImGui_SDL2_Init},
     {"com/kindred/mir/engine/MirJNI", "ImGui_SDL2_ProcessEvent", "(J)I",                com_kindred_sdl_SDL_ImGui_SDL2_ProcessEvent},
-    {"com/kindred/mir/engine/MirJNI", "ImGui_OpenGL3_NewFrame", "()V",                com_kindred_sdl_SDL_ImGui_OpenGL3_NewFrame},
+    {"com/kindred/mir/engine/MirJNI", "ImGui_SDLRenderer2_NewFrame", "()V",                com_kindred_sdl_SDL_ImGui_SDLRenderer2_NewFrame},
     {"com/kindred/mir/engine/MirJNI", "ImGui_SDL2_NewFrame", "()V",                com_kindred_sdl_SDL_ImGui_SDL2_NewFrame},
     {"com/kindred/mir/engine/MirJNI", "ImGui_NewFrame", "()V",                com_kindred_sdl_SDL_ImGui_NewFrame},
     {"com/kindred/mir/engine/MirJNI", "ImGui_Begin", "()I",                com_kindred_sdl_SDL_ImGui_Begin},
     {"com/kindred/mir/engine/MirJNI", "ImGui_Text", "()V",                com_kindred_sdl_SDL_ImGui_Text},
+    {"com/kindred/mir/engine/MirJNI", "ImGui_InputText", "([B[B)V",                com_kindred_sdl_SDL_ImGui_InputText},
     {"com/kindred/mir/engine/MirJNI", "ImGui_End", "()V",                com_kindred_sdl_SDL_ImGui_End},
     {"com/kindred/mir/engine/MirJNI", "ImGui_Render", "(J)V",                com_kindred_sdl_SDL_ImGui_Render},
     {"com/kindred/mir/engine/MirJNI", "ImGui_Destroy", "()V",                com_kindred_sdl_SDL_ImGui_Destroy},

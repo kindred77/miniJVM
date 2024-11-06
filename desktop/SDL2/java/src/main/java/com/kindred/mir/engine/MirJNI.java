@@ -32,15 +32,16 @@ public class MirJNI extends SDL {
     public static native int Mir_SurfaceBlendAddTransparent(long dst_surface_id, long src_surface_id, int x, int y, float alpha, int transparent_r, int transparent_g, int transparent_b);
 
 
-    public static native void ImGui_SDL2_Init(long window_id);
+    public static native void ImGui_SDL2_Init(long window_id,long renderer_id);
     public static native int ImGui_SDL2_ProcessEvent(long event_id);
-    public static native void ImGui_OpenGL3_NewFrame();
+    public static native void ImGui_SDLRenderer2_NewFrame();
     public static native void ImGui_SDL2_NewFrame();
     public static native void ImGui_NewFrame();
     public static native int ImGui_Begin();
     public static native void ImGui_Text();
+    public static native void ImGui_InputText(byte[] title, byte[] buf);
     public static native void ImGui_End();
-    public static native void ImGui_Render(long window_id);
+    public static native void ImGui_Render(long renderer_id);
     public static native void ImGui_Destroy();
 
 

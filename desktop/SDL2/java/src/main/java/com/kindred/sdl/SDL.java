@@ -52,6 +52,7 @@ public class SDL {
     public static native int SDL_PollEvent(long event_id);
     public static native int SDL_GetWindowFlags(long window_id);
     public static native void SDL_DestroyWindow(long window_id);
+    public static native void SDL_DestroyRenderer(long renderer_id);
 
     public static native void SDL_Quit();
 

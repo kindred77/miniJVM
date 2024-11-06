@@ -26,7 +26,7 @@ set(SOURCE_FILES
         imgui/imgui_widgets.cpp
         imgui/imgui.cpp
         imgui/backends/imgui_impl_sdl2.cpp
-        imgui/backends/imgui_impl_opengl3.cpp
+        imgui/backends/imgui_impl_sdlrenderer2.cpp
 
         mir_imgui.cpp
         
@@ -52,15 +52,15 @@ IF (APPLE)
     MARK_AS_ADVANCED(SDL2_LIB)
     SET(EXTRA_LIBS ${SDL2_LIB})
 
-    TARGET_LINK_LIBRARIES(sdl2 ${EXTRA_LIBS})
+    TARGET_LINK_LIBRARIES(jni_mir ${EXTRA_LIBS})
     TARGET_LINK_LIBRARIES(test_sdl2 ${EXTRA_LIBS})
     SET(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/../../../binary/mac_x64)
 ELSEIF (UNIX)
     MESSAGE("linux os here(not supported yet).")
     find_library(SDL2_LIB libsdl2.a "${CMAKE_SOURCE_DIR}/depends/lib/centos_x64/")
     MARK_AS_ADVANCED(SDL2_LIB)
-    TARGET_LINK_LIBRARIES(sdl2 ${SDL2_LIB})
-    TARGET_LINK_LIBRARIES(sdl2 pthread)
+    TARGET_LINK_LIBRARIES(jni_mir PUBLIC ${SDL2_LIB} PUBLIC ${SDL2_IMG_LIB})
+    TARGET_LINK_LIBRARIES(jni_mir PRIVATE pthread gl)
     SET(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/../../../binary/centos_x64)
 ELSEIF (MINGW)
     IF (CMAKE_SIZEOF_VOID_P EQUAL 4)
