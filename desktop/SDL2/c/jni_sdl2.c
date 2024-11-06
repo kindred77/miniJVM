@@ -275,6 +275,31 @@ int com_kindred_sdl_SDL_SDL_PollEvent(Runtime *runtime, JClass *clazz) {
     return 0;
 }
 
+int com_kindred_sdl_SDL_SDL_GetWindowFlags(Runtime *runtime, JClass *clazz) {
+    JniEnv *env = runtime->jnienv;
+    s32 pos = 0;
+
+    SDL_Window *window = (__refer) (intptr_t) env->localvar_getLong_2slot(runtime->localvar, pos);
+    pos += 2;
+
+    Uint32 falgs = SDL_GetWindowFlags(window);
+
+    env->push_int(runtime->stack, (int)falgs);
+    return 0;
+}
+
+int com_kindred_sdl_SDL_SDL_DestroyWindow(Runtime *runtime, JClass *clazz) {
+    JniEnv *env = runtime->jnienv;
+    s32 pos = 0;
+
+    SDL_Window *window = (__refer) (intptr_t) env->localvar_getLong_2slot(runtime->localvar, pos);
+    pos += 2;
+
+    SDL_DestroyWindow(window);
+
+    return 0;
+}
+
 int com_kindred_sdl_SDL_SDL_GetEventType(Runtime *runtime, JClass *clazz) {
     JniEnv *env = runtime->jnienv;
     s32 pos = 0;
@@ -582,7 +607,8 @@ static java_native_method method_sdl_table[] = {
     {"com/kindred/sdl/SDL", "SDL_GetEventType",               "(J)I",                       com_kindred_sdl_SDL_SDL_GetEventType},
     {"com/kindred/sdl/SDL", "SDL_GetWindowEvent",             "(J)I",                       com_kindred_sdl_SDL_SDL_GetWindowEvent},
     {"com/kindred/sdl/SDL", "SDL_PollEvent",                  "(J)I",                       com_kindred_sdl_SDL_SDL_PollEvent},
-    
+    {"com/kindred/sdl/SDL", "SDL_GetWindowFlags",             "(J)I",                       com_kindred_sdl_SDL_SDL_GetWindowFlags},
+    {"com/kindred/sdl/SDL", "SDL_DestroyWindow",              "(J)V",                       com_kindred_sdl_SDL_SDL_DestroyWindow},
     {"com/kindred/sdl/SDL", "SDL_Quit",                       "()V",                        com_kindred_sdl_SDL_SDL_Quit},
 
     {"com/kindred/sdl/SDL", "SDL_IMG_LoadPNG_RW",             "(J)J",                       com_kindred_sdl_SDL_SDL_IMG_LoadPNG_RW},

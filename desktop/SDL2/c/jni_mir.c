@@ -1569,6 +1569,85 @@ int com_kindred_sdl_SDL_Mir_SurfaceBlendAddTransparent(Runtime *runtime, JClass 
     return 0;
 }
 
+
+
+void Mir_ImGui_SDL2_Init(SDL_Window * window);
+int Mir_ImGui_SDL2_ProcessEvent(SDL_Event * event);
+void Mir_ImGui_OpenGL3_NewFrame();
+void Mir_ImGui_SDL2_NewFrame();
+void Mir_ImGui_NewFrame();
+int Mir_ImGui_Begin();
+void Mir_ImGui_Text();
+void Mir_ImGui_End();
+void Mir_ImGui_Render(SDL_Window * window);
+void Mir_ImGui_Destroy();
+
+int com_kindred_sdl_SDL_ImGui_SDL2_Init(Runtime *runtime, JClass *clazz) {
+    JniEnv *env = runtime->jnienv;
+    s32 pos = 0;
+    SDL_Window *window = (__refer) (intptr_t) env->localvar_getLong_2slot(runtime->localvar, pos);
+    pos += 2;
+    Mir_ImGui_SDL2_Init(window);
+    return 0;
+}
+
+int com_kindred_sdl_SDL_ImGui_SDL2_ProcessEvent(Runtime *runtime, JClass *clazz) {
+    JniEnv *env = runtime->jnienv;
+    s32 pos = 0;
+    SDL_Event *event = (__refer) (intptr_t) env->localvar_getLong_2slot(runtime->localvar, pos);
+    pos += 2;
+    int ret = Mir_ImGui_SDL2_ProcessEvent(event);
+    env->push_int(runtime->stack, ret);
+    return 0;
+}
+
+int com_kindred_sdl_SDL_ImGui_OpenGL3_NewFrame(Runtime *runtime, JClass *clazz) {
+    Mir_ImGui_OpenGL3_NewFrame();
+    return 0;
+}
+
+int com_kindred_sdl_SDL_ImGui_SDL2_NewFrame(Runtime *runtime, JClass *clazz) {
+    Mir_ImGui_SDL2_NewFrame();
+    return 0;
+}
+
+int com_kindred_sdl_SDL_ImGui_NewFrame(Runtime *runtime, JClass *clazz) {
+    Mir_ImGui_NewFrame();
+    return 0;
+}
+
+int com_kindred_sdl_SDL_ImGui_Begin(Runtime *runtime, JClass *clazz) {
+    JniEnv *env = runtime->jnienv;
+
+    int ret = Mir_ImGui_Begin();
+    env->push_int(runtime->stack, ret);
+    return 0;
+}
+
+int com_kindred_sdl_SDL_ImGui_Text(Runtime *runtime, JClass *clazz) {
+    Mir_ImGui_Text();
+    return 0;
+}
+
+int com_kindred_sdl_SDL_ImGui_End(Runtime *runtime, JClass *clazz) {
+    Mir_ImGui_End();
+    return 0;
+}
+
+int com_kindred_sdl_SDL_ImGui_Render(Runtime *runtime, JClass *clazz) {
+    JniEnv *env = runtime->jnienv;
+    s32 pos = 0;
+    SDL_Window *window = (__refer) (intptr_t) env->localvar_getLong_2slot(runtime->localvar, pos);
+    pos += 2;
+    Mir_ImGui_Render(window);
+    return 0;
+}
+
+int com_kindred_sdl_SDL_ImGui_Destroy(Runtime *runtime, JClass *clazz) {
+    Mir_ImGui_Destroy();
+    return 0;
+}
+
 static java_native_method method_mir_table[] = {
 
     //for test and use in future
@@ -1596,7 +1675,17 @@ static java_native_method method_mir_table[] = {
     {"com/kindred/mir/engine/MirJNI", "Mir_SurfaceBlendAdd",            "(JJIIF)I",                   com_kindred_sdl_SDL_Mir_SurfaceBlendAdd},
     {"com/kindred/mir/engine/MirJNI", "Mir_SurfaceBlendAddTransparent", "(JJIIFIII)I",                com_kindred_sdl_SDL_Mir_SurfaceBlendAddTransparent},
 
-
+    //test imgui
+    {"com/kindred/mir/engine/MirJNI", "ImGui_SDL2_Init", "(J)V",                com_kindred_sdl_SDL_ImGui_SDL2_Init},
+    {"com/kindred/mir/engine/MirJNI", "ImGui_SDL2_ProcessEvent", "(J)I",                com_kindred_sdl_SDL_ImGui_SDL2_ProcessEvent},
+    {"com/kindred/mir/engine/MirJNI", "ImGui_OpenGL3_NewFrame", "()V",                com_kindred_sdl_SDL_ImGui_OpenGL3_NewFrame},
+    {"com/kindred/mir/engine/MirJNI", "ImGui_SDL2_NewFrame", "()V",                com_kindred_sdl_SDL_ImGui_SDL2_NewFrame},
+    {"com/kindred/mir/engine/MirJNI", "ImGui_NewFrame", "()V",                com_kindred_sdl_SDL_ImGui_NewFrame},
+    {"com/kindred/mir/engine/MirJNI", "ImGui_Begin", "()I",                com_kindred_sdl_SDL_ImGui_Begin},
+    {"com/kindred/mir/engine/MirJNI", "ImGui_Text", "()V",                com_kindred_sdl_SDL_ImGui_Text},
+    {"com/kindred/mir/engine/MirJNI", "ImGui_End", "()V",                com_kindred_sdl_SDL_ImGui_End},
+    {"com/kindred/mir/engine/MirJNI", "ImGui_Render", "(J)V",                com_kindred_sdl_SDL_ImGui_Render},
+    {"com/kindred/mir/engine/MirJNI", "ImGui_Destroy", "()V",                com_kindred_sdl_SDL_ImGui_Destroy},
 };
 
 s32 count_MIRFuncTable() {

@@ -1,8 +1,11 @@
 package com.kindred.mir.controls;
 
 import com.kindred.mir.constcode.MirBlendMode;
+import com.kindred.mir.controls.events.MouseClickEvent;
 import com.kindred.mir.controls.listener.ControlCommonListener;
-import com.kindred.mir.engine.Texture;
+import com.kindred.mir.engine.MirTexture;
+import com.kindred.mir.engine.SoundList;
+import com.kindred.mir.engine.SoundManager;
 import com.kindred.mir.util.*;
 
 import java.util.ArrayList;
@@ -39,7 +42,7 @@ public class MirControl implements AutoCloseable {
     private ControlCommonListener borderColorChanged;
 
     private long cleanTime;
-    protected Texture controlTexture;
+    protected MirTexture controlTexture;
     protected boolean isDrawControlTexture;
     protected Size textureSize;
 
@@ -218,10 +221,10 @@ public class MirControl implements AutoCloseable {
         if (this.backColor == backColor)
             return;
         this.backColor = backColor;
-        onBackColourChanged();
+        onBackColorChanged();
     }
 
-    protected void onBackColourChanged()
+    protected void onBackColorChanged()
     {
         isTextureValid = false;
         redraw();
@@ -867,40 +870,43 @@ public class MirControl implements AutoCloseable {
         if (mouseLeave != null)
             mouseLeave.doAction(this, null);
     }
-//    public void onMouseClick(MouseEventArgs e)
-//    {
-//        if (!isEnabled)
-//            return;
-//
-//        if (sound != SoundList.None)
-//            SoundManager.PlaySound(sound);
-//
-//        if (click != null)
-//            invokeMouseClick(e);
-//    }
-//    public void onMouseDoubleClick(MouseEventArgs e)
-//    {
-//        if (!isEnabled)
-//            return;
-//
-//        if (doubleClick != null)
-//        {
-//            if (sound != SoundList.None)
-//                SoundManager.PlaySound(sound);
-//            invokeMouseDoubleClick(e);
-//        }
-//        else
-//            onMouseClick(e);
-//    }
-//    public void invokeMouseClick(EventArgs e)
-//    {
-//        if (click != null)
-//            click.doAction(this, e);
-//    }
-//    public void invokeMouseDoubleClick(EventArgs e)
-//    {
-//        doubleClick.invoke(this, e);
-//    }
+    public void onMouseClick(MouseClickEvent e)
+    {
+        if (!isEnabled)
+            return;
+
+        if (sound != SoundList.None)
+            SoundManager.playSound(sound, false);
+
+        if (click != null)
+            invokeMouseClick(e);
+    }
+
+    public void onMouseDoubleClick(MouseClickEvent e)
+    {
+        if (!isEnabled)
+            return;
+
+        if (doubleClick != null)
+        {
+            if (sound != SoundList.None)
+                SoundManager.playSound(sound, false);
+            invokeMouseDoubleClick(e);
+        }
+        else
+            onMouseClick(e);
+    }
+
+    public void invokeMouseClick(MouseClickEvent e)
+    {
+        if (click != null)
+            click.doAction(this, e);
+    }
+
+    public void invokeMouseDoubleClick(MouseClickEvent e)
+    {
+        doubleClick.doAction(this, e);
+    }
 //    public void onMouseMove(MouseEventArgs e)
 //    {
 //        if (!isEnabled)

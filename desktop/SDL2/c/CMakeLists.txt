@@ -2,16 +2,34 @@ cmake_minimum_required(VERSION 3.8)
 project(jni_sdl2)
 
 
-#set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_C_STANDARD 99)
 
-include_directories(depends/include/ ../../../minijvm/c/jvm)
+include_directories(depends/include/ depends/include/SDL2/ imgui/ imgui/backends/ ../../../minijvm/c/jvm)
 
 set(SOURCE_FILES
         media.h
         jni_sdl2.c
         jni_mir.c
         media.c
+
+        # imgui/imconfig.h
+        # imgui/imgui.h
+        # imgui/imgui_internal.h
+        # imgui/imstb_rectpack.h
+        # imgui/imstb_textedit.h
+        # imgui/imstb_truetype.h
+        # imgui/backends/imgui_impl_sdl2.h
+
+        imgui/imgui_draw.cpp
+        imgui/imgui_tables.cpp
+        imgui/imgui_widgets.cpp
+        imgui/imgui.cpp
+        imgui/backends/imgui_impl_sdl2.cpp
+        imgui/backends/imgui_impl_opengl3.cpp
+
+        mir_imgui.cpp
+        
         )
 #add_executable(test_sdl2 ${SOURCE_FILES})
 
@@ -63,7 +81,8 @@ ELSEIF (MINGW)
                 PRIVATE winmm
                 PRIVATE imm32
                 PRIVATE setupapi
-                PRIVATE version)
+                PRIVATE version
+                PRIVATE opengl32)
 
     #all: TARGET_LINK_LIBRARIES(jni_mir kernel32 user32 gdi32 winmm imm32 ole32 oleaut32 version uuid advapi32 setupapi shell32)
 

@@ -1,8 +1,10 @@
 package com.kindred.mir.controls;
 
+import com.kindred.mir.Settings;
+import com.kindred.mir.engine.MirTexture;
 import com.kindred.mir.util.Color;
 import com.kindred.mir.util.Size;
-import com.sun.scenario.Settings;
+import com.kindred.sdl.constcode.SDL_PixelFormatEnum;
 
 public abstract class MirScene extends MirControl {
 
@@ -16,7 +18,7 @@ public abstract class MirScene extends MirControl {
     {
         isDrawControlTexture = true;
         backColor = Color.Black;
-        //size = new Size(Settings.ScreenWidth, Settings.ScreenHeight);
+        size = new Size(Settings.ScreenWidth, Settings.ScreenHeight);
 
     }
 
@@ -42,34 +44,21 @@ public abstract class MirScene extends MirControl {
     @Override
     protected void createTexture()
     {
-//        if (controlTexture != null && !controlTexture.getIsDisposed() && size != textureSize)
-//            controlTexture.dispose();
-//
-//        if (controlTexture == null || controlTexture.getIsDisposed())
-//        {
-//            DXManager.ControlList.Add(this);
-//            controlTexture = new Texture(DXManager.Device, Size.Width, Size.Height, 1, Usage.RenderTarget, Format.A8R8G8B8, Pool.Default);
-//            controlTexture.Disposing += ControlTexture_Disposing;
-//            textureSize = size;
-//        }
-//        Surface oldSurface = DXManager.CurrentSurface;
-//        Surface surface = ControlTexture.GetSurfaceLevel(0);
-//        DXManager.SetSurface(surface);
-//
-//
-//        DXManager.Device.Clear(ClearFlags.Target, BackColour, 0, 0);
-//
-//        beforeDrawControl();
-//        drawChildren();
-//        afterDrawControl();
-//
-//        DXManager.Sprite.Flush();
-//
-//
-//        DXManager.SetSurface(oldSurface);
-//        isTextureValid = true;
-//        surface.Dispose();
+        if (controlTexture != null && !controlTexture.getIsDisposed() && size != textureSize)
+            controlTexture.dispose();
 
+        if (controlTexture == null || controlTexture.getIsDisposed())
+        {
+            controlTexture = new MirTexture(size.getWidth(), size.getHeight(), SDL_PixelFormatEnum.SDL_PIXELFORMAT_ARGB8888);
+            //controlTexture.Disposing += ControlTexture_Disposing;
+            textureSize = size;
+        }
+
+        beforeDrawControl();
+        drawChildren();
+        afterDrawControl();
+
+        isTextureValid = true;
     }
 
 //    @Override

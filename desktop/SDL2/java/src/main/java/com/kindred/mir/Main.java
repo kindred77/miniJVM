@@ -9,6 +9,8 @@ import com.kindred.mir.libs.MirLib;
 
 import com.kindred.sdl.constcode.*;
 
+import static com.kindred.sdl.constcode.SDLWindowFlags.SDL_WINDOW_MINIMIZED;
+
 
 public class Main {
 
@@ -36,10 +38,19 @@ public class Main {
                 throw new IllegalStateException("Unable to initialize SDL library (Error code " + result + "): " + MirJNI.SDL_GetError());
             }
             // Create and init the window
-            long win_id = MirJNI.SDL_CreateWindow(toCstyleBytes("窗口-kindred"), 0, 0, 800, 600, SDLWindowFlags.SDL_WINDOW_SHOWN | SDLWindowFlags.SDL_WINDOW_RESIZABLE);
+            long win_id = MirJNI.SDL_CreateWindow(toCstyleBytes("窗口-kindred"),
+                    SdlVideoConst.SDL_WINDOWPOS_CENTERED,
+                    SdlVideoConst.SDL_WINDOWPOS_CENTERED,
+                    800, 600,
+                    //SDLWindowFlags.SDL_WINDOW_SHOWN | SDLWindowFlags.SDL_WINDOW_RESIZABLE);
+                    SDLWindowFlags.SDL_WINDOW_OPENGL | SDLWindowFlags.SDL_WINDOW_RESIZABLE | SDLWindowFlags.SDL_WINDOW_ALLOW_HIGHDPI);
             if (win_id == 0) {
                 throw new IllegalStateException("Unable to create SDL window: " + MirJNI.SDL_GetError());
             }
+
+            //test imgui
+            MirJNI.ImGui_SDL2_Init(win_id);
+            //---------------------
 
             int win_pf = MirJNI.SDL_GetWindowPixelFormat(win_id);
             System.out.println("----windows---pixelformat: "+ SDL_PixelFormatEnum.toString(win_pf));
@@ -107,7 +118,9 @@ public class Main {
             boolean shouldRun = true;
             long event_id = MirJNI.SDL_CreateEvent();
             while (shouldRun) {
+
                 while (MirJNI.SDL_PollEvent(event_id) != 0) {
+                    MirJNI.ImGui_SDL2_ProcessEvent(event_id);
                     switch (MirJNI.SDL_GetEventType(event_id)) {
                         case SDLEventType.SDL_QUIT:
                             shouldRun = false;
@@ -119,11 +132,36 @@ public class Main {
                             break;
                         case SDLEventType.SDL_WINDOWEVENT:
                             System.out.println("Window event " + MirJNI.SDL_GetWindowEvent(event_id));
+                            break;
+                        case SDLEventType.SDL_MOUSEBUTTONDOWN:
+                            System.out.println("mouse down " + MirJNI.SDL_GetWindowEvent(event_id));
+                            break;
+                        case SDLEventType.SDL_MOUSEBUTTONUP:
+                            System.out.println("mouse up " + MirJNI.SDL_GetWindowEvent(event_id));
+                            break;
                         default:
                             break;
                     }
                 }
+
+//                if (MirJNI.SDL_GetWindowFlags(win_id) & SDL_WINDOW_MINIMIZED)
+//                {
+//                    SDL_Delay(10);
+//                    continue;
+//                }
+
+                MirJNI.ImGui_OpenGL3_NewFrame();
+                MirJNI.ImGui_SDL2_NewFrame();
+                MirJNI.ImGui_NewFrame();
+
+                MirJNI.ImGui_Begin();
+                MirJNI.ImGui_Text();
+                MirJNI.ImGui_End();
+
+                MirJNI.ImGui_Render(win_id);
             }
+
+            MirJNI.ImGui_Destroy();
 
             MirJNI.SDL_Quit();
         }catch(Exception e){
