@@ -22,6 +22,9 @@ void Mir_ImGui_SDL2_Init(SDL_Window * window, SDL_Renderer *renderer) {
     ImGui_ImplSDL2_InitForSDLRenderer(window, renderer);
     ImGui_ImplSDLRenderer2_Init(renderer);
 
+    ImFont* font = io.Fonts->AddFontFromFileTTF("C:/Windows/Fonts/SIMLI.TTF", 18.0f, nullptr, io.Fonts->GetGlyphRangesChineseSimplifiedCommon());
+    IM_ASSERT(font != nullptr);
+
 }
 
 int Mir_ImGui_SDL2_ProcessEvent(SDL_Event * event)
