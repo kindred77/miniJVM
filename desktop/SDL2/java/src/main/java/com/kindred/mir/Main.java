@@ -116,7 +116,12 @@ public class Main {
 
             boolean shouldRun = true;
             long event_id = MirJNI.SDL_CreateEvent();
-            byte[] buf=new byte[64];
+            byte[] buf=new byte[128];
+            byte[] const_str=toCstyleBytes("请输入你的text");
+            System.out.println("111111-------"+new String(const_str,0,const_str.length,"utf-8"));
+            System.arraycopy(const_str,0,buf,0,const_str.length);
+            System.out.println("222222-------"+new String(buf,0,const_str.length,"utf-8"));
+
             while (shouldRun) {
 
                 while (MirJNI.SDL_PollEvent(event_id) != 0) {
@@ -161,7 +166,7 @@ public class Main {
                 }
                 else
                 {
-                    //MirJNI.ImGui_Text();
+                    MirJNI.ImGui_Text(toCstyleBytes("标签"));
 
                     if(MirJNI.ImGui_InputText(toCstyleBytes("##"),buf))
                     {
@@ -173,7 +178,7 @@ public class Main {
                                 break;
                             }
                         }
-                        System.out.println("----------------------111--------------------");
+                        System.out.println("----------------------111--------------------"+new String(buf,0,const_str.length,"utf-8"));
                     }
                     else
                     {
@@ -183,7 +188,7 @@ public class Main {
                     MirJNI.ImGui_End();
                 }
 
-                MirJNI.SDL_RenderCopy(renderer_id, testTexture_id, null, dstRect);
+                //MirJNI.SDL_RenderCopy(renderer_id, testTexture_id, null, dstRect);
 
                 MirJNI.ImGui_Render(renderer_id);
                 MirJNI.SDL_RenderPresent(renderer_id);

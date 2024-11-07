@@ -2,9 +2,66 @@ package com.kindred.mir.test;
 
 import com.kindred.mir.test.event.Derived;
 
+import java.io.UnsupportedEncodingException;
+import java.nio.ByteBuffer;
+
 public class Test {
 
-    public static void main(String args[])
+    static byte[] toCstyleBytes(String s) {
+        if (s == null) {
+            return null;
+        }
+        //if (s.length() == 0 || s.charAt(s.length() - 1) != '\000') {
+        //    s += '\000';
+        //}
+        byte[] barr = null;
+        try {
+            barr = s.getBytes("utf-8");
+        } catch (UnsupportedEncodingException ex) {
+        }
+        return barr;
+    }
+
+    static int byteArrayToInt(byte[] byteArray) {
+        if (byteArray.length != 3) {
+            throw new IllegalArgumentException("字节数组长度必须为3");
+        }
+
+        // 使用位操作将字节数组合并为一个int值
+//        return ((byteArray[0] & 0xFF) << 16) |
+//                ((byteArray[1] & 0xFF) << 8)  |
+//                (byteArray[2] & 0xFF);
+
+        return ((byteArray[0] & 0x0F) << 12) | ((byteArray[1] & 0x3F) << 6) | (byteArray[2] & 0x3F);
+    }
+
+    public static void testCharset() throws Exception
+    {
+        String str = "主";
+        byte[] b1=str.getBytes("utf-8");
+        for (byte b : b1)
+        {
+            System.out.print((b & 0xff)+",");
+        }
+        System.out.println("----------------");
+        System.out.println("----------------byteArrayToInt: "+byteArrayToInt(b1));
+        String str2 = new String(b1, "utf-8");
+        byte[] b2 = str2.getBytes("utf-8");
+        for (byte b : b2)
+        {
+            System.out.print((b & 0xff)+",");
+        }
+        System.out.println("----------------str2: "+str2);
+        System.out.println("----------------byteArrayToInt: "+byteArrayToInt(b2));
+//        byte[] b3=new String("主").getBytes("utf-8");
+//        for (byte b : b3)
+//        {
+//            System.out.print(b+",");
+//        }
+//        System.out.println("----------------");
+    }
+
+    public static void testListener()
     {
         Derived test=new Derived();
         test.setListener((obj) -> {
@@ -21,5 +78,10 @@ public class Test {
             System.out.println("-----"+val.something);
         });
         test.setSomethingChange(2);
+    }
+
+    public static void main(String args[]) throws Exception
+    {
+        testCharset();
     }
 }

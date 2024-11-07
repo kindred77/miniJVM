@@ -38,7 +38,7 @@ public class MirJNI extends SDL {
     public static native void ImGui_SDL2_NewFrame();
     public static native void ImGui_NewFrame();
     public static native boolean ImGui_Begin();
-    public static native void ImGui_Text();
+    public static native void ImGui_Text(byte[] text);
     public static native boolean ImGui_InputText(byte[] title, byte[] buf);
     public static native void ImGui_End();
     public static native void ImGui_Render(long renderer_id);

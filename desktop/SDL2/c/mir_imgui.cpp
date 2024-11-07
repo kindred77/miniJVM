@@ -86,9 +86,9 @@ int Mir_ImGui_Begin()
     return ImGui::Begin("login", p_open, window_flags);
 }
 
-void Mir_ImGui_Text()
+void Mir_ImGui_Text(const char* text)
 {
-    ImGui::Text("This is some useful text.");
+    ImGui::Text(!text ? "##" : text);
 }
 
 int Mir_ImGui_InputText(const char* title, char * buf, int buf_length)
