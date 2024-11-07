@@ -1578,7 +1578,7 @@ void Mir_ImGui_SDL2_NewFrame();
 void Mir_ImGui_NewFrame();
 int Mir_ImGui_Begin();
 void Mir_ImGui_Text();
-void Mir_ImGui_InputText(const char * title, char * buf, int length);
+int Mir_ImGui_InputText(const char * title, char * buf, int length);
 void Mir_ImGui_End();
 void Mir_ImGui_Render(SDL_Renderer * renderer);
 void Mir_ImGui_Destroy();
@@ -1623,6 +1623,7 @@ int com_kindred_sdl_SDL_ImGui_Begin(Runtime *runtime, JClass *clazz) {
     JniEnv *env = runtime->jnienv;
 
     int ret = Mir_ImGui_Begin();
+
     env->push_int(runtime->stack, ret);
     return 0;
 }
@@ -1637,12 +1638,21 @@ int com_kindred_sdl_SDL_ImGui_InputText(Runtime *runtime, JClass *clazz) {
     s32 pos = 0;
 
     Instance *title_arr = env->localvar_getRefer(runtime->localvar, pos++);
-    c8 *title = title_arr->arr_body;
+    c8 *title = NULL;
+    if (title_arr) {
+        title = title_arr->arr_body;
+    }
 
     Instance *buf_arr = env->localvar_getRefer(runtime->localvar, pos++);
-    c8 *buf = buf_arr->arr_body;
-
-    Mir_ImGui_InputText(title, buf, buf_arr->arr_length);
+    int ret = -1;
+    if (!buf_arr) {
+        fprintf(stderr, "Failed to create inputtext, buffer is null. \n");
+    }
+    else {
+        c8 *buf = buf_arr->arr_body;
+        ret = Mir_ImGui_InputText(title, buf, buf_arr->arr_length);
+    }
+    env->push_int(runtime->stack, ret);
     return 0;
 }
 
@@ -1698,9 +1708,9 @@ static java_native_method method_mir_table[] = {
     {"com/kindred/mir/engine/MirJNI", "ImGui_SDLRenderer2_NewFrame", "()V",                com_kindred_sdl_SDL_ImGui_SDLRenderer2_NewFrame},
     {"com/kindred/mir/engine/MirJNI", "ImGui_SDL2_NewFrame", "()V",                com_kindred_sdl_SDL_ImGui_SDL2_NewFrame},
     {"com/kindred/mir/engine/MirJNI", "ImGui_NewFrame", "()V",                com_kindred_sdl_SDL_ImGui_NewFrame},
-    {"com/kindred/mir/engine/MirJNI", "ImGui_Begin", "()I",                com_kindred_sdl_SDL_ImGui_Begin},
+    {"com/kindred/mir/engine/MirJNI", "ImGui_Begin", "()Z",                com_kindred_sdl_SDL_ImGui_Begin},
     {"com/kindred/mir/engine/MirJNI", "ImGui_Text", "()V",                com_kindred_sdl_SDL_ImGui_Text},
-    {"com/kindred/mir/engine/MirJNI", "ImGui_InputText", "([B[B)V",                com_kindred_sdl_SDL_ImGui_InputText},
+    {"com/kindred/mir/engine/MirJNI", "ImGui_InputText", "([B[B)Z",                com_kindred_sdl_SDL_ImGui_InputText},
     {"com/kindred/mir/engine/MirJNI", "ImGui_End", "()V",                com_kindred_sdl_SDL_ImGui_End},
     {"com/kindred/mir/engine/MirJNI", "ImGui_Render", "(J)V",                com_kindred_sdl_SDL_ImGui_Render},
     {"com/kindred/mir/engine/MirJNI", "ImGui_Destroy", "()V",                com_kindred_sdl_SDL_ImGui_Destroy},

@@ -18,6 +18,10 @@ void Mir_ImGui_SDL2_Init(SDL_Window * window, SDL_Renderer *renderer) {
     // Setup Dear ImGui style
     ImGui::StyleColorsDark();
 
+    ImGuiStyle* style = &ImGui::GetStyle();
+    ImVec4* colors = style->Colors;
+    colors[ImGuiCol_FrameBg]                = ImVec4(0.00f, 0.00f, 0.00f, 1.0f);
+
     // Setup Platform/Renderer backends
     ImGui_ImplSDL2_InitForSDLRenderer(window, renderer);
     ImGui_ImplSDLRenderer2_Init(renderer);
@@ -49,7 +53,37 @@ void Mir_ImGui_NewFrame()
 
 int Mir_ImGui_Begin()
 {
-    return ImGui::Begin("login");
+    static bool no_titlebar = true;
+    static bool no_scrollbar = true;
+    static bool no_menu = true;
+    static bool no_move = true;
+    static bool no_resize = false;
+    static bool no_collapse = true;
+    static bool no_close = true;
+    static bool no_nav = true;
+    static bool no_background = false;
+    static bool no_bring_to_front = true;
+    static bool unsaved_document = true;
+
+    bool * p_open = NULL;
+
+    ImGuiWindowFlags window_flags = 0;
+    if (no_titlebar)        window_flags |= ImGuiWindowFlags_NoTitleBar;
+    if (no_scrollbar)       window_flags |= ImGuiWindowFlags_NoScrollbar;
+    if (!no_menu)           window_flags |= ImGuiWindowFlags_MenuBar;
+    if (no_move)            window_flags |= ImGuiWindowFlags_NoMove;
+    if (no_resize)          window_flags |= ImGuiWindowFlags_NoResize;
+    if (no_collapse)        window_flags |= ImGuiWindowFlags_NoCollapse;
+    if (no_nav)             window_flags |= ImGuiWindowFlags_NoNav;
+    if (no_background)      window_flags |= ImGuiWindowFlags_NoBackground;
+    if (no_bring_to_front)  window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus;
+    if (unsaved_document)   window_flags |= ImGuiWindowFlags_UnsavedDocument;
+    if (no_close)           p_open = NULL;
+
+    ImGui::SetNextWindowPos(ImVec2(50, 50), ImGuiCond_FirstUseEver);
+    ImGui::SetNextWindowSize(ImVec2(100, 30), ImGuiCond_FirstUseEver);
+
+    return ImGui::Begin("login", p_open, window_flags);
 }
 
 void Mir_ImGui_Text()
@@ -57,9 +91,15 @@ void Mir_ImGui_Text()
     ImGui::Text("This is some useful text.");
 }
 
-void Mir_ImGui_InputText(const char * title, char * buf, int buf_length)
+int Mir_ImGui_InputText(const char* title, char * buf, int buf_length)
 {
-    ImGui::InputText(title, buf, buf_length);
+    int ret = ImGui::InputText(!title ? "##" : title, buf, buf_length);
+    if (ret) {
+        ImGui::SeparatorText("---");
+        ImGui::DebugTextEncoding(buf);
+        fprintf(stdout, "----------%s-------- \n", buf);
+    }
+    return ret;
 }
 
 void Mir_ImGui_End()

@@ -2,6 +2,7 @@
 package com.kindred.mir;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 
 import com.kindred.mir.engine.MirJNI;
 import com.kindred.mir.libs.MirImage;
@@ -103,7 +104,7 @@ public class Main {
                 throw new IllegalStateException("Unable to create texture from surface: " + MirJNI.SDL_GetError());
             }
 
-            MirJNI.SDL_SetRenderDrawColor(renderer_id, 255, 0, 255, 255);
+            MirJNI.SDL_SetRenderDrawColor(renderer_id, 0, 0, 0, 255);
             MirJNI.SDL_RenderClear(renderer_id);
 
             //SDL_SetTextureColorMod(testTexture_id, 255, 0, 255);
@@ -115,6 +116,7 @@ public class Main {
 
             boolean shouldRun = true;
             long event_id = MirJNI.SDL_CreateEvent();
+            byte[] buf=new byte[64];
             while (shouldRun) {
 
                 while (MirJNI.SDL_PollEvent(event_id) != 0) {
@@ -152,17 +154,40 @@ public class Main {
                 MirJNI.ImGui_SDL2_NewFrame();
                 MirJNI.ImGui_NewFrame();
 
-                MirJNI.ImGui_Begin();
-                MirJNI.ImGui_Text();
-                byte[] buf=new byte[64];
-                MirJNI.ImGui_InputText(toCstyleBytes("编辑-kindred"),buf);
-                MirJNI.ImGui_End();
+                if (!MirJNI.ImGui_Begin())
+                {
+                    System.out.println("-------------------0000-----------------------");
+                    MirJNI.ImGui_End();
+                }
+                else
+                {
+                    //MirJNI.ImGui_Text();
+
+                    if(MirJNI.ImGui_InputText(toCstyleBytes("##"),buf))
+                    {
+                        for (byte b : buf)
+                        {
+                            System.out.print("-"+b);
+                            if (b == 0)
+                            {
+                                break;
+                            }
+                        }
+                        System.out.println("----------------------111--------------------");
+                    }
+                    else
+                    {
+                        //System.out.println("----------------------222--------------------");
+                    }
+
+                    MirJNI.ImGui_End();
+                }
 
                 MirJNI.SDL_RenderCopy(renderer_id, testTexture_id, null, dstRect);
 
                 MirJNI.ImGui_Render(renderer_id);
-
                 MirJNI.SDL_RenderPresent(renderer_id);
+
             }
 
             MirJNI.ImGui_Destroy();
