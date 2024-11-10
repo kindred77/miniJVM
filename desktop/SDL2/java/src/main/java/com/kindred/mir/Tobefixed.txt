@@ -1,0 +1,60 @@
+1、System.out.println()打印汉字会乱码，底层调用的是jni_std.c中的com_sun_cldc_io_ConsoleOutputStream_write函数，将字符串按字符使用fprintf输出。但是直接测试fprintf输出单个汉字也有问题，cmd执行chcp 65001可以设置成utf-8字符集。
+C测试内容可参考：
+
+#include <stdio.h>
+#include <tchar.h>
+
+int main()
+{
+//    int code = '主';
+//	wprintf(L"%d----%lc \n",code,code);
+//	const wchar_t * str=L"唐晔";
+//	wprintf(L"%ls----\n",str);
+
+	signed int chinese_char = '主';
+    //wprintf(L"%lc", chinese_char);
+    fprintf(stdout, "----------%c-------- \n", chinese_char);
+    wprintf(L"----------%lc-------- \n", chinese_char);
+
+    FILE *fp = fopen("test2.txt", "wb");
+    fprintf(fp, "%c", chinese_char);
+    //fwrite(&chinese_char, chinese_char, 1, fp);
+    fclose(fp);
+
+//    int code = '主';
+//    putchar(code);
+//    printf("%d-----%s \n", code, 97);
+//    fprintf(stdout, "----%c \n", code);
+//    const char * str = "唐晔";
+//    printf("%s------ \n", str);
+	return 0;
+}
+
+C++测试内容可参考：
+
+#include <stdio.h>
+#include <tchar.h>
+#include <iostream>
+
+int main()
+{
+//    int code = '主';
+//	wprintf(L"%d----%lc \n",code,code);
+//	const wchar_t * str=L"唐晔";
+//	wprintf(L"%ls----\n",str);
+
+	wchar_t chinese_char = L'主';
+	const wchar_t * str =L"我的大学";
+
+    std::wcout << str << L"大" << std::endl;
+    //char chinese_char2 = '主';
+    //std::cout << chinese_char2 << std::endl;
+
+//    int code = '主';
+//    putchar(code);
+//    printf("%d-----%s \n", code, 97);
+//    fprintf(stdout, "----%c \n", code);
+//    const char * str = "唐晔";
+//    printf("%s------ \n", str);
+	return 0;
+}

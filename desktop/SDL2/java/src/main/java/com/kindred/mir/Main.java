@@ -8,6 +8,7 @@ import com.kindred.mir.engine.MirJNI;
 import com.kindred.mir.libs.MirImage;
 import com.kindred.mir.libs.MirLib;
 
+import com.kindred.mir.test.Test;
 import com.kindred.sdl.constcode.*;
 
 import static com.kindred.sdl.constcode.SDLWindowFlags.SDL_WINDOW_MINIMIZED;
@@ -32,6 +33,7 @@ public class Main {
 
     public static void main(String args[])
     {
+        //System.setProperty("microedition.encoding","utf-8");
         try
         {
             int result = MirJNI.SDL_Init(SdlSubSystemConst.SDL_INIT_EVERYTHING);
@@ -61,7 +63,7 @@ public class Main {
             MirJNI.ImGui_SDL2_Init(win_id, renderer_id);
             //---------------------
 
-            MirLib mir_lib =new MirLib("C:\\mywork\\projects\\cpp\\devilutionX\\kindred\\devilutionX\\my_asset\\Prguse2_png.Lib");
+            MirLib mir_lib =new MirLib("D:\\mywork\\projects\\cpp\\devilutionX\\my_asset\\Prguse2_png.Lib");
             mir_lib.Initialize();
             
             MirImage img = mir_lib.GetMirImage(1360);
@@ -118,9 +120,13 @@ public class Main {
             long event_id = MirJNI.SDL_CreateEvent();
             byte[] buf=new byte[128];
             byte[] const_str=toCstyleBytes("请输入你的text");
+            //Test.fileOut(new String(const_str,0,const_str.length,"utf-8"));
             System.out.println("111111-------"+new String(const_str,0,const_str.length,"utf-8"));
+            Test.fileOut("1--------"+new String(const_str,0,const_str.length,"utf-8")+"\n");
             System.arraycopy(const_str,0,buf,0,const_str.length);
             System.out.println("222222-------"+new String(buf,0,const_str.length,"utf-8"));
+            Test.fileOut("2--------"+new String(buf,0,const_str.length,"utf-8")+"\n");
+            //Test.fileOut(new String(buf,0,const_str.length,"utf-8"));
 
             while (shouldRun) {
 
@@ -179,6 +185,7 @@ public class Main {
                             }
                         }
                         System.out.println("----------------------111--------------------"+new String(buf,0,const_str.length,"utf-8"));
+                        Test.fileOut(new String(buf,0,buf.length,"utf-8")+"\n");
                     }
                     else
                     {

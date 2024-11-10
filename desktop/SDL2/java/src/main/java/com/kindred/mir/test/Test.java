@@ -2,7 +2,7 @@ package com.kindred.mir.test;
 
 import com.kindred.mir.test.event.Derived;
 
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.nio.ByteBuffer;
 
 public class Test {
@@ -35,15 +35,34 @@ public class Test {
         return ((byteArray[0] & 0x0F) << 12) | ((byteArray[1] & 0x3F) << 6) | (byteArray[2] & 0x3F);
     }
 
+    public static void fileOut(String str)
+    {
+        try
+        {
+            FileOutputStream fos =new FileOutputStream("test.txt", true);
+            fos.write(str.getBytes("utf-8"));
+            fos.flush();
+            fos.close();
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
     public static void testCharset() throws Exception
     {
+        System.out.println("这是字符集测试例子....");
+        FileOutputStream bw =new FileOutputStream("test.txt");
         String str = "主";
+
+        System.out.println("----------------str: "+str);
         byte[] b1=str.getBytes("utf-8");
+        bw.write(b1);
         for (byte b : b1)
         {
             System.out.print((b & 0xff)+",");
         }
-        System.out.println("----------------");
         System.out.println("----------------byteArrayToInt: "+byteArrayToInt(b1));
         String str2 = new String(b1, "utf-8");
         byte[] b2 = str2.getBytes("utf-8");
@@ -51,14 +70,30 @@ public class Test {
         {
             System.out.print((b & 0xff)+",");
         }
+        bw.write(b2);
+        bw.flush();
+        bw.close();
         System.out.println("----------------str2: "+str2);
         System.out.println("----------------byteArrayToInt: "+byteArrayToInt(b2));
+
+        if(str.equals(str2))
+        {
+            System.out.println("----------------str == str2------");
+        }
 //        byte[] b3=new String("主").getBytes("utf-8");
 //        for (byte b : b3)
 //        {
 //            System.out.print(b+",");
 //        }
 //        System.out.println("----------------");
+    }
+
+    public static void charsetTest2()
+    {
+        String str = "主";
+        System.out.println(str);
+        String str2=new String(str.toCharArray());
+        System.out.println(str2);
     }
 
     public static void testListener()
@@ -82,6 +117,7 @@ public class Test {
 
     public static void main(String args[]) throws Exception
     {
-        testCharset();
+        //testCharset();
+        charsetTest2();
     }
 }

@@ -6,6 +6,9 @@
 #include "imgui_impl_sdl2.h"
 #include "imgui_impl_sdlrenderer2.h"
 
+#include <stdio.h>
+#include <iostream>
+
 extern "C" {
 
 void Mir_ImGui_SDL2_Init(SDL_Window * window, SDL_Renderer *renderer) {
@@ -94,11 +97,7 @@ void Mir_ImGui_Text(const char* text)
 int Mir_ImGui_InputText(const char* title, char * buf, int buf_length)
 {
     int ret = ImGui::InputText(!title ? "##" : title, buf, buf_length);
-    if (ret) {
-        ImGui::SeparatorText("---");
-        ImGui::DebugTextEncoding(buf);
-        fprintf(stdout, "----------%s-------- \n", buf);
-    }
+
     return ret;
 }
 
