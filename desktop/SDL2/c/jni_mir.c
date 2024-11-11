@@ -1578,7 +1578,8 @@ void Mir_ImGui_SDL2_NewFrame();
 void Mir_ImGui_NewFrame();
 int Mir_ImGui_Begin();
 void Mir_ImGui_Text(const char * text);
-int Mir_ImGui_InputText(const char * title, char * buf, int length);
+int Mir_ImGui_InputText(const char * title, char * buf, int length, int isPassword);
+int Mir_ImGui_InputTextMultiline(const char* title, char * buf, int buf_length, float width, int line_height_cnt);
 void Mir_ImGui_End();
 void Mir_ImGui_Render(SDL_Renderer * renderer);
 void Mir_ImGui_Destroy();
@@ -1653,13 +1654,44 @@ int com_kindred_sdl_SDL_ImGui_InputText(Runtime *runtime, JClass *clazz) {
     }
 
     Instance *buf_arr = env->localvar_getRefer(runtime->localvar, pos++);
-    int ret = -1;
+    s32 isPassword = env->localvar_getInt(runtime->localvar, pos++);
+    int ret = 0;
     if (!buf_arr) {
         fprintf(stderr, "Failed to create inputtext, buffer is null. \n");
     }
     else {
         c8 *buf = buf_arr->arr_body;
-        ret = Mir_ImGui_InputText(title, buf, buf_arr->arr_length);
+        ret = Mir_ImGui_InputText(title, buf, buf_arr->arr_length, isPassword);
+    }
+    env->push_int(runtime->stack, ret);
+    return 0;
+}
+
+int com_kindred_sdl_SDL_ImGui_InputTextMultiline(Runtime *runtime, JClass *clazz) {
+    JniEnv *env = runtime->jnienv;
+    s32 pos = 0;
+
+    Instance *label_arr = env->localvar_getRefer(runtime->localvar, pos++);
+    c8 *label = NULL;
+    if (label_arr) {
+        label = label_arr->arr_body;
+    }
+
+    Instance *buf_arr = env->localvar_getRefer(runtime->localvar, pos++);
+    
+    Int2Float pwidth;
+    pwidth.i = env->localvar_getInt(runtime->localvar, pos++);
+    float width = (float)pwidth.f;
+
+    s32 line_height_cnt = env->localvar_getInt(runtime->localvar, pos++);
+
+    int ret = 0;
+    if (!buf_arr) {
+        fprintf(stderr, "Failed to create multiline inputtext, buffer is null. \n");
+    }
+    else {
+        c8 *buf = buf_arr->arr_body;
+        ret = Mir_ImGui_InputTextMultiline(label, buf, buf_arr->arr_length, width, line_height_cnt);
     }
     env->push_int(runtime->stack, ret);
     return 0;
@@ -1719,7 +1751,8 @@ static java_native_method method_mir_table[] = {
     {"com/kindred/mir/engine/MirJNI", "ImGui_NewFrame", "()V",                com_kindred_sdl_SDL_ImGui_NewFrame},
     {"com/kindred/mir/engine/MirJNI", "ImGui_Begin", "()Z",                com_kindred_sdl_SDL_ImGui_Begin},
     {"com/kindred/mir/engine/MirJNI", "ImGui_Text", "([B)V",                com_kindred_sdl_SDL_ImGui_Text},
-    {"com/kindred/mir/engine/MirJNI", "ImGui_InputText", "([B[B)Z",                com_kindred_sdl_SDL_ImGui_InputText},
+    {"com/kindred/mir/engine/MirJNI", "ImGui_InputText", "([B[BZ)Z",                com_kindred_sdl_SDL_ImGui_InputText},
+    {"com/kindred/mir/engine/MirJNI", "ImGui_InputTextMultiline", "([B[BFI)Z",                com_kindred_sdl_SDL_ImGui_InputTextMultiline},
     {"com/kindred/mir/engine/MirJNI", "ImGui_End", "()V",                com_kindred_sdl_SDL_ImGui_End},
     {"com/kindred/mir/engine/MirJNI", "ImGui_Render", "(J)V",                com_kindred_sdl_SDL_ImGui_Render},
     {"com/kindred/mir/engine/MirJNI", "ImGui_Destroy", "()V",                com_kindred_sdl_SDL_ImGui_Destroy},

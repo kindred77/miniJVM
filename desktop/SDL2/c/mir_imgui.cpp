@@ -18,7 +18,7 @@ void Mir_ImGui_SDL2_Init(SDL_Window * window, SDL_Renderer *renderer) {
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
     io.ConfigInputTextCursorBlink=true;
-    io.ConfigInputTextEnterKeepActive=true;
+    //io.ConfigInputTextEnterKeepActive=true;
 
     // Setup Dear ImGui style
     ImGui::StyleColorsDark();
@@ -96,10 +96,23 @@ void Mir_ImGui_Text(const char* text)
     ImGui::Text(!text ? "##" : text);
 }
 
-int Mir_ImGui_InputText(const char* title, char * buf, int buf_length)
+int Mir_ImGui_InputText(const char* title, char * buf, int buf_length, int isPassword)
 {
-    int ret = ImGui::InputTextWithHint(!title ? "##" : title, "input text here", buf, buf_length);
-    //bool ret_b = ImGui::InputTextMultiline(!title ? "##" : title, buf, buf_length, ImVec2(-1, ImGui::GetTextLineHeight() * 16), ImGuiInputTextFlags_AllowTabInput);
+    int ret = -1;
+    if (isPassword) {
+        ret = ImGui::InputTextWithHint(!title ? "##" : title, "input password here", buf, buf_length, ImGuiInputTextFlags_Password);
+    }
+    else {
+        ret = ImGui::InputTextWithHint(!title ? "##" : title, "input text here", buf, buf_length);
+    }
+    
+    return ret;
+}
+
+int Mir_ImGui_InputTextMultiline(const char* title, char * buf, int buf_length, float width, int line_height_cnt)
+{
+    int ret = ImGui::InputTextMultiline(!title ? "##" : title, buf, buf_length, ImVec2(width, ImGui::GetTextLineHeight() * line_height_cnt), ImGuiInputTextFlags_AllowTabInput);
+
     return ret;
 }
 

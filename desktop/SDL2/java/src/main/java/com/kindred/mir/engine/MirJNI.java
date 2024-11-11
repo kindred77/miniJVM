@@ -39,8 +39,8 @@ public class MirJNI extends SDL {
     public static native void ImGui_NewFrame();
     public static native boolean ImGui_Begin();
     public static native void ImGui_Text(byte[] text);
-    public static native boolean ImGui_InputText(byte[] title, byte[] buf);
-    public static native boolean ImGui_InputText2(byte[] title, byte[] buf);
+    public static native boolean ImGui_InputText(byte[] label, byte[] buf, boolean isPassword);
+    public static native boolean ImGui_InputTextMultiline(byte[] label, byte[] buf, float width, int line_height_cnt);
     public static native void ImGui_End();
     public static native void ImGui_Render(long renderer_id);
     public static native void ImGui_Destroy();

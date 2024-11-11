@@ -129,7 +129,7 @@ public class Main {
 
             boolean shouldRun = true;
             long event_id = MirJNI.SDL_CreateEvent();
-            byte[] buf=new byte[128];
+            byte[] buf=new byte[64];
             byte[] const_str=toCstyleBytes("请输入你的text");
             //Test.fileOut(new String(const_str,0,const_str.length,"utf-8"));
             System.out.println("111111-------"+new String(const_str,0,const_str.length,"utf-8"));
@@ -185,7 +185,8 @@ public class Main {
                 {
                     MirJNI.ImGui_Text(toCstyleBytes("标签"));
 
-                    if(MirJNI.ImGui_InputText(toCstyleBytes("##"),buf))
+                    if(MirJNI.ImGui_InputTextMultiline(toCstyleBytes("##"),buf, 200.0f, 25))
+                    //if(MirJNI.ImGui_InputText(toCstyleBytes("##"),buf, false))
                     {
                         System.out.println("----------------------111-----------------buf.length: "+buf.length);
                         Test.fileOut(zeroEndBytesToString(buf)+"\n");
