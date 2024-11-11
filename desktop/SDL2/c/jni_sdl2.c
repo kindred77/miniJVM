@@ -7,12 +7,33 @@
 #include "jvm.h"
 #include "media.h"
 
-int com_kindred_sdl_SDL_SDL_Init(Runtime *runtime, JClass *clazz)
-{
+int com_kindred_sdl_SDL_SDL_Init(Runtime *runtime, JClass *clazz) {
     JniEnv *env = runtime->jnienv;
     s32 pos = 0;
     s32 flags = env->localvar_getInt(runtime->localvar, pos++);
     int ret = SDL_Init(flags);
+    env->push_int(runtime->stack, ret);
+    return 0;
+}
+
+int com_kindred_sdl_SDL_SDL_SetHint(Runtime *runtime, JClass *clazz) {
+    JniEnv *env = runtime->jnienv;
+    s32 pos = 0;
+
+    Instance *name_arr = env->localvar_getRefer(runtime->localvar, pos++);
+    c8 *name = NULL;
+    if (name_arr) {
+        name = name_arr->arr_body;
+    }
+
+    Instance *value_arr = env->localvar_getRefer(runtime->localvar, pos++);
+    c8 *value = NULL;
+    if (value_arr) {
+        value = value_arr->arr_body;
+    }
+    
+    SDL_bool ret = SDL_SetHint(name, value);
+
     env->push_int(runtime->stack, ret);
     return 0;
 }
@@ -599,6 +620,7 @@ int com_kindred_sdl_SDL_SDL_UpdateTexture(Runtime *runtime, JClass *clazz) {
 
 static java_native_method method_sdl_table[] = {
     {"com/kindred/sdl/SDL", "SDL_Init",                       "(I)I",                       com_kindred_sdl_SDL_SDL_Init},
+    {"com/kindred/sdl/SDL", "SDL_SetHint",                    "([B[B)Z",                    com_kindred_sdl_SDL_SDL_SetHint},
     {"com/kindred/sdl/SDL", "SDL_CreateWindow",               "([BIIIII)J",                 com_kindred_sdl_SDL_SDL_CreateWindow},
     {"com/kindred/sdl/SDL", "SDL_GetError",                   "()Ljava/lang/String;",       com_kindred_sdl_SDL_SDL_GetError},
     {"com/kindred/sdl/SDL", "SDL_CreateRenderer",             "(JII)J",                     com_kindred_sdl_SDL_SDL_CreateRenderer},

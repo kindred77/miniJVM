@@ -17,6 +17,8 @@ void Mir_ImGui_SDL2_Init(SDL_Window * window, SDL_Renderer *renderer) {
     ImGuiIO& io = ImGui::GetIO(); (void)io;
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+    io.ConfigInputTextCursorBlink=true;
+    io.ConfigInputTextEnterKeepActive=true;
 
     // Setup Dear ImGui style
     ImGui::StyleColorsDark();
@@ -96,8 +98,8 @@ void Mir_ImGui_Text(const char* text)
 
 int Mir_ImGui_InputText(const char* title, char * buf, int buf_length)
 {
-    int ret = ImGui::InputText(!title ? "##" : title, buf, buf_length);
-
+    int ret = ImGui::InputTextWithHint(!title ? "##" : title, "input text here", buf, buf_length);
+    //bool ret_b = ImGui::InputTextMultiline(!title ? "##" : title, buf, buf_length, ImVec2(-1, ImGui::GetTextLineHeight() * 16), ImGuiInputTextFlags_AllowTabInput);
     return ret;
 }
 

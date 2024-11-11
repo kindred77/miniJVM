@@ -18,6 +18,8 @@ public class SDL {
 
     public static native int SDL_Init(int flags);
 
+    public static native boolean SDL_SetHint(byte[] name, byte[] value);
+
     public static native long SDL_CreateWindow(byte[] title, int x, int y, int width, int height, int flags);
 
     public static native String SDL_GetError();

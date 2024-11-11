@@ -1,9 +1,7 @@
 
 package com.kindred.mir;
 
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.nio.charset.StandardCharsets;
 
 import com.kindred.mir.engine.MirJNI;
 import com.kindred.mir.libs.MirImage;
@@ -11,8 +9,6 @@ import com.kindred.mir.libs.MirLib;
 
 import com.kindred.mir.test.Test;
 import com.kindred.sdl.constcode.*;
-
-import static com.kindred.sdl.constcode.SDLWindowFlags.SDL_WINDOW_MINIMIZED;
 
 
 public class Main {
@@ -40,6 +36,10 @@ public class Main {
             int result = MirJNI.SDL_Init(SdlSubSystemConst.SDL_INIT_EVERYTHING);
             if (result != 0) {
                 throw new IllegalStateException("Unable to initialize SDL library (Error code " + result + "): " + MirJNI.SDL_GetError());
+            }
+            if (!MirJNI.SDL_SetHint(toCstyleBytes(SDL_Hints.SDL_HINT_IME_SHOW_UI), toCstyleBytes("1")))
+            {
+                throw new IllegalStateException("Unable to set hint: " + MirJNI.SDL_GetError());
             }
             // Create and init the window
             long win_id = MirJNI.SDL_CreateWindow(toCstyleBytes("窗口-kindred"),
