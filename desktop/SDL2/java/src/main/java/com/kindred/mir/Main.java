@@ -13,7 +13,7 @@ import com.kindred.sdl.constcode.*;
 
 public class Main {
 
-    static public byte[] toCstyleBytes(String s) {
+    public static byte[] toCstyleBytes(String s) {
         if (s == null) {
             return null;
         }
@@ -26,6 +26,15 @@ public class Main {
         } catch (UnsupportedEncodingException ex) {
         }
         return barr;
+    }
+
+    public static String zeroEndBytesToString(byte[]  buf) throws Exception
+    {
+        int acture_length=0;
+        for (byte b : buf) {
+            if (b != 0) acture_length++;
+        }
+        return new String(buf, 0, acture_length, "utf-8");
     }
 
     public static void main(String args[])
@@ -178,16 +187,8 @@ public class Main {
 
                     if(MirJNI.ImGui_InputText(toCstyleBytes("##"),buf))
                     {
-                        for (byte b : buf)
-                        {
-                            System.out.print("-"+b);
-                            if (b == 0)
-                            {
-                                break;
-                            }
-                        }
-                        System.out.println("----------------------111--------------------"+new String(buf,0,const_str.length,"utf-8"));
-                        Test.fileOut(new String(buf,0,buf.length,"utf-8")+"\n");
+                        System.out.println("----------------------111-----------------buf.length: "+buf.length);
+                        Test.fileOut(zeroEndBytesToString(buf)+"\n");
                     }
                     else
                     {
