@@ -1,6 +1,7 @@
 
 package com.kindred.mir;
 
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 
@@ -63,7 +64,8 @@ public class Main {
             MirJNI.ImGui_SDL2_Init(win_id, renderer_id);
             //---------------------
 
-            MirLib mir_lib =new MirLib("D:\\mywork\\projects\\cpp\\devilutionX\\my_asset\\Prguse2_png.Lib");
+            MirLib mir_lib =new MirLib("../../desktop/SDL2/java/src/main/resource/mir_res/Prguse2_png.Lib");
+
             mir_lib.Initialize();
             
             MirImage img = mir_lib.GetMirImage(1360);
