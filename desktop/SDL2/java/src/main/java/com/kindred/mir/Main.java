@@ -33,6 +33,7 @@ public class Main {
         int acture_length=0;
         for (byte b : buf) {
             if (b != 0) acture_length++;
+            else break;
         }
         return new String(buf, 0, acture_length, "utf-8");
     }
@@ -129,7 +130,7 @@ public class Main {
 
             boolean shouldRun = true;
             long event_id = MirJNI.SDL_CreateEvent();
-            byte[] buf=new byte[64];
+            byte[] buf=new byte[128];
             byte[] const_str=toCstyleBytes("请输入你的text");
             //Test.fileOut(new String(const_str,0,const_str.length,"utf-8"));
             System.out.println("111111-------"+new String(const_str,0,const_str.length,"utf-8"));
@@ -188,12 +189,11 @@ public class Main {
                     if(MirJNI.ImGui_InputTextMultiline(toCstyleBytes("##"),buf, 200.0f, 25))
                     //if(MirJNI.ImGui_InputText(toCstyleBytes("##"),buf, false))
                     {
-                        System.out.println("----------------------111-----------------buf.length: "+buf.length);
                         Test.fileOut(zeroEndBytesToString(buf)+"\n");
                     }
                     else
                     {
-                        //System.out.println("----------------------222--------------------");
+                        //System.out.println("----------------------333--------------------");
                     }
 
                     MirJNI.ImGui_End();
