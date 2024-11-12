@@ -214,10 +214,7 @@ public class Main {
                     if(MirJNI.ImGui_InputText(0, 0, 198, toCstyleBytes("##"), toCstyleBytes("请输入内容..."), buf, false))
                     {
                         Test.fileOut(zeroEndBytesToString(buf)+"\n");
-                    }
-                    else
-                    {
-                        //System.out.println("----------------------333--------------------");
+                        System.out.println("----------------------enter return--------------------");
                     }
 
                     MirJNI.ImGui_End();

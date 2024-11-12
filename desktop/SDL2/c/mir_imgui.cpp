@@ -118,20 +118,32 @@ void Mir_ImGui_Text(const char* text)
     ImGui::Text(!text ? "##" : text);
 }
 
+static int InputTextCallback(ImGuiInputTextCallbackData* data)
+{
+    // 在这里处理输入文本的变化
+    if (data->EventFlag == ImGuiInputTextFlags_CallbackCharFilter)
+    {
+        std::cout << "InputTextCallback--------000" << std::endl;
+        // 过滤掉特定字符，例如只允许数字
+        if (data->EventChar < '0' || data->EventChar > '9')
+            return 0; // 返回1表示忽略这个字符
+    }
+    return 0; // 返回0表示接受这个字符
+}
+
 int Mir_ImGui_InputText(float x, float y, float width, const char* label, const char * hint, char * buf, int buf_length, int isPassword)
 {
     ImGui::SetCursorPos(ImVec2(x, y));
     ImGui::SetNextItemWidth(width);
     
+    ImGuiInputTextCallbackData cb_user_data;
+
     int ret = -1;
     if (isPassword) {
-        ret = ImGui::InputTextWithHint(!label ? "##" : label, hint, buf, buf_length, ImGuiInputTextFlags_Password);
+        ret = ImGui::InputTextWithHint(!label ? "##" : label, hint, buf, buf_length, ImGuiInputTextFlags_Password | ImGuiInputTextFlags_EnterReturnsTrue/* , InputTextCallback, &cb_user_data */);
     }
     else {
-        ret = ImGui::InputTextWithHint(!label ? "##" : label, hint, buf, buf_length);
-
-        //ImVec2 inputSize(500, 20);
-        //ret = ImGui::InputTextWithHint(!label ? "##" : label, hint, buf, buf_length, ImGuiInputTextFlags_None, NULL, (void*)&inputSize);
+        ret = ImGui::InputTextWithHint(!label ? "##" : label, hint, buf, buf_length, ImGuiInputTextFlags_EnterReturnsTrue/* , InputTextCallback, &cb_user_data */);
     }
     
     return ret;
