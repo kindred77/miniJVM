@@ -1583,6 +1583,7 @@ int Mir_ImGui_Begin(const char * label, float x, float y, float width, float hei
 void Mir_ImGui_Text(const char * text);
 int Mir_ImGui_InputText(float x, float y, float width, const char * label, const char * hint, char * buf, int length, int isPassword);
 int Mir_ImGui_InputTextMultiline(const char* label, char * buf, int buf_length, float width, int line_height_cnt);
+int Mir_SetWindowFontScale(float scale);
 void Mir_ImGui_End();
 void Mir_ImGui_Render(SDL_Renderer * renderer);
 void Mir_ImGui_Destroy();
@@ -1808,6 +1809,19 @@ int com_kindred_sdl_SDL_ImGui_InputTextMultiline(Runtime *runtime, JClass *clazz
     return 0;
 }
 
+int com_kindred_sdl_SDL_ImGui_SetWindowFontScale(Runtime *runtime, JClass *clazz) {
+    JniEnv *env = runtime->jnienv;
+    s32 pos = 0;
+
+    Int2Float pscale;
+    pscale.i = env->localvar_getInt(runtime->localvar, pos++);
+    float scale = (float)pscale.f;
+
+    Mir_SetWindowFontScale(scale);
+
+    return 0;
+}
+
 int com_kindred_sdl_SDL_ImGui_End(Runtime *runtime, JClass *clazz) {
     Mir_ImGui_End();
     return 0;
@@ -1867,6 +1881,7 @@ static java_native_method method_mir_table[] = {
     {"com/kindred/mir/engine/MirJNI", "ImGui_Text", "([B)V",                com_kindred_sdl_SDL_ImGui_Text},
     {"com/kindred/mir/engine/MirJNI", "ImGui_InputText", "(FFF[B[B[BZ)Z",                com_kindred_sdl_SDL_ImGui_InputText},
     {"com/kindred/mir/engine/MirJNI", "ImGui_InputTextMultiline", "([B[BFI)Z",                com_kindred_sdl_SDL_ImGui_InputTextMultiline},
+    {"com/kindred/mir/engine/MirJNI", "ImGui_SetWindowFontScale", "(F)V",                com_kindred_sdl_SDL_ImGui_SetWindowFontScale},
     {"com/kindred/mir/engine/MirJNI", "ImGui_End", "()V",                com_kindred_sdl_SDL_ImGui_End},
     {"com/kindred/mir/engine/MirJNI", "ImGui_Render", "(J)V",                com_kindred_sdl_SDL_ImGui_Render},
     {"com/kindred/mir/engine/MirJNI", "ImGui_Destroy", "()V",                com_kindred_sdl_SDL_ImGui_Destroy},

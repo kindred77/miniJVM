@@ -101,6 +101,8 @@ int Mir_ImGui_Begin(const char * label, float x, float y, float width, float hei
     ImGui::SetNextWindowPos(ImVec2(x, y), ImGuiCond_FirstUseEver);
     ImGui::SetNextWindowSize(ImVec2(width, height), ImGuiCond_FirstUseEver);
 
+    
+
     // const ImGuiViewport* main_viewport = ImGui::GetMainViewport();
     // ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x + 650, main_viewport->WorkPos.y + 20), ImGuiCond_FirstUseEver);
     // ImGui::SetNextWindowSize(ImVec2(128, 30), ImGuiCond_FirstUseEver);
@@ -140,6 +142,16 @@ int Mir_ImGui_InputTextMultiline(const char* label, char * buf, int buf_length, 
     int ret = ImGui::InputTextMultiline(!label ? "##" : label, buf, buf_length, ImVec2(width, ImGui::GetTextLineHeight() * line_height_cnt), ImGuiInputTextFlags_AllowTabInput);
 
     return ret;
+}
+
+int Mir_SetWindowFontScale(float scale) {
+    ImGui::SetWindowFontScale(scale);
+
+    // ImGuiContext * context = ImGui::GetCurrentContext();
+    // ImGuiContext& g = *context;
+    // g.FontSize = scale;
+
+    return 0;
 }
 
 void Mir_ImGui_End()

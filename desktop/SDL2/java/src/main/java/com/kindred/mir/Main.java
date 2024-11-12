@@ -72,7 +72,7 @@ public class Main {
 
             //test imgui
             MirJNI.ImGui_SDL2_Init(win_id, renderer_id);
-            MirJNI.ImGui_InitFont(toCstyleBytes("NotoEmoji+NotoSansCJKSC-Regular.ttf"), 18f);
+            MirJNI.ImGui_InitFont(toCstyleBytes("NotoEmoji+NotoSansCJKSC-Regular.ttf"), 10f);
             MirJNI.ImGui_InitBackColor(1.0f, 1.0f, 1.0f, 0.5f);
             MirJNI.ImGui_InitForeColor(1.0f, 0.0f, 0.0f, 0.5f);
             //---------------------
@@ -141,13 +141,15 @@ public class Main {
             boolean shouldRun = true;
             long event_id = MirJNI.SDL_CreateEvent();
             byte[] buf=new byte[64];
-            byte[] const_str=toCstyleBytes("请输入你的text");
+            //byte[] const_str=toCstyleBytes("请输入你的text");
 //            System.out.println("111111-------"+new String(const_str,0,const_str.length,"utf-8"));
 //            Test.fileOut("1--------"+new String(const_str,0,const_str.length,"utf-8")+"\n");
 //            System.arraycopy(const_str,0,buf,0,const_str.length);
 //            System.out.println("222222-------"+new String(buf,0,const_str.length,"utf-8"));
 //            Test.fileOut("2--------"+new String(buf,0,const_str.length,"utf-8")+"\n");
 
+            long prev_ts = 0l;
+            int color_mod=0;
             while (shouldRun) {
 
                 while (MirJNI.SDL_PollEvent(event_id) != 0) {
@@ -182,7 +184,9 @@ public class Main {
 //                }
 
                 MirJNI.ImGui_SDLRenderer2_NewFrame();
+
                 MirJNI.ImGui_SDL2_NewFrame();
+
                 MirJNI.ImGui_NewFrame();
 
                 if (!MirJNI.ImGui_Begin(toCstyleBytes("login"), 100,350, 200, 25, true))
@@ -193,6 +197,18 @@ public class Main {
                 else
                 {
                     //MirJNI.ImGui_Text(toCstyleBytes("标签"));
+
+                    //动态修改一些属性
+                    long cur_ts = MirJNI.SDL_GetTicks();
+                    if ((cur_ts - prev_ts) > 5000)
+                    {
+                        color_mod++;
+                        //color_mod = color_mod % 3;
+                        prev_ts = cur_ts;
+                        MirJNI.ImGui_SetWindowFontScale(color_mod);
+                        MirJNI.ImGui_InitBackColor(color_mod%3 == 1 ? 1.0f:0f, color_mod%3 == 2 ? 1.0f:0f, color_mod%3 == 0 ? 1.0f:0f, 0.5f);
+                        MirJNI.ImGui_InitForeColor(color_mod%3 == 0 ? 1.0f:0f, color_mod%3 == 1 ? 1.0f:0f, color_mod%3 == 2 ? 1.0f:0f, 0.5f);
+                    }
 
                     //if(MirJNI.ImGui_InputTextMultiline(toCstyleBytes("##"),buf, 200.0f, 25))
                     if(MirJNI.ImGui_InputText(0, 0, 198, toCstyleBytes("##"), toCstyleBytes("请输入内容..."), buf, false))
