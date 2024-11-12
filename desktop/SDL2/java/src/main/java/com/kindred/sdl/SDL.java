@@ -22,6 +22,8 @@ public class SDL {
 
     public static native long SDL_CreateWindow(byte[] title, int x, int y, int width, int height, int flags);
 
+    public static native int SDL_SetWindowOpacity(long window_id, float opacity);
+
     public static native String SDL_GetError();
 
     public static native long SDL_CreateRenderer(long window_id, int idx, int flags);

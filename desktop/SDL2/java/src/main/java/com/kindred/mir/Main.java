@@ -220,6 +220,7 @@ public class Main {
                     MirJNI.ImGui_End();
                 }
 
+                MirJNI.SDL_SetWindowOpacity(win_id,0.5f);
                 MirJNI.ImGui_Render(renderer_id);
                 //覆盖inputtext
                 //MirJNI.SDL_RenderCopy(renderer_id, testTexture_id2, null, dstRect2);

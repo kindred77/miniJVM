@@ -58,6 +58,24 @@ int com_kindred_sdl_SDL_SDL_CreateWindow(Runtime *runtime, JClass *clazz) {
     return 0;
 }
 
+int com_kindred_sdl_SDL_SDL_SetWindowOpacity(Runtime *runtime, JClass *clazz) {
+    JniEnv *env = runtime->jnienv;
+    s32 pos = 0;
+
+    SDL_Window *window = (__refer) (intptr_t) env->localvar_getLong_2slot(runtime->localvar, pos);
+    pos += 2;
+
+    Int2Float popacity;
+    popacity.i = env->localvar_getInt(runtime->localvar, pos++);
+    float opacity = (float)popacity.f;
+
+    int ret = SDL_SetWindowOpacity(window, opacity);
+
+    env->push_int(runtime->stack, ret);
+
+    return 0;
+}
+
 int com_kindred_sdl_SDL_SDL_GetError(Runtime *runtime, JClass *clazz) {
     JniEnv *env = runtime->jnienv;
     c8 *cstr = (c8 *) SDL_GetError();
@@ -631,6 +649,7 @@ static java_native_method method_sdl_table[] = {
     {"com/kindred/sdl/SDL", "SDL_Init",                       "(I)I",                       com_kindred_sdl_SDL_SDL_Init},
     {"com/kindred/sdl/SDL", "SDL_SetHint",                    "([B[B)Z",                    com_kindred_sdl_SDL_SDL_SetHint},
     {"com/kindred/sdl/SDL", "SDL_CreateWindow",               "([BIIIII)J",                 com_kindred_sdl_SDL_SDL_CreateWindow},
+    {"com/kindred/sdl/SDL", "SDL_SetWindowOpacity",           "(JF)I",                      com_kindred_sdl_SDL_SDL_SetWindowOpacity},
     {"com/kindred/sdl/SDL", "SDL_GetError",                   "()Ljava/lang/String;",       com_kindred_sdl_SDL_SDL_GetError},
     {"com/kindred/sdl/SDL", "SDL_CreateRenderer",             "(JII)J",                     com_kindred_sdl_SDL_SDL_CreateRenderer},
     {"com/kindred/sdl/SDL", "SDL_RWFromConstMem",             "([BI)J",                     com_kindred_sdl_SDL_SDL_RWFromConstMem},
