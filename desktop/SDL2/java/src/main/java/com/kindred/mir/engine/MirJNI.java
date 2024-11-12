@@ -33,13 +33,16 @@ public class MirJNI extends SDL {
 
 
     public static native void ImGui_SDL2_Init(long window_id,long renderer_id);
+    public static native void ImGui_InitBackColor(float red, float green, float blue, float alpha);
+    public static native void ImGui_InitForeColor(float red, float green, float blue, float alpha);
+    public static native void ImGui_InitFont(byte[] font_name, float size);
     public static native int ImGui_SDL2_ProcessEvent(long event_id);
     public static native void ImGui_SDLRenderer2_NewFrame();
     public static native void ImGui_SDL2_NewFrame();
     public static native void ImGui_NewFrame();
-    public static native boolean ImGui_Begin();
+    public static native boolean ImGui_Begin(byte[] label, float x, float y, float width, float height, boolean no_background);
     public static native void ImGui_Text(byte[] text);
-    public static native boolean ImGui_InputText(byte[] label, byte[] buf, boolean isPassword);
+    public static native boolean ImGui_InputText(float x, float y, float width, byte[] label, byte[] hint, byte[] buf, boolean isPassword);
     public static native boolean ImGui_InputTextMultiline(byte[] label, byte[] buf, float width, int line_height_cnt);
     public static native void ImGui_End();
     public static native void ImGui_Render(long renderer_id);

@@ -14,26 +14,37 @@ extern "C" {
 void Mir_ImGui_SDL2_Init(SDL_Window * window, SDL_Renderer *renderer) {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO(); (void)io;
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
-    io.ConfigInputTextCursorBlink=true;
+    
     //io.ConfigInputTextEnterKeepActive=true;
 
     // Setup Dear ImGui style
     ImGui::StyleColorsDark();
 
-    ImGuiStyle* style = &ImGui::GetStyle();
-    ImVec4* colors = style->Colors;
-    colors[ImGuiCol_FrameBg]                = ImVec4(0.00f, 0.00f, 0.00f, 1.0f);
-
     // Setup Platform/Renderer backends
     ImGui_ImplSDL2_InitForSDLRenderer(window, renderer);
     ImGui_ImplSDLRenderer2_Init(renderer);
 
-    ImFont* font = io.Fonts->AddFontFromFileTTF("NotoEmoji+NotoSansCJKSC-Regular.ttf", 18.0f, nullptr, io.Fonts->GetGlyphRangesChineseFull());
-    IM_ASSERT(font != nullptr);
+}
 
+void Mir_ImGui_InitBackColor(float r, float g, float b, float alpha) {
+    ImGuiStyle* style = &ImGui::GetStyle();
+    ImVec4* colors = style->Colors;
+    colors[ImGuiCol_FrameBg] = ImVec4(r, g, b, alpha);
+}
+
+void Mir_ImGui_InitForeColor(float r, float g, float b, float alpha) {
+    ImGuiStyle* style = &ImGui::GetStyle();
+    ImVec4* colors = style->Colors;
+    colors[ImGuiCol_Text] = ImVec4(r, g, b, alpha);
+}
+
+void Mir_ImGui_InitFont(const char * font_name, float size) {
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+    io.ConfigInputTextCursorBlink=true;
+    ImFont* font = io.Fonts->AddFontFromFileTTF(font_name, size, nullptr, io.Fonts->GetGlyphRangesChineseFull());
+    IM_ASSERT(font != nullptr);
 }
 
 int Mir_ImGui_SDL2_ProcessEvent(SDL_Event * event)
@@ -56,19 +67,20 @@ void Mir_ImGui_NewFrame()
     ImGui::NewFrame();
 }
 
-int Mir_ImGui_Begin()
+int Mir_ImGui_Begin(const char * label, float x, float y, float width, float height, int no_background_arg)
 {
     static bool no_titlebar = true;
     static bool no_scrollbar = true;
     static bool no_menu = true;
     static bool no_move = true;
-    static bool no_resize = false;
+    static bool no_resize = true;
     static bool no_collapse = true;
     static bool no_close = true;
     static bool no_nav = true;
-    static bool no_background = false;
+    static bool no_background = no_background_arg;
     static bool no_bring_to_front = true;
     static bool unsaved_document = true;
+    static bool no_saved_settings = true;
 
     bool * p_open = NULL;
 
@@ -83,35 +95,49 @@ int Mir_ImGui_Begin()
     if (no_background)      window_flags |= ImGuiWindowFlags_NoBackground;
     if (no_bring_to_front)  window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus;
     if (unsaved_document)   window_flags |= ImGuiWindowFlags_UnsavedDocument;
+    if (no_saved_settings)   window_flags |= ImGuiWindowFlags_NoSavedSettings;
     if (no_close)           p_open = NULL;
 
-    ImGui::SetNextWindowPos(ImVec2(50, 50), ImGuiCond_FirstUseEver);
-    ImGui::SetNextWindowSize(ImVec2(100, 30), ImGuiCond_FirstUseEver);
+    ImGui::SetNextWindowPos(ImVec2(x, y), ImGuiCond_FirstUseEver);
+    ImGui::SetNextWindowSize(ImVec2(width, height), ImGuiCond_FirstUseEver);
 
-    return ImGui::Begin("login", p_open, window_flags);
+    // const ImGuiViewport* main_viewport = ImGui::GetMainViewport();
+    // ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x + 650, main_viewport->WorkPos.y + 20), ImGuiCond_FirstUseEver);
+    // ImGui::SetNextWindowSize(ImVec2(128, 30), ImGuiCond_FirstUseEver);
+    
+    int ret = ImGui::Begin(!label ? "##" : label, p_open, window_flags);
+    
+    return ret;
 }
 
 void Mir_ImGui_Text(const char* text)
 {
+    
     ImGui::Text(!text ? "##" : text);
 }
 
-int Mir_ImGui_InputText(const char* title, char * buf, int buf_length, int isPassword)
+int Mir_ImGui_InputText(float x, float y, float width, const char* label, const char * hint, char * buf, int buf_length, int isPassword)
 {
+    ImGui::SetCursorPos(ImVec2(x, y));
+    ImGui::SetNextItemWidth(width);
+    
     int ret = -1;
     if (isPassword) {
-        ret = ImGui::InputTextWithHint(!title ? "##" : title, "input password here", buf, buf_length, ImGuiInputTextFlags_Password);
+        ret = ImGui::InputTextWithHint(!label ? "##" : label, hint, buf, buf_length, ImGuiInputTextFlags_Password);
     }
     else {
-        ret = ImGui::InputTextWithHint(!title ? "##" : title, "input text here", buf, buf_length);
+        ret = ImGui::InputTextWithHint(!label ? "##" : label, hint, buf, buf_length);
+
+        //ImVec2 inputSize(500, 20);
+        //ret = ImGui::InputTextWithHint(!label ? "##" : label, hint, buf, buf_length, ImGuiInputTextFlags_None, NULL, (void*)&inputSize);
     }
     
     return ret;
 }
 
-int Mir_ImGui_InputTextMultiline(const char* title, char * buf, int buf_length, float width, int line_height_cnt)
+int Mir_ImGui_InputTextMultiline(const char* label, char * buf, int buf_length, float width, int line_height_cnt)
 {
-    int ret = ImGui::InputTextMultiline(!title ? "##" : title, buf, buf_length, ImVec2(width, ImGui::GetTextLineHeight() * line_height_cnt), ImGuiInputTextFlags_AllowTabInput);
+    int ret = ImGui::InputTextMultiline(!label ? "##" : label, buf, buf_length, ImVec2(width, ImGui::GetTextLineHeight() * line_height_cnt), ImGuiInputTextFlags_AllowTabInput);
 
     return ret;
 }

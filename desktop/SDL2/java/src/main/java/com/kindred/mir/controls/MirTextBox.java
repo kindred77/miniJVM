@@ -6,12 +6,12 @@ import com.kindred.mir.util.Color;
 public class MirTextBox extends MirControl {
 
     private boolean canLoseFocus;
-//    private TextBox textBox;
-//
-//    public MirTextBox()
-//    {
-//        backColor = Color.Black;
-//
+    //private TextBox textBox;
+
+    public MirTextBox()
+    {
+        backColor = Color.Black;
+
 //        TextBox = new TextBox
 //        {
 //            BackColor = BackColour,
@@ -23,7 +23,7 @@ public class MirTextBox extends MirControl {
 //                    Visible = Visible,
 //                    Tag = this,
 //        };
-//
+
 //        TextBox.VisibleChanged += TextBox_VisibleChanged;
 //        TextBox.ParentChanged += TextBox_VisibleChanged;
 //        TextBox.KeyUp += TextBoxOnKeyUp;
@@ -31,130 +31,131 @@ public class MirTextBox extends MirControl {
 //
 //        Shown += MirTextBox_Shown;
 //        TextBox.MouseMove += CMain.CMain_MouseMove;
-//    }
-//
-//    @Override
-//    protected void onBackColorChanged()
-//    {
-//        super.onBackColorChanged();
+    }
+
+    @Override
+    protected void onBackColorChanged()
+    {
+        super.onBackColorChanged();
 //        if (textBox != null && !textBox.IsDisposed)
 //            textBox.BackColor = backColour;
-//    }
-//
-//    @Override
-//    protected void onEnabledChanged()
-//    {
-//        super.onEnabledChanged();
+    }
+
+    @Override
+    protected void onEnabledChanged()
+    {
+        super.onEnabledChanged();
 //        if (textBox != null && !textBox.IsDisposed)
 //            textBox.Enabled = isEnabled;
-//    }
-//
-//    @Override
-//    protected void onForeColorChanged()
-//    {
-//        super.onForeColorChanged();
+    }
+
+    @Override
+    protected void onForeColorChanged()
+    {
+        super.onForeColorChanged();
 //        if (textBox != null && !textBox.IsDisposed)
 //            textBox.ForeColor = foreColor;
-//    }
-//
-//    @Override
-//    protected void onLocationChanged()
-//    {
-//        super.onLocationChanged();
+    }
+
+    @Override
+    protected void onLocationChanged()
+    {
+        super.onLocationChanged();
 //        if (textBox != null && !textBox.IsDisposed)
 //            textBox.Location = DisplayLocation;
-//    }
-//
-//    public int getMaxLength()
-//    {
+    }
+
+    public int getMaxLength()
+    {
 //        if (textBox != null && !textBox.IsDisposed)
 //            return textBox.MaxLength;
-//        return -1;
-//    }
-//
-//    public void setMaxLength(int maxLength)
-//    {
+        return -1;
+    }
+
+    public void setMaxLength(int maxLength)
+    {
 //        if (textBox != null && !textBox.IsDisposed)
 //            textBox.MaxLength = value;
-//    }
-//
-//    @Override
-//    protected void onParentChanged()
-//    {
-//        super.onParentChanged();
+    }
+
+    @Override
+    protected void onParentChanged()
+    {
+        super.onParentChanged();
 //        if (textBox != null && !textBox.IsDisposed)
 //            onVisibleChanged();
-//    }
-//
-//    public boolean getIsPassword()
-//    {
+    }
+
+    public boolean getIsPassword()
+    {
 //        if (TextBox != null && !TextBox.IsDisposed)
 //            return TextBox.UseSystemPasswordChar;
-//        return false;
-//    }
-//
-//    public void setIsPassword(boolean isPassword)
-//    {
+        return false;
+    }
+
+    public void setIsPassword(boolean isPassword)
+    {
 //        if (TextBox != null && !TextBox.IsDisposed)
 //            TextBox.UseSystemPasswordChar = value;
-//    }
-//
-//    public Font getFont()
-//    {
+    }
+
+    public Font getFont()
+    {
 //        if (TextBox != null && !TextBox.IsDisposed)
 //            return TextBox.Font;
-//        return null;
-//    }
-//
-//    public void setFont(Font font)
-//    {
+        return null;
+    }
+
+    public void setFont(Font font)
+    {
 //        if (TextBox != null && !TextBox.IsDisposed)
 //            TextBox.Font = value;
-//    }
-//
-//    @Override
-//    protected void onSizeChanged()
-//    {
+    }
+
+    @Override
+    protected void onSizeChanged()
+    {
 //        textBox.Size = getSize();
 //        size = textBox.Size;
 //
 //        if (textBox != null && !textBox.IsDisposed)
 //            super.onSizeChanged();
-//    }
-//
-//    public String getText()
-//    {
+    }
+
+    public String getText()
+    {
 //        if (textBox != null && !textBox.IsDisposed)
 //            return textBox.Text;
-//        return null;
-//    }
-//    public void setText(String text)
-//    {
+        return null;
+    }
+    public void setText(String text)
+    {
 //        if (textBox != null && !textBox.IsDisposed)
 //            textBox.Text = text;
-//    }
-//
-//    public String[] getMultiText()
-//    {
+    }
+
+    public String[] getMultiText()
+    {
 //        if (textBox != null && !textBox.IsDisposed)
 //            return textBox.Lines;
-//        return null;
-//    }
-//
-//    public void setMultiText(String[] texts)
-//    {
+        return null;
+    }
+
+    public void setMultiText(String[] texts)
+    {
 //        if (textBox != null && !textBox.IsDisposed)
 //            textBox.Lines = texts;
-//    }
-//
-//    @Override
-//    protected void onVisibleChanged()
-//    {
-//        super.onVisibleChanged();
-//
+    }
+
+    @Override
+    protected void onVisibleChanged()
+    {
+        super.onVisibleChanged();
+
 //        if (textBox != null && !textBox.IsDisposed)
 //            textBox.Visible = Visible;
-//    }
+    }
+
 //    private void textBox_VisibleChanged(object sender, EventArgs e)
 //    {
 //        dialogChanged();
@@ -167,6 +168,7 @@ public class MirTextBox extends MirControl {
 //            if (Program.Form.ActiveControl == TextBox)
 //                Program.Form.Focus();
 //    }
+
 //    private void SetFocus(object sender, EventArgs e)
 //    {
 //        if (TextBox.Visible)

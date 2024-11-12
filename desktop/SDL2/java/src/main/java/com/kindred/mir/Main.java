@@ -72,6 +72,9 @@ public class Main {
 
             //test imgui
             MirJNI.ImGui_SDL2_Init(win_id, renderer_id);
+            MirJNI.ImGui_InitFont(toCstyleBytes("NotoEmoji+NotoSansCJKSC-Regular.ttf"), 18f);
+            MirJNI.ImGui_InitBackColor(1.0f, 1.0f, 1.0f, 0.5f);
+            MirJNI.ImGui_InitForeColor(1.0f, 0.0f, 0.0f, 0.5f);
             //---------------------
 
             MirLib mir_lib =new MirLib("../../desktop/SDL2/java/src/main/resource/mir_res/Prguse2_png.Lib");
@@ -80,6 +83,7 @@ public class Main {
             
             MirImage img = mir_lib.GetMirImage(1360);
             MirImage img2 = mir_lib.GetMirImage(1205);
+
 
             //effect
             //int ret = MirJNI.Mir_SurfaceInverse(img.getSurface());
@@ -118,6 +122,11 @@ public class Main {
                 throw new IllegalStateException("Unable to create texture from surface: " + MirJNI.SDL_GetError());
             }
 
+            long testTexture_id2 = MirJNI.SDL_CreateTextureFromSurface(renderer_id, img2.getSurface());
+            if (testTexture_id2 == 0) {
+                throw new IllegalStateException("Unable to create texture from surface2: " + MirJNI.SDL_GetError());
+            }
+
             MirJNI.SDL_SetRenderDrawColor(renderer_id, 0, 0, 0, 255);
             MirJNI.SDL_RenderClear(renderer_id);
 
@@ -126,19 +135,18 @@ public class Main {
             MirJNI.SDL_SetTextureBlendMode(testTexture_id, SDLBlendMode.SDL_BLENDMODE_BLEND);
             //SDL_SetTextureAlphaMod(testTexture_id, 255);
             int[] dstRect = {0, 0, img.getWidth(), img.getHeight()};
+            int[] dstRect2 = {10, 10, img2.getWidth(), img2.getHeight()};
 
 
             boolean shouldRun = true;
             long event_id = MirJNI.SDL_CreateEvent();
-            byte[] buf=new byte[128];
+            byte[] buf=new byte[64];
             byte[] const_str=toCstyleBytes("请输入你的text");
-            //Test.fileOut(new String(const_str,0,const_str.length,"utf-8"));
-            System.out.println("111111-------"+new String(const_str,0,const_str.length,"utf-8"));
-            Test.fileOut("1--------"+new String(const_str,0,const_str.length,"utf-8")+"\n");
-            System.arraycopy(const_str,0,buf,0,const_str.length);
-            System.out.println("222222-------"+new String(buf,0,const_str.length,"utf-8"));
-            Test.fileOut("2--------"+new String(buf,0,const_str.length,"utf-8")+"\n");
-            //Test.fileOut(new String(buf,0,const_str.length,"utf-8"));
+//            System.out.println("111111-------"+new String(const_str,0,const_str.length,"utf-8"));
+//            Test.fileOut("1--------"+new String(const_str,0,const_str.length,"utf-8")+"\n");
+//            System.arraycopy(const_str,0,buf,0,const_str.length);
+//            System.out.println("222222-------"+new String(buf,0,const_str.length,"utf-8"));
+//            Test.fileOut("2--------"+new String(buf,0,const_str.length,"utf-8")+"\n");
 
             while (shouldRun) {
 
@@ -177,17 +185,17 @@ public class Main {
                 MirJNI.ImGui_SDL2_NewFrame();
                 MirJNI.ImGui_NewFrame();
 
-                if (!MirJNI.ImGui_Begin())
+                if (!MirJNI.ImGui_Begin(toCstyleBytes("login"), 100,350, 200, 25, true))
                 {
                     System.out.println("-------------------0000-----------------------");
                     MirJNI.ImGui_End();
                 }
                 else
                 {
-                    MirJNI.ImGui_Text(toCstyleBytes("标签"));
+                    //MirJNI.ImGui_Text(toCstyleBytes("标签"));
 
-                    if(MirJNI.ImGui_InputTextMultiline(toCstyleBytes("##"),buf, 200.0f, 25))
-                    //if(MirJNI.ImGui_InputText(toCstyleBytes("##"),buf, false))
+                    //if(MirJNI.ImGui_InputTextMultiline(toCstyleBytes("##"),buf, 200.0f, 25))
+                    if(MirJNI.ImGui_InputText(0, 0, 198, toCstyleBytes("##"), toCstyleBytes("请输入内容..."), buf, false))
                     {
                         Test.fileOut(zeroEndBytesToString(buf)+"\n");
                     }
@@ -199,9 +207,9 @@ public class Main {
                     MirJNI.ImGui_End();
                 }
 
-                //MirJNI.SDL_RenderCopy(renderer_id, testTexture_id, null, dstRect);
-
                 MirJNI.ImGui_Render(renderer_id);
+                //覆盖inputtext
+                //MirJNI.SDL_RenderCopy(renderer_id, testTexture_id2, null, dstRect2);
                 MirJNI.SDL_RenderPresent(renderer_id);
 
             }

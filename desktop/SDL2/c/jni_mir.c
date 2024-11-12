@@ -1572,14 +1572,17 @@ int com_kindred_sdl_SDL_Mir_SurfaceBlendAddTransparent(Runtime *runtime, JClass 
 
 
 void Mir_ImGui_SDL2_Init(SDL_Window * window, SDL_Renderer *renderer);
+void Mir_ImGui_InitBackColor(float r, float g, float b, float alpha);
+void Mir_ImGui_InitForeColor(float r, float g, float b, float alpha);
+void Mir_ImGui_InitFont(const char * font_name, float size);
 int Mir_ImGui_SDL2_ProcessEvent(SDL_Event * event);
 void Mir_ImGui_SDLRenderer2_NewFrame();
 void Mir_ImGui_SDL2_NewFrame();
 void Mir_ImGui_NewFrame();
-int Mir_ImGui_Begin();
+int Mir_ImGui_Begin(const char * label, float x, float y, float width, float height, int no_background);
 void Mir_ImGui_Text(const char * text);
-int Mir_ImGui_InputText(const char * title, char * buf, int length, int isPassword);
-int Mir_ImGui_InputTextMultiline(const char* title, char * buf, int buf_length, float width, int line_height_cnt);
+int Mir_ImGui_InputText(float x, float y, float width, const char * label, const char * hint, char * buf, int length, int isPassword);
+int Mir_ImGui_InputTextMultiline(const char* label, char * buf, int buf_length, float width, int line_height_cnt);
 void Mir_ImGui_End();
 void Mir_ImGui_Render(SDL_Renderer * renderer);
 void Mir_ImGui_Destroy();
@@ -1592,6 +1595,71 @@ int com_kindred_sdl_SDL_ImGui_SDL2_Init(Runtime *runtime, JClass *clazz) {
     SDL_Renderer *renderer = (__refer) (intptr_t) env->localvar_getLong_2slot(runtime->localvar, pos);
     pos += 2;
     Mir_ImGui_SDL2_Init(window, renderer);
+    return 0;
+}
+
+int com_kindred_sdl_SDL_ImGui_InitBackColor(Runtime *runtime, JClass *clazz) {
+    JniEnv *env = runtime->jnienv;
+    s32 pos = 0;
+
+    Int2Float pred;
+    pred.i = env->localvar_getInt(runtime->localvar, pos++);
+    float red = (float)pred.f;
+
+    Int2Float pgreen;
+    pgreen.i = env->localvar_getInt(runtime->localvar, pos++);
+    float green = (float)pgreen.f;
+
+    Int2Float pblue;
+    pblue.i = env->localvar_getInt(runtime->localvar, pos++);
+    float blue = (float)pblue.f;
+
+    Int2Float palpha;
+    palpha.i = env->localvar_getInt(runtime->localvar, pos++);
+    float alpha = (float)palpha.f;
+
+    Mir_ImGui_InitBackColor(red, green, blue, alpha);
+    return 0;
+}
+
+int com_kindred_sdl_SDL_ImGui_InitForeColor(Runtime *runtime, JClass *clazz) {
+    JniEnv *env = runtime->jnienv;
+    s32 pos = 0;
+
+    Int2Float pred;
+    pred.i = env->localvar_getInt(runtime->localvar, pos++);
+    float red = (float)pred.f;
+
+    Int2Float pgreen;
+    pgreen.i = env->localvar_getInt(runtime->localvar, pos++);
+    float green = (float)pgreen.f;
+
+    Int2Float pblue;
+    pblue.i = env->localvar_getInt(runtime->localvar, pos++);
+    float blue = (float)pblue.f;
+
+    Int2Float palpha;
+    palpha.i = env->localvar_getInt(runtime->localvar, pos++);
+    float alpha = (float)palpha.f;
+
+    Mir_ImGui_InitForeColor(red, green, blue, alpha);
+    return 0;
+}
+
+int com_kindred_sdl_SDL_ImGui_InitFont(Runtime *runtime, JClass *clazz) {
+    JniEnv *env = runtime->jnienv;
+    s32 pos = 0;
+    Instance *font_name_arr = env->localvar_getRefer(runtime->localvar, pos++);
+    c8 *font_name = NULL;
+    if (font_name_arr) {
+        font_name = font_name_arr->arr_body;
+    }
+
+    Int2Float psize;
+    psize.i = env->localvar_getInt(runtime->localvar, pos++);
+    float size = (float)psize.f;
+    Mir_ImGui_InitFont(font_name, size);
+
     return 0;
 }
 
@@ -1622,8 +1690,33 @@ int com_kindred_sdl_SDL_ImGui_NewFrame(Runtime *runtime, JClass *clazz) {
 
 int com_kindred_sdl_SDL_ImGui_Begin(Runtime *runtime, JClass *clazz) {
     JniEnv *env = runtime->jnienv;
+    s32 pos = 0;
 
-    int ret = Mir_ImGui_Begin();
+    Instance *label_arr = env->localvar_getRefer(runtime->localvar, pos++);
+    c8 *label = NULL;
+    if (label_arr) {
+        label = label_arr->arr_body;
+    }
+
+    Int2Float px;
+    px.i = env->localvar_getInt(runtime->localvar, pos++);
+    float x = (float)px.f;
+
+    Int2Float py;
+    py.i = env->localvar_getInt(runtime->localvar, pos++);
+    float y = (float)py.f;
+
+    Int2Float pwidth;
+    pwidth.i = env->localvar_getInt(runtime->localvar, pos++);
+    float width = (float)pwidth.f;
+
+    Int2Float pheight;
+    pheight.i = env->localvar_getInt(runtime->localvar, pos++);
+    float height = (float)pheight.f;
+
+    s32 no_background = env->localvar_getInt(runtime->localvar, pos++);
+
+    int ret = Mir_ImGui_Begin(label, x, y, width, height, no_background);
 
     env->push_int(runtime->stack, ret);
     return 0;
@@ -1646,11 +1739,29 @@ int com_kindred_sdl_SDL_ImGui_Text(Runtime *runtime, JClass *clazz) {
 int com_kindred_sdl_SDL_ImGui_InputText(Runtime *runtime, JClass *clazz) {
     JniEnv *env = runtime->jnienv;
     s32 pos = 0;
+    
+    Int2Float px;
+    px.i = env->localvar_getInt(runtime->localvar, pos++);
+    float x = (float)px.f;
 
-    Instance *title_arr = env->localvar_getRefer(runtime->localvar, pos++);
-    c8 *title = NULL;
-    if (title_arr) {
-        title = title_arr->arr_body;
+    Int2Float py;
+    py.i = env->localvar_getInt(runtime->localvar, pos++);
+    float y = (float)py.f;
+
+    Int2Float pwidth;
+    pwidth.i = env->localvar_getInt(runtime->localvar, pos++);
+    float width = (float)pwidth.f;
+
+    Instance *label_arr = env->localvar_getRefer(runtime->localvar, pos++);
+    c8 *label = NULL;
+    if (label_arr) {
+        label = label_arr->arr_body;
+    }
+
+    Instance *hint_arr = env->localvar_getRefer(runtime->localvar, pos++);
+    c8 *hint = NULL;
+    if (hint_arr) {
+        hint = hint_arr->arr_body;
     }
 
     Instance *buf_arr = env->localvar_getRefer(runtime->localvar, pos++);
@@ -1661,7 +1772,7 @@ int com_kindred_sdl_SDL_ImGui_InputText(Runtime *runtime, JClass *clazz) {
     }
     else {
         c8 *buf = buf_arr->arr_body;
-        ret = Mir_ImGui_InputText(title, buf, buf_arr->arr_length, isPassword);
+        ret = Mir_ImGui_InputText(x, y, width, label, hint, buf, buf_arr->arr_length, isPassword);
     }
     env->push_int(runtime->stack, ret);
     return 0;
@@ -1745,13 +1856,16 @@ static java_native_method method_mir_table[] = {
 
     //test imgui
     {"com/kindred/mir/engine/MirJNI", "ImGui_SDL2_Init", "(JJ)V",                com_kindred_sdl_SDL_ImGui_SDL2_Init},
+    {"com/kindred/mir/engine/MirJNI", "ImGui_InitBackColor", "(FFFF)V",                com_kindred_sdl_SDL_ImGui_InitBackColor},
+    {"com/kindred/mir/engine/MirJNI", "ImGui_InitForeColor", "(FFFF)V",                com_kindred_sdl_SDL_ImGui_InitForeColor},
+    {"com/kindred/mir/engine/MirJNI", "ImGui_InitFont", "([BF)V",                com_kindred_sdl_SDL_ImGui_InitFont},
     {"com/kindred/mir/engine/MirJNI", "ImGui_SDL2_ProcessEvent", "(J)I",                com_kindred_sdl_SDL_ImGui_SDL2_ProcessEvent},
     {"com/kindred/mir/engine/MirJNI", "ImGui_SDLRenderer2_NewFrame", "()V",                com_kindred_sdl_SDL_ImGui_SDLRenderer2_NewFrame},
     {"com/kindred/mir/engine/MirJNI", "ImGui_SDL2_NewFrame", "()V",                com_kindred_sdl_SDL_ImGui_SDL2_NewFrame},
     {"com/kindred/mir/engine/MirJNI", "ImGui_NewFrame", "()V",                com_kindred_sdl_SDL_ImGui_NewFrame},
-    {"com/kindred/mir/engine/MirJNI", "ImGui_Begin", "()Z",                com_kindred_sdl_SDL_ImGui_Begin},
+    {"com/kindred/mir/engine/MirJNI", "ImGui_Begin", "([BFFFFZ)Z",                com_kindred_sdl_SDL_ImGui_Begin},
     {"com/kindred/mir/engine/MirJNI", "ImGui_Text", "([B)V",                com_kindred_sdl_SDL_ImGui_Text},
-    {"com/kindred/mir/engine/MirJNI", "ImGui_InputText", "([B[BZ)Z",                com_kindred_sdl_SDL_ImGui_InputText},
+    {"com/kindred/mir/engine/MirJNI", "ImGui_InputText", "(FFF[B[B[BZ)Z",                com_kindred_sdl_SDL_ImGui_InputText},
     {"com/kindred/mir/engine/MirJNI", "ImGui_InputTextMultiline", "([B[BFI)Z",                com_kindred_sdl_SDL_ImGui_InputTextMultiline},
     {"com/kindred/mir/engine/MirJNI", "ImGui_End", "()V",                com_kindred_sdl_SDL_ImGui_End},
     {"com/kindred/mir/engine/MirJNI", "ImGui_Render", "(J)V",                com_kindred_sdl_SDL_ImGui_Render},
