@@ -4,13 +4,14 @@ import com.kindred.mir.controls.*;
 import com.kindred.mir.controls.listener.ControlCommonListener;
 import com.kindred.mir.engine.SoundList;
 import com.kindred.mir.engine.SoundManager;
+import com.kindred.mir.libs.MirLibFactory;
 
 public class LoginScene extends MirScene {
 
-    private MirAnimatedControl _background;
+    private MirAnimatedControl background;
     public MirLabel Version;
 
-    private LoginDialog _login;
+    private LoginDialog login;
 //    private NewAccountDialog _account;
 //    private ChangePasswordDialog _password;
 //
@@ -18,9 +19,10 @@ public class LoginScene extends MirScene {
 //
 //    private InputKeyDialog _ViewKey;
 
-    public MirImageControl TestLabel, ViolenceLabel, MinorLabel, YouthLabel;
+    public MirStaticImageControl TestLabel, ViolenceLabel, MinorLabel, YouthLabel;
 
-    public LoginScene() {
+    public LoginScene(MirControl parent) {
+        super(parent);
         SoundManager.playSound(SoundList.IntroMusic, true);
         disposing = new ControlCommonListener() {
             @Override
@@ -28,6 +30,12 @@ public class LoginScene extends MirScene {
                 SoundManager.stopSound(SoundList.IntroMusic);
             }
         };
+
+        background = new MirAnimatedControl(this, MirLibFactory.ChrSel, new int[]{1,2,3});
+        background.setIsAnimated(false);
+        background.setAnimationCount(19);
+        background.setAnimationDelay(100);
+
     }
 
     @Override

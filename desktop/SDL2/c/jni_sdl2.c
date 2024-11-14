@@ -377,7 +377,7 @@ int com_kindred_sdl_SDL_SDL_GetKeyEventKeySym(Runtime *runtime, JClass *clazz) {
     return 0;
 }
 
-int com_kindred_sdl_SDL_SDL_GetWindowEvent(Runtime *runtime, JClass *clazz) {
+int com_kindred_sdl_SDL_SDL_GetEventWindowEvent(Runtime *runtime, JClass *clazz) {
     JniEnv *env = runtime->jnienv;
     s32 pos = 0;
 
@@ -387,6 +387,65 @@ int com_kindred_sdl_SDL_SDL_GetWindowEvent(Runtime *runtime, JClass *clazz) {
     //if (event->window) {
         env->push_int(runtime->stack, event->window.event);
     //}
+
+    return 0;
+}
+
+int com_kindred_sdl_SDL_SDL_GetEventMouseButtonButton(Runtime *runtime, JClass *clazz) {
+    JniEnv *env = runtime->jnienv;
+    s32 pos = 0;
+
+    SDL_Event *event = (__refer) (intptr_t) env->localvar_getLong_2slot(runtime->localvar, pos);
+    pos += 2;
+
+    //if (event->window) {
+        env->push_int(runtime->stack, event->button.button);
+    //}
+
+    return 0;
+}
+
+int com_kindred_sdl_SDL_SDL_GetEventMouseButtonPos(Runtime *runtime, JClass *clazz) {
+    JniEnv *env = runtime->jnienv;
+    s32 pos = 0;
+
+    SDL_Event *event = (__refer) (intptr_t) env->localvar_getLong_2slot(runtime->localvar, pos);
+    pos += 2;
+
+    Instance *_arr = env->jarray_create_by_type_index(runtime, 2, DATATYPE_INT);
+    _arr->arr_body[0] = event->button.x;
+    _arr->arr_body[1] = event->button.y;
+    env->push_ref(runtime->stack, _arr);
+
+    return 0;
+}
+
+int com_kindred_sdl_SDL_SDL_GetEventMouseMotionPos(Runtime *runtime, JClass *clazz) {
+    JniEnv *env = runtime->jnienv;
+    s32 pos = 0;
+
+    SDL_Event *event = (__refer) (intptr_t) env->localvar_getLong_2slot(runtime->localvar, pos);
+    pos += 2;
+
+    Instance *_arr = env->jarray_create_by_type_index(runtime, 2, DATATYPE_INT);
+    _arr->arr_body[0] = event->motion.x;
+    _arr->arr_body[1] = event->motion.y;
+    env->push_ref(runtime->stack, _arr);
+
+    return 0;
+}
+
+int com_kindred_sdl_SDL_SDL_GetEventMouseWheelPos(Runtime *runtime, JClass *clazz) {
+    JniEnv *env = runtime->jnienv;
+    s32 pos = 0;
+
+    SDL_Event *event = (__refer) (intptr_t) env->localvar_getLong_2slot(runtime->localvar, pos);
+    pos += 2;
+
+    Instance *_arr = env->jarray_create_by_type_index(runtime, 2, DATATYPE_INT);
+    _arr->arr_body[0] = event->wheel.x;
+    _arr->arr_body[1] = event->wheel.y;
+    env->push_ref(runtime->stack, _arr);
 
     return 0;
 }
@@ -667,7 +726,11 @@ static java_native_method method_sdl_table[] = {
     {"com/kindred/sdl/SDL", "SDL_FreeEvent",                  "(J)V",                       com_kindred_sdl_SDL_SDL_FreeEvent},
     {"com/kindred/sdl/SDL", "SDL_GetKeyEventKeySym",          "(J)I",                       com_kindred_sdl_SDL_SDL_GetKeyEventKeySym},
     {"com/kindred/sdl/SDL", "SDL_GetEventType",               "(J)I",                       com_kindred_sdl_SDL_SDL_GetEventType},
-    {"com/kindred/sdl/SDL", "SDL_GetWindowEvent",             "(J)I",                       com_kindred_sdl_SDL_SDL_GetWindowEvent},
+    {"com/kindred/sdl/SDL", "SDL_GetEventWindowEvent",        "(J)I",                       com_kindred_sdl_SDL_SDL_GetEventWindowEvent},
+    {"com/kindred/sdl/SDL", "SDL_GetEventMouseButtonButton",  "(J)I",                       com_kindred_sdl_SDL_SDL_GetEventMouseButtonButton},
+    {"com/kindred/sdl/SDL", "SDL_GetEventMouseButtonPos",     "(J)[I",                      com_kindred_sdl_SDL_SDL_GetEventMouseButtonPos},
+    {"com/kindred/sdl/SDL", "SDL_GetEventMouseMotionPos",     "(J)[I",                      com_kindred_sdl_SDL_SDL_GetEventMouseMotionPos},
+    {"com/kindred/sdl/SDL", "SDL_GetEventMouseWheelPos",      "(J)[I",                      com_kindred_sdl_SDL_SDL_GetEventMouseWheelPos},
     {"com/kindred/sdl/SDL", "SDL_PollEvent",                  "(J)I",                       com_kindred_sdl_SDL_SDL_PollEvent},
     {"com/kindred/sdl/SDL", "SDL_GetWindowFlags",             "(J)I",                       com_kindred_sdl_SDL_SDL_GetWindowFlags},
     {"com/kindred/sdl/SDL", "SDL_DestroyWindow",              "(J)V",                       com_kindred_sdl_SDL_SDL_DestroyWindow},

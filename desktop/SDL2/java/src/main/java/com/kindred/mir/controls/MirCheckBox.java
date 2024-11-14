@@ -1,30 +1,31 @@
 package com.kindred.mir.controls;
 
 import com.kindred.mir.controls.listener.ControlCommonListener;
+import com.kindred.mir.libs.MirImage;
 import com.kindred.mir.util.Point;
 
 public class MirCheckBox extends MirButton {
 
-    private int tickedIndex;
-    private int unTickedIndex;
+    private MirImage tickedImage;
+    private MirImage unTickedImage;
     private boolean isChecked;
 
-    public int getTickedIndex()
+    public MirImage getTickedImage()
     {
-        return tickedIndex;
+        return tickedImage;
     }
-    public void setTickedIndex(int tickedIndex)
+    public void setTickedImage(MirImage tickedImage)
     {
-        this.tickedIndex=tickedIndex;
+        this.tickedImage=tickedImage;
     }
 
-    public int getUnTickedIndex()
+    public MirImage getUnTickedImage()
     {
-        return unTickedIndex;
+        return unTickedImage;
     }
-    public void setUnTickedIndex(int unTickedIndex)
+    public void setUnTickedImage(MirImage unTickedImage)
     {
-        this.unTickedIndex=unTickedIndex;
+        this.unTickedImage=unTickedImage;
     }
 
     public boolean getIsChecked()
@@ -34,21 +35,21 @@ public class MirCheckBox extends MirButton {
     public void setIsChecked(boolean isChecked)
     {
         this.isChecked = isChecked;
-        index = isChecked ? tickedIndex : unTickedIndex;
+        setImage(isChecked ? tickedImage : unTickedImage);
         redraw();
     }
 
-    public MirCheckBox()
+    public MirCheckBox(MirControl parent, MirImage unTickedImage)
     {
-        super();
-        tickedIndex = -1;
-        unTickedIndex = -1;
+        super(parent, unTickedImage, null, null);
+        this.tickedImage = null;
+        this.unTickedImage = unTickedImage;
         click = new ControlCommonListener() {
             @Override
             public void doAction(MirControl control, Object argObj) {
                 isChecked = !isChecked;
-                if (isChecked) index = tickedIndex;
-                else index = unTickedIndex;
+                if (isChecked) setImage(tickedImage);
+                else setImage(unTickedImage);
                 redraw();
             }
         };

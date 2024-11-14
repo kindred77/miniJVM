@@ -28,6 +28,19 @@ public class MirLabel extends MirControl{
     private Color outLineColor;
     public ControlCommonListener outLineColorChanged;
 
+    public MirLabel(MirControl parent)
+    {
+        super(parent);
+        isDrawControlTexture = true;
+        drawFormat = TextFormatFlags.WordBreak;
+
+        //font = new Font(Settings.FontName, 8F);
+        isOutLine = true;
+        outLineColor = Color.Black;
+        text = "";
+
+    }
+
     public boolean getIsAutoSize()
     {
         return isAutoSize;
@@ -175,18 +188,6 @@ public class MirLabel extends MirControl{
 
         if (textChanged != null)
             textChanged.doAction(this, null);
-    }
-
-    public MirLabel()
-    {
-        isDrawControlTexture = true;
-        drawFormat = TextFormatFlags.WordBreak;
-
-        //font = new Font(Settings.FontName, 8F);
-        isOutLine = true;
-        outLineColor = Color.Black;
-        text = "";
-
     }
 
     @Override

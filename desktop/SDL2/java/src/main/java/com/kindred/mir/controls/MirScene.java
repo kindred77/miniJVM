@@ -3,6 +3,7 @@ package com.kindred.mir.controls;
 import com.kindred.mir.Settings;
 import com.kindred.mir.engine.MirTexture;
 import com.kindred.mir.util.Color;
+import com.kindred.mir.util.Point;
 import com.kindred.mir.util.Size;
 import com.kindred.sdl.constcode.SDL_PixelFormatEnum;
 
@@ -14,87 +15,52 @@ public abstract class MirScene extends MirControl {
     private static long lastClickTime;
     private static MirControl clickedControl;
 
-    protected MirScene()
+    protected MirScene(MirControl parent)
     {
+        super(parent);
         isDrawControlTexture = true;
         backColor = Color.Black;
         size = new Size(Settings.ScreenWidth, Settings.ScreenHeight);
 
     }
 
-//    @Override
-//    public void draw()
-//    {
-//        if (isDisposed || !isVisible)
-//            return;
-//
-//        onBeforeShown();
-//
-//        drawControl();
-//
-//        if (CMain.DebugBaseLabel != null && !CMain.DebugBaseLabel.IsDisposed)
-//            CMain.DebugBaseLabel.Draw();
-//
-//        if (CMain.HintBaseLabel != null && !CMain.HintBaseLabel.IsDisposed)
-//            CMain.HintBaseLabel.Draw();
-//
-//        onShown();
-//    }
-
     @Override
-    protected void createTexture()
+    public void onMouseDown(Point pos)
     {
-        if (controlTexture != null && !controlTexture.getIsDisposed() && size != textureSize)
-            controlTexture.dispose();
+        if (!getIsEnabled())
+            return;
 
-        if (controlTexture == null || controlTexture.getIsDisposed())
-        {
-            controlTexture = new MirTexture(size.getWidth(), size.getHeight(), SDL_PixelFormatEnum.SDL_PIXELFORMAT_ARGB8888);
-            //controlTexture.Disposing += ControlTexture_Disposing;
-            textureSize = size;
-        }
-
-        beforeDrawControl();
-        drawChildren();
-        afterDrawControl();
-
-        isTextureValid = true;
+        if (MouseControl != null && MouseControl != this)
+            MouseControl.onMouseDown(pos);
+        else
+            super.onMouseDown(pos);
     }
 
-//    @Override
-//    public void onMouseDown(MouseEventArgs e)
-//    {
-//        if (!getIsEnabled())
-//            return;
-//
-//        if (MouseControl != null && MouseControl != this)
-//            MouseControl.onMouseDown(e);
-//        else
-//            super.onMouseDown(e);
-//    }
-//
-//    @Override
-//    public void onMouseUp(MouseEventArgs e)
-//    {
-//        if (!getIsEnabled())
-//            return;
-//        if (MouseControl != null && MouseControl != this)
-//            MouseControl.onMouseUp(e);
-//        else
-//            super.onMouseUp(e);
-//    }
-//
-//    @Override
-//    public void onMouseMove(MouseEventArgs e)
-//    {
-//        if (!getIsEnabled())
-//            return;
-//
-//        if (MouseControl != null && MouseControl != this && MouseControl.isMoving)
-//            MouseControl.onMouseMove(e);
-//        else
-//            super.onMouseMove(e);
-//    }
+
+    @Override
+    public void onMouseUp(Point pos)
+    {
+        if (!getIsEnabled())
+            return;
+        if (MouseControl != null && MouseControl != this)
+            MouseControl.onMouseUp(pos);
+        else
+            super.onMouseUp(pos);
+    }
+
+
+    @Override
+    public void onMouseMove(Point pos)
+    {
+        if (!getIsEnabled())
+            return;
+
+        if (MouseControl != null && MouseControl != this && MouseControl.isMoving)
+            MouseControl.onMouseMove(pos);
+        else
+            super.onMouseMove(pos);
+    }
+
 //
 //    @Override
 //    public void onMouseWheel(MouseEventArgs e)

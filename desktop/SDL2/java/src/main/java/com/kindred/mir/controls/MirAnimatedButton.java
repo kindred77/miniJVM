@@ -1,6 +1,6 @@
 package com.kindred.mir.controls;
 
-import com.kindred.mir.Settings;
+import com.kindred.mir.MirMain;
 import com.kindred.mir.controls.listener.ControlCommonListener;
 import com.kindred.mir.libs.MirImage;
 import com.kindred.mir.libs.MirLib;
@@ -8,8 +8,9 @@ import com.kindred.mir.libs.MirLib;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MirAnimatedControl extends MirStaticImageControl {
-    public static List<MirAnimatedControl> animations = new ArrayList();
+public class MirAnimatedButton extends MirButton{
+
+    public static List<MirAnimatedButton> animations = new ArrayList();
 
     private boolean isAnimated;
     public ControlCommonListener animatedChanged;
@@ -35,31 +36,32 @@ public class MirAnimatedControl extends MirStaticImageControl {
     private boolean isLoop;
     public ControlCommonListener loopChanged;
 
-    private int offSet;
     private long nextOffSet;
+
+    private int offSet;
     public ControlCommonListener offSetChanged;
 
     private MirImage[] images;
 
-    public MirAnimatedControl(MirControl parent, MirImage[] images)
+    public MirAnimatedButton(MirControl parent, MirImage[] animImages, MirImage normalImage, MirImage hoverImage, MirImage pressedImage)
     {
-        super(parent, images[0]);
-        this.images=images;
+        super(parent,normalImage,hoverImage,pressedImage);
+        this.images=animImages;
+        this.animationCount=this.images.length;
         isLoop = true;
-        nextFadeTime = Settings.getTime();
-        nextOffSet = Settings.getTime();
-        animationCount=images.length;
+        nextFadeTime = MirMain.Time;
+        nextOffSet = MirMain.Time;
         animations.add(this);
     }
 
-    public MirAnimatedControl(MirControl parent, MirLib lib, int[] indexes)
+    public MirAnimatedButton(MirControl parent, MirLib lib, int[] indexes, MirImage normalImage, MirImage hoverImage, MirImage pressedImage)
     {
-        super(parent, lib, indexes[0]);
-        images = lib.GetMirImages(indexes);
+        super(parent,normalImage,hoverImage,pressedImage);
+        this.images=lib.GetMirImages(indexes);
+        this.animationCount=this.images.length;
         isLoop = true;
-        nextFadeTime = Settings.getTime();
-        nextOffSet = Settings.getTime();
-        animationCount=indexes.length;
+        nextFadeTime = MirMain.Time;
+        nextOffSet = MirMain.Time;
         animations.add(this);
     }
 
@@ -71,7 +73,7 @@ public class MirAnimatedControl extends MirStaticImageControl {
     {
         if (this.isAnimated == isAnimated) return;
         this.isAnimated = isAnimated;
-        nextOffSet = Settings.getTime() + fadeInDelay;
+        nextOffSet = MirMain.Time + fadeInDelay;
         onAnimatedChanged();
     }
 
@@ -84,8 +86,9 @@ public class MirAnimatedControl extends MirStaticImageControl {
 
     public int getAnimationCount()
     {
-        return animationCount;
+        return this.animationCount;
     }
+
     public void setAnimationCount(int animationCount)
     {
         if (this.animationCount == animationCount) return;
@@ -118,12 +121,12 @@ public class MirAnimatedControl extends MirStaticImageControl {
 
     public boolean getIsFadeIn()
     {
-        return this.isFadeIn;
+        return isFadeIn;
     }
     public void setIsFadeIn(boolean isFadeIn)
     {
         if (this.isFadeIn == isFadeIn) return;
-        nextFadeTime = Settings.getTime() + fadeInDelay;
+        this.nextFadeTime = MirMain.Time + fadeInDelay;
         this.isFadeIn = isFadeIn;
         onFadeInChanged();
     }
@@ -136,9 +139,10 @@ public class MirAnimatedControl extends MirStaticImageControl {
 
     public float getFadeInRate()
     {
-        return this.fadeInRate;
+        return fadeInRate;
     }
-    public void setFadeInRate()
+
+    public void setFadeInRate(float fadeInRate)
     {
         if (this.fadeInRate == fadeInRate) return;
         this.fadeInRate = fadeInRate;
@@ -153,7 +157,7 @@ public class MirAnimatedControl extends MirStaticImageControl {
 
     public long getFadeInDelay()
     {
-        return this.fadeInDelay;
+        return fadeInDelay;
     }
     public void setFadeInDelay(long fadeInDelay)
     {
@@ -170,8 +174,9 @@ public class MirAnimatedControl extends MirStaticImageControl {
 
     public boolean getIsLoop()
     {
-        return this.isLoop;
+        return isLoop;
     }
+
     public void setIsLoop(boolean isLoop)
     {
         if (this.isLoop == isLoop) return;
@@ -187,8 +192,9 @@ public class MirAnimatedControl extends MirStaticImageControl {
 
     public int getOffSet()
     {
-        return this.offSet;
+        return offSet;
     }
+
     public void setOffSet(int offSet)
     {
         if (this.offSet == offSet) return;
@@ -205,67 +211,44 @@ public class MirAnimatedControl extends MirStaticImageControl {
 
     public void updateOffSet()
     {
-        if (isFadeIn && Settings.getTime() > nextFadeTime)
+        if (isFadeIn && MirMain.Time > nextFadeTime)
         {
             if ((opacity += fadeInRate) > 1F)
             {
-                opacity = 1F;
+                setOpacity(1F);
                 isFadeIn = false;
             }
 
-            nextFadeTime = Settings.getTime() + fadeInDelay;
+            nextFadeTime = MirMain.Time + fadeInDelay;
         }
 
-        if (!getIsVisible() || !isAnimated || animationDelay == 0 || animationCount == 0) return;
+        if (isMouseOver(MirMain.MPoint))
+        {
+            setOffSet(0);
+            return;
+        }
 
-        if (Settings.getTime() < nextOffSet) return;
+        if (!getIsVisible()|| !isAnimated || animationDelay == 0 || animationCount == 0) return;
+
+        if (MirMain.Time < nextOffSet) return;
 
         redraw();
 
-        nextOffSet = Settings.getTime() + animationDelay;
+        nextOffSet = MirMain.Time + animationDelay;
 
-        setOffSet(this.offSet+1);
-        if (this.offSet < animationCount) return;
+        setOffSet(offSet+1);
+        if (offSet < animationCount) return;
 
         ControlCommonListener temp = afterAnimation;
         afterAnimation = null;
 
         if (!isLoop)
-            isAnimated = false;
+            setIsAnimated(false);
         else
             setOffSet(0);
 
         if (temp != null)
             temp.doAction(this, null);
-    }
-
-    @Override
-    protected void dispose(boolean disposing)
-    {
-        super.dispose(disposing);
-
-        if (!disposing) return;
-
-        animatedChanged = null;
-        isAnimated = false;
-
-        animationCountChanged = null;
-        animationCount = 0;
-
-        animationDelayChanged = null;
-        animationDelay = 0;
-
-        afterAnimation = null;
-
-        loopChanged = null;
-        isLoop = false;
-
-        offSetChanged = null;
-        offSet = 0;
-
-        nextOffSet = 0;
-
-        animations.remove(this);
     }
 
 }

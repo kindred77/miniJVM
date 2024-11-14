@@ -49,7 +49,11 @@ public class SDL {
 
     public static native long SDL_CreateEvent();
     public static native int SDL_GetEventType(long event_id);
-    public static native int SDL_GetWindowEvent(long event_id);
+    public static native int SDL_GetEventWindowEvent(long event_id);
+    public static native int SDL_GetEventMouseButtonButton(long event_id);
+    public static native int[] SDL_GetEventMouseButtonPos(long event_id);
+    public static native int[] SDL_GetEventMouseMotionPos(long event_id);
+    public static native int[] SDL_GetEventMouseWheelPos(long event_id);
     public static native int SDL_GetKeyEventKeySym(long event_id);
     public static native void SDL_FreeEvent(long event_id);
 

@@ -7,36 +7,13 @@ import com.kindred.mir.engine.MirJNI;
 import com.kindred.mir.libs.MirImage;
 import com.kindred.mir.libs.MirLib;
 
+import com.kindred.mir.libs.MirLibFactory;
 import com.kindred.mir.test.Test;
+import com.kindred.mir.util.Util;
 import com.kindred.sdl.constcode.*;
 
 
-public class Main {
-
-    public static byte[] toCstyleBytes(String s) {
-        if (s == null) {
-            return null;
-        }
-        if (s.length() == 0 || s.charAt(s.length() - 1) != '\000') {
-            s += '\000';
-        }
-        byte[] barr = null;
-        try {
-            barr = s.getBytes("utf-8");
-        } catch (UnsupportedEncodingException ex) {
-        }
-        return barr;
-    }
-
-    public static String zeroEndBytesToString(byte[]  buf) throws Exception
-    {
-        int acture_length=0;
-        for (byte b : buf) {
-            if (b != 0) acture_length++;
-            else break;
-        }
-        return new String(buf, 0, acture_length, "utf-8");
-    }
+public class TestMain {
 
     public static void main(String args[])
     {
@@ -47,12 +24,12 @@ public class Main {
             if (result != 0) {
                 throw new IllegalStateException("Unable to initialize SDL library (Error code " + result + "): " + MirJNI.SDL_GetError());
             }
-            if (!MirJNI.SDL_SetHint(toCstyleBytes(SDL_Hints.SDL_HINT_IME_SHOW_UI), toCstyleBytes("1")))
+            if (!MirJNI.SDL_SetHint(Util.toCstyleBytes(SDL_Hints.SDL_HINT_IME_SHOW_UI), Util.toCstyleBytes("1")))
             {
                 throw new IllegalStateException("Unable to set hint: " + MirJNI.SDL_GetError());
             }
             // Create and init the window
-            long win_id = MirJNI.SDL_CreateWindow(toCstyleBytes("窗口-kindred"),
+            long win_id = MirJNI.SDL_CreateWindow(Util.toCstyleBytes("窗口-kindred"),
                     SdlVideoConst.SDL_WINDOWPOS_CENTERED,
                     SdlVideoConst.SDL_WINDOWPOS_CENTERED,
                     800, 600,
@@ -72,14 +49,12 @@ public class Main {
 
             //test imgui
             MirJNI.ImGui_SDL2_Init(win_id, renderer_id);
-            MirJNI.ImGui_InitFont(toCstyleBytes("NotoEmoji+NotoSansCJKSC-Regular.ttf"), 10f);
+            MirJNI.ImGui_InitFont(Util.toCstyleBytes("NotoEmoji+NotoSansCJKSC-Regular.ttf"), 10f);
             MirJNI.ImGui_InitBackColor(1.0f, 1.0f, 1.0f, 0.5f);
             MirJNI.ImGui_InitForeColor(1.0f, 0.0f, 0.0f, 0.5f);
             //---------------------
 
-            MirLib mir_lib =new MirLib("../../desktop/SDL2/java/src/main/resource/mir_res/Prguse2_png.Lib");
-
-            mir_lib.Initialize();
+            MirLib mir_lib = MirLibFactory.getMirLib("../../desktop/SDL2/java/src/main/resource/mir_res/Prguse2_png.Lib");
             
             MirImage img = mir_lib.GetMirImage(1360);
             MirImage img2 = mir_lib.GetMirImage(1205);
@@ -164,13 +139,15 @@ public class Main {
                             }
                             break;
                         case SDLEventType.SDL_WINDOWEVENT:
-                            System.out.println("Window event " + MirJNI.SDL_GetWindowEvent(event_id));
+                            System.out.println("Window event " + MirJNI.SDL_GetEventWindowEvent(event_id));
                             break;
                         case SDLEventType.SDL_MOUSEBUTTONDOWN:
-                            System.out.println("mouse down " + MirJNI.SDL_GetWindowEvent(event_id));
+                            int[] pos_down = MirJNI.SDL_GetEventMouseButtonPos(event_id);
+                            System.out.println("mouse down: x: " + pos_down[0]+", y: "+pos_down[1]);
                             break;
                         case SDLEventType.SDL_MOUSEBUTTONUP:
-                            System.out.println("mouse up " + MirJNI.SDL_GetWindowEvent(event_id));
+                            int[] pos_up = MirJNI.SDL_GetEventMouseButtonPos(event_id);
+                            System.out.println("mouse up: x: " + pos_up[0]+", y: "+pos_up[1]);
                             break;
                         default:
                             break;
@@ -189,7 +166,7 @@ public class Main {
 
                 MirJNI.ImGui_NewFrame();
 
-                if (!MirJNI.ImGui_Begin(toCstyleBytes("login"), 100,350, 200, 25, true))
+                if (!MirJNI.ImGui_Begin(Util.toCstyleBytes("login"), 100,350, 200, 25, true))
                 {
                     System.out.println("-------------------0000-----------------------");
                     MirJNI.ImGui_End();
@@ -211,9 +188,9 @@ public class Main {
                     }
 
                     //if(MirJNI.ImGui_InputTextMultiline(toCstyleBytes("##"),buf, 200.0f, 25))
-                    if(MirJNI.ImGui_InputText(0, 0, 198, toCstyleBytes("##"), toCstyleBytes("请输入内容..."), buf, false))
+                    if(MirJNI.ImGui_InputText(0, 0, 198, Util.toCstyleBytes("##"), Util.toCstyleBytes("请输入内容..."), buf, false))
                     {
-                        Test.fileOut(zeroEndBytesToString(buf)+"\n");
+                        Test.fileOut(Util.zeroEndBytesToString(buf)+"\n");
                         System.out.println("----------------------enter return--------------------");
                     }
 

@@ -4,6 +4,7 @@ public class Settings {
 
     public static int ScreenWidth = 800;
     public static int ScreenHeight = 600;
+    public static boolean IsFullScreen = false;
 
     public static long getTime()
     {

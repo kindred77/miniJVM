@@ -1,12 +1,13 @@
 package com.kindred.mir.controls;
 
 import com.kindred.mir.controls.listener.ControlCommonListener;
+import com.kindred.mir.libs.MirImage;
 import com.kindred.mir.libs.MirLib;
 import com.kindred.mir.util.Color;
 import com.kindred.mir.util.Point;
 import com.kindred.mir.util.Size;
 
-public class MirImageControl extends MirControl{
+public class MirStaticImageControl extends MirControl{
 
     private boolean isUseOffSet;
     private ControlCommonListener useOffSetChanged;
@@ -14,18 +15,38 @@ public class MirImageControl extends MirControl{
     private boolean isDrawImage;
     private ControlCommonListener drawImageChanged;
 
-    protected int index;
-    private ControlCommonListener indexChanged;
+    //protected int index;
+    //private ControlCommonListener indexChanged;
 
     private boolean isPixelDetect;
     public ControlCommonListener pixelDetectChanged;
 
-    private MirLib mirLib;
+    private MirImage image;
+    public ControlCommonListener imageChanged;
+
+    public MirStaticImageControl(MirControl parent, MirImage image)
+    {
+        super(parent);
+        isDrawImage = true;
+        //index = -1;
+        foreColor = Color.White;
+        setImage(image);
+    }
+
+    public MirStaticImageControl(MirControl parent, MirLib lib, int index)
+    {
+        super(parent);
+        MirImage img = lib.GetMirImage(index);
+        isDrawImage = true;
+        //index = index;
+        foreColor = Color.White;
+        setImage(img);
+    }
 
     @Override
     public Point getDisplayLocation()
     {
-        return isUseOffSet ? Point.add(super.getDisplayLocation(), mirLib.getOffset(index)) : super.getDisplayLocation();
+        return isUseOffSet ? Point.add(super.getDisplayLocation(), image.getOffset()) : super.getDisplayLocation();
     }
 
     public Point getDisplayLocationWithoutOffSet()
@@ -52,23 +73,23 @@ public class MirImageControl extends MirControl{
             drawImageChanged.doAction(this, null);
     }
 
-    public int getIndex()
+    public MirImage getMirImage()
     {
-        return index;
+        return image;
     }
-    public void setIndex(int index)
+    public void setMirImage(MirImage image)
     {
-        if (this.index == index)
+        if (this.image == image)
             return;
-        this.index = index;
-        onIndexChanged();
+        this.image = image;
+        onMirImageChanged();
     }
 
-    protected void onIndexChanged()
+    protected void onMirImageChanged()
     {
         onSizeChanged();
-        if (indexChanged != null)
-            indexChanged.doAction(this, null);
+        if (imageChanged != null)
+            imageChanged.doAction(this, null);
     }
 
     protected void setIsPixelDetect()
@@ -105,11 +126,31 @@ public class MirImageControl extends MirControl{
             useOffSetChanged.doAction(this, null);
     }
 
+    public MirImage getImage()
+    {
+        return this.image;
+    }
+
+    public void setImage(MirImage image)
+    {
+        if (this.image == image)
+            return;
+        this.image = image;
+        onImageChanged();
+    }
+
+    private void onImageChanged()
+    {
+        onSizeChanged();
+        if (imageChanged != null)
+            imageChanged.doAction(this, null);
+    }
+
     @Override
     public Size getSize()
     {
-        if (mirLib != null && index >= 0)
-            return mirLib.getTrueSize(index);
+        if (image != null)
+            return image.getTrueSize();
         return super.getSize();
     }
 
@@ -122,24 +163,17 @@ public class MirImageControl extends MirControl{
     @Override
     public Size getTrueSize()
     {
-        if (mirLib != null && index >= 0)
-            return mirLib.getTrueSize(index);
+        if (image != null)
+            return image.getTrueSize();
         return super.getTrueSize();
     }
 
-    public MirImageControl()
-    {
-        isDrawImage = true;
-        index = -1;
-        foreColor = Color.White;
-    }
-
     @Override
-    protected void drawControl()
+    protected void drawControl(long renderer_id)
     {
-        super.drawControl();
+        super.drawControl(renderer_id);
 
-        if (isDrawImage && mirLib != null)
+        if (isDrawImage && image != null)
         {
 //            if (isGrayScale) DXManager.SetGrayscale(1F, Color.White);
 //            else if (isBlending) Library.DrawBlend(index, DisplayLocation, foreColor, false, blendingRate);
@@ -151,7 +185,7 @@ public class MirImageControl extends MirControl{
     @Override
     public boolean isMouseOver(Point p)
     {
-        return super.isMouseOver(p) && (!isPixelDetect || mirLib.visiblePixel(index, Point.subtract(p, getDisplayLocation()),true) || isMoving);
+        return super.isMouseOver(p) && (!isPixelDetect || image.isVisiblePixel(Point.subtract(p, getDisplayLocation()),true) || isMoving);
     }
 
     @Override
@@ -164,8 +198,8 @@ public class MirImageControl extends MirControl{
         drawImageChanged = null;
         isDrawImage = false;
 
-        indexChanged = null;
-        index = 0;
+        imageChanged = null;
+        image = null;
 
         //LibraryChanged = null;
         //Library = null;

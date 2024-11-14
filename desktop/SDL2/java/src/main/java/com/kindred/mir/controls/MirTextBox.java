@@ -1,16 +1,24 @@
 package com.kindred.mir.controls;
 
 import com.kindred.mir.engine.Font;
+import com.kindred.mir.engine.MirJNI;
 import com.kindred.mir.util.Color;
+import com.kindred.mir.util.Util;
 
 public class MirTextBox extends MirControl {
 
     private boolean canLoseFocus;
     //private TextBox textBox;
+    private byte[] textBuf=new byte[128];
 
-    public MirTextBox()
+    public MirTextBox(MirControl parent)
     {
+        super(parent);
         backColor = Color.Black;
+
+        MirJNI.ImGui_InitFont(Util.toCstyleBytes("NotoEmoji+NotoSansCJKSC-Regular.ttf"), 10f);
+        MirJNI.ImGui_InitBackColor(1.0f, 1.0f, 1.0f, 0.5f);
+        MirJNI.ImGui_InitForeColor(1.0f, 0.0f, 0.0f, 0.5f);
 
 //        TextBox = new TextBox
 //        {
@@ -183,4 +191,44 @@ public class MirTextBox extends MirControl {
 //
 //    }
 
+    @Override
+    protected void drawControl(long renderer_id) {
+
+        MirJNI.ImGui_SDLRenderer2_NewFrame();
+
+        MirJNI.ImGui_SDL2_NewFrame();
+
+        MirJNI.ImGui_NewFrame();
+
+        if (!MirJNI.ImGui_Begin(Util.toCstyleBytes("login"), 100,350, 200, 25, true))
+        {
+            MirJNI.ImGui_End();
+        }
+        else
+        {
+            //MirJNI.ImGui_Text(toCstyleBytes("标签"));
+
+            //动态修改一些属性
+//            long cur_ts = MirJNI.SDL_GetTicks();
+//            if ((cur_ts - prev_ts) > 5000)
+//            {
+//                color_mod++;
+//                //color_mod = color_mod % 3;
+//                prev_ts = cur_ts;
+//                MirJNI.ImGui_SetWindowFontScale(color_mod);
+//                MirJNI.ImGui_InitBackColor(color_mod%3 == 1 ? 1.0f:0f, color_mod%3 == 2 ? 1.0f:0f, color_mod%3 == 0 ? 1.0f:0f, 0.5f);
+//                MirJNI.ImGui_InitForeColor(color_mod%3 == 0 ? 1.0f:0f, color_mod%3 == 1 ? 1.0f:0f, color_mod%3 == 2 ? 1.0f:0f, 0.5f);
+//            }
+
+            //if(MirJNI.ImGui_InputTextMultiline(toCstyleBytes("##"),buf, 200.0f, 25))
+            if(MirJNI.ImGui_InputText(0, 0, 198, Util.toCstyleBytes("##"), Util.toCstyleBytes("请输入内容..."), textBuf, false))
+            {
+                System.out.println("----------------------enter return--------------------");
+            }
+
+            MirJNI.ImGui_End();
+        }
+
+        MirJNI.ImGui_Render(renderer_id);
+    }
 }

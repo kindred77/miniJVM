@@ -1,6 +1,8 @@
 package com.kindred.mir.libs;
 
 import com.kindred.mir.util.MyRandomAccessFile;
+import com.kindred.mir.util.Point;
+import com.kindred.mir.util.Size;
 import com.kindred.sdl.constcode.SDL_PixelFormatEnum;
 
 import com.kindred.mir.engine.*;
@@ -47,14 +49,19 @@ public class MirImage {
         return header == null ? 0 : header.height;
     }
 
-    public int getX()
+    public Point getOffset()
     {
-        return header == null ? 0 : header.x;
+        return header == null ? null : new Point(header.x, header.y);
     }
 
-    public int getY()
+    public Size getTrueSize()
     {
-        return header == null ? 0 : header.y;
+        return null;
+    }
+
+    public boolean isVisiblePixel(Point pt, boolean accuate)
+    {
+        return false;
     }
 
     private boolean initHeader(MyRandomAccessFile myRAF) throws Exception
@@ -127,5 +134,10 @@ public class MirImage {
         myRAF.readFully(data);
 
         convertPixelFormat(data);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
     }
 }

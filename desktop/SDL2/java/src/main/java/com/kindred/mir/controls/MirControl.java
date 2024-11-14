@@ -1,5 +1,7 @@
 package com.kindred.mir.controls;
 
+import com.kindred.mir.MirMain;
+import com.kindred.mir.Settings;
 import com.kindred.mir.constcode.MirBlendMode;
 import com.kindred.mir.controls.events.MouseClickEvent;
 import com.kindred.mir.controls.listener.ControlCommonListener;
@@ -44,7 +46,7 @@ public class MirControl implements AutoCloseable {
     private long cleanTime;
     protected MirTexture controlTexture;
     protected boolean isDrawControlTexture;
-    protected Size textureSize;
+    //protected Size textureSize;
 
     private ArrayList<MirControl> children;
     private ControlCommonListener childAdded;
@@ -55,6 +57,8 @@ public class MirControl implements AutoCloseable {
 
     protected boolean isHasShown;
     protected ControlCommonListener click , doubleClick, beforeDraw , afterDraw , mouseEnter , mouseLeave , shown , beforeShown, disposing;
+
+    private ControlCommonListener mouseMove, mouseDown, mouseUp;
     //private MouseEventHandler mouseWheel,mouseMove, mouseDown, mouseUp;
     //private KeyEventHandler keyDown , keyUp;
     //private KeyPressEventHandler keyPress;
@@ -72,7 +76,7 @@ public class MirControl implements AutoCloseable {
     private boolean isMovable;
     private Point movePoint;
     private ControlCommonListener movableChanged;
-    //private MouseEventHandler onMoving;
+    private ControlCommonListener onMoving;
 
     protected boolean isNotControl;
     private ControlCommonListener notControlChanged;
@@ -90,6 +94,17 @@ public class MirControl implements AutoCloseable {
     private ControlCommonListener visibleChanged;
 
     protected boolean isDisposed;
+
+    public MirControl(MirControl parent)
+    {
+        children = new ArrayList();
+        opacity = 1F;
+        isEnabled = true;
+        foreColor = Color.White;
+        isVisible = true;
+        sound = SoundList.None;
+        setParent(parent);
+    }
 
     public MirControl getParent()
     {
@@ -313,39 +328,25 @@ public class MirControl implements AutoCloseable {
 
     protected void createTexture()
     {
-//        if (controlTexture != null && !controlTexture.Disposed && size != textureSize)
-//            controlTexture.Dispose();
-//
-//        if (controlTexture == null || controlTexture.Disposed)
-//        {
-//            DXManager.ControlList.Add(this);
-//            controlTexture = new Texture(DXManager.Device, size.getWidth(), size.getHeight(), 1, Usage.RenderTarget, Format.A8R8G8B8, Pool.Default);
-//            controlTexture.Disposing += ControlTexture_Disposing;
-//            textureSize = size;
-//        }
-//
-//        Surface oldSurface = DXManager.CurrentSurface;
-//        Surface surface = controlTexture.GetSurfaceLevel(0);
-//        DXManager.SetSurface(surface);
-//        DXManager.Device.Clear(ClearFlags.Target, backColor, 0, 0);
-//        DXManager.SetSurface(oldSurface);
-//
-//        isTextureValid = true;
-//        surface.Dispose();
+        if (controlTexture != null && !controlTexture.getIsDisposed() && !controlTexture.getSize().equals(size))
+            controlTexture.dispose();
+
+        //controlTexture = new MirTexture(size.getWidth(), size.getHeight(), SDL_PixelFormatEnum.SDL_PIXELFORMAT_ARGB8888, getBackColor());
+        //isTextureValid = true;
     }
+
     protected void controlTexture_Disposing()
     {
         controlTexture = null;
         isTextureValid = false;
-        textureSize = Size.Empty;
+        //textureSize = Size.Empty;
 
         //DXManager.ControlList.Remove(this);
     }
     private void disposeTexture()
     {
-//        if (controlTexture == null || controlTexture.Disposed) return;
-//
-//        controlTexture.Dispose();
+        if (controlTexture == null || controlTexture.getIsDisposed()) return;
+        controlTexture.dispose();
     }
 
     public List<MirControl> getChildren()
@@ -669,32 +670,27 @@ public class MirControl implements AutoCloseable {
 
     protected Point Center()
     {
-        //return new Point((Settings.ScreenWidth - size.getWidth()) / 2, (Settings.ScreenHeight - size.getHeight()) / 2);
-        return null;
+        return new Point((Settings.ScreenWidth - size.getWidth()) / 2, (Settings.ScreenHeight - size.getHeight()) / 2);
     }
 
     protected Point Left()
     {
-        //return new Point(0, (Settings.ScreenHeight - size.getHeight()) / 2);
-        return null;
+        return new Point(0, (Settings.ScreenHeight - size.getHeight()) / 2);
     }
 
     protected Point Top()
     {
-        //return new Point((Settings.ScreenWidth - size.getWidth()) / 2, 0);
-        return null;
+        return new Point((Settings.ScreenWidth - size.getWidth()) / 2, 0);
     }
 
     protected Point Right()
     {
-        //return new Point(Settings.ScreenWidth - size.getWidth(), (Settings.ScreenHeight - size.getHeight()) / 2);
-        return null;
+        return new Point(Settings.ScreenWidth - size.getWidth(), (Settings.ScreenHeight - size.getHeight()) / 2);
     }
 
     protected Point Bottom()
     {
-        //return new Point((Settings.ScreenWidth - size.getWidth()) / 2, Settings.ScreenHeight - size.getHeight());
-        return null;
+        return new Point((Settings.ScreenWidth - size.getWidth()) / 2, Settings.ScreenHeight - size.getHeight());
     }
 
     protected Point TopLeft()
@@ -704,20 +700,17 @@ public class MirControl implements AutoCloseable {
 
     protected Point TopRight()
     {
-        //return new Point(Settings.ScreenWidth - size.getWidth(), 0);
-        return null;
+        return new Point(Settings.ScreenWidth - size.getWidth(), 0);
     }
 
     protected Point BottomRight()
     {
-        //return new Point(Settings.ScreenWidth - size.getWidth(), Settings.ScreenHeight - size.getHeight());
-        return null;
+        return new Point(Settings.ScreenWidth - size.getWidth(), Settings.ScreenHeight - size.getHeight());
     }
 
     protected Point BottomLeft()
     {
-        //return new Point(0, Settings.ScreenHeight - size.getHeight());
-        return null;
+        return new Point(0, Settings.ScreenHeight - size.getHeight());
     }
 
     public void bringToFront()
@@ -731,26 +724,16 @@ public class MirControl implements AutoCloseable {
         redraw();
     }
 
-    public MirControl()
+    public final void draw(long renderer_id)
     {
-        children = new ArrayList<MirControl>();
-        opacity = 1F;
-        isEnabled = true;
-        foreColor = Color.White;
-        isVisible = true;
-        //sound = SoundList.None;
-    }
-
-    public final void draw()
-    {
-        //if (isDisposed || !isVisible /*|| Size.Width == 0 || Size.Height == 0*/ || size.getWidth() > Settings.ScreenWidth || size.getHeight() > Settings.ScreenHeight)
-        //    return;
+        if (isDisposed || !getIsVisible() /*|| Size.Width == 0 || Size.Height == 0*/ || size.getWidth() > Settings.ScreenWidth || size.getHeight() > Settings.ScreenHeight)
+            return;
 
         onBeforeShown();
 
         beforeDrawControl();
-        drawControl();
-        drawChildren();
+        drawControl(renderer_id);
+        drawChildren(renderer_id);
         drawBorder();
         afterDrawControl();
 
@@ -764,7 +747,7 @@ public class MirControl implements AutoCloseable {
         if (beforeDraw != null)
             beforeDraw.doAction(this, null);
     }
-    protected void drawControl()
+    protected void drawControl(long renderer_id)
     {
         if (!isDrawControlTexture)
             return;
@@ -772,8 +755,8 @@ public class MirControl implements AutoCloseable {
         if (!isTextureValid)
             createTexture();
 
-        //if (controlTexture == null || controlTexture.Disposed)
-        //    return;
+        if (controlTexture == null || controlTexture.getIsDisposed())
+            return;
 
         //float oldOpacity = DXManager.Opacity;
 
@@ -783,12 +766,12 @@ public class MirControl implements AutoCloseable {
 
         //cleanTime = CMain.Time + Settings.CleanDelay;
     }
-    protected void drawChildren()
+    protected void drawChildren(long renderer_id)
     {
         if (children != null)
             for (int i = 0; i < children.size(); i++)
                 if (children.get(i) != null)
-                    children.get(i).draw();
+                    children.get(i).draw(renderer_id);
     }
     protected void drawBorder()
     {
@@ -907,93 +890,97 @@ public class MirControl implements AutoCloseable {
     {
         doubleClick.doAction(this, e);
     }
-//    public void onMouseMove(MouseEventArgs e)
-//    {
-//        if (!isEnabled)
-//            return;
-//
-//
-//        if (isMoving)
-//        {
-//            Point tempPoint = CMain.MPoint.subtract(movePoint);
-//            Size trueSize=getTrueSize();
-//
-//            if (parent == null)
-//            {
-//                if (tempPoint.getY() + trueSize.getHeight() > Settings.ScreenHeight)
-//                    tempPoint.setY(Settings.ScreenHeight - trueSize.getHeight() - 1);
-//
-//                if (tempPoint.getX() + trueSize.getWidth() > Settings.ScreenWidth)
-//                    tempPoint.setX(Settings.ScreenWidth - trueSize.getWidth() - 1);
-//            }
-//            else
-//            {
-//                Size parentTrueSize=parent.getTrueSize();
-//                if (tempPoint.getY() + trueSize.getHeight() > parentTrueSize.getHeight())
-//                    tempPoint.setY(parentTrueSize.getHeight() - trueSize.getHeight());
-//
-//                if (tempPoint.getX() + trueSize.getWidth() > parentTrueSize.getWidth())
-//                    tempPoint.setX(parentTrueSize.getWidth() - trueSize.getWidth());
-//            }
-//
-//            if (tempPoint.getX() < 0)
-//                tempPoint.setX(0);
-//            if (tempPoint.getY() < 0)
-//                tempPoint.setY(0);
-//
-//            setLocation(tempPoint);
-//            if (onMoving != null)
-//                onMoving.invoke(this, e);
-//            return;
-//        }
-//
-//        if (children != null)
-//            for (int i = children.size() - 1; i >= 0; i--)
-//                if (children.get(i).isMouseOver(CMain.MPoint))
-//                {
-//                    children.get(i).onMouseMove(e);
-//                    return;
-//                }
-//
-//        highlight();
-//
-//        if (mouseMove != null)
-//            mouseMove.invoke(this, e);
-//    }
-//    public void onMouseDown(MouseEventArgs e)
-//    {
-//        if (!isEnabled)
-//            return;
-//
-//        activate();
-//
-//        trySort();
-//
-//        if (isMovable)
-//        {
-//            isMoving = true;
-//            movePoint = CMain.MPoint.subtract(location);
-//        }
-//
-//        if (mouseDown != null)
-//            mouseDown.invoke(this, e);
-//    }
-//    public void onMouseUp(MouseEventArgs e)
-//    {
-//        if (!isEnabled)
-//            return;
-//
-//        if (isMoving)
-//        {
-//            isMoving = false;
-//            movePoint = Point.Empty;
-//        }
-//
-//        if (ActiveControl != null) ActiveControl.deactivate();
-//
-//        if (mouseUp != null)
-//            mouseUp.invoke(this, e);
-//    }
+
+    public void onMouseMove(Point pos)
+    {
+        if (!isEnabled)
+            return;
+
+
+        if (isMoving)
+        {
+            Point tempPoint = Point.subtract(MirMain.MPoint, movePoint);
+            Size trueSize=getTrueSize();
+
+            if (parent == null)
+            {
+                if (tempPoint.getY() + trueSize.getHeight() > Settings.ScreenHeight)
+                    tempPoint.setY(Settings.ScreenHeight - trueSize.getHeight() - 1);
+
+                if (tempPoint.getX() + trueSize.getWidth() > Settings.ScreenWidth)
+                    tempPoint.setX(Settings.ScreenWidth - trueSize.getWidth() - 1);
+            }
+            else
+            {
+                Size parentTrueSize=parent.getTrueSize();
+                if (tempPoint.getY() + trueSize.getHeight() > parentTrueSize.getHeight())
+                    tempPoint.setY(parentTrueSize.getHeight() - trueSize.getHeight());
+
+                if (tempPoint.getX() + trueSize.getWidth() > parentTrueSize.getWidth())
+                    tempPoint.setX(parentTrueSize.getWidth() - trueSize.getWidth());
+            }
+
+            if (tempPoint.getX() < 0)
+                tempPoint.setX(0);
+            if (tempPoint.getY() < 0)
+                tempPoint.setY(0);
+
+            setLocation(tempPoint);
+            if (onMoving != null)
+                onMoving.doAction(this, null);
+            return;
+        }
+
+        if (children != null)
+            for (int i = children.size() - 1; i >= 0; i--)
+                if (children.get(i).isMouseOver(MirMain.MPoint))
+                {
+                    children.get(i).onMouseMove(pos);
+                    return;
+                }
+
+        highlight();
+
+        if (mouseMove != null)
+            mouseMove.doAction(this, null);
+    }
+
+    public void onMouseDown(Point pos)
+    {
+        if (!isEnabled)
+            return;
+
+        activate();
+
+        trySort();
+
+        if (isMovable)
+        {
+            isMoving = true;
+            movePoint = Point.subtract(MirMain.MPoint, location);
+        }
+
+        if (mouseDown != null)
+            mouseDown.doAction(this, null);
+    }
+
+    public void onMouseUp(Point pos)
+    {
+        if (!isEnabled)
+            return;
+
+        if (isMoving)
+        {
+            isMoving = false;
+            movePoint = Point.Empty;
+        }
+
+        if (ActiveControl != null) ActiveControl.deactivate();
+
+        if (mouseUp != null)
+            mouseUp.doAction(this, null);
+    }
+
 //    public void onMouseWheel(MouseEventArgs e)
 //    {
 //        if (!isEnabled)
@@ -1089,8 +1076,8 @@ public class MirControl implements AutoCloseable {
             borderColor = Color.Empty;
 
             isDrawControlTexture = false;
-            //if (controlTexture != null && !controlTexture.isDisposed)
-            //    controlTexture.dispose();
+            if (controlTexture != null && !controlTexture.getIsDisposed())
+                controlTexture.dispose();
             controlTexture = null;
             isTextureValid = false;
 
@@ -1142,7 +1129,7 @@ public class MirControl implements AutoCloseable {
             movableChanged = null;
             movePoint = Point.Empty;
             isMoving = false;
-            //onMoving = null;
+            onMoving = null;
             isMovable = false;
 
             notControlChanged = null;

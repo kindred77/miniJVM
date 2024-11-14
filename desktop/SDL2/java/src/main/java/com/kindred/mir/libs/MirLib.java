@@ -17,7 +17,7 @@ public class MirLib {
     private MirImage[] images;
     private int[] indexList;
 
-    public MirLib(String file_name)
+    MirLib(String file_name)
     {
         this.file_name=file_name;
         this.file=new File(file_name);
@@ -44,7 +44,7 @@ public class MirLib {
         return true;
     }
 
-    public boolean Initialize() throws Exception
+    boolean Initialize() throws Exception
     {
         if (initialized)
         {
@@ -82,14 +82,39 @@ public class MirLib {
         return true;
     }
 
-    public MirImage GetMirImage(int index) throws Exception
+    public MirImage GetMirImage(int index)
     {
         if (!initialized)
         {
-            throw new Exception("Lib not initialized.");
+            System.out.println("Lib not initialized.");
+            return null;
         }
-        initializeImage(index);
+        try
+        {
+            if (!initializeImage(index))
+            {
+                System.out.println("Can not initialize image.");
+                return null;
+            }
+        }
+        catch(Exception e)
+        {
+            System.out.println("Can not initialize image: ");
+            e.printStackTrace();
+            return null;
+        }
         return images[index];
+    }
+
+    public MirImage[] GetMirImages(int[] indexes)
+    {
+        MirImage[] images=new MirImage[indexes.length];
+        for (int i = 0; i < indexes.length; i++)
+        {
+            images[i] = GetMirImage(i);
+        }
+
+        return images;
     }
 
     public int GetImageCount()
@@ -102,18 +127,5 @@ public class MirLib {
         return file_name;
     }
 
-    public Point getOffset(int index)
-    {
-        return null;
-    }
 
-    public Size getTrueSize(int index)
-    {
-        return null;
-    }
-
-    public boolean visiblePixel(int index, Point pt, boolean b)
-    {
-        return false;
-    }
 }

@@ -1,21 +1,40 @@
 package com.kindred.mir.controls;
 
 import com.kindred.mir.controls.listener.ControlCommonListener;
+import com.kindred.mir.engine.SoundList;
+import com.kindred.mir.libs.MirImage;
 import com.kindred.mir.util.Color;
 
 import java.util.Optional;
 
-public class MirButton extends MirImageControl {
+public class MirButton extends MirStaticImageControl {
 
     protected MirLabel label;
 
-    protected int hoverIndex;
-    public ControlCommonListener hoverIndexChanged;
+    //protected int hoverIndex;
+    //public ControlCommonListener hoverIndexChanged;
+    protected MirImage hoverImage;
+    public ControlCommonListener hoverImageChanged;
 
-    protected int pressedIndex;
-    public ControlCommonListener pressedIndexChanged;
+    //protected int pressedIndex;
+    //public ControlCommonListener pressedIndexChanged;
+    protected MirImage pressedImage;
+    public ControlCommonListener pressedImageChanged;
 
     private boolean isCenterText;
+
+    public MirButton(MirControl parent, MirImage normalImage, MirImage hoverImage, MirImage pressedImage)
+    {
+        super(parent, normalImage);
+        //hoverIndex = -1;
+        //pressedIndex = -1;
+        this.hoverImage=hoverImage;
+        this.pressedImage=pressedImage;
+        sound = SoundList.ButtonB;
+
+        label = new MirLabel(this);
+        label.setIsNotControl(true);
+    }
 
     public Color getFontColor()
     {
@@ -29,37 +48,37 @@ public class MirButton extends MirImageControl {
             label.setForeColor(fontColor);
     }
 
-    public int getHoverIndex()
+    public MirImage getHoverImage()
     {
-        return hoverIndex;
+        return hoverImage;
     }
-    public void setHoverIndex(int hoverIndex)
+    public void setHoverImage(MirImage hoverImage)
     {
-        if (this.hoverIndex == hoverIndex)
+        if (this.hoverImage == hoverImage)
             return;
-        this.hoverIndex = hoverIndex;
-        onHoverIndexChanged();
+        this.hoverImage = hoverImage;
+        onHoverImageChanged();
     }
 
-    private void onHoverIndexChanged()
+    private void onHoverImageChanged()
     {
-        if (hoverIndexChanged != null)
-            hoverIndexChanged.doAction(this, null);
+        if (hoverImageChanged != null)
+            hoverImageChanged.doAction(this, null);
     }
 
     @Override
-    public int getIndex()
+    public MirImage getMirImage()
     {
         if (!isEnabled)
-            return super.getIndex();
+            return super.getMirImage();
 
-        if (pressedIndex >= 0 && ActiveControl == this && MouseControl == this)
-            return pressedIndex;
+        if (pressedImage != null && ActiveControl == this && MouseControl == this)
+            return pressedImage;
 
-        if (hoverIndex >= 0 && MouseControl == this)
-            return hoverIndex;
+        if (hoverImage != null && MouseControl == this)
+            return hoverImage;
 
-        return super.getIndex();
+        return super.getMirImage();
     }
 
     public boolean getIsCenterText()
@@ -78,22 +97,22 @@ public class MirButton extends MirImageControl {
             label.setIsAutoSize(true);
     }
 
-    public int getPressedIndex()
+    public MirImage getPressedImage()
     {
-        return pressedIndex;
+        return pressedImage;
     }
-    public void setPressedIndex(int pressedIndex)
+    public void setPressedImage(MirImage pressedImage)
     {
-        if (this.pressedIndex == pressedIndex)
+        if (this.pressedImage == pressedImage)
             return;
-        this.pressedIndex = pressedIndex;
-        onPressedIndexChanged();
+        this.pressedImage = pressedImage;
+        onPressedImageChanged();
     }
 
-    private void onPressedIndexChanged()
+    private void onPressedImageChanged()
     {
-        if (pressedIndexChanged != null)
-            pressedIndexChanged.doAction(this, null);
+        if (pressedImageChanged != null)
+            pressedImageChanged.doAction(this, null);
     }
 
     @Override
@@ -110,18 +129,6 @@ public class MirButton extends MirImageControl {
             return;
         label.setText(text);
         label.setIsVisible(!Optional.ofNullable(text).orElse("").isEmpty());
-    }
-
-    public MirButton()
-    {
-        index = -1;
-        hoverIndex = -1;
-        pressedIndex = -1;
-        //sound = SoundList.ButtonB;
-
-        label = new MirLabel();
-        label.setIsNotControl(true);
-        label.setParent(this);
     }
 
     @Override
@@ -159,15 +166,15 @@ public class MirButton extends MirImageControl {
 
         if (!disposing) return;
 
-        hoverIndexChanged = null;
-        hoverIndex = 0;
+        hoverImageChanged = null;
+        hoverImage = null;
 
         if (label != null && !label.getIsDisposed())
             label.dispose();
         label = null;
 
-        pressedIndexChanged = null;
-        pressedIndex = 0;
+        pressedImageChanged = null;
+        pressedImage = null;
     }
 
 }

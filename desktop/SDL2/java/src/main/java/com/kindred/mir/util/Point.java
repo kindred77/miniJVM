@@ -80,6 +80,12 @@ public class Point {
         y=y - sz.getHeight();
     }
 
+    public void subtract(Point pt)
+    {
+        x=x - pt.getX();
+        y=y - pt.getY();
+    }
+
     public static Point add(Point pt, Size sz)
     {
         return new Point(pt.getX() + sz.getWidth(), pt.getY() + sz.getHeight());
