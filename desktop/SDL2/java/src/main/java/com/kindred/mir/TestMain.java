@@ -54,10 +54,10 @@ public class TestMain {
             MirJNI.ImGui_InitForeColor(1.0f, 0.0f, 0.0f, 0.5f);
             //---------------------
 
-            MirLib mir_lib = MirLibFactory.getMirLib("../../desktop/SDL2/java/src/main/resource/mir_res/Prguse2_png.Lib");
+            MirLib mir_lib = MirLibFactory.getMirLib("../mir_client/ChrSel.Lib");
             
-            MirImage img = mir_lib.GetMirImage(1360);
-            MirImage img2 = mir_lib.GetMirImage(1205);
+            MirImage img = mir_lib.GetMirImage(22);
+            MirImage img2 = mir_lib.GetMirImage(8);
 
 
             //effect
@@ -71,11 +71,12 @@ public class TestMain {
             //int ret = MirJNI.Mir_SurfaceFuchsiaEffect(img.getSurface());
             //int ret = MirJNI.Mir_SurfaceBrightEffect(img.getSurface());
             //int ret = MirJNI.Mir_SurfaceGrayEffect(img.getSurface());
-            int ret = MirJNI.Mir_SurfaceRedEffect(img.getSurface());
+            //int ret = MirJNI.Mir_SurfaceRedEffect(img.getSurface());
             //int ret = MirJNI.Mir_SurfaceToGray(img.getSurface());
-            if (ret != 0) {
-                throw new IllegalStateException("Unable to convert surface.");
-            }
+            int ret = 0;
+//            if (ret != 0) {
+//                throw new IllegalStateException("Unable to convert surface.");
+//            }
 
 
             //test texture
@@ -197,10 +198,10 @@ public class TestMain {
                     MirJNI.ImGui_End();
                 }
 
-                MirJNI.SDL_SetWindowOpacity(win_id,0.5f);
+                MirJNI.SDL_SetWindowOpacity(win_id,1f);
                 MirJNI.ImGui_Render(renderer_id);
                 //覆盖inputtext
-                //MirJNI.SDL_RenderCopy(renderer_id, testTexture_id2, null, dstRect2);
+                MirJNI.SDL_RenderCopy(renderer_id, testTexture_id, null, dstRect);
                 MirJNI.SDL_RenderPresent(renderer_id);
 
             }
