@@ -44,15 +44,12 @@ public class MirCheckBox extends MirButton {
         super(parent, unTickedImage, null, null);
         this.tickedImage = null;
         this.unTickedImage = unTickedImage;
-        click = new ControlCommonListener() {
-            @Override
-            public void doAction(MirControl control, Object argObj) {
-                isChecked = !isChecked;
-                if (isChecked) setImage(tickedImage);
-                else setImage(unTickedImage);
-                redraw();
-            }
-        };
+        setMouseClick((control, argObj) -> {
+            isChecked = !isChecked;
+            if (isChecked) setImage(tickedImage);
+            else setImage(unTickedImage);
+            redraw();
+        });
 
         label.setIsAutoSize(true);
         label.setLocation(new Point(15, -2));

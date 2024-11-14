@@ -77,6 +77,27 @@ public class MirMain {
         }
     }
 
+    //make a virtual click event
+    public static void mainMouseClick(Point pos, int type)
+    {
+        if (type == SDL_Button.SDL_BUTTON_RIGHT && (GameScene.SelectedCell != null || GameScene.PickedUpGold))
+        {
+            GameScene.SelectedCell = null;
+            GameScene.PickedUpGold = false;
+            return;
+        }
+
+        try
+        {
+            if (MirScene.ActiveScene != null)
+                MirScene.ActiveScene.onMouseClick(pos);
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
+    }
+
     public static void mainMouseUp(Point pos, int type)
     {
 

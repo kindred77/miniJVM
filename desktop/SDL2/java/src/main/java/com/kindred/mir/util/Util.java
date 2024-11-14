@@ -1,6 +1,8 @@
 package com.kindred.mir.util;
 
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Util {
 
@@ -27,5 +29,16 @@ public class Util {
             else break;
         }
         return new String(buf, 0, acture_length, "utf-8");
+    }
+
+    public static int[] genSeq(int startInclude, int endInclude)
+    {
+        int[] res = new int[endInclude-startInclude+1];
+        for (int i =0; i<res.length; i++)
+        {
+            res[i] = startInclude+i;
+        }
+
+        return res;
     }
 }

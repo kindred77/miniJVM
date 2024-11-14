@@ -92,7 +92,7 @@ public class MirStaticImageControl extends MirControl{
             imageChanged.doAction(this, null);
     }
 
-    protected void setIsPixelDetect()
+    protected void setIsPixelDetect(boolean isPixelDetect)
     {
         if (this.isPixelDetect == isPixelDetect)
             return;

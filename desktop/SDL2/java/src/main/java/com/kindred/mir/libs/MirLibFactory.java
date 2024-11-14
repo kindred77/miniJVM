@@ -2,7 +2,11 @@ package com.kindred.mir.libs;
 
 public class MirLibFactory {
 
-    public static MirLib ChrSel;
+    public static String MIR_LIB_DIR = "../mir_client/";
+
+    public static String ChrSel = "ChrSel.Lib";
+
+    public static String Prguse = "Prguse.Lib";
 
     public static MirLib getMirLib(String file_name)
     {

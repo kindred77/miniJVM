@@ -3,7 +3,6 @@ package com.kindred.mir.controls;
 import com.kindred.mir.MirMain;
 import com.kindred.mir.Settings;
 import com.kindred.mir.constcode.MirBlendMode;
-import com.kindred.mir.controls.events.MouseClickEvent;
 import com.kindred.mir.controls.listener.ControlCommonListener;
 import com.kindred.mir.engine.MirTexture;
 import com.kindred.mir.engine.SoundList;
@@ -56,7 +55,7 @@ public class MirControl implements AutoCloseable {
     private ControlCommonListener enabledChanged;
 
     protected boolean isHasShown;
-    protected ControlCommonListener click , doubleClick, beforeDraw , afterDraw , mouseEnter , mouseLeave , shown , beforeShown, disposing;
+    protected ControlCommonListener mouseClick , mouseDoubleClick, beforeDraw , afterDraw , mouseEnter , mouseLeave , shown , beforeShown, disposing;
 
     private ControlCommonListener mouseMove, mouseDown, mouseUp;
     //private MouseEventHandler mouseWheel,mouseMove, mouseDown, mouseUp;
@@ -853,7 +852,13 @@ public class MirControl implements AutoCloseable {
         if (mouseLeave != null)
             mouseLeave.doAction(this, null);
     }
-    public void onMouseClick(MouseClickEvent e)
+
+    public void setMouseClick(ControlCommonListener mouseClick)
+    {
+        this.mouseClick = mouseClick;
+    }
+
+    public void onMouseClick(Point pos)
     {
         if (!isEnabled)
             return;
@@ -861,34 +866,34 @@ public class MirControl implements AutoCloseable {
         if (sound != SoundList.None)
             SoundManager.playSound(sound, false);
 
-        if (click != null)
-            invokeMouseClick(e);
+        if (mouseClick != null)
+            invokeMouseClick(pos);
     }
 
-    public void onMouseDoubleClick(MouseClickEvent e)
+    public void onMouseDoubleClick(Point pos)
     {
         if (!isEnabled)
             return;
 
-        if (doubleClick != null)
+        if (mouseDoubleClick != null)
         {
             if (sound != SoundList.None)
                 SoundManager.playSound(sound, false);
-            invokeMouseDoubleClick(e);
+            invokeMouseDoubleClick(pos);
         }
         else
-            onMouseClick(e);
+            onMouseClick(pos);
     }
 
-    public void invokeMouseClick(MouseClickEvent e)
+    public void invokeMouseClick(Point pos)
     {
-        if (click != null)
-            click.doAction(this, e);
+        if (mouseClick != null)
+            mouseClick.doAction(this, pos);
     }
 
-    public void invokeMouseDoubleClick(MouseClickEvent e)
+    public void invokeMouseDoubleClick(Point pos)
     {
-        doubleClick.doAction(this, e);
+        mouseDoubleClick.doAction(this, pos);
     }
 
     public void onMouseMove(Point pos)
@@ -1104,8 +1109,8 @@ public class MirControl implements AutoCloseable {
             shown = null;
             beforeShown = null;
 
-            click = null;
-            doubleClick = null;
+            mouseClick = null;
+            mouseDoubleClick = null;
             mouseEnter = null;
             mouseLeave = null;
 //            mouseMove = null;

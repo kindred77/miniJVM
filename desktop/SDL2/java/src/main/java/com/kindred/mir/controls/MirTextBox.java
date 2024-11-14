@@ -164,6 +164,11 @@ public class MirTextBox extends MirControl {
 //            textBox.Visible = Visible;
     }
 
+    public void setFocus()
+    {
+
+    }
+
 //    private void textBox_VisibleChanged(object sender, EventArgs e)
 //    {
 //        dialogChanged();
