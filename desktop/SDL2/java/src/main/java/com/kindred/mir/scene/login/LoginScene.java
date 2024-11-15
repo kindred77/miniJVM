@@ -1,11 +1,14 @@
 package com.kindred.mir.scene.login;
 
+import com.kindred.mir.Settings;
 import com.kindred.mir.controls.*;
 import com.kindred.mir.controls.listener.ControlCommonListener;
 import com.kindred.mir.engine.SoundList;
 import com.kindred.mir.engine.SoundManager;
+import com.kindred.mir.libs.MirImage;
 import com.kindred.mir.libs.MirLibFactory;
 import com.kindred.mir.scene.login.LoginDialog;
+import com.kindred.mir.util.Point;
 import com.kindred.mir.util.Util;
 
 public class LoginScene extends MirScene {
@@ -13,7 +16,7 @@ public class LoginScene extends MirScene {
     private MirAnimatedControl background;
     public MirLabel Version;
 
-    private LoginDialog login;
+    private LoginDialog loginDialog;
 
     private NewAccountDialog account;
 //    private ChangePasswordDialog _password;
@@ -24,7 +27,8 @@ public class LoginScene extends MirScene {
 
     public MirStaticImageControl TestLabel, ViolenceLabel, MinorLabel, YouthLabel;
 
-    public LoginScene(MirControl parent) {
+    public LoginScene(MirControl parent) throws Exception
+    {
         super(parent);
         SoundManager.playSound(SoundList.IntroMusic, true);
         disposing = new ControlCommonListener() {
@@ -34,12 +38,16 @@ public class LoginScene extends MirScene {
             }
         };
 
-        background = new MirAnimatedControl(this, MirLibFactory.getMirLib(MirLibFactory.ChrSel), Util.genSeq(22, 32));
+        MirImage[] animImgs = MirLibFactory.getMirLib(MirLibFactory.ChrSel).GetMirImages(Util.genSeq(22, 32));
+        background = new MirAnimatedControl(this, animImgs);
         background.setIsAnimated(false);
         background.setAnimationCount(19);
         background.setAnimationDelay(100);
 
-        login = new LoginDialog(background,MirLibFactory.getMirLib(MirLibFactory.Prguse), 1084);
+        MirImage logginDialogImg = MirLibFactory.getMirLib(MirLibFactory.Prguse).GetMirImage(60);
+        Point loginDialogPos = new Point((Settings.ScreenWidth - logginDialogImg.getWidth())/2, (Settings.ScreenHeight - logginDialogImg.getHeight())/2);
+
+        loginDialog = new LoginDialog(background,logginDialogImg,loginDialogPos,logginDialogImg.getTrueSize());
 //        login.accountButton.click += (o, e) =>
 //        {
 //            _login.Hide();

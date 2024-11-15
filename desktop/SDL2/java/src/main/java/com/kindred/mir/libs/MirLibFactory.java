@@ -10,7 +10,7 @@ public class MirLibFactory {
 
     public static MirLib getMirLib(String file_name)
     {
-        MirLib lib = new MirLib(file_name);
+        MirLib lib = new MirLib(MIR_LIB_DIR+file_name);
         try
         {
             lib.Initialize();

@@ -1,7 +1,7 @@
 package com.kindred.mir.util;
 
 public class Size {
-    public static Size Empty=new Size();
+    public static Size Empty=new Size(0,0);
 
     private int width;
 

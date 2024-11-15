@@ -242,15 +242,38 @@ int com_kindred_sdl_SDL_SDL_SetRenderDrawColor(Runtime *runtime, JClass *clazz) 
     JniEnv *env = runtime->jnienv;
     s32 pos = 0;
 
-    SDL_Renderer *render = (__refer) (intptr_t) env->localvar_getLong_2slot(runtime->localvar, pos);
+    SDL_Renderer *renderer = (__refer) (intptr_t) env->localvar_getLong_2slot(runtime->localvar, pos);
     pos += 2;
     s32 r = env->localvar_getInt(runtime->localvar, pos++);
     s32 g = env->localvar_getInt(runtime->localvar, pos++);
     s32 b = env->localvar_getInt(runtime->localvar, pos++);
     s32 alpha = env->localvar_getInt(runtime->localvar, pos++);
 
-    int res = SDL_SetRenderDrawColor(render, r, g, b, alpha);
+    int res = SDL_SetRenderDrawColor(renderer, r, g, b, alpha);
     env->push_int(runtime->stack, res);
+    return 0;
+}
+
+int com_kindred_sdl_SDL_SDL_GetRenderDrawColor(Runtime *runtime, JClass *clazz) {
+    JniEnv *env = runtime->jnienv;
+    s32 pos = 0;
+
+    SDL_Renderer *renderer = (__refer) (intptr_t) env->localvar_getLong_2slot(runtime->localvar, pos);
+    pos += 2;
+
+    Uint8 defaultR, defaultG, defaultB, defaultA;
+    int ret = SDL_GetRenderDrawColor(renderer, &defaultR, &defaultG, &defaultB, &defaultA);
+    Instance *_arr = NULL;
+    if (!ret)
+    {
+        _arr = env->jarray_create_by_type_index(runtime, 4, DATATYPE_INT);
+        _arr->arr_body[0] = defaultR;
+        _arr->arr_body[1] = defaultG;
+        _arr->arr_body[2] = defaultB;
+        _arr->arr_body[3] = defaultA;
+        env->push_ref(runtime->stack, _arr);
+    }
+    
     return 0;
 }
 
@@ -275,6 +298,24 @@ int com_kindred_sdl_SDL_SDL_RenderPresent(Runtime *runtime, JClass *clazz) {
 
     SDL_RenderPresent(render);
 
+    return 0;
+}
+
+int com_kindred_sdl_SDL_SDL_RenderDrawLine(Runtime *runtime, JClass *clazz) {
+    JniEnv *env = runtime->jnienv;
+    s32 pos = 0;
+
+    SDL_Renderer *render = (__refer) (intptr_t) env->localvar_getLong_2slot(runtime->localvar, pos);
+    pos += 2;
+
+    s32 startX = env->localvar_getInt(runtime->localvar, pos++);
+    s32 startY = env->localvar_getInt(runtime->localvar, pos++);
+    s32 endX = env->localvar_getInt(runtime->localvar, pos++);
+    s32 endY = env->localvar_getInt(runtime->localvar, pos++);
+
+    int ret = SDL_RenderDrawLine(render, startX, startY, endX, endY);
+
+    env->push_int(runtime->stack, ret);
     return 0;
 }
 
@@ -720,7 +761,9 @@ static java_native_method method_sdl_table[] = {
     {"com/kindred/sdl/SDL", "SDL_RenderCopy",                 "(JJ[I[I)I",                  com_kindred_sdl_SDL_SDL_RenderCopy},
     {"com/kindred/sdl/SDL", "SDL_RenderClear",                "(J)I",                       com_kindred_sdl_SDL_SDL_RenderClear},
     {"com/kindred/sdl/SDL", "SDL_RenderPresent",              "(J)V",                       com_kindred_sdl_SDL_SDL_RenderPresent},
+    {"com/kindred/sdl/SDL", "SDL_RenderDrawLine",             "(JIIII)I",                   com_kindred_sdl_SDL_SDL_RenderDrawLine},
     {"com/kindred/sdl/SDL", "SDL_SetRenderDrawColor",         "(JIIII)I",                   com_kindred_sdl_SDL_SDL_SetRenderDrawColor},
+    {"com/kindred/sdl/SDL", "SDL_GetRenderDrawColor",         "(J)[I",                      com_kindred_sdl_SDL_SDL_GetRenderDrawColor},
 
     {"com/kindred/sdl/SDL", "SDL_CreateEvent",                "()J",                        com_kindred_sdl_SDL_SDL_CreateEvent},
     {"com/kindred/sdl/SDL", "SDL_FreeEvent",                  "(J)V",                       com_kindred_sdl_SDL_SDL_FreeEvent},

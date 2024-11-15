@@ -39,7 +39,7 @@ public class MirCheckBox extends MirButton {
         redraw();
     }
 
-    public MirCheckBox(MirControl parent, MirImage unTickedImage)
+    public MirCheckBox(MirControl parent, MirImage unTickedImage) throws Exception
     {
         super(parent, unTickedImage, null, null);
         this.tickedImage = null;

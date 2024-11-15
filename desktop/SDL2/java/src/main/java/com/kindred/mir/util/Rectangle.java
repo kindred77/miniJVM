@@ -2,7 +2,7 @@ package com.kindred.mir.util;
 
 public class Rectangle {
 
-    public static Rectangle Empty = new Rectangle();
+    public static Rectangle Empty = new Rectangle(0,0,0,0);
 
     private int x;
 

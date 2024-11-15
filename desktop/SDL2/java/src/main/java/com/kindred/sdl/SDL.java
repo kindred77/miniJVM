@@ -43,9 +43,11 @@ public class SDL {
     public static native int SDL_RenderCopy(long renderer_id, long texture_id, int[] src_rect, int[] dst_rect);
 
     public static native int SDL_SetRenderDrawColor(long renderer_id, int r, int g, int b, int alpha);
+    public static native int[] SDL_GetRenderDrawColor(long renderer_id);
     public static native int SDL_RenderClear(long renderer_id);
 
     public static native void SDL_RenderPresent(long renderer_id);
+    public static native int SDL_RenderDrawLine(long renderer_id, int startX, int startY, int endX, int endY);
 
     public static native long SDL_CreateEvent();
     public static native int SDL_GetEventType(long event_id);

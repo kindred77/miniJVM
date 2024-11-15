@@ -11,6 +11,7 @@ import com.kindred.mir.libs.MirImage;
 import com.kindred.mir.libs.MirLib;
 
 import com.kindred.mir.scene.GameScene;
+import com.kindred.mir.scene.login.LoginScene;
 import com.kindred.mir.test.Test;
 import com.kindred.mir.util.Point;
 import com.kindred.mir.util.Util;
@@ -162,6 +163,9 @@ public class MirMain {
 
             boolean shouldRun = true;
             long event_id = MirJNI.SDL_CreateEvent();
+
+            //for test
+            MirScene.ActiveScene = new LoginScene(null);
 
             while (shouldRun) {
                 updateTime();

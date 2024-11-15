@@ -41,7 +41,7 @@ public class MirAnimatedControl extends MirStaticImageControl {
 
     private MirImage[] images;
 
-    public MirAnimatedControl(MirControl parent, MirImage[] images)
+    public MirAnimatedControl(MirControl parent, MirImage[] images) throws Exception
     {
         super(parent, images[0]);
         this.images=images;
@@ -49,17 +49,6 @@ public class MirAnimatedControl extends MirStaticImageControl {
         nextFadeTime = Settings.getTime();
         nextOffSet = Settings.getTime();
         animationCount=images.length;
-        animations.add(this);
-    }
-
-    public MirAnimatedControl(MirControl parent, MirLib lib, int[] indexes)
-    {
-        super(parent, lib, indexes[0]);
-        images = lib.GetMirImages(indexes);
-        isLoop = true;
-        nextFadeTime = Settings.getTime();
-        nextOffSet = Settings.getTime();
-        animationCount=indexes.length;
         animations.add(this);
     }
 

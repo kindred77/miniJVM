@@ -2,24 +2,32 @@ package com.kindred.mir.util;
 
 public class Vector2 {
 
-    private float x;
-    private float y;
+    private int x;
+    private int y;
 
     public Vector2()
     {
-        y = 0f;
-        x = 0f;
+        y = 0;
+        x = 0;
     }
 
     public static Vector2 Empty()
     {
-        return new Vector2(0f, 0f);
+        return new Vector2(0, 0);
     }
 
-    public Vector2(float x, float y)
+    public Vector2(int x, int y)
     {
         this.x=x;
         this.y=y;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
     }
 
     @Override
@@ -42,6 +50,6 @@ public class Vector2 {
 
     @Override
     public int hashCode() {
-        return (int)(double)y ^ (int)(double)x;
+        return y ^ x;
     }
 }

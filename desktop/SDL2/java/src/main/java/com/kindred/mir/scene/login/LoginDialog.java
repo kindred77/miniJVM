@@ -2,8 +2,10 @@ package com.kindred.mir.scene.login;
 
 import com.kindred.mir.Settings;
 import com.kindred.mir.controls.*;
+import com.kindred.mir.libs.MirImage;
 import com.kindred.mir.libs.MirLib;
 import com.kindred.mir.libs.MirLibFactory;
+import com.kindred.mir.util.Color;
 import com.kindred.mir.util.Point;
 import com.kindred.mir.util.Size;
 
@@ -14,16 +16,19 @@ public class LoginDialog extends MirStaticImageControl {
     private MirTextBox accountIDTextBox, passwordTextBox;
     private boolean isAccountIDValid, isPasswordValid;
 
-    public LoginDialog(MirControl parent, MirLib lib, int index) {
-        super(parent, lib, index);
-        setSize(new Size(328, 220));
-        setLocation(new Point((Settings.ScreenWidth - getSize().getWidth())/2, (Settings.ScreenHeight - getSize().getHeight())/2));
+    public LoginDialog(MirControl parent, MirImage img, Point pos, Size size) throws Exception
+    {
+        super(parent, img);
+        setSize(size);
+        setLocation(pos);
         setIsPixelDetect(false);
 
         titleLabel = new MirLabel(this);
         titleLabel.setText("title label");
         titleLabel.setSize(new Size(50, 20));
-        titleLabel.setLocation(new Point((getSize().getWidth() - titleLabel.getSize().getWidth())/2, 12));
+        titleLabel.setLocation(new Point((getSize().getWidth() - titleLabel.getSize().getWidth())/2, 80));
+        titleLabel.setIsBorder(true);
+        titleLabel.setBorderColor(Color.Green);
 
         accountIDLabel = new MirLabel(this);
         accountIDLabel.setText("account label");
@@ -35,15 +40,15 @@ public class LoginDialog extends MirStaticImageControl {
         passLabel.setSize(new Size(50, 20));
         passLabel.setLocation(new Point(43, 105));
 
-        OKButton = new MirButton(this, null, null,
-                MirLibFactory.getMirLib(MirLibFactory.Prguse).GetMirImage(63));
+        MirImage okBtnPressedImg = MirLibFactory.getMirLib(MirLibFactory.Prguse).GetMirImage(63);
+        OKButton = new MirButton(this, null, null, okBtnPressedImg);
         OKButton.setSize(new Size(42,42));
-        OKButton.setIsEnabled(false);
+        OKButton.setIsBorder(true);
+        OKButton.setIsEnabled(true);
 
         OKButton.setMouseClick((control, argObj) -> {
             login();
         });
-
     }
 
     private void login()

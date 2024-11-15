@@ -23,7 +23,7 @@ public class MirButton extends MirStaticImageControl {
 
     private boolean isCenterText;
 
-    public MirButton(MirControl parent, MirImage normalImage, MirImage hoverImage, MirImage pressedImage)
+    public MirButton(MirControl parent, MirImage normalImage, MirImage hoverImage, MirImage pressedImage) throws Exception
     {
         super(parent, normalImage);
         //hoverIndex = -1;

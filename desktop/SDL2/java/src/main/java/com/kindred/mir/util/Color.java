@@ -6,6 +6,9 @@ public class Color {
 
     public static Color White = new Color(255,255,255, 255);
     public static Color Black = new Color(0,0,0, 255);
+    public static Color Red = new Color(255,0,0, 255);
+    public static Color Green = new Color(0,255,0, 255);
+    public static Color Blue = new Color(0,0,255, 255);
 
     private int r;
     private int g;
@@ -26,5 +29,25 @@ public class Color {
         this.g=0;
         this.b=0;
         this.alpha=0;
+    }
+
+    public int getRed()
+    {
+        return this.r;
+    }
+
+    public int getGreen()
+    {
+        return this.g;
+    }
+
+    public int getBlue()
+    {
+        return this.b;
+    }
+
+    public int getAlpha()
+    {
+        return this.alpha;
     }
 }

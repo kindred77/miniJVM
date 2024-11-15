@@ -1,18 +1,19 @@
 package com.kindred.mir.controls;
 
 import com.kindred.mir.controls.listener.ControlCommonListener;
+import com.kindred.mir.engine.MirJNI;
 import com.kindred.mir.libs.MirImage;
-import com.kindred.mir.libs.MirLib;
 import com.kindred.mir.util.Color;
 import com.kindred.mir.util.Point;
 import com.kindred.mir.util.Size;
+import com.kindred.sdl.constcode.SDLBlendMode;
 
 public class MirStaticImageControl extends MirControl{
 
-    private boolean isUseOffSet;
+    private boolean isUseOffSet = true;
     private ControlCommonListener useOffSetChanged;
 
-    private boolean isDrawImage;
+    private boolean isDrawImage = true;
     private ControlCommonListener drawImageChanged;
 
     //protected int index;
@@ -27,26 +28,28 @@ public class MirStaticImageControl extends MirControl{
     public MirStaticImageControl(MirControl parent, MirImage image)
     {
         super(parent);
+        if (image == null)
+        {
+            System.out.println("MirStaticImageControl: No default image.");
+        }
         isDrawImage = true;
         //index = -1;
         foreColor = Color.White;
-        setImage(image);
-    }
-
-    public MirStaticImageControl(MirControl parent, MirLib lib, int index)
-    {
-        super(parent);
-        MirImage img = lib.GetMirImage(index);
-        isDrawImage = true;
-        //index = index;
-        foreColor = Color.White;
-        setImage(img);
+        this.image = image;
     }
 
     @Override
     public Point getDisplayLocation()
     {
-        return isUseOffSet ? Point.add(super.getDisplayLocation(), image.getOffset()) : super.getDisplayLocation();
+        if (isUseOffSet)
+        {
+            //没有默认图片的话，就没有offset
+            return Point.add(super.getDisplayLocation(), image == null? new Point(0,0):image.getOffset());
+        }
+        else
+        {
+            return super.getDisplayLocation();
+        }
     }
 
     public Point getDisplayLocationWithoutOffSet()
@@ -175,17 +178,30 @@ public class MirStaticImageControl extends MirControl{
 
         if (isDrawImage && image != null)
         {
-//            if (isGrayScale) DXManager.SetGrayscale(1F, Color.White);
-//            else if (isBlending) Library.DrawBlend(index, DisplayLocation, foreColor, false, blendingRate);
-//            else Library.Draw(index, DisplayLocation, foreColor, false, opacity);
-//            if (isGrayScale) DXManager.SetNormal(1F, Color.White);
+            long texture_id = MirJNI.SDL_CreateTextureFromSurface(renderer_id, image.getSurface());
+            if (isBlending)
+            {
+                MirJNI.SDL_SetTextureBlendMode(texture_id, SDLBlendMode.SDL_BLENDMODE_BLEND);
+            }
+
+            Point pos = getDisplayLocation();
+
+            int[] dstRect = {pos.getX(), pos.getY(), image.getWidth(), image.getHeight()};
+            MirJNI.SDL_RenderCopy(renderer_id, texture_id, null, dstRect);
         }
     }
 
     @Override
     public boolean isMouseOver(Point p)
     {
-        return super.isMouseOver(p) && (!isPixelDetect || image.isVisiblePixel(Point.subtract(p, getDisplayLocation()),true) || isMoving);
+        if (image == null)
+        {
+            return super.isMouseOver(p) && (!isPixelDetect || isMoving);
+        }
+        else
+        {
+            return super.isMouseOver(p) && (!isPixelDetect || image.isVisiblePixel(Point.subtract(p, getDisplayLocation()),true) || isMoving);
+        }
     }
 
     @Override

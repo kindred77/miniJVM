@@ -4,6 +4,7 @@ import com.kindred.mir.MirMain;
 import com.kindred.mir.Settings;
 import com.kindred.mir.constcode.MirBlendMode;
 import com.kindred.mir.controls.listener.ControlCommonListener;
+import com.kindred.mir.engine.MirJNI;
 import com.kindred.mir.engine.MirTexture;
 import com.kindred.mir.engine.SoundList;
 import com.kindred.mir.engine.SoundManager;
@@ -19,10 +20,10 @@ public class MirControl implements AutoCloseable {
     protected MirControl parent;
     private ControlCommonListener parentChanged;
 
-    protected Size size;
+    protected Size size = Size.Empty;
     private ControlCommonListener sizeChanged;
 
-    private Point location;
+    private Point location = new Point(0,0);
     private ControlCommonListener locationChanged;
 
     protected boolean isTextureValid;
@@ -31,15 +32,15 @@ public class MirControl implements AutoCloseable {
     protected float blendingRate;
     private MirBlendMode.BlendMode blendMode;
 
-    protected Color backColor;
+    protected Color backColor = Color.Black;
     private ControlCommonListener backColorChanged;
 
-    private Rectangle borderRectangle;
-    private boolean isBorder;
+    private Rectangle borderRectangle=Rectangle.Empty;
+    private boolean isBorder=false;
     private Vector2[] borderInfo;
     private ControlCommonListener borderChanged;
 
-    private Color borderColor;
+    private Color borderColor=Color.Red;
     private ControlCommonListener borderColorChanged;
 
     private long cleanTime;
@@ -51,7 +52,7 @@ public class MirControl implements AutoCloseable {
     private ControlCommonListener childAdded;
     private ControlCommonListener childRemoved;
 
-    protected boolean isEnabled;
+    protected boolean isEnabled=true;
     private ControlCommonListener enabledChanged;
 
     protected boolean isHasShown;
@@ -71,13 +72,13 @@ public class MirControl implements AutoCloseable {
     private boolean isModal;
     private ControlCommonListener modalChanged;
 
-    protected boolean isMoving;
+    protected boolean isMoving=false;
     private boolean isMovable;
     private Point movePoint;
     private ControlCommonListener movableChanged;
     private ControlCommonListener onMoving;
 
-    protected boolean isNotControl;
+    protected boolean isNotControl=false;
     private ControlCommonListener notControlChanged;
 
     protected float opacity;
@@ -89,10 +90,10 @@ public class MirControl implements AutoCloseable {
     private boolean isSort;
     private ControlCommonListener sortChanged;
 
-    protected boolean isVisible;
+    protected boolean isVisible=true;
     private ControlCommonListener visibleChanged;
 
-    protected boolean isDisposed;
+    protected boolean isDisposed=false;
 
     public MirControl(MirControl parent)
     {
@@ -154,7 +155,12 @@ public class MirControl implements AutoCloseable {
     }
 
     public Point getDisplayLocation() {
-        return parent == null ? location : Point.add(parent.getDisplayLocation(), location);
+        if (parent == null) {
+            return location;
+        }
+        else {
+            return Point.add(parent.getDisplayLocation(), location);
+        }
     }
 
     public Size getSize()
@@ -255,16 +261,18 @@ public class MirControl implements AutoCloseable {
         Rectangle displayRectangle=getDisplayRectangle();
         if (borderRectangle != displayRectangle)
         {
-            borderInfo = new Vector2[]
-            {
-                new Vector2(displayRectangle.getLeft() - 1, displayRectangle.getTop() - 1),
-                        new Vector2(displayRectangle.getRight(), displayRectangle.getTop() - 1),
-                        new Vector2(displayRectangle.getLeft() - 1, displayRectangle.getTop() - 1),
-                        new Vector2(displayRectangle.getLeft() - 1, displayRectangle.getBottom()),
-                        new Vector2(displayRectangle.getLeft() - 1, displayRectangle.getBottom()),
-                        new Vector2(displayRectangle.getRight(), displayRectangle.getBottom()),
-                        new Vector2(displayRectangle.getRight(), displayRectangle.getTop() - 1),
-                        new Vector2(displayRectangle.getRight(), displayRectangle.getBottom())
+            borderInfo = new Vector2[]{
+                    new Vector2(displayRectangle.getLeft() - 1, displayRectangle.getTop() - 1),
+                    new Vector2(displayRectangle.getRight(), displayRectangle.getTop() - 1),
+
+                    new Vector2(displayRectangle.getLeft() - 1, displayRectangle.getTop() - 1),
+                    new Vector2(displayRectangle.getLeft() - 1, displayRectangle.getBottom()),
+
+                    new Vector2(displayRectangle.getLeft() - 1, displayRectangle.getBottom()),
+                    new Vector2(displayRectangle.getRight(), displayRectangle.getBottom()),
+
+                    new Vector2(displayRectangle.getRight(), displayRectangle.getTop() - 1),
+                    new Vector2(displayRectangle.getRight(), displayRectangle.getBottom())
             };
 
             borderRectangle = displayRectangle;
@@ -725,7 +733,11 @@ public class MirControl implements AutoCloseable {
 
     public final void draw(long renderer_id)
     {
-        if (isDisposed || !getIsVisible() /*|| Size.Width == 0 || Size.Height == 0*/ || size.getWidth() > Settings.ScreenWidth || size.getHeight() > Settings.ScreenHeight)
+        //if (isDisposed || !getIsVisible() || size.getWidth() > Settings.ScreenWidth || size.getHeight() > Settings.ScreenHeight)
+        //    return;
+
+        Point pos = getDisplayLocation();
+        if (isDisposed || !getIsVisible() || pos.getX() > Settings.ScreenWidth || pos.getY() > Settings.ScreenHeight)
             return;
 
         onBeforeShown();
@@ -733,7 +745,7 @@ public class MirControl implements AutoCloseable {
         beforeDrawControl();
         drawControl(renderer_id);
         drawChildren(renderer_id);
-        drawBorder();
+        drawBorder(renderer_id);
         afterDrawControl();
 
         //cleanTime = CMain.Time + Settings.CleanDelay;
@@ -772,12 +784,27 @@ public class MirControl implements AutoCloseable {
                 if (children.get(i) != null)
                     children.get(i).draw(renderer_id);
     }
-    protected void drawBorder()
+    protected void drawBorder(long renderer_id)
     {
-        if (!isBorder || borderInfo == null)
+        Vector2[] borderInfo = getBorderInfo();
+        if (!isBorder || borderInfo == null || borderInfo.length ==0 || borderInfo.length % 2 != 0)
             return;
-        //DXManager.Sprite.Flush();
-        //DXManager.Line.Draw(borderInfo, borderColor);
+
+        int[] rgba = MirJNI.SDL_GetRenderDrawColor(renderer_id);
+        MirJNI.SDL_SetRenderDrawColor(renderer_id, borderColor.getRed(), borderColor.getGreen(), borderColor.getBlue(), borderColor.getAlpha());
+        for (int i = 0; i<borderInfo.length-1; i+=2)
+        {
+            MirJNI.SDL_RenderDrawLine(renderer_id, borderInfo[i].getX(), borderInfo[i].getY(), borderInfo[i+1].getX(), borderInfo[i+1].getY());
+        }
+        //如果没有拿到原来的颜色，则设置成黑色
+        if(rgba!=null && rgba.length==4)
+        {
+            MirJNI.SDL_SetRenderDrawColor(renderer_id, rgba[0], rgba[1], rgba[2], rgba[3]);
+        }
+        else
+        {
+            MirJNI.SDL_SetRenderDrawColor(renderer_id, Color.Black.getRed(), Color.Black.getGreen(), Color.Black.getBlue(), Color.Black.getAlpha());
+        }
     }
     protected void afterDrawControl()
     {

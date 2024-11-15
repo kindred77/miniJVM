@@ -43,21 +43,10 @@ public class MirAnimatedButton extends MirButton{
 
     private MirImage[] images;
 
-    public MirAnimatedButton(MirControl parent, MirImage[] animImages, MirImage normalImage, MirImage hoverImage, MirImage pressedImage)
+    public MirAnimatedButton(MirControl parent, MirImage[] animImages, MirImage normalImage, MirImage hoverImage, MirImage pressedImage) throws Exception
     {
         super(parent,normalImage,hoverImage,pressedImage);
         this.images=animImages;
-        this.animationCount=this.images.length;
-        isLoop = true;
-        nextFadeTime = MirMain.Time;
-        nextOffSet = MirMain.Time;
-        animations.add(this);
-    }
-
-    public MirAnimatedButton(MirControl parent, MirLib lib, int[] indexes, MirImage normalImage, MirImage hoverImage, MirImage pressedImage)
-    {
-        super(parent,normalImage,hoverImage,pressedImage);
-        this.images=lib.GetMirImages(indexes);
         this.animationCount=this.images.length;
         isLoop = true;
         nextFadeTime = MirMain.Time;

@@ -1,10 +1,7 @@
 package com.kindred.mir.scene.login;
 
-import com.kindred.mir.Settings;
 import com.kindred.mir.controls.*;
 import com.kindred.mir.libs.MirImage;
-import com.kindred.mir.libs.MirLib;
-import com.kindred.mir.libs.MirLibFactory;
 
 public class NewAccountDialog extends MirStaticImageControl {
 
@@ -30,13 +27,9 @@ public class NewAccountDialog extends MirStaticImageControl {
             questionValid = true,
             answerValid = true;
 
-    public NewAccountDialog(MirControl parent, MirLib lib, int index) {
-        super(parent, lib.GetMirImage(index));
-    }
-
-//    public NewAccountDialog(MirControl parent, MirImage image)
-//    {
-//        super(parent, image);
+    public NewAccountDialog(MirControl parent, MirImage image) throws Exception
+    {
+        super(parent, image);
 //        Index = 63;
 //        Size = new Size();
 //        setLocation(new Point((Settings.ScreenWidth - image.getWidth()) / 2, (Settings.ScreenHeight - image.getHeight()) / 2););
@@ -183,6 +176,5 @@ public class NewAccountDialog extends MirStaticImageControl {
 //                    Size = new Size(300, 70),
 //                    Visible = false
 //        };
-//
-//    }
+    }
 }

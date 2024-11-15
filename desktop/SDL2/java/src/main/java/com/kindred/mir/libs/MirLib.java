@@ -1,8 +1,6 @@
 package com.kindred.mir.libs;
 
 import com.kindred.mir.util.MyRandomAccessFile;
-import com.kindred.mir.util.Point;
-import com.kindred.mir.util.Size;
 
 import java.io.File;
 
@@ -82,36 +80,32 @@ public class MirLib {
         return true;
     }
 
-    public MirImage GetMirImage(int index)
+    public MirImage GetMirImage(int index) throws Exception
     {
         if (!initialized)
         {
-            System.out.println("Lib not initialized.");
-            return null;
+            throw new Exception("Lib not initialized.");
         }
         try
         {
             if (!initializeImage(index))
             {
-                System.out.println("Can not initialize image.");
-                return null;
+                throw new Exception("Can not initialize image.");
             }
         }
         catch(Exception e)
         {
-            System.out.println("Can not initialize image: ");
-            e.printStackTrace();
-            return null;
+            throw e;
         }
         return images[index];
     }
 
-    public MirImage[] GetMirImages(int[] indexes)
+    public MirImage[] GetMirImages(int[] indexes) throws Exception
     {
         MirImage[] images=new MirImage[indexes.length];
         for (int i = 0; i < indexes.length; i++)
         {
-            images[i] = GetMirImage(i);
+            images[i] = GetMirImage(indexes[i]);
         }
 
         return images;

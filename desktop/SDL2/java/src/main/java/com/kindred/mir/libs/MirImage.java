@@ -56,7 +56,7 @@ public class MirImage {
 
     public Size getTrueSize()
     {
-        return null;
+        return new Size(getWidth(), getHeight());
     }
 
     public boolean isVisiblePixel(Point pt, boolean accuate)
@@ -111,10 +111,10 @@ public class MirImage {
         }
 
         int pixel_format = MirJNI.SDL_GetSurfacePixelFormat(surface_tmp);
-        System.out.println("pixel format: "+SDL_PixelFormatEnum.toString(pixel_format));
+        //System.out.println("pixel format: "+SDL_PixelFormatEnum.toString(pixel_format));
         if (pixel_format != DEFAULT_PIXEL_FORMAT) {
             surface_id = MirJNI.SDL_ConvertSurfaceFormat(surface_tmp, DEFAULT_PIXEL_FORMAT, 0);
-            System.out.println("after convert pixel format: "+SDL_PixelFormatEnum.toString(MirJNI.SDL_GetSurfacePixelFormat(surface_id)));
+            //System.out.println("after convert pixel format: "+SDL_PixelFormatEnum.toString(MirJNI.SDL_GetSurfacePixelFormat(surface_id)));
             MirJNI.SDL_FreeSurface(surface_tmp);
         }
         else {
