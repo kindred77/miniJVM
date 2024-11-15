@@ -19,6 +19,21 @@ class MirImageHeader
 
 public class MirImage {
 
+    public enum ImageEffect
+    {
+        None,
+        Inverse,
+        BlackEffect,
+        WhiteEffect,
+        GreenEffect,
+        BlueEffect,
+        YellowEffect,
+        FuchsiaEffect,
+        BrightEffect,
+        GrayEffect,
+        RedEffect,
+    }
+
     //we use SDL_PIXELFORMAT_ARGB8888
     //will be converted if not.
     public static final int DEFAULT_PIXEL_FORMAT = SDL_PIXELFORMAT_ARGB8888;
@@ -29,8 +44,12 @@ public class MirImage {
 
     private long surface_id=0;
 
-    public long getSurface()
+    public long getSurface(ImageEffect effect)
     {
+        if(effect == ImageEffect.None)
+        {
+            return surface_id;
+        }
         return surface_id;
     }
 
@@ -78,26 +97,26 @@ public class MirImage {
         return true;
     }
 
-    public static long createTexture(MirImage img, long renderer_id) throws Exception
-    {
-        long texture_id = MirJNI.SDL_CreateTexture(renderer_id, DEFAULT_PIXEL_FORMAT,
-                SDL_TextureAccess.SDL_TEXTUREACCESS_STREAMING, img.getWidth(),
-                img.getHeight());
-
-        if (texture_id == 0) {
-            throw new IllegalStateException("Unable to create texture for the image: " + MirJNI.SDL_GetError());
-        }
-
-        int ret = MirJNI.SDL_UpdateTextureWithSurface(texture_id, img.getSurface(), null);
-        if (ret != 0) {
-            throw new IllegalStateException("Unable to update texture from surface for the image: " + MirJNI.SDL_GetError());
-        }
-
-        //MirJNI.SDL_FreeSurface(surface_id);
-        //surface_id=0;
-
-        return texture_id;
-    }
+//    public static long createTexture(MirImage img, long renderer_id) throws Exception
+//    {
+//        long texture_id = MirJNI.SDL_CreateTexture(renderer_id, DEFAULT_PIXEL_FORMAT,
+//                SDL_TextureAccess.SDL_TEXTUREACCESS_STREAMING, img.getWidth(),
+//                img.getHeight());
+//
+//        if (texture_id == 0) {
+//            throw new IllegalStateException("Unable to create texture for the image: " + MirJNI.SDL_GetError());
+//        }
+//
+//        int ret = MirJNI.SDL_UpdateTextureWithSurface(texture_id, img.getSurface(ImageEffect.None), null);
+//        if (ret != 0) {
+//            throw new IllegalStateException("Unable to update texture from surface for the image: " + MirJNI.SDL_GetError());
+//        }
+//
+//        //MirJNI.SDL_FreeSurface(surface_id);
+//        //surface_id=0;
+//
+//        return texture_id;
+//    }
 
     private void convertPixelFormat(byte[] data) throws Exception
     {

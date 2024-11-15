@@ -8,7 +8,7 @@ import com.kindred.mir.util.Size;
 
 import java.util.Optional;
 
-public class MirLabel extends MirControl{
+public class MirLabel extends MirControlWithTexture{
 
     private boolean isAutoSize;
     public ControlCommonListener autoSizeChanged;
@@ -28,9 +28,9 @@ public class MirLabel extends MirControl{
     private Color outLineColor;
     public ControlCommonListener outLineColorChanged;
 
-    public MirLabel(MirControl parent)
+    public MirLabel(MirControl parent, long renderer_id)
     {
-        super(parent);
+        super(parent,renderer_id);
         isDrawControlTexture = true;
         drawFormat = TextFormatFlags.WordBreak;
 
@@ -191,13 +191,13 @@ public class MirLabel extends MirControl{
     }
 
     @Override
-    protected void createTexture()
+    protected boolean updateTexture()
     {
         if (Optional.ofNullable(text).orElse("").isEmpty())
-            return;
+            return false;
 
         if (size.getWidth() == 0 || size.getHeight() == 0)
-            return;
+            return false;
 
 //        if (controlTexture != null && !controlTexture.Disposed && textureSize != size)
 //            controlTexture.Dispose();
@@ -244,6 +244,8 @@ public class MirLabel extends MirControl{
 //        ControlTexture.UnlockRectangle(0);
 //        DXManager.Sprite.Flush();
         isTextureValid = true;
+
+        return true;
     }
 
     @Override

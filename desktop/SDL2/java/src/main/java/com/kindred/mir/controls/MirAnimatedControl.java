@@ -41,9 +41,9 @@ public class MirAnimatedControl extends MirStaticImageControl {
 
     private MirImage[] images;
 
-    public MirAnimatedControl(MirControl parent, MirImage[] images) throws Exception
+    public MirAnimatedControl(MirControl parent, long renderer_id, MirImage[] images) throws Exception
     {
-        super(parent, images[0]);
+        super(parent, renderer_id, images[0]);
         this.images=images;
         isLoop = true;
         nextFadeTime = Settings.getTime();

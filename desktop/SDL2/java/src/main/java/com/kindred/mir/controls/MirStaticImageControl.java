@@ -2,13 +2,14 @@ package com.kindred.mir.controls;
 
 import com.kindred.mir.controls.listener.ControlCommonListener;
 import com.kindred.mir.engine.MirJNI;
+import com.kindred.mir.engine.MirTexture;
 import com.kindred.mir.libs.MirImage;
 import com.kindred.mir.util.Color;
 import com.kindred.mir.util.Point;
 import com.kindred.mir.util.Size;
 import com.kindred.sdl.constcode.SDLBlendMode;
 
-public class MirStaticImageControl extends MirControl{
+public class MirStaticImageControl extends MirControlWithTexture{
 
     private boolean isUseOffSet = true;
     private ControlCommonListener useOffSetChanged;
@@ -25,9 +26,12 @@ public class MirStaticImageControl extends MirControl{
     private MirImage image;
     public ControlCommonListener imageChanged;
 
-    public MirStaticImageControl(MirControl parent, MirImage image)
+    /*
+    带有texture的控件需要使用到renderer
+     */
+    public MirStaticImageControl(MirControl parent, long renderer_id, MirImage image)
     {
-        super(parent);
+        super(parent, renderer_id);
         if (image == null)
         {
             System.out.println("MirStaticImageControl: No default image.");
@@ -36,6 +40,13 @@ public class MirStaticImageControl extends MirControl{
         //index = -1;
         foreColor = Color.White;
         this.image = image;
+        if(this.image != null) {
+            controlTexture = new MirTexture(this.image, renderer_id);
+        }
+        else
+        {
+            controlTexture=new MirTexture();
+        }
     }
 
     @Override
@@ -171,24 +182,40 @@ public class MirStaticImageControl extends MirControl{
         return super.getTrueSize();
     }
 
-    @Override
-    protected void drawControl(long renderer_id)
+    /*
+    texture被更新了则返回true
+     */
+    protected boolean updateTexture(long renderer_id)
     {
-        super.drawControl(renderer_id);
-
-        if (isDrawImage && image != null)
+        if (this.image != null)
         {
-            long texture_id = MirJNI.SDL_CreateTextureFromSurface(renderer_id, image.getSurface());
+            controlTexture.update(renderer_id, this.image.getSurface(MirImage.ImageEffect.None));
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    protected boolean drawControl(long renderer_id)
+    {
+        if(!super.drawControl(renderer_id))
+        {
+            return false;
+        }
+        if (isDrawImage && image != null && updateTexture(renderer_id))
+        {
             if (isBlending)
             {
-                MirJNI.SDL_SetTextureBlendMode(texture_id, SDLBlendMode.SDL_BLENDMODE_BLEND);
+                MirJNI.SDL_SetTextureBlendMode(controlTexture.getTexture(), SDLBlendMode.SDL_BLENDMODE_BLEND);
             }
 
             Point pos = getDisplayLocation();
 
             int[] dstRect = {pos.getX(), pos.getY(), image.getWidth(), image.getHeight()};
-            MirJNI.SDL_RenderCopy(renderer_id, texture_id, null, dstRect);
+            MirJNI.SDL_RenderCopy(renderer_id, controlTexture.getTexture(), null, dstRect);
         }
+
+        return true;
     }
 
     @Override

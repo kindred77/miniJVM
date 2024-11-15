@@ -197,7 +197,7 @@ public class MirTextBox extends MirControl {
 //    }
 
     @Override
-    protected void drawControl(long renderer_id) {
+    protected boolean drawControl(long renderer_id) {
 
         MirJNI.ImGui_SDLRenderer2_NewFrame();
 
@@ -208,6 +208,7 @@ public class MirTextBox extends MirControl {
         if (!MirJNI.ImGui_Begin(Util.toCstyleBytes("login"), 100,350, 200, 25, true))
         {
             MirJNI.ImGui_End();
+            return false;
         }
         else
         {
@@ -235,5 +236,7 @@ public class MirTextBox extends MirControl {
         }
 
         MirJNI.ImGui_Render(renderer_id);
+
+        return true;
     }
 }

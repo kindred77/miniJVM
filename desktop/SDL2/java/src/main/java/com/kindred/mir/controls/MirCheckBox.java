@@ -39,9 +39,9 @@ public class MirCheckBox extends MirButton {
         redraw();
     }
 
-    public MirCheckBox(MirControl parent, MirImage unTickedImage) throws Exception
+    public MirCheckBox(MirControl parent, long renderer_id, MirImage unTickedImage) throws Exception
     {
-        super(parent, unTickedImage, null, null);
+        super(parent, renderer_id, unTickedImage, null, null);
         this.tickedImage = null;
         this.unTickedImage = unTickedImage;
         setMouseClick((control, argObj) -> {

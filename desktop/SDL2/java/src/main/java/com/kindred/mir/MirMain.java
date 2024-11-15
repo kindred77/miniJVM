@@ -20,7 +20,7 @@ import com.kindred.sdl.constcode.*;
 
 public class MirMain {
 
-    public static Point MPoint;
+    //public static Point MPoint;
     public static long Time = 0l;
 
     private static void updateEnviroment()
@@ -45,7 +45,7 @@ public class MirMain {
         //if (Settings.IsFullScreen)
         //    Cursor.Clip = new Rectangle(0, 0, Settings.ScreenWidth, Settings.ScreenHeight);
 
-        MPoint = pos;
+        //MPoint = pos;
 
         try
         {
@@ -165,7 +165,7 @@ public class MirMain {
             long event_id = MirJNI.SDL_CreateEvent();
 
             //for test
-            MirScene.ActiveScene = new LoginScene(null);
+            MirScene.ActiveScene = new LoginScene(null, renderer_id);
 
             while (shouldRun) {
                 updateTime();

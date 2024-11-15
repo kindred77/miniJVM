@@ -392,6 +392,18 @@ int com_kindred_sdl_SDL_SDL_DestroyRenderer(Runtime *runtime, JClass *clazz) {
     return 0;
 }
 
+int com_kindred_sdl_SDL_SDL_DestroyTexture(Runtime *runtime, JClass *clazz) {
+    JniEnv *env = runtime->jnienv;
+    s32 pos = 0;
+
+    SDL_Texture *texture = (__refer) (intptr_t) env->localvar_getLong_2slot(runtime->localvar, pos);
+    pos += 2;
+
+    SDL_DestroyTexture(texture);
+
+    return 0;
+}
+
 int com_kindred_sdl_SDL_SDL_GetEventType(Runtime *runtime, JClass *clazz) {
     JniEnv *env = runtime->jnienv;
     s32 pos = 0;
@@ -778,6 +790,7 @@ static java_native_method method_sdl_table[] = {
     {"com/kindred/sdl/SDL", "SDL_GetWindowFlags",             "(J)I",                       com_kindred_sdl_SDL_SDL_GetWindowFlags},
     {"com/kindred/sdl/SDL", "SDL_DestroyWindow",              "(J)V",                       com_kindred_sdl_SDL_SDL_DestroyWindow},
     {"com/kindred/sdl/SDL", "SDL_DestroyRenderer",            "(J)V",                       com_kindred_sdl_SDL_SDL_DestroyRenderer},
+    {"com/kindred/sdl/SDL", "SDL_DestroyTexture",             "(J)V",                       com_kindred_sdl_SDL_SDL_DestroyTexture},
     {"com/kindred/sdl/SDL", "SDL_Quit",                       "()V",                        com_kindred_sdl_SDL_SDL_Quit},
     {"com/kindred/sdl/SDL", "SDL_GetTicks",                   "()J",                        com_kindred_sdl_SDL_SDL_GetTicks},
 

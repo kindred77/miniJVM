@@ -18,7 +18,7 @@ public abstract class MirScene extends MirControl {
     protected MirScene(MirControl parent)
     {
         super(parent);
-        isDrawControlTexture = true;
+        //isDrawControlTexture = true;
         backColor = Color.Black;
         size = new Size(Settings.ScreenWidth, Settings.ScreenHeight);
 

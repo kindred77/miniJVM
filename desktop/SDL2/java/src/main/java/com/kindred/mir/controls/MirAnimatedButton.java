@@ -4,6 +4,7 @@ import com.kindred.mir.MirMain;
 import com.kindred.mir.controls.listener.ControlCommonListener;
 import com.kindred.mir.libs.MirImage;
 import com.kindred.mir.libs.MirLib;
+import com.kindred.mir.util.Point;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,9 +44,9 @@ public class MirAnimatedButton extends MirButton{
 
     private MirImage[] images;
 
-    public MirAnimatedButton(MirControl parent, MirImage[] animImages, MirImage normalImage, MirImage hoverImage, MirImage pressedImage) throws Exception
+    public MirAnimatedButton(MirControl parent, long renderer_id, MirImage[] animImages, MirImage normalImage, MirImage hoverImage, MirImage pressedImage) throws Exception
     {
-        super(parent,normalImage,hoverImage,pressedImage);
+        super(parent,renderer_id,normalImage,hoverImage,pressedImage);
         this.images=animImages;
         this.animationCount=this.images.length;
         isLoop = true;
@@ -198,6 +199,16 @@ public class MirAnimatedButton extends MirButton{
             offSetChanged.doAction(this, null);
     }
 
+    @Override
+    public boolean isMouseOver(Point p)
+    {
+        if (super.isMouseOver(p)) {
+            setOffSet(0);
+            return true;
+        }
+        return false;
+    }
+
     public void updateOffSet()
     {
         if (isFadeIn && MirMain.Time > nextFadeTime)
@@ -211,11 +222,11 @@ public class MirAnimatedButton extends MirButton{
             nextFadeTime = MirMain.Time + fadeInDelay;
         }
 
-        if (isMouseOver(MirMain.MPoint))
-        {
-            setOffSet(0);
-            return;
-        }
+//        if (isMouseOver(pos))
+//        {
+//            setOffSet(0);
+//            return;
+//        }
 
         if (!getIsVisible()|| !isAnimated || animationDelay == 0 || animationCount == 0) return;
 

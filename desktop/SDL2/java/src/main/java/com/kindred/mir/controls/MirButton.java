@@ -23,16 +23,16 @@ public class MirButton extends MirStaticImageControl {
 
     private boolean isCenterText;
 
-    public MirButton(MirControl parent, MirImage normalImage, MirImage hoverImage, MirImage pressedImage) throws Exception
+    public MirButton(MirControl parent, long renderer_id, MirImage normalImage, MirImage hoverImage, MirImage pressedImage) throws Exception
     {
-        super(parent, normalImage);
+        super(parent, renderer_id, normalImage);
         //hoverIndex = -1;
         //pressedIndex = -1;
         this.hoverImage=hoverImage;
         this.pressedImage=pressedImage;
         sound = SoundList.ButtonB;
 
-        label = new MirLabel(this);
+        label = new MirLabel(this, renderer_id);
         label.setIsNotControl(true);
     }
 

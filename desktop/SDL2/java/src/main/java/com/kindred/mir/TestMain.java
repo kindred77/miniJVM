@@ -86,19 +86,19 @@ public class TestMain {
             //ret = MirJNI.Mir_SurfaceBlendNormal(img.getSurface(), img2.getSurface(), 50, 50, 0.5f);
             //ret = MirJNI.Mir_SurfaceBlendNormalTransparent(img.getSurface(), img2.getSurface(), 50, 50, 0.5f, 0, 0, 0);
             //ret = MirJNI.Mir_SurfaceBlendAdd(img.getSurface(), img2.getSurface(), 50, 50, 1f);
-            ret = MirJNI.Mir_SurfaceBlendAddTransparent(img.getSurface(), img2.getSurface(), 60, 60, 1f, 0, 0, 0);
+            ret = MirJNI.Mir_SurfaceBlendAddTransparent(img.getSurface(MirImage.ImageEffect.None), img2.getSurface(MirImage.ImageEffect.None), 60, 60, 1f, 0, 0, 0);
             if (ret != 0) {
                 throw new IllegalStateException("Unable to blend surface.");
             }
 
-            long draw_surface = img.getSurface();
+            long draw_surface = img.getSurface(MirImage.ImageEffect.None);
             //draw with texture
             long testTexture_id = MirJNI.SDL_CreateTextureFromSurface(renderer_id, draw_surface);
             if (testTexture_id == 0) {
                 throw new IllegalStateException("Unable to create texture from surface: " + MirJNI.SDL_GetError());
             }
 
-            long testTexture_id2 = MirJNI.SDL_CreateTextureFromSurface(renderer_id, img2.getSurface());
+            long testTexture_id2 = MirJNI.SDL_CreateTextureFromSurface(renderer_id, img2.getSurface(MirImage.ImageEffect.None));
             if (testTexture_id2 == 0) {
                 throw new IllegalStateException("Unable to create texture from surface2: " + MirJNI.SDL_GetError());
             }

@@ -1,16 +1,18 @@
 package com.kindred.mir.engine;
 
+import com.kindred.mir.libs.MirImage;
 import com.kindred.mir.util.Color;
 import com.kindred.mir.util.Size;
 import com.kindred.sdl.constcode.SDL_PixelFormatEnum;
 
 public class MirTexture {
-    private boolean isDisposed;
+    private boolean isDisposed=false;
     private int width = 0;
     private int height = 0;
     private int pixelFormat = SDL_PixelFormatEnum.SDL_PIXELFORMAT_ARGB8888;
     private Color color = Color.Black;
-    private long texture_id;
+    private long texture_id = 0;
+    private MirImage image;
 
     public boolean getIsDisposed()
     {
@@ -25,21 +27,44 @@ public class MirTexture {
         this.isDisposed=true;
     }
 
-    public MirTexture(int width, int height, int pixel_format, Color color)
+    public MirTexture(MirImage image,long renderer_id)
     {
-        this.width=width;
-        this.height=height;
-        this.pixelFormat=pixel_format;
-        this.color = color;
+        this.image=image;
+        update(renderer_id, this.image.getSurface(MirImage.ImageEffect.None));
     }
 
-    public void init(long renderer_id)
+    /*
+    创建空的
+     */
+    public MirTexture()
     {
-        //texture_id = MirJNI.SDL_CreateTexture(renderer_id, pixelFormat, access_method, width, height);
+
+    }
+
+//    public MirTexture(int width, int height, int pixel_format, Color color)
+//    {
+//        this.width=width;
+//        this.height=height;
+//        this.pixelFormat=pixel_format;
+//        this.color = color;
+//    }
+
+    //this is a heavy operation
+    public void update(long renderer_id,long surface_id)
+    {
+        if (this.texture_id !=0)
+        {
+            MirJNI.SDL_DestroyTexture(this.texture_id);
+        }
+        this.texture_id=MirJNI.SDL_CreateTextureFromSurface(renderer_id,surface_id);
     }
 
     public Size getSize()
     {
         return new Size(this.width,this.height);
+    }
+
+    public long getTexture() {
+        return this.texture_id;
     }
 }

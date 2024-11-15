@@ -27,9 +27,9 @@ public class NewAccountDialog extends MirStaticImageControl {
             questionValid = true,
             answerValid = true;
 
-    public NewAccountDialog(MirControl parent, MirImage image) throws Exception
+    public NewAccountDialog(MirControl parent, long renderer_id, MirImage image)
     {
-        super(parent, image);
+        super(parent,renderer_id, image);
 //        Index = 63;
 //        Size = new Size();
 //        setLocation(new Point((Settings.ScreenWidth - image.getWidth()) / 2, (Settings.ScreenHeight - image.getHeight()) / 2););

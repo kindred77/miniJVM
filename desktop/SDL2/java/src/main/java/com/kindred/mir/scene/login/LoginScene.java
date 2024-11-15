@@ -7,7 +7,6 @@ import com.kindred.mir.engine.SoundList;
 import com.kindred.mir.engine.SoundManager;
 import com.kindred.mir.libs.MirImage;
 import com.kindred.mir.libs.MirLibFactory;
-import com.kindred.mir.scene.login.LoginDialog;
 import com.kindred.mir.util.Point;
 import com.kindred.mir.util.Util;
 
@@ -27,7 +26,7 @@ public class LoginScene extends MirScene {
 
     public MirStaticImageControl TestLabel, ViolenceLabel, MinorLabel, YouthLabel;
 
-    public LoginScene(MirControl parent) throws Exception
+    public LoginScene(MirControl parent, long renderer_id) throws Exception
     {
         super(parent);
         SoundManager.playSound(SoundList.IntroMusic, true);
@@ -39,7 +38,7 @@ public class LoginScene extends MirScene {
         };
 
         MirImage[] animImgs = MirLibFactory.getMirLib(MirLibFactory.ChrSel).GetMirImages(Util.genSeq(22, 32));
-        background = new MirAnimatedControl(this, animImgs);
+        background = new MirAnimatedControl(this,renderer_id, animImgs);
         background.setIsAnimated(false);
         background.setAnimationCount(19);
         background.setAnimationDelay(100);
@@ -47,7 +46,7 @@ public class LoginScene extends MirScene {
         MirImage logginDialogImg = MirLibFactory.getMirLib(MirLibFactory.Prguse).GetMirImage(60);
         Point loginDialogPos = new Point((Settings.ScreenWidth - logginDialogImg.getWidth())/2, (Settings.ScreenHeight - logginDialogImg.getHeight())/2);
 
-        loginDialog = new LoginDialog(background,logginDialogImg,loginDialogPos,logginDialogImg.getTrueSize());
+        loginDialog = new LoginDialog(background,renderer_id,logginDialogImg,loginDialogPos,logginDialogImg.getTrueSize());
 //        login.accountButton.click += (o, e) =>
 //        {
 //            _login.Hide();

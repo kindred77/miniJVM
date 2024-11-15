@@ -16,32 +16,32 @@ public class LoginDialog extends MirStaticImageControl {
     private MirTextBox accountIDTextBox, passwordTextBox;
     private boolean isAccountIDValid, isPasswordValid;
 
-    public LoginDialog(MirControl parent, MirImage img, Point pos, Size size) throws Exception
+    public LoginDialog(MirControl parent, long renderer_id, MirImage img, Point pos, Size size) throws Exception
     {
-        super(parent, img);
+        super(parent, renderer_id, img);
         setSize(size);
         setLocation(pos);
         setIsPixelDetect(false);
 
-        titleLabel = new MirLabel(this);
+        titleLabel = new MirLabel(this, renderer_id);
         titleLabel.setText("title label");
         titleLabel.setSize(new Size(50, 20));
         titleLabel.setLocation(new Point((getSize().getWidth() - titleLabel.getSize().getWidth())/2, 80));
         titleLabel.setIsBorder(true);
         titleLabel.setBorderColor(Color.Green);
 
-        accountIDLabel = new MirLabel(this);
+        accountIDLabel = new MirLabel(this, renderer_id);
         accountIDLabel.setText("account label");
         accountIDLabel.setSize(new Size(50, 20));
         accountIDLabel.setLocation(new Point(52, 83));
 
-        passLabel = new MirLabel(this);
+        passLabel = new MirLabel(this, renderer_id);
         passLabel.setText("password label");
         passLabel.setSize(new Size(50, 20));
         passLabel.setLocation(new Point(43, 105));
 
         MirImage okBtnPressedImg = MirLibFactory.getMirLib(MirLibFactory.Prguse).GetMirImage(63);
-        OKButton = new MirButton(this, null, null, okBtnPressedImg);
+        OKButton = new MirButton(this, renderer_id, null, null, okBtnPressedImg);
         OKButton.setSize(new Size(42,42));
         OKButton.setIsBorder(true);
         OKButton.setIsEnabled(true);
