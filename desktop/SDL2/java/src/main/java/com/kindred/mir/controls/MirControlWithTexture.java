@@ -24,7 +24,8 @@ public class MirControlWithTexture extends MirControl {
     }
 
     /*
-    有任何影响texture渲染变动的操作都要调用此方法
+    有任何影响texture渲染变动的操作都要调用此方法,
+    texture有变动则返回true
      */
     protected boolean updateTexture()
     {

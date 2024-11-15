@@ -28,6 +28,8 @@ public class MirStaticImageControl extends MirControlWithTexture{
 
     /*
     带有texture的控件需要使用到renderer
+    注意: image可能为空
+    本类要考虑image为空的情况
      */
     public MirStaticImageControl(MirControl parent, long renderer_id, MirImage image)
     {

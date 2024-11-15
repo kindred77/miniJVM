@@ -103,7 +103,11 @@ public class TestMain {
                 throw new IllegalStateException("Unable to create texture from surface2: " + MirJNI.SDL_GetError());
             }
 
+            int[] rgba = MirJNI.SDL_GetRenderDrawColor(renderer_id);
+            System.out.println("-----r: "+rgba[0]+"------"+rgba[1]+"--------------"+rgba[2]+"--------------"+rgba[3]);
             MirJNI.SDL_SetRenderDrawColor(renderer_id, 0, 0, 0, 255);
+            rgba = MirJNI.SDL_GetRenderDrawColor(renderer_id);
+            System.out.println("-----r: "+rgba[0]+"------"+rgba[1]+"--------------"+rgba[2]+"--------------"+rgba[3]);
             MirJNI.SDL_RenderClear(renderer_id);
 
             //SDL_SetTextureColorMod(testTexture_id, 255, 0, 255);

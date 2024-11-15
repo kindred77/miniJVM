@@ -113,7 +113,6 @@ int com_kindred_sdl_SDL_SDL_RWFromConstMem(Runtime *runtime, JClass *clazz) {
     Instance *img_data_arr = env->localvar_getRefer(runtime->localvar, pos++);
     s32 size = env->localvar_getInt(runtime->localvar, pos++);
     c8 *data = img_data_arr->arr_body;
-    printf("data: %lld, size: %d\n", data, size);
     SDL_RWops * res = SDL_RWFromConstMem((void *)data, size);
     if (!res) {
         fprintf(stderr, "Failed to create RWops\n");
@@ -261,16 +260,14 @@ int com_kindred_sdl_SDL_SDL_GetRenderDrawColor(Runtime *runtime, JClass *clazz) 
     SDL_Renderer *renderer = (__refer) (intptr_t) env->localvar_getLong_2slot(runtime->localvar, pos);
     pos += 2;
 
-    Uint8 defaultR, defaultG, defaultB, defaultA;
-    int ret = SDL_GetRenderDrawColor(renderer, &defaultR, &defaultG, &defaultB, &defaultA);
+    Uint8 rgba[4];
+    int ret = SDL_GetRenderDrawColor(renderer, &rgba[0], &rgba[1], &rgba[2], &rgba[3]);
     Instance *_arr = NULL;
     if (!ret)
     {
         _arr = env->jarray_create_by_type_index(runtime, 4, DATATYPE_INT);
-        _arr->arr_body[0] = defaultR;
-        _arr->arr_body[1] = defaultG;
-        _arr->arr_body[2] = defaultB;
-        _arr->arr_body[3] = defaultA;
+        s32 s[4] = {rgba[0], rgba[1], rgba[2], rgba[3]};
+        memcpy(_arr->arr_body, s, sizeof(s32) * 4);
         env->push_ref(runtime->stack, _arr);
     }
     
@@ -466,8 +463,8 @@ int com_kindred_sdl_SDL_SDL_GetEventMouseButtonPos(Runtime *runtime, JClass *cla
     pos += 2;
 
     Instance *_arr = env->jarray_create_by_type_index(runtime, 2, DATATYPE_INT);
-    _arr->arr_body[0] = event->button.x;
-    _arr->arr_body[1] = event->button.y;
+    s32 s[2] = {event->button.x, event->button.y};
+    memcpy(_arr->arr_body, s, sizeof(s32) * 2);
     env->push_ref(runtime->stack, _arr);
 
     return 0;
@@ -481,8 +478,8 @@ int com_kindred_sdl_SDL_SDL_GetEventMouseMotionPos(Runtime *runtime, JClass *cla
     pos += 2;
 
     Instance *_arr = env->jarray_create_by_type_index(runtime, 2, DATATYPE_INT);
-    _arr->arr_body[0] = event->motion.x;
-    _arr->arr_body[1] = event->motion.y;
+    s32 s[2] = {event->motion.x, event->motion.y};
+    memcpy(_arr->arr_body, s, sizeof(s32) * 2);
     env->push_ref(runtime->stack, _arr);
 
     return 0;
@@ -496,8 +493,8 @@ int com_kindred_sdl_SDL_SDL_GetEventMouseWheelPos(Runtime *runtime, JClass *claz
     pos += 2;
 
     Instance *_arr = env->jarray_create_by_type_index(runtime, 2, DATATYPE_INT);
-    _arr->arr_body[0] = event->wheel.x;
-    _arr->arr_body[1] = event->wheel.y;
+    s32 s[2] = {event->wheel.x, event->wheel.y};
+    memcpy(_arr->arr_body, s, sizeof(s32) * 2);
     env->push_ref(runtime->stack, _arr);
 
     return 0;
