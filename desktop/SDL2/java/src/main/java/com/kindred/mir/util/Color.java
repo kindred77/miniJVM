@@ -50,4 +50,21 @@ public class Color {
     {
         return this.alpha;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Color))
+        {
+            return false;
+        }
+
+        Color color=(Color)obj;
+
+        if (color.r == r && color.g == g && color.b == b && color.alpha == alpha)
+        {
+            return true;
+        }
+
+        return false;
+    }
 }

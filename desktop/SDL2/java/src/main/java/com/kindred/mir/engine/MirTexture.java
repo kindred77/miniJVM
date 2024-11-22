@@ -6,7 +6,7 @@ import com.kindred.mir.util.Size;
 import com.kindred.sdl.constcode.SDL_PixelFormatEnum;
 
 public class MirTexture {
-    private boolean isDisposed=false;
+    private boolean isValid=true;
     private int width = 0;
     private int height = 0;
     private int pixelFormat = SDL_PixelFormatEnum.SDL_PIXELFORMAT_ARGB8888;
@@ -14,9 +14,9 @@ public class MirTexture {
     private long texture_id = 0;
     private MirImage image;
 
-    public boolean getIsDisposed()
+    public boolean getIsValid()
     {
-        return this.isDisposed;
+        return this.isValid;
     }
 
     public void dispose()
@@ -24,7 +24,7 @@ public class MirTexture {
         this.width=0;
         this.height=0;
         this.color = Color.Black;
-        this.isDisposed=true;
+        this.isValid=true;
     }
 
     public MirTexture(MirImage image,long renderer_id)
@@ -38,7 +38,8 @@ public class MirTexture {
      */
     public MirTexture()
     {
-
+        //初始化为无效的
+        isValid=false;
     }
 
 //    public MirTexture(int width, int height, int pixel_format, Color color)
@@ -57,6 +58,7 @@ public class MirTexture {
             MirJNI.SDL_DestroyTexture(this.texture_id);
         }
         this.texture_id=MirJNI.SDL_CreateTextureFromSurface(renderer_id,surface_id);
+        isValid=true;
     }
 
     public Size getSize()

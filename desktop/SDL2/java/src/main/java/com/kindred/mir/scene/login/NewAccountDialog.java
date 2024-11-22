@@ -3,7 +3,7 @@ package com.kindred.mir.scene.login;
 import com.kindred.mir.controls.*;
 import com.kindred.mir.libs.MirImage;
 
-public class NewAccountDialog extends MirStaticImageControl {
+public class NewAccountDialog extends MirControlWithStaticImage {
 
     public MirButton OKButton, CancelButton;
 
@@ -27,7 +27,7 @@ public class NewAccountDialog extends MirStaticImageControl {
             questionValid = true,
             answerValid = true;
 
-    public NewAccountDialog(MirControl parent, long renderer_id, MirImage image)
+    public NewAccountDialog(MirControl parent, long renderer_id, MirImage image) throws Exception
     {
         super(parent,renderer_id, image);
 //        Index = 63;

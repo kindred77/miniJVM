@@ -3,6 +3,7 @@ package com.kindred.mir.controls;
 import com.kindred.mir.MirMain;
 import com.kindred.mir.Settings;
 import com.kindred.mir.constcode.MirBlendMode;
+import com.kindred.mir.controls.events.CommonEvent;
 import com.kindred.mir.controls.listener.ControlCommonListener;
 import com.kindred.mir.engine.MirJNI;
 import com.kindred.mir.engine.MirTexture;
@@ -12,36 +13,29 @@ import com.kindred.mir.util.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
-public class MirControl implements AutoCloseable {
+/*
+所有控件的基类
+ */
+public class MirControl {
     
     public static MirControl ActiveControl, MouseControl;
 
+    private static AtomicInteger id_counter=new AtomicInteger(0);
+
+    private String ID;
+
     protected MirControl parent;
-    private ControlCommonListener parentChanged;
+    private ControlCommonListener onParentChanged;
 
     protected Size size = Size.Empty;
-    private ControlCommonListener sizeChanged;
+    protected ControlCommonListener onSizeChanged;
 
     private Point location = new Point(0,0);
-    private ControlCommonListener locationChanged;
+    private ControlCommonListener onLocationChanged;
 
-    protected boolean isTextureValid;
-    protected boolean isGrayScale;
-    protected boolean isBlending;
-    protected float blendingRate;
-    private MirBlendMode.BlendMode blendMode;
-
-    protected Color backColor = Color.Black;
-    private ControlCommonListener backColorChanged;
-
-    private Rectangle borderRectangle=Rectangle.Empty;
-    private boolean isBorder=false;
-    private Vector2[] borderInfo;
-    private ControlCommonListener borderChanged;
-
-    private Color borderColor=Color.Red;
-    private ControlCommonListener borderColorChanged;
+    //protected boolean isTextureValid;
 
     private long cleanTime;
 //    protected MirTexture controlTexture;
@@ -49,49 +43,54 @@ public class MirControl implements AutoCloseable {
     //protected Size textureSize;
 
     private ArrayList<MirControl> children;
-    private ControlCommonListener childAdded;
-    private ControlCommonListener childRemoved;
+    private ControlCommonListener onChildAdded;
+    private ControlCommonListener onChildRemoved;
 
     protected boolean isEnabled=true;
-    private ControlCommonListener enabledChanged;
+    private ControlCommonListener onEnabledChanged;
 
+    protected boolean isDrawControlTexture=false;
+
+    //是否已显示
     protected boolean isHasShown;
-    protected ControlCommonListener mouseClick , mouseDoubleClick, beforeDraw , afterDraw , mouseEnter , mouseLeave , shown , beforeShown, disposing;
+    private long lastClickTime=0L;
+    protected ControlCommonListener onMouseLeftClick , onMouseLeftDoubleClick, onMouseEnter , onMouseLeave , onShown , onBeforeShown, onDisposing;
 
-    private ControlCommonListener mouseMove, mouseDown, mouseUp;
+    protected ControlCommonListener onMouseMove, onMouseLeftDown, onMouseLeftUp, onMouseRightDown, onMouseRightUp;
     //private MouseEventHandler mouseWheel,mouseMove, mouseDown, mouseUp;
     //private KeyEventHandler keyDown , keyUp;
     //private KeyPressEventHandler keyPress;
 
-    protected Color foreColor;
-    private ControlCommonListener foreColorChanged;
-
     private String hint;
-    private ControlCommonListener hintChanged;
+    private ControlCommonListener onHintChanged;
 
     private boolean isModal;
-    private ControlCommonListener modalChanged;
+    private ControlCommonListener onModalChanged;
 
-    protected boolean isMoving=false;
-    private boolean isMovable;
-    private Point movePoint;
-    private ControlCommonListener movableChanged;
+    protected boolean isStartToMove=false;
+    private boolean isMovable=false;
+    private Point startToMovePos;
+    private ControlCommonListener onMovableChanged;
     private ControlCommonListener onMoving;
 
+    private boolean isMouseLeftDown=false;
+    private boolean isMouseRightDown=false;
+
     protected boolean isNotControl=false;
-    private ControlCommonListener notControlChanged;
+    private ControlCommonListener onNotControlChanged;
 
     protected float opacity;
-    private ControlCommonListener opacityChanged;
+    private ControlCommonListener onOpacityChanged;
 
     protected int sound;
-    private ControlCommonListener soundChanged;
+    private ControlCommonListener onSoundChanged;
 
     private boolean isSort;
-    private ControlCommonListener sortChanged;
+    private ControlCommonListener onSortChanged;
 
+    //是否可见
     protected boolean isVisible=true;
-    private ControlCommonListener visibleChanged;
+    private ControlCommonListener onVisibleChanged;
 
     protected boolean isDisposed=false;
 
@@ -100,232 +99,99 @@ public class MirControl implements AutoCloseable {
         children = new ArrayList();
         opacity = 1F;
         isEnabled = true;
-        foreColor = Color.White;
         isVisible = true;
         sound = SoundList.None;
         setParent(parent);
+
+        ID=String.valueOf(id_counter.incrementAndGet());
     }
 
-    public MirControl getParent()
+    public final String getID() {
+        return ID;
+    }
+
+    public final MirControl getParent()
     {
         return parent;
     }
 
-    public void setParent(MirControl parent)
+    public final void setParent(MirControl parent)
     {
-        if (this.parent == parent) return;
+        if (this.parent == parent) {
+            return;
+        }
 
-        if (this.parent != null)
+        if (this.parent != null) {
             this.parent.removeChild(this);
+        }
         this.parent = parent;
-        if (this.parent != null)
+        if (this.parent != null) {
             this.parent.addChild(this);
+        }
         onParentChanged();
     }
 
-    protected void onParentChanged()
+    protected final void onParentChanged()
     {
         onLocationChanged();
-        if (parentChanged != null)
-            parentChanged.doAction(this, null);
+        if (onParentChanged != null) {
+            onParentChanged.doAction(this, null);
+        }
     }
 
-    public Point getLocation()
+    public final Point getLocation()
     {
         return location;
     }
 
-    public void setLocation(Point location)
+    public final void setLocation(Point location)
     {
-        if (this.location == location)
+        if (this.location == location) {
             return;
+        }
         this.location = location;
         onLocationChanged();
     }
 
-    protected void onLocationChanged()
+    protected final void onLocationChanged()
     {
-        redraw();
-        if (children != null)
-            for (int i = 0; i < children.size(); i++)
+        //redraw();
+        if (children != null) {
+            for (int i = 0; i < children.size(); i++) {
                 children.get(i).onLocationChanged();
-
-        if (locationChanged != null)
-            locationChanged.doAction(this, null);
-    }
-
-    public Point getDisplayLocation() {
-        if (parent == null) {
-            return location;
+            }
         }
-        else {
-            return Point.add(parent.getDisplayLocation(), location);
+
+        if (onLocationChanged != null) {
+            onLocationChanged.doAction(this, null);
         }
     }
 
-    public Size getSize()
+    public final Size getSize()
     {
         return size;
     }
 
-    public void setSize(Size size)
+    public final void setSize(Size size)
     {
-        if (this.size == size)
+        if (this.size == size) {
             return;
+        }
         this.size = size;
         onSizeChanged();
     }
 
-    public Size getTrueSize()
+    protected final void onSizeChanged()
     {
-        return size;
-    }
+        //isTextureValid = false;
+        //redraw();
 
-
-    protected void onSizeChanged()
-    {
-        isTextureValid = false;
-        redraw();
-
-        if (sizeChanged != null)
-            sizeChanged.doAction(this, null);
-    }
-
-    public Rectangle getDisplayRectangle()
-    {
-        return new Rectangle(getDisplayLocation(), size);
-    }
-
-    public boolean getIsGrayScale()
-    {
-        return isGrayScale;
-    }
-    public void setIsGrayScale(boolean isGrayScale)
-    {
-        this.isGrayScale=isGrayScale;
-    }
-    public boolean getIsBlending()
-    {
-        return isBlending;
-    }
-    public void setIsBlending(boolean isBlending)
-    {
-        this.isBlending=isBlending;
-    }
-    public float getBlendingRate()
-    {
-        return blendingRate;
-    }
-    public void setBlendingRate(float blendingRate)
-    {
-        this.blendingRate=blendingRate;
-    }
-    public MirBlendMode.BlendMode getBlendMode()
-    {
-        return blendMode;
-    }
-
-    public void setBlendMode(MirBlendMode.BlendMode blendMode)
-    {
-        this.blendMode=blendMode;
-    }
-
-
-    public Color getBackColor()
-    {
-        return backColor;
-    }
-
-    public void setBackColor(Color backColor)
-    {
-        if (this.backColor == backColor)
-            return;
-        this.backColor = backColor;
-        onBackColorChanged();
-    }
-
-    protected void onBackColorChanged()
-    {
-        isTextureValid = false;
-        redraw();
-        if (backColorChanged != null)
-            backColorChanged.doAction(this, null);
-    }
-
-
-    protected Vector2[] getBorderInfo()
-    {
-        if (size == Size.Empty)
-            return null;
-
-        Rectangle displayRectangle=getDisplayRectangle();
-        if (borderRectangle != displayRectangle)
-        {
-            borderInfo = new Vector2[]{
-                    new Vector2(displayRectangle.getLeft() - 1, displayRectangle.getTop() - 1),
-                    new Vector2(displayRectangle.getRight(), displayRectangle.getTop() - 1),
-
-                    new Vector2(displayRectangle.getLeft() - 1, displayRectangle.getTop() - 1),
-                    new Vector2(displayRectangle.getLeft() - 1, displayRectangle.getBottom()),
-
-                    new Vector2(displayRectangle.getLeft() - 1, displayRectangle.getBottom()),
-                    new Vector2(displayRectangle.getRight(), displayRectangle.getBottom()),
-
-                    new Vector2(displayRectangle.getRight(), displayRectangle.getTop() - 1),
-                    new Vector2(displayRectangle.getRight(), displayRectangle.getBottom())
-            };
-
-            borderRectangle = displayRectangle;
+        if (onSizeChanged != null) {
+            onSizeChanged.doAction(this, null);
         }
-        return borderInfo;
     }
 
-    public boolean getIsBorder()
-    {
-        return isBorder;
-    }
-
-    public void setIsBorder(boolean isBorder)
-    {
-        if (this.isBorder == isBorder)
-            return;
-        this.isBorder = isBorder;
-        onBorderChanged();
-    }
-
-
-    private void onBorderChanged()
-    {
-        redraw();
-        if (borderChanged != null)
-            borderChanged.doAction(this, null);
-    }
-
-    public Color getBorderColor()
-    {
-        return borderColor;
-    }
-
-    public void setBorderColor(Color borderColor)
-    {
-        if (this.borderColor == borderColor)
-            return;
-        this.borderColor = borderColor;
-        onBorderColourChanged();
-    }
-
-    private void onBorderColourChanged()
-    {
-        redraw();
-        if (borderColorChanged != null)
-            borderColorChanged.doAction(this, null);
-    }
-
-
-
-
-
-    public List<MirControl> getChildren()
+    public final List<MirControl> getChildren()
     {
         return children;
     }
@@ -335,7 +201,8 @@ public class MirControl implements AutoCloseable {
         children.add(control);
         onChildAdded();
     }
-    public void insertChild(int index, MirControl control)
+
+    private void insertChild(int index, MirControl control)
     {
         if (control.parent != this)
         {
@@ -343,267 +210,272 @@ public class MirControl implements AutoCloseable {
             control.parent = this;
         }
 
-        if (index >= children.size())
+        if (index >= children.size()) {
             children.add(control);
-        else
-        {
+        }
+        else {
             children.add(index, control);
             onChildAdded();
         }
     }
+
     private void removeChild(MirControl control)
     {
         children.remove(control);
         onChildRemoved();
     }
-    private void onChildAdded()
+    protected final void onChildAdded()
     {
-        redraw();
-        if (childAdded != null)
-            childAdded.doAction(this, null);
+        //redraw();
+        if (onChildAdded != null) {
+            onChildAdded.doAction(this, null);
+        }
     }
-    private void onChildRemoved()
+    protected final void onChildRemoved()
     {
-        redraw();
-        if (childRemoved != null)
-            childRemoved.doAction(this, null);
+        //redraw();
+        if (onChildRemoved != null) {
+            onChildRemoved.doAction(this, null);
+        }
     }
 
-    public boolean getIsEnabled()
+    public final boolean getIsEnabled()
     {
         return parent == null ? isEnabled : parent.isEnabled && isEnabled;
     }
-    public void setIsEnabled(boolean isEnabled)
+    public final void setIsEnabled(boolean isEnabled)
     {
-        if (this.isEnabled == isEnabled)
+        if (this.isEnabled == isEnabled) {
             return;
+        }
         this.isEnabled = isEnabled;
         onEnabledChanged();
     }
 
-    protected void onEnabledChanged()
+    protected final void onEnabledChanged()
     {
-        redraw();
+        //redraw();
 
-        if (enabledChanged != null)
-            enabledChanged.doAction(this, null);
+        if (onEnabledChanged != null) {
+            onEnabledChanged.doAction(this, null);
+        }
 
-        if (!this.isEnabled && ActiveControl == this)
+        if (!this.isEnabled && ActiveControl == this) {
             ActiveControl.deactivate();
+        }
 
-        if (this.children != null)
-        {
-            for(MirControl control : children)
-            {
+        if (this.children != null) {
+            for(MirControl control : children) {
                 control.onEnabledChanged();
             }
         }
     }
 
-    public Color getForeColor()
-    {
-        return foreColor;
-    }
-    public void setForeColor(Color foreColor)
-    {
-        if (this.foreColor == foreColor)
-            return;
-        this.foreColor = foreColor;
-        onForeColorChanged();
-    }
-
-    protected void onForeColorChanged()
-    {
-        isTextureValid = false;
-        if (foreColorChanged != null)
-            foreColorChanged.doAction(this, null);
-    }
-
-    public String getHint()
+    public final String getHint()
     {
         return hint;
     }
-    public void setHint(String hint)
+    public final void setHint(String hint)
     {
-        if (this.hint == hint)
+        if (this.hint == hint) {
             return;
+        }
 
         this.hint = hint;
         onHintChanged();
     }
 
-    private void onHintChanged()
+    protected final void onHintChanged()
     {
-        redraw();
-        if (hintChanged != null)
-            hintChanged.doAction(this, null);
+        //redraw();
+        if (onHintChanged != null) {
+            onHintChanged.doAction(this, null);
+        }
     }
 
-    public boolean getIsModal()
+    public final boolean getIsModal()
     {
         return isModal;
     }
-    public void setIsModal(boolean isModal)
+    public final void setIsModal(boolean isModal)
     {
-        if (this.isModal == isModal)
+        if (this.isModal == isModal) {
             return;
+        }
         this.isModal = isModal;
         onModalChanged();
     }
 
-    private void onModalChanged()
+    protected final void onModalChanged()
     {
-        redraw();
-        if (modalChanged != null)
-            modalChanged.doAction(this, null);
+        //redraw();
+        if (onModalChanged != null) {
+            onModalChanged.doAction(this, null);
+        }
     }
 
-    public boolean getIsMovable()
+    public final boolean getIsMovable()
     {
         return isMovable;
     }
-    public void setIsMovable(boolean isMovable)
+    public final void setIsMovable(boolean isMovable)
     {
-        if (this.isMovable == isMovable)
+        if (this.isMovable == isMovable) {
             return;
+        }
         this.isMovable = isMovable;
         onMovableChanged();
     }
 
-    private void onMovableChanged()
+    protected final void onMovableChanged()
     {
-        redraw();
-        if (movableChanged != null)
-            movableChanged.doAction(this, null);
+        //redraw();
+        if (onMovableChanged != null) {
+            onMovableChanged.doAction(this, null);
+        }
     }
 
-    public boolean getIsNotControl()
+    public final boolean getIsNotControl()
     {
         return isNotControl;
     }
-    public void setIsNotControl(boolean isNotControl)
+    public final void setIsNotControl(boolean isNotControl)
     {
-        if (this.isNotControl == isNotControl)
+        if (this.isNotControl == isNotControl) {
             return;
+        }
         this.isNotControl = isNotControl;
         onNotControlChanged();
     }
 
-    private void onNotControlChanged()
+    protected final void onNotControlChanged()
     {
-        redraw();
-        if (notControlChanged != null)
-            notControlChanged.doAction(this, null);
+        //redraw();
+        if (onNotControlChanged != null) {
+            onNotControlChanged.doAction(this, null);
+        }
     }
 
-    public float getOpacity()
+    public final float getOpacity()
     {
         return opacity;
     }
-    public void setOpacity(float opacity)
+    public final void setOpacity(float opacity)
     {
-        if (opacity > 1F)
+        if (opacity > 1F) {
             opacity = 1F;
-        if (opacity < 0F)
+        }
+        if (opacity < 0F) {
             opacity = 0;
+        }
 
-        if (this.opacity == opacity)
+        if (this.opacity == opacity) {
             return;
+        }
 
         this.opacity = opacity;
         onOpacityChanged();
     }
 
-    private void onOpacityChanged()
+    protected final void onOpacityChanged()
     {
-        redraw();
-        if (opacityChanged != null)
-            opacityChanged.doAction(this, null);
+        //redraw();
+        if (onOpacityChanged != null) {
+            onOpacityChanged.doAction(this, null);
+        }
     }
 
-    public int getSound()
+    public final int getSound()
     {
         return sound;
     }
-    public void setSound(int sound)
+    public final void setSound(int sound)
     {
-        if (this.sound == sound)
+        if (this.sound == sound) {
             return;
+        }
         this.sound = sound;
         onSoundChanged();
     }
 
-    private void onSoundChanged()
+    protected final void onSoundChanged()
     {
-        if (soundChanged != null)
-            soundChanged.doAction(this, null);
+        if (onSoundChanged != null) {
+            onSoundChanged.doAction(this, null);
+        }
     }
 
-    public boolean getIsSort()
+    public final boolean getIsSort()
     {
         return isSort;
     }
-    public void setIsSort(boolean isSort)
+    public final void setIsSort(boolean isSort)
     {
-        if (this.isSort == isSort)
+        if (this.isSort == isSort) {
             return;
+        }
         this.isSort = isSort;
         onSortChanged();
     }
 
-    private void onSortChanged()
+    protected final void onSortChanged()
     {
-        redraw();
-        if (sortChanged != null)
-            sortChanged.doAction(this, null);
+        //redraw();
+        if (onSortChanged != null) {
+            onSortChanged.doAction(this, null);
+        }
     }
-    public void trySort()
+    public final void trySort()
     {
-        if (parent == null)
+        if (parent == null) {
             return;
+        }
 
         parent.trySort();
 
-        if (parent.children.get(parent.children.size() - 1) == this)
+        if (parent.children.get(parent.children.size() - 1) == this) {
             return;
+        }
 
-        if (!isSort) return;
+        if (!isSort) {
+            return;
+        }
 
         parent.children.remove(this);
         parent.children.add(this);
 
-        redraw();
+        //redraw();
     }
 
-    public boolean getIsVisible()
+    public final boolean getIsVisible()
     {
         return parent == null ? isVisible : parent.isVisible && isVisible;
     }
-    public void setIsVisible(boolean isVisible)
+    public final void setIsVisible(boolean isVisible)
     {
-        if (this.isVisible == isVisible)
+        if (this.isVisible == isVisible) {
             return;
+        }
         this.isVisible = isVisible;
         onVisibleChanged();
     }
 
-    protected void onVisibleChanged()
+    protected final void onVisibleChanged()
     {
-        redraw();
-        if (visibleChanged != null)
-            visibleChanged.doAction(this, null);
+        //redraw();
+        if (onVisibleChanged != null) {
+            onVisibleChanged.doAction(this, null);
+        }
 
-        isMoving = false;
-        movePoint = Point.Empty;
+        isStartToMove = false;
+        startToMovePos = Point.Empty;
 
-        if (isSort && parent != null)
-        {
+        if (isSort && parent != null) {
             parent.children.remove(this);
             parent.children.add(this);
         }
 
-        if (MouseControl == this && !isVisible)
-        {
+        if (MouseControl == this && !isVisible) {
             dehighlight();
             deactivate();
         }
@@ -612,361 +484,474 @@ public class MirControl implements AutoCloseable {
         //}
 
 
-        if (children != null)
-        {
-            for (MirControl control : children)
+        if (children != null) {
+            for (MirControl control : children) {
                 control.onVisibleChanged();
+            }
         }
     }
-    protected void onBeforeShown()
+    private void onBeforeShown()
     {
-        if (isHasShown)
+        if (isHasShown) {
             return;
+        }
 
 //        if (isVisible && isMouseOver(CMain.MPoint))
 //            highlight();
 
-        if (beforeShown != null)
-            beforeShown.doAction(this, null);
+        if (onBeforeShown != null) {
+            onBeforeShown.doAction(this, null);
+        }
     }
-    protected void onShown()
+    private void onShown()
     {
-        if (isHasShown)
+        if (isHasShown) {
             return;
+        }
 
-        if (shown != null)
-            shown.doAction(this, null);
+        if (onShown != null) {
+            onShown.doAction(this, null);
+        }
 
         isHasShown = true;
     }
 
-    public void setMultiLine()
-    {
-    }
-
-    protected Point Center()
+    public final Point Center()
     {
         return new Point((Settings.ScreenWidth - size.getWidth()) / 2, (Settings.ScreenHeight - size.getHeight()) / 2);
     }
 
-    protected Point Left()
+    public final Point Left()
     {
         return new Point(0, (Settings.ScreenHeight - size.getHeight()) / 2);
     }
 
-    protected Point Top()
+    public final Point Top()
     {
         return new Point((Settings.ScreenWidth - size.getWidth()) / 2, 0);
     }
 
-    protected Point Right()
+    public final Point Right()
     {
         return new Point(Settings.ScreenWidth - size.getWidth(), (Settings.ScreenHeight - size.getHeight()) / 2);
     }
 
-    protected Point Bottom()
+    public final Point Bottom()
     {
         return new Point((Settings.ScreenWidth - size.getWidth()) / 2, Settings.ScreenHeight - size.getHeight());
     }
 
-    protected Point TopLeft()
+    public final Point TopLeft()
     {
         return new Point(0, 0);
     }
 
-    protected Point TopRight()
+    public final Point TopRight()
     {
         return new Point(Settings.ScreenWidth - size.getWidth(), 0);
     }
 
-    protected Point BottomRight()
+    public final Point BottomRight()
     {
         return new Point(Settings.ScreenWidth - size.getWidth(), Settings.ScreenHeight - size.getHeight());
     }
 
-    protected Point BottomLeft()
+    public final Point BottomLeft()
     {
         return new Point(0, Settings.ScreenHeight - size.getHeight());
     }
 
-    public void bringToFront()
+    public final void bringToFront()
     {
-        if (parent == null) return;
+        if (parent == null) {
+            return;
+        }
         int index = parent.children.indexOf(this);
-        if (index == parent.children.size() - 1) return;
+        if (index == parent.children.size() - 1) {
+            return;
+        }
 
         parent.children.remove(index);
         parent.children.add(this);
-        redraw();
+        //redraw();
     }
 
-    public final void draw(long renderer_id)
-    {
-        //if (isDisposed || !getIsVisible() || size.getWidth() > Settings.ScreenWidth || size.getHeight() > Settings.ScreenHeight)
-        //    return;
-
-        Point pos = getDisplayLocation();
-        if (isDisposed || !getIsVisible() || pos.getX() > Settings.ScreenWidth || pos.getY() > Settings.ScreenHeight)
-            return;
-
-        onBeforeShown();
-
-        beforeDrawControl();
-        drawControl(renderer_id);
-        drawChildren(renderer_id);
-        drawBorder(renderer_id);
-        afterDrawControl();
-
-        //cleanTime = CMain.Time + Settings.CleanDelay;
-
-        onShown();
-    }
-
-    protected void beforeDrawControl()
-    {
-        if (beforeDraw != null)
-            beforeDraw.doAction(this, null);
-    }
-
-    protected boolean drawControl(long renderer_id)
+    protected boolean drawControl()
     {
         return true;
     }
 
-    protected void drawChildren(long renderer_id)
+    public final boolean show()
     {
-        if (children != null)
-            for (int i = 0; i < children.size(); i++)
-                if (children.get(i) != null)
-                    children.get(i).draw(renderer_id);
-    }
-    protected void drawBorder(long renderer_id)
-    {
-        Vector2[] borderInfo = getBorderInfo();
-        if (!isBorder || borderInfo == null || borderInfo.length ==0 || borderInfo.length % 2 != 0)
-            return;
+        if (isDisposed || !getIsVisible()) {
+            return false;
+        }
 
-        int[] rgba = MirJNI.SDL_GetRenderDrawColor(renderer_id);
-        MirJNI.SDL_SetRenderDrawColor(renderer_id, borderColor.getRed(), borderColor.getGreen(), borderColor.getBlue(), borderColor.getAlpha());
-        for (int i = 0; i<borderInfo.length-1; i+=2)
-        {
-            MirJNI.SDL_RenderDrawLine(renderer_id, borderInfo[i].getX(), borderInfo[i].getY(), borderInfo[i+1].getX(), borderInfo[i+1].getY());
+        Point pos = getLocation();
+
+        int limitX=0;
+        int limitY=0;
+        if (parent!=null) {
+            limitX=parent.getSize().getWidth();
+            limitY=parent.getSize().getHeight();
+        } else {
+            limitX=Settings.ScreenWidth;
+            limitY=Settings.ScreenHeight;
         }
-        //如果没有拿到原来的颜色，则设置成黑色
-        if(rgba!=null && rgba.length==4)
-        {
-            MirJNI.SDL_SetRenderDrawColor(renderer_id, rgba[0], rgba[1], rgba[2], rgba[3]);
+        if (isDisposed || !getIsVisible() || pos.getX() > limitX || pos.getY() > limitY) {
+            return false;
         }
-        else
-        {
-            MirJNI.SDL_SetRenderDrawColor(renderer_id, Color.Black.getRed(), Color.Black.getGreen(), Color.Black.getBlue(), Color.Black.getAlpha());
+
+
+        onBeforeShown();
+
+        if (isDrawControlTexture) {
+            drawControl();
         }
+
+        showChildren();
+
+        //cleanTime = CMain.Time + Settings.CleanDelay;
+
+        onShown();
+
+        return true;
     }
-    protected void afterDrawControl()
+
+    private void showChildren()
     {
-        if (afterDraw != null)
-            afterDraw.doAction(this, null);
+        if (children != null) {
+            for (int i = 0; i < children.size(); i++) {
+                if (children.get(i) != null) {
+                    children.get(i).show();
+                }
+            }
+        }
     }
 
     protected void deactivate()
     {
-        if (ActiveControl != this)
+        if (ActiveControl != this) {
             return;
+        }
 
         ActiveControl = null;
-        isMoving = false;
-        movePoint = Point.Empty;
+        isStartToMove = false;
+        startToMovePos = Point.Empty;
     }
     protected void dehighlight()
     {
-        if (MouseControl != this)
+        if (MouseControl != this) {
             return;
+        }
         MouseControl.onMouseLeave();
         MouseControl = null;
     }
     protected void activate()
     {
-        if (ActiveControl == this)
+        if (ActiveControl == this) {
             return;
+        }
 
-        if (ActiveControl != null)
+        if (ActiveControl != null) {
             ActiveControl.deactivate();
+        }
 
         ActiveControl = this;
     }
     protected void highlight()
     {
-        if (MouseControl == this)
+        if (MouseControl == this) {
             return;
-        if (isNotControl)
-        {
+        }
+        if (isNotControl) {
 
         }
-        if (MouseControl != null)
+        if (MouseControl != null) {
             MouseControl.dehighlight();
+        }
 
-        if (ActiveControl != null && ActiveControl != this) return;
+        if (ActiveControl != null && ActiveControl != this) {
+            return;
+        }
 
         onMouseEnter();
         MouseControl = this;
     }
 
-    public boolean isMouseOver(Point p)
+    public final Rectangle getLocationRectangle()
     {
-        return isVisible && (getDisplayRectangle().contains(p) || isMoving || isModal) && !isNotControl;
-    }
-    protected void onMouseEnter()
-    {
-        if (!isEnabled)
-            return;
-
-        redraw();
-
-        if (mouseEnter != null)
-            mouseEnter.doAction(this, null);
-    }
-    protected void onMouseLeave()
-    {
-        if (!isEnabled)
-            return;
-
-        redraw();
-
-        if (mouseLeave != null)
-            mouseLeave.doAction(this, null);
+        return new Rectangle(getLocation(), size);
     }
 
-    public void setMouseClick(ControlCommonListener mouseClick)
+    /*
+    判断坐标在本控件中
+     */
+    protected boolean isMouseOver(Point p)
     {
-        this.mouseClick = mouseClick;
+        return isVisible && (getLocationRectangle().contains(p) || isStartToMove || isModal) && !isNotControl;
     }
 
-    public void onMouseClick(Point pos)
+    private void onMouseEnter()
     {
-        if (!isEnabled)
-            return;
 
-        if (sound != SoundList.None)
-            SoundManager.playSound(sound, false);
+        //redraw();
 
-        if (mouseClick != null)
-            invokeMouseClick(pos);
-    }
-
-    public void onMouseDoubleClick(Point pos)
-    {
-        if (!isEnabled)
-            return;
-
-        if (mouseDoubleClick != null)
-        {
-            if (sound != SoundList.None)
-                SoundManager.playSound(sound, false);
-            invokeMouseDoubleClick(pos);
+        if (onMouseEnter != null) {
+            onMouseEnter.doAction(this, null);
         }
-        else
-            onMouseClick(pos);
     }
 
-    public void invokeMouseClick(Point pos)
+    private void onMouseLeave()
     {
-        if (mouseClick != null)
-            mouseClick.doAction(this, pos);
-    }
+        this.isMouseLeftDown=false;
+        this.isMouseRightDown=false;
+        //redraw();
 
-    public void invokeMouseDoubleClick(Point pos)
-    {
-        mouseDoubleClick.doAction(this, pos);
-    }
-
-    public void onMouseMove(Point pos)
-    {
-        if (!isEnabled)
-            return;
-
-
-        if (isMoving)
-        {
-            Point tempPoint = Point.subtract(pos, movePoint);
-            Size trueSize=getTrueSize();
-
-            if (parent == null)
-            {
-                if (tempPoint.getY() + trueSize.getHeight() > Settings.ScreenHeight)
-                    tempPoint.setY(Settings.ScreenHeight - trueSize.getHeight() - 1);
-
-                if (tempPoint.getX() + trueSize.getWidth() > Settings.ScreenWidth)
-                    tempPoint.setX(Settings.ScreenWidth - trueSize.getWidth() - 1);
-            }
-            else
-            {
-                Size parentTrueSize=parent.getTrueSize();
-                if (tempPoint.getY() + trueSize.getHeight() > parentTrueSize.getHeight())
-                    tempPoint.setY(parentTrueSize.getHeight() - trueSize.getHeight());
-
-                if (tempPoint.getX() + trueSize.getWidth() > parentTrueSize.getWidth())
-                    tempPoint.setX(parentTrueSize.getWidth() - trueSize.getWidth());
-            }
-
-            if (tempPoint.getX() < 0)
-                tempPoint.setX(0);
-            if (tempPoint.getY() < 0)
-                tempPoint.setY(0);
-
-            setLocation(tempPoint);
-            if (onMoving != null)
-                onMoving.doAction(this, null);
-            return;
+        if (onMouseLeave != null) {
+            onMouseLeave.doAction(this, null);
         }
+    }
 
-        if (children != null)
-            for (int i = children.size() - 1; i >= 0; i--)
-                if (children.get(i).isMouseOver(pos))
-                {
-                    children.get(i).onMouseMove(pos);
+    public void setOnMouseLeftClick(ControlCommonListener onMouseLeftClick)
+    {
+        this.onMouseLeftClick = onMouseLeftClick;
+    }
+
+    private void onMouseLeftClick(Point posInParent)
+    {
+        //在本控件的座标
+        Point posInMe = Point.subtract(posInParent, getLocation());
+        //优先处理子控件
+        if (children != null) {
+            for (int i = children.size() - 1; i >= 0; i--) {
+                if (children.get(i).isMouseOver(posInMe)) {
+                    children.get(i).onMouseLeftClick(posInMe);
                     return;
                 }
+            }
+        }
+
+        if (lastClickTime + Settings.DoubleClickIntervalTime >= Settings.getTime()) {
+            lastClickTime=Settings.getTime();
+            //派生双击事件
+            onMouseLeftDoubleClick(posInParent);
+            return;
+        }
+        lastClickTime=Settings.getTime();
+
+        if (sound != SoundList.None) {
+            SoundManager.playSound(sound, false);
+        }
+
+        if (onMouseLeftClick != null) {
+            onMouseLeftClick.doAction(this, posInMe);
+        }
+    }
+
+    private void onMouseRightClick(Point pos)
+    {
+
+    }
+
+    private void onMouseLeftDoubleClick(Point posInParent)
+    {
+        //在本控件的座标
+        Point posInMe = Point.subtract(posInParent, getLocation());
+        //优先处理子控件
+        if (children != null) {
+            for (int i = children.size() - 1; i >= 0; i--) {
+                if (children.get(i).isMouseOver(posInMe)) {
+                    children.get(i).onMouseLeftDoubleClick(posInMe);
+                    return;
+                }
+            }
+        }
+
+        if (onMouseLeftDoubleClick != null) {
+            if (sound != SoundList.None) {
+                SoundManager.playSound(sound, false);
+            }
+            onMouseLeftDoubleClick.doAction(this, posInMe);
+        } else {
+            onMouseLeftClick(posInMe);
+        }
+    }
+
+    private boolean isMouseIn = false;
+    /*
+    pos是在父控件中的座标
+     */
+    private void onMouseMove(Point posInParent)
+    {
+        //在本控件中
+        if(isMouseOver(posInParent)) {
+            //第一次在本控件中
+            if(!isMouseIn) {
+                isMouseIn=true;
+                this.onMouseEnter();
+            }
+        } else {
+            //第一次在本控件中
+            if(isMouseIn) {
+                isMouseIn=false;
+                this.onMouseLeave();
+            }
+        }
+
+        //moving
+        if (isStartToMove) {
+            Point tempPoint = Point.subtract(posInParent, startToMovePos);
+
+            Size parentSize = parent == null ? new Size(Settings.ScreenWidth, Settings.ScreenHeight)
+                    : parent.getSize();
+            if (tempPoint.getY() + size.getHeight() > parentSize.getHeight()) {
+                tempPoint.setY(parentSize.getHeight() - size.getHeight());
+            }
+            if (tempPoint.getX() + size.getWidth() > parentSize.getWidth()) {
+                tempPoint.setX(parentSize.getWidth() - size.getWidth());
+            }
+
+            //TODO maybe bug
+            if (tempPoint.getX() < 0) {
+                tempPoint.setX(0);
+            }
+            if (tempPoint.getY() < 0) {
+                tempPoint.setY(0);
+            }
+
+            setLocation(tempPoint);
+            if (onMoving != null) {
+                onMoving.doAction(this, null);
+            }
+            return;
+        }
 
         highlight();
 
-        if (mouseMove != null)
-            mouseMove.doAction(this, null);
+        if (onMouseMove != null) {
+            onMouseMove.doAction(this, null);
+        }
     }
 
-    public void onMouseDown(Point pos)
+    private void onMouseRightDown(Point posInParent)
     {
-        if (!isEnabled)
-            return;
+        isMouseRightDown=true;
 
+        if (onMouseRightDown != null) {
+            onMouseRightDown.doAction(this, null);
+        }
+    }
+
+    private void onMouseLeftDown(Point posInParent)
+    {
         activate();
 
         trySort();
 
-        if (isMovable)
-        {
-            isMoving = true;
-            movePoint = Point.subtract(pos, location);
+        if (isMovable) {
+            isStartToMove = true;
+            //startToMovePos = Point.subtract(posInParent, location);
+            startToMovePos = posInParent;
         }
 
-        if (mouseDown != null)
-            mouseDown.doAction(this, null);
+        isMouseLeftDown=true;
+
+        if (onMouseLeftDown != null) {
+            onMouseLeftDown.doAction(this, null);
+        }
     }
 
-    public void onMouseUp(Point pos)
+    private void onMouseLeftUp(Point posInParent)
     {
-        if (!isEnabled)
-            return;
-
-        if (isMoving)
-        {
-            isMoving = false;
-            movePoint = Point.Empty;
+        if (isStartToMove) {
+            isStartToMove = false;
+            startToMovePos = Point.Empty;
         }
 
-        if (ActiveControl != null) ActiveControl.deactivate();
+        if (ActiveControl != null) {
+            ActiveControl.deactivate();
+        }
 
-        if (mouseUp != null)
-            mouseUp.doAction(this, null);
+        if (isMouseLeftDown) {
+            isMouseLeftDown=false;
+            onMouseLeftClick(posInParent);
+        }
+
+        if (onMouseLeftUp != null) {
+            onMouseLeftUp.doAction(this, null);
+        }
+    }
+
+    private void onMouseRightUp(Point posInParent)
+    {
+        if (isMouseRightDown) {
+            isMouseRightDown=false;
+            onMouseRightClick(posInParent);
+        }
+
+        if (onMouseRightUp != null) {
+            onMouseRightUp.doAction(this, null);
+        }
+    }
+
+    /*
+    在父控件中的坐标
+     */
+    private boolean onOriginalMouseEvent(CommonEvent.EventEnum eventEnum, Point posInParent) {
+        //在本控件的座标
+        Point posInMe = Point.subtract(posInParent, getLocation());
+        //优先处理子控件
+        if (children != null) {
+            for (int i = children.size() - 1; i >= 0; i--) {
+                if (children.get(i).onOriginalMouseEvent(eventEnum, posInMe)) {
+                    return true;
+                }
+            }
+        }
+
+        if (eventEnum==CommonEvent.EventEnum.MouseLeftDown) {
+            onMouseLeftDown(posInParent);
+        } else if(eventEnum==CommonEvent.EventEnum.MouseLeftUp) {
+            onMouseLeftUp(posInParent);
+        } else if (eventEnum==CommonEvent.EventEnum.MouseRightDown) {
+            onMouseRightDown(posInParent);
+        } else if(eventEnum==CommonEvent.EventEnum.MouseRightUp) {
+            onMouseRightUp(posInParent);
+        } else if (eventEnum==CommonEvent.EventEnum.MouseMove) {
+            onMouseMove(posInParent);
+        } else {
+            return false;
+        }
+
+        return true;
+    }
+
+    private boolean onOriginalKeyBoardEvent(CommonEvent.EventEnum eventEnum, Object arg) {
+        return false;
+    }
+
+    /*
+    处理了返回true，否则返回false
+     */
+    public final boolean onCommonEvent(CommonEvent event) throws Exception{
+        if (!isEnabled) {
+            return false;
+        }
+
+        CommonEvent.EventEnum eventEnum=event.getEventType();
+        Object arg=event.getArg();
+        if ((eventEnum==CommonEvent.EventEnum.MouseLeftDown ||
+            eventEnum==CommonEvent.EventEnum.MouseLeftUp ||
+            eventEnum==CommonEvent.EventEnum.MouseRightDown ||
+            eventEnum==CommonEvent.EventEnum.MouseRightUp ||
+            eventEnum==CommonEvent.EventEnum.MouseMove) && arg instanceof Point) {
+            return onOriginalMouseEvent(eventEnum, (Point)arg);
+        } else if (eventEnum==CommonEvent.EventEnum.KeyBoardPressed) {
+            return onOriginalKeyBoardEvent(eventEnum, arg);
+        } else {
+            throw new Exception("Can not deal this type of event.");
+        }
     }
 
 //    public void onMouseWheel(MouseEventArgs e)
@@ -1026,10 +1011,10 @@ public class MirControl implements AutoCloseable {
 //        keyUp.invoke(this, e);
 //    }
 
-    public void redraw()
-    {
-        if (parent != null) parent.redraw();
-    }
+//    public void redraw()
+//    {
+//        if (parent != null) parent.redraw();
+//    }
 
     public boolean getIsDisposed()
     {
@@ -1038,61 +1023,47 @@ public class MirControl implements AutoCloseable {
 
     public void dispose()
     {
-        if (isDisposed)
+        if (isDisposed) {
             return;
+        }
         dispose(true);
     }
 
     protected void dispose(boolean isDisposing)
     {
-        if (isDisposing)
-        {
-            if (disposing != null)
-                disposing.doAction(this, null);
+        if (isDisposing) {
+            if (onDisposing != null) {
+                onDisposing.doAction(this, null);
+            }
 
-            disposing = null;
+            onDisposing = null;
 
-            backColorChanged = null;
-            backColor = Color.Empty;
+            //isTextureValid = false;
 
-            borderChanged = null;
-            isBorder = false;
-            borderRectangle = Rectangle.Empty;
-            borderInfo = null;
+            onChildAdded = null;
+            onChildRemoved = null;
 
-            borderColorChanged = null;
-            borderColor = Color.Empty;
-
-
-            isTextureValid = false;
-
-            childAdded = null;
-            childRemoved = null;
-
-            if (children != null)
-            {
-                for (int i = children.size() - 1; i >= 0; i--)
-                {
-                    if (children.get(i) != null && !children.get(i).isDisposed)
+            if (children != null) {
+                for (int i = children.size() - 1; i >= 0; i--) {
+                    if (children.get(i) != null && !children.get(i).isDisposed) {
                         children.get(i).dispose();
+                    }
                 }
 
                 children = null;
             }
             isEnabled = false;
-            enabledChanged = null;
+            onEnabledChanged = null;
 
             isHasShown = false;
 
-            beforeDraw = null;
-            afterDraw = null;
-            shown = null;
-            beforeShown = null;
+            onShown = null;
+            onBeforeShown = null;
 
-            mouseClick = null;
-            mouseDoubleClick = null;
-            mouseEnter = null;
-            mouseLeave = null;
+            onMouseLeftClick = null;
+            onMouseLeftDoubleClick = null;
+            onMouseEnter = null;
+            onMouseLeave = null;
 //            mouseMove = null;
 //            mouseDown = null;
 //            mouseUp = null;
@@ -1102,50 +1073,47 @@ public class MirControl implements AutoCloseable {
 //            keyUp = null;
 //            keyDown = null;
 
-            foreColorChanged = null;
-            foreColor = Color.Empty;
-
-            locationChanged = null;
+            onLocationChanged = null;
             location = Point.Empty;
 
-            modalChanged = null;
+            onModalChanged = null;
             isModal = false;
 
-            movableChanged = null;
-            movePoint = Point.Empty;
-            isMoving = false;
+            onMovableChanged = null;
+            startToMovePos = Point.Empty;
+            isStartToMove = false;
             onMoving = null;
             isMovable = false;
 
-            notControlChanged = null;
+            onNotControlChanged = null;
             isNotControl = false;
 
-            opacityChanged = null;
+            onOpacityChanged = null;
             opacity = 0F;
 
-            if (parent != null && parent.children != null)
+            if (parent != null && parent.children != null) {
                 parent.children.remove(this);
-            parentChanged = null;
+            }
+            onParentChanged = null;
             parent = null;
 
-            sizeChanged = null;
+            onSizeChanged = null;
             size = Size.Empty;
 
-            soundChanged = null;
+            onSoundChanged = null;
             sound = 0;
 
-            visibleChanged = null;
+            onVisibleChanged = null;
             isVisible = false;
 
-            if (ActiveControl == this) ActiveControl = null;
-            if (MouseControl == this) MouseControl = null;
+            if (ActiveControl == this) {
+                ActiveControl = null;
+            }
+            if (MouseControl == this) {
+                MouseControl = null;
+            }
         }
 
         isDisposed = true;
-    }
-
-    @Override
-    public void close() throws Exception {
-
     }
 }

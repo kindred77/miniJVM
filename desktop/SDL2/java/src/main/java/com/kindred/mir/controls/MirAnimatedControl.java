@@ -8,7 +8,7 @@ import com.kindred.mir.libs.MirLib;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MirAnimatedControl extends MirStaticImageControl {
+public class MirAnimatedControl extends MirControlWithDynamicImagesTimeDriven {
     public static List<MirAnimatedControl> animations = new ArrayList();
 
     private boolean isAnimated;
@@ -39,12 +39,11 @@ public class MirAnimatedControl extends MirStaticImageControl {
     private long nextOffSet;
     public ControlCommonListener offSetChanged;
 
-    private MirImage[] images;
+    //private MirImage[] images;
 
     public MirAnimatedControl(MirControl parent, long renderer_id, MirImage[] images) throws Exception
     {
-        super(parent, renderer_id, images[0]);
-        this.images=images;
+        super(parent, renderer_id, images);
         isLoop = true;
         nextFadeTime = Settings.getTime();
         nextOffSet = Settings.getTime();
@@ -58,7 +57,9 @@ public class MirAnimatedControl extends MirStaticImageControl {
     }
     public void setIsAnimated(boolean isAnimated)
     {
-        if (this.isAnimated == isAnimated) return;
+        if (this.isAnimated == isAnimated) {
+            return;
+        }
         this.isAnimated = isAnimated;
         nextOffSet = Settings.getTime() + fadeInDelay;
         onAnimatedChanged();
@@ -66,9 +67,10 @@ public class MirAnimatedControl extends MirStaticImageControl {
 
     protected void onAnimatedChanged()
     {
-        redraw();
-        if (animatedChanged != null)
+        //redraw();
+        if (animatedChanged != null) {
             animatedChanged.doAction(this, null);
+        }
     }
 
     public int getAnimationCount()
@@ -77,15 +79,18 @@ public class MirAnimatedControl extends MirStaticImageControl {
     }
     public void setAnimationCount(int animationCount)
     {
-        if (this.animationCount == animationCount) return;
+        if (this.animationCount == animationCount) {
+            return;
+        }
         this.animationCount = animationCount;
         onAnimationCountChanged();
     }
 
     protected void onAnimationCountChanged()
     {
-        if (animationCountChanged != null)
+        if (animationCountChanged != null) {
             animationCountChanged.doAction(this, null);
+        }
     }
 
     public long getAnimationDelay()
@@ -94,15 +99,18 @@ public class MirAnimatedControl extends MirStaticImageControl {
     }
     public void setAnimationDelay(long animationDelay)
     {
-        if (this.animationDelay == animationDelay) return;
+        if (this.animationDelay == animationDelay) {
+            return;
+        }
         this.animationDelay = animationDelay;
         onAnimationDelayChanged();
     }
 
     protected void onAnimationDelayChanged()
     {
-        if (animationDelayChanged != null)
+        if (animationDelayChanged != null) {
             animationDelayChanged.doAction(this, null);
+        }
     }
 
     public boolean getIsFadeIn()
@@ -111,7 +119,9 @@ public class MirAnimatedControl extends MirStaticImageControl {
     }
     public void setIsFadeIn(boolean isFadeIn)
     {
-        if (this.isFadeIn == isFadeIn) return;
+        if (this.isFadeIn == isFadeIn) {
+            return;
+        }
         nextFadeTime = Settings.getTime() + fadeInDelay;
         this.isFadeIn = isFadeIn;
         onFadeInChanged();
@@ -119,8 +129,9 @@ public class MirAnimatedControl extends MirStaticImageControl {
 
     protected void onFadeInChanged()
     {
-        if (fadeInChanged != null)
+        if (fadeInChanged != null) {
             fadeInChanged.doAction(this, null);
+        }
     }
 
     public float getFadeInRate()
@@ -129,15 +140,18 @@ public class MirAnimatedControl extends MirStaticImageControl {
     }
     public void setFadeInRate()
     {
-        if (this.fadeInRate == fadeInRate) return;
+        if (this.fadeInRate == fadeInRate) {
+            return;
+        }
         this.fadeInRate = fadeInRate;
         onFadeInRateChanged();
     }
 
     protected void onFadeInRateChanged()
     {
-        if (fadeInRateChanged != null)
+        if (fadeInRateChanged != null) {
             fadeInRateChanged.doAction(this, null);
+        }
     }
 
     public long getFadeInDelay()
@@ -146,15 +160,18 @@ public class MirAnimatedControl extends MirStaticImageControl {
     }
     public void setFadeInDelay(long fadeInDelay)
     {
-        if (this.fadeInDelay == fadeInDelay) return;
+        if (this.fadeInDelay == fadeInDelay) {
+            return;
+        }
         this.fadeInDelay = fadeInDelay;
         onFadeInDelayChanged();
     }
 
     protected void onFadeInDelayChanged()
     {
-        if (fadeInDelayChanged != null)
+        if (fadeInDelayChanged != null) {
             fadeInDelayChanged.doAction(this, null);
+        }
     }
 
     public boolean getIsLoop()
@@ -163,15 +180,18 @@ public class MirAnimatedControl extends MirStaticImageControl {
     }
     public void setIsLoop(boolean isLoop)
     {
-        if (this.isLoop == isLoop) return;
+        if (this.isLoop == isLoop) {
+            return;
+        }
         this.isLoop = isLoop;
         onLoopChanged();
     }
 
     protected void onLoopChanged()
     {
-        if (loopChanged != null)
+        if (loopChanged != null) {
             loopChanged.doAction(this, null);
+        }
     }
 
     public int getOffSet()
@@ -180,24 +200,25 @@ public class MirAnimatedControl extends MirStaticImageControl {
     }
     public void setOffSet(int offSet)
     {
-        if (this.offSet == offSet) return;
+        if (this.offSet == offSet) {
+            return;
+        }
         this.offSet = offSet;
         onOffSetChanged();
     }
 
     protected void onOffSetChanged()
     {
-        setMirImage(images[this.offSet]);
-        if (offSetChanged != null)
+        //setMirImage(images[this.offSet]);
+        if (offSetChanged != null) {
             offSetChanged.doAction(this, null);
+        }
     }
 
     public void updateOffSet()
     {
-        if (isFadeIn && Settings.getTime() > nextFadeTime)
-        {
-            if ((opacity += fadeInRate) > 1F)
-            {
+        if (isFadeIn && Settings.getTime() > nextFadeTime) {
+            if ((opacity += fadeInRate) > 1F) {
                 opacity = 1F;
                 isFadeIn = false;
             }
@@ -205,27 +226,36 @@ public class MirAnimatedControl extends MirStaticImageControl {
             nextFadeTime = Settings.getTime() + fadeInDelay;
         }
 
-        if (!getIsVisible() || !isAnimated || animationDelay == 0 || animationCount == 0) return;
+        if (!getIsVisible() || !isAnimated || animationDelay == 0 || animationCount == 0) {
+            return;
+        }
 
-        if (Settings.getTime() < nextOffSet) return;
+        if (Settings.getTime() < nextOffSet) {
+            return;
+        }
 
-        redraw();
+        //redraw();
 
         nextOffSet = Settings.getTime() + animationDelay;
 
         setOffSet(this.offSet+1);
-        if (this.offSet < animationCount) return;
+        if (this.offSet < animationCount) {
+            return;
+        }
 
         ControlCommonListener temp = afterAnimation;
         afterAnimation = null;
 
-        if (!isLoop)
+        if (!isLoop) {
             isAnimated = false;
-        else
+        }
+        else {
             setOffSet(0);
+        }
 
-        if (temp != null)
+        if (temp != null) {
             temp.doAction(this, null);
+        }
     }
 
     @Override
@@ -233,7 +263,9 @@ public class MirAnimatedControl extends MirStaticImageControl {
     {
         super.dispose(disposing);
 
-        if (!disposing) return;
+        if (!disposing) {
+            return;
+        }
 
         animatedChanged = null;
         isAnimated = false;

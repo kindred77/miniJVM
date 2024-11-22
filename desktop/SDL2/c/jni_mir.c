@@ -1574,18 +1574,22 @@ int com_kindred_sdl_SDL_Mir_SurfaceBlendAddTransparent(Runtime *runtime, JClass 
 void Mir_ImGui_SDL2_Init(SDL_Window * window, SDL_Renderer *renderer);
 void Mir_ImGui_InitBackColor(float r, float g, float b, float alpha);
 void Mir_ImGui_InitForeColor(float r, float g, float b, float alpha);
-void Mir_ImGui_InitFont(const char * font_name, float size);
+intptr_t Mir_ImGui_InitFont(const char * font_name, float size);
+void Mir_ImGui_PushFont(intptr_t font_ptr);
+void Mir_ImGui_PopFont();
 int Mir_ImGui_SDL2_ProcessEvent(SDL_Event * event);
 void Mir_ImGui_SDLRenderer2_NewFrame();
 void Mir_ImGui_SDL2_NewFrame();
 void Mir_ImGui_NewFrame();
+void Mir_ImGui_EndFrame();
 int Mir_ImGui_Begin(const char * label, float x, float y, float width, float height, int no_background);
 void Mir_ImGui_Text(const char * text);
 int Mir_ImGui_InputText(float x, float y, float width, const char * label, const char * hint, char * buf, int length, int isPassword);
 int Mir_ImGui_InputTextMultiline(const char* label, char * buf, int buf_length, float width, int line_height_cnt);
 int Mir_SetWindowFontScale(float scale);
 void Mir_ImGui_End();
-void Mir_ImGui_Render(SDL_Renderer * renderer);
+void Mir_ImGui_Render(SDL_Renderer * renderer, intptr_t drawData_ptr);
+intptr_t Mir_ImGui_RenderAndGetDrawData();
 void Mir_ImGui_Destroy();
 
 int com_kindred_sdl_SDL_ImGui_SDL2_Init(Runtime *runtime, JClass *clazz) {
@@ -1659,8 +1663,23 @@ int com_kindred_sdl_SDL_ImGui_InitFont(Runtime *runtime, JClass *clazz) {
     Int2Float psize;
     psize.i = env->localvar_getInt(runtime->localvar, pos++);
     float size = (float)psize.f;
-    Mir_ImGui_InitFont(font_name, size);
+    intptr_t font_ptr = Mir_ImGui_InitFont(font_name, size);
 
+    env->push_long(runtime->stack, font_ptr);
+    return 0;
+}
+
+int com_kindred_sdl_SDL_ImGui_PushFont(Runtime *runtime, JClass *clazz) {
+    JniEnv *env = runtime->jnienv;
+    s32 pos = 0;
+    intptr_t font_ptr = (intptr_t) env->localvar_getLong_2slot(runtime->localvar, pos);
+
+    Mir_ImGui_PushFont(font_ptr);
+    return 0;
+}
+
+int com_kindred_sdl_SDL_ImGui_PopFont(Runtime *runtime, JClass *clazz) {
+    Mir_ImGui_PopFont();
     return 0;
 }
 
@@ -1686,6 +1705,11 @@ int com_kindred_sdl_SDL_ImGui_SDL2_NewFrame(Runtime *runtime, JClass *clazz) {
 
 int com_kindred_sdl_SDL_ImGui_NewFrame(Runtime *runtime, JClass *clazz) {
     Mir_ImGui_NewFrame();
+    return 0;
+}
+
+int com_kindred_sdl_SDL_ImGui_EndFrame(Runtime *runtime, JClass *clazz) {
+    Mir_ImGui_EndFrame();
     return 0;
 }
 
@@ -1832,7 +1856,20 @@ int com_kindred_sdl_SDL_ImGui_Render(Runtime *runtime, JClass *clazz) {
     s32 pos = 0;
     SDL_Renderer *renderer = (__refer) (intptr_t) env->localvar_getLong_2slot(runtime->localvar, pos);
     pos += 2;
-    Mir_ImGui_Render(renderer);
+
+    intptr_t drawData_ptr = (intptr_t) env->localvar_getLong_2slot(runtime->localvar, pos);
+    pos += 2;
+
+    Mir_ImGui_Render(renderer, drawData_ptr);
+    return 0;
+}
+
+int com_kindred_sdl_SDL_ImGui_RenderAndGetDrawData(Runtime *runtime, JClass *clazz) {
+    JniEnv *env = runtime->jnienv;
+    s32 pos = 0;
+
+    intptr_t drawData_ptr = Mir_ImGui_RenderAndGetDrawData();
+    env->push_long(runtime->stack, drawData_ptr);
     return 0;
 }
 
@@ -1872,18 +1909,22 @@ static java_native_method method_mir_table[] = {
     {"com/kindred/mir/engine/MirJNI", "ImGui_SDL2_Init", "(JJ)V",                com_kindred_sdl_SDL_ImGui_SDL2_Init},
     {"com/kindred/mir/engine/MirJNI", "ImGui_InitBackColor", "(FFFF)V",                com_kindred_sdl_SDL_ImGui_InitBackColor},
     {"com/kindred/mir/engine/MirJNI", "ImGui_InitForeColor", "(FFFF)V",                com_kindred_sdl_SDL_ImGui_InitForeColor},
-    {"com/kindred/mir/engine/MirJNI", "ImGui_InitFont", "([BF)V",                com_kindred_sdl_SDL_ImGui_InitFont},
+    {"com/kindred/mir/engine/MirJNI", "ImGui_InitFont", "([BF)J",                com_kindred_sdl_SDL_ImGui_InitFont},
+    {"com/kindred/mir/engine/MirJNI", "ImGui_PushFont", "(J)V",                com_kindred_sdl_SDL_ImGui_PushFont},
+    {"com/kindred/mir/engine/MirJNI", "ImGui_PopFont", "()V",                com_kindred_sdl_SDL_ImGui_PopFont},
     {"com/kindred/mir/engine/MirJNI", "ImGui_SDL2_ProcessEvent", "(J)I",                com_kindred_sdl_SDL_ImGui_SDL2_ProcessEvent},
     {"com/kindred/mir/engine/MirJNI", "ImGui_SDLRenderer2_NewFrame", "()V",                com_kindred_sdl_SDL_ImGui_SDLRenderer2_NewFrame},
     {"com/kindred/mir/engine/MirJNI", "ImGui_SDL2_NewFrame", "()V",                com_kindred_sdl_SDL_ImGui_SDL2_NewFrame},
     {"com/kindred/mir/engine/MirJNI", "ImGui_NewFrame", "()V",                com_kindred_sdl_SDL_ImGui_NewFrame},
+    {"com/kindred/mir/engine/MirJNI", "ImGui_EndFrame", "()V",                com_kindred_sdl_SDL_ImGui_EndFrame},
     {"com/kindred/mir/engine/MirJNI", "ImGui_Begin", "([BFFFFZ)Z",                com_kindred_sdl_SDL_ImGui_Begin},
     {"com/kindred/mir/engine/MirJNI", "ImGui_Text", "([B)V",                com_kindred_sdl_SDL_ImGui_Text},
     {"com/kindred/mir/engine/MirJNI", "ImGui_InputText", "(FFF[B[B[BZ)Z",                com_kindred_sdl_SDL_ImGui_InputText},
     {"com/kindred/mir/engine/MirJNI", "ImGui_InputTextMultiline", "([B[BFI)Z",                com_kindred_sdl_SDL_ImGui_InputTextMultiline},
     {"com/kindred/mir/engine/MirJNI", "ImGui_SetWindowFontScale", "(F)V",                com_kindred_sdl_SDL_ImGui_SetWindowFontScale},
     {"com/kindred/mir/engine/MirJNI", "ImGui_End", "()V",                com_kindred_sdl_SDL_ImGui_End},
-    {"com/kindred/mir/engine/MirJNI", "ImGui_Render", "(J)V",                com_kindred_sdl_SDL_ImGui_Render},
+    {"com/kindred/mir/engine/MirJNI", "ImGui_Render", "(JJ)V",                com_kindred_sdl_SDL_ImGui_Render},
+    {"com/kindred/mir/engine/MirJNI", "ImGui_RenderAndGetDrawData", "()J",                com_kindred_sdl_SDL_ImGui_RenderAndGetDrawData},
     {"com/kindred/mir/engine/MirJNI", "ImGui_Destroy", "()V",                com_kindred_sdl_SDL_ImGui_Destroy},
 };
 

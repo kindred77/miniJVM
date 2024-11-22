@@ -1,1 +1,3 @@
-release-2.30.x
+SDL2: release-2.30.x
+SDL_image: SDL2(branch)
+SDL_ttf: SDL2(branch)(not used yet)

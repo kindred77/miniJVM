@@ -38,13 +38,24 @@ void Mir_ImGui_InitForeColor(float r, float g, float b, float alpha) {
     colors[ImGuiCol_Text] = ImVec4(r, g, b, alpha);
 }
 
-void Mir_ImGui_InitFont(const char * font_name, float size) {
+intptr_t Mir_ImGui_InitFont(const char * font_name, float size) {
     ImGuiIO& io = ImGui::GetIO(); (void)io;
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
-    io.ConfigInputTextCursorBlink=true;
+    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+    //io.ConfigInputTextCursorBlink=true;
     ImFont* font = io.Fonts->AddFontFromFileTTF(font_name, size, nullptr, io.Fonts->GetGlyphRangesChineseFull());
     IM_ASSERT(font != nullptr);
+    io.Fonts->Build();
+    return reinterpret_cast<intptr_t>(font);
+}
+
+void Mir_ImGui_PushFont(intptr_t font_ptr) {
+    ImFont* font = reinterpret_cast<ImFont*>(font_ptr);
+    ImGui::PushFont(font);
+}
+
+void Mir_ImGui_PopFont() {
+    ImGui::PopFont();
 }
 
 int Mir_ImGui_SDL2_ProcessEvent(SDL_Event * event)
@@ -65,6 +76,11 @@ void Mir_ImGui_SDL2_NewFrame()
 void Mir_ImGui_NewFrame()
 {
     ImGui::NewFrame();
+}
+
+void Mir_ImGui_EndFrame()
+{
+    ImGui::EndFrame();
 }
 
 int Mir_ImGui_Begin(const char * label, float x, float y, float width, float height, int no_background_arg)
@@ -114,7 +130,6 @@ int Mir_ImGui_Begin(const char * label, float x, float y, float width, float hei
 
 void Mir_ImGui_Text(const char* text)
 {
-    
     ImGui::Text(!text ? "##" : text);
 }
 
@@ -171,14 +186,17 @@ void Mir_ImGui_End()
     ImGui::End();
 }
 
-void Mir_ImGui_Render(SDL_Renderer * renderer)
+void Mir_ImGui_Render(SDL_Renderer * renderer, intptr_t drawData_ptr)
 {
-    ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+    ImDrawData * drawData = reinterpret_cast<ImDrawData *>(drawData_ptr);
+    ImGui_ImplSDLRenderer2_RenderDrawData(drawData, renderer);
+}
+
+intptr_t Mir_ImGui_RenderAndGetDrawData()
+{
     ImGui::Render();
-    //SDL_RenderSetScale(renderer, io.DisplayFramebufferScale.x, io.DisplayFramebufferScale.y);
-    //SDL_SetRenderDrawColor(renderer, (Uint8)(clear_color.x * 255), (Uint8)(clear_color.y * 255), (Uint8)(clear_color.z * 255), (Uint8)(clear_color.w * 255));
-    //SDL_RenderClear(renderer);
-    ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData(), renderer);
+    ImDrawData * drawData = ImGui::GetDrawData();
+    return reinterpret_cast<intptr_t>(drawData);
 }
 
 void Mir_ImGui_Destroy()

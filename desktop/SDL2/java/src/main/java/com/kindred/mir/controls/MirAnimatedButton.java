@@ -9,7 +9,7 @@ import com.kindred.mir.util.Point;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MirAnimatedButton extends MirButton{
+public class MirAnimatedButton extends MirButton {
 
     public static List<MirAnimatedButton> animations = new ArrayList();
 
@@ -53,6 +53,10 @@ public class MirAnimatedButton extends MirButton{
         nextFadeTime = MirMain.Time;
         nextOffSet = MirMain.Time;
         animations.add(this);
+
+        onMouseEnter=(control, obj) -> {
+            setOffSet(0);
+        };
     }
 
     public boolean getIsAnimated()
@@ -61,7 +65,9 @@ public class MirAnimatedButton extends MirButton{
     }
     public void setIsAnimated(boolean isAnimated)
     {
-        if (this.isAnimated == isAnimated) return;
+        if (this.isAnimated == isAnimated) {
+            return;
+        }
         this.isAnimated = isAnimated;
         nextOffSet = MirMain.Time + fadeInDelay;
         onAnimatedChanged();
@@ -69,9 +75,10 @@ public class MirAnimatedButton extends MirButton{
 
     protected void onAnimatedChanged()
     {
-        redraw();
-        if (animatedChanged != null)
+        //redraw();
+        if (animatedChanged != null) {
             animatedChanged.doAction(this, null);
+        }
     }
 
     public int getAnimationCount()
@@ -81,15 +88,18 @@ public class MirAnimatedButton extends MirButton{
 
     public void setAnimationCount(int animationCount)
     {
-        if (this.animationCount == animationCount) return;
+        if (this.animationCount == animationCount) {
+            return;
+        }
         this.animationCount = animationCount;
         onAnimationCountChanged();
     }
 
     protected void onAnimationCountChanged()
     {
-        if (animationCountChanged != null)
+        if (animationCountChanged != null) {
             animationCountChanged.doAction(this, null);
+        }
     }
 
     public long getAnimationDelay()
@@ -98,15 +108,18 @@ public class MirAnimatedButton extends MirButton{
     }
     public void setAnimationDelay(long animationDelay)
     {
-        if (this.animationDelay == animationDelay) return;
+        if (this.animationDelay == animationDelay) {
+            return;
+        }
         this.animationDelay = animationDelay;
         onAnimationDelayChanged();
     }
 
     protected void onAnimationDelayChanged()
     {
-        if (animationDelayChanged != null)
+        if (animationDelayChanged != null) {
             animationDelayChanged.doAction(this, null);
+        }
     }
 
     public boolean getIsFadeIn()
@@ -115,7 +128,9 @@ public class MirAnimatedButton extends MirButton{
     }
     public void setIsFadeIn(boolean isFadeIn)
     {
-        if (this.isFadeIn == isFadeIn) return;
+        if (this.isFadeIn == isFadeIn) {
+            return;
+        }
         this.nextFadeTime = MirMain.Time + fadeInDelay;
         this.isFadeIn = isFadeIn;
         onFadeInChanged();
@@ -123,8 +138,9 @@ public class MirAnimatedButton extends MirButton{
 
     protected void onFadeInChanged()
     {
-        if (fadeInChanged != null)
+        if (fadeInChanged != null) {
             fadeInChanged.doAction(this, null);
+        }
     }
 
     public float getFadeInRate()
@@ -134,15 +150,18 @@ public class MirAnimatedButton extends MirButton{
 
     public void setFadeInRate(float fadeInRate)
     {
-        if (this.fadeInRate == fadeInRate) return;
+        if (this.fadeInRate == fadeInRate) {
+            return;
+        }
         this.fadeInRate = fadeInRate;
         onFadeInRateChanged();
     }
 
     protected void onFadeInRateChanged()
     {
-        if (fadeInRateChanged != null)
+        if (fadeInRateChanged != null) {
             fadeInRateChanged.doAction(this, null);
+        }
     }
 
     public long getFadeInDelay()
@@ -151,15 +170,18 @@ public class MirAnimatedButton extends MirButton{
     }
     public void setFadeInDelay(long fadeInDelay)
     {
-        if (this.fadeInDelay == fadeInDelay) return;
+        if (this.fadeInDelay == fadeInDelay) {
+            return;
+        }
         this.fadeInDelay = fadeInDelay;
         onFadeInDelayChanged();
     }
 
     protected void onFadeInDelayChanged()
     {
-        if (fadeInDelayChanged != null)
+        if (fadeInDelayChanged != null) {
             fadeInDelayChanged.doAction(this, null);
+        }
     }
 
     public boolean getIsLoop()
@@ -169,15 +191,18 @@ public class MirAnimatedButton extends MirButton{
 
     public void setIsLoop(boolean isLoop)
     {
-        if (this.isLoop == isLoop) return;
+        if (this.isLoop == isLoop) {
+            return;
+        }
         this.isLoop = isLoop;
         onLoopChanged();
     }
 
     protected void onLoopChanged()
     {
-        if (loopChanged != null)
+        if (loopChanged != null) {
             loopChanged.doAction(this, null);
+        }
     }
 
     public int getOffSet()
@@ -187,26 +212,19 @@ public class MirAnimatedButton extends MirButton{
 
     public void setOffSet(int offSet)
     {
-        if (this.offSet == offSet) return;
+        if (this.offSet == offSet) {
+            return;
+        }
         this.offSet = offSet;
         onOffSetChanged();
     }
 
     protected void onOffSetChanged()
     {
-        setMirImage(images[this.offSet]);
-        if (offSetChanged != null)
+        //setMirImage(images[this.offSet]);
+        if (offSetChanged != null) {
             offSetChanged.doAction(this, null);
-    }
-
-    @Override
-    public boolean isMouseOver(Point p)
-    {
-        if (super.isMouseOver(p)) {
-            setOffSet(0);
-            return true;
         }
-        return false;
     }
 
     public void updateOffSet()
@@ -228,11 +246,15 @@ public class MirAnimatedButton extends MirButton{
 //            return;
 //        }
 
-        if (!getIsVisible()|| !isAnimated || animationDelay == 0 || animationCount == 0) return;
+        if (!getIsVisible()|| !isAnimated || animationDelay == 0 || animationCount == 0) {
+            return;
+        }
 
-        if (MirMain.Time < nextOffSet) return;
+        if (MirMain.Time < nextOffSet) {
+            return;
+        }
 
-        redraw();
+        //redraw();
 
         nextOffSet = MirMain.Time + animationDelay;
 
@@ -242,13 +264,15 @@ public class MirAnimatedButton extends MirButton{
         ControlCommonListener temp = afterAnimation;
         afterAnimation = null;
 
-        if (!isLoop)
+        if (!isLoop) {
             setIsAnimated(false);
-        else
+        } else {
             setOffSet(0);
+        }
 
-        if (temp != null)
+        if (temp != null) {
             temp.doAction(this, null);
+        }
     }
 
 }

@@ -24,17 +24,15 @@ public class LoginScene extends MirScene {
 //
 //    private InputKeyDialog _ViewKey;
 
-    public MirStaticImageControl TestLabel, ViolenceLabel, MinorLabel, YouthLabel;
+    public MirLabel TestLabel, ViolenceLabel, MinorLabel, YouthLabel;
 
     public LoginScene(MirControl parent, long renderer_id) throws Exception
     {
         super(parent);
         SoundManager.playSound(SoundList.IntroMusic, true);
-        disposing = new ControlCommonListener() {
-            @Override
-            public void doAction(MirControl control, Object argObj) {
-                SoundManager.stopSound(SoundList.IntroMusic);
-            }
+
+        onDisposing = (control, argObj) -> {
+            SoundManager.stopSound(SoundList.IntroMusic);
         };
 
         MirImage[] animImgs = MirLibFactory.getMirLib(MirLibFactory.ChrSel).GetMirImages(Util.genSeq(22, 32));
@@ -43,10 +41,9 @@ public class LoginScene extends MirScene {
         background.setAnimationCount(19);
         background.setAnimationDelay(100);
 
-        MirImage logginDialogImg = MirLibFactory.getMirLib(MirLibFactory.Prguse).GetMirImage(60);
-        Point loginDialogPos = new Point((Settings.ScreenWidth - logginDialogImg.getWidth())/2, (Settings.ScreenHeight - logginDialogImg.getHeight())/2);
-
-        loginDialog = new LoginDialog(background,renderer_id,logginDialogImg,loginDialogPos,logginDialogImg.getTrueSize());
+        MirImage loginDialogImg = MirLibFactory.getMirLib(MirLibFactory.Prguse).GetMirImage(60);
+        //Point loginDialogPos = new Point((Settings.ScreenWidth - loginDialogImg.getWidth())/2, (Settings.ScreenHeight - loginDialogImg.getHeight())/2);
+        loginDialog = new LoginDialog(background,renderer_id,loginDialogImg);
 //        login.accountButton.click += (o, e) =>
 //        {
 //            _login.Hide();

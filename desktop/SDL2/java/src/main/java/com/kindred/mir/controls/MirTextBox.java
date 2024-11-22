@@ -5,15 +5,16 @@ import com.kindred.mir.engine.MirJNI;
 import com.kindred.mir.util.Color;
 import com.kindred.mir.util.Util;
 
-public class MirTextBox extends MirControl {
+public class MirTextBox extends MirControlWithTexture {
 
     private boolean canLoseFocus;
     //private TextBox textBox;
     private byte[] textBuf=new byte[128];
+    private long drawData_ptr=0L;
 
-    public MirTextBox(MirControl parent)
+    public MirTextBox(MirControl parent, long renderer_id)
     {
-        super(parent);
+        super(parent, renderer_id);
         backColor = Color.Black;
 
         MirJNI.ImGui_InitFont(Util.toCstyleBytes("NotoEmoji+NotoSansCJKSC-Regular.ttf"), 10f);
@@ -41,38 +42,6 @@ public class MirTextBox extends MirControl {
 //        TextBox.MouseMove += CMain.CMain_MouseMove;
     }
 
-    @Override
-    protected void onBackColorChanged()
-    {
-        super.onBackColorChanged();
-//        if (textBox != null && !textBox.IsDisposed)
-//            textBox.BackColor = backColour;
-    }
-
-    @Override
-    protected void onEnabledChanged()
-    {
-        super.onEnabledChanged();
-//        if (textBox != null && !textBox.IsDisposed)
-//            textBox.Enabled = isEnabled;
-    }
-
-    @Override
-    protected void onForeColorChanged()
-    {
-        super.onForeColorChanged();
-//        if (textBox != null && !textBox.IsDisposed)
-//            textBox.ForeColor = foreColor;
-    }
-
-    @Override
-    protected void onLocationChanged()
-    {
-        super.onLocationChanged();
-//        if (textBox != null && !textBox.IsDisposed)
-//            textBox.Location = DisplayLocation;
-    }
-
     public int getMaxLength()
     {
 //        if (textBox != null && !textBox.IsDisposed)
@@ -84,14 +53,6 @@ public class MirTextBox extends MirControl {
     {
 //        if (textBox != null && !textBox.IsDisposed)
 //            textBox.MaxLength = value;
-    }
-
-    @Override
-    protected void onParentChanged()
-    {
-        super.onParentChanged();
-//        if (textBox != null && !textBox.IsDisposed)
-//            onVisibleChanged();
     }
 
     public boolean getIsPassword()
@@ -120,16 +81,6 @@ public class MirTextBox extends MirControl {
 //            TextBox.Font = value;
     }
 
-    @Override
-    protected void onSizeChanged()
-    {
-//        textBox.Size = getSize();
-//        size = textBox.Size;
-//
-//        if (textBox != null && !textBox.IsDisposed)
-//            super.onSizeChanged();
-    }
-
     public String getText()
     {
 //        if (textBox != null && !textBox.IsDisposed)
@@ -153,15 +104,6 @@ public class MirTextBox extends MirControl {
     {
 //        if (textBox != null && !textBox.IsDisposed)
 //            textBox.Lines = texts;
-    }
-
-    @Override
-    protected void onVisibleChanged()
-    {
-        super.onVisibleChanged();
-
-//        if (textBox != null && !textBox.IsDisposed)
-//            textBox.Visible = Visible;
     }
 
     public void setFocus()
@@ -197,12 +139,8 @@ public class MirTextBox extends MirControl {
 //    }
 
     @Override
-    protected boolean drawControl(long renderer_id) {
-
-        MirJNI.ImGui_SDLRenderer2_NewFrame();
-
-        MirJNI.ImGui_SDL2_NewFrame();
-
+    protected boolean updateTexture(long surface_id)
+    {
         MirJNI.ImGui_NewFrame();
 
         if (!MirJNI.ImGui_Begin(Util.toCstyleBytes("login"), 100,350, 200, 25, true))
@@ -232,10 +170,19 @@ public class MirTextBox extends MirControl {
                 System.out.println("----------------------enter return--------------------");
             }
 
-            MirJNI.ImGui_End();
+            //MirJNI.ImGui_End();
         }
 
-        MirJNI.ImGui_Render(renderer_id);
+        drawData_ptr = MirJNI.ImGui_RenderAndGetDrawData();
+        return true;
+    }
+
+    @Override
+    protected boolean drawControl() {
+
+        if (drawData_ptr!=0) {
+            MirJNI.ImGui_Render(renderer_id, drawData_ptr);
+        }
 
         return true;
     }

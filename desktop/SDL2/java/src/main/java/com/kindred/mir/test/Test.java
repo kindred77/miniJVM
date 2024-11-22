@@ -118,6 +118,6 @@ public class Test {
     public static void main(String args[]) throws Exception
     {
         //testCharset();
-        charsetTest2();
+        //charsetTest2();
     }
 }

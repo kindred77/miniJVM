@@ -1,6 +1,9 @@
 
 package com.kindred.mir;
 
+import com.kindred.mir.controls.events.CommonEvent;
+import com.kindred.mir.controls.events.CommonEvent.EventEnum;
+import com.kindred.mir.engine.Font;
 import java.io.UnsupportedEncodingException;
 
 import com.kindred.mir.controls.MirAnimatedButton;
@@ -12,7 +15,6 @@ import com.kindred.mir.libs.MirLib;
 
 import com.kindred.mir.scene.GameScene;
 import com.kindred.mir.scene.login.LoginScene;
-import com.kindred.mir.test.Test;
 import com.kindred.mir.util.Point;
 import com.kindred.mir.util.Util;
 import com.kindred.sdl.constcode.*;
@@ -21,18 +23,27 @@ import com.kindred.sdl.constcode.*;
 public class MirMain {
 
     //public static Point MPoint;
-    public static long Time = 0l;
+    public static long Time = 0L;
+
+    private static void initFonts()
+    {
+        Settings.FONT_SIZE15=new Font(Settings.MIRFONT, 15);
+        Settings.FONT_SIZE20=new Font(Settings.MIRFONT, 20);
+    }
 
     private static void updateEnviroment()
     {
-        if (MirScene.ActiveScene != null)
+        if (MirScene.ActiveScene != null) {
             MirScene.ActiveScene.process();
+        }
 
-        for (int i = 0; i < MirAnimatedControl.animations.size(); i++)
+        for (int i = 0; i < MirAnimatedControl.animations.size(); i++) {
             MirAnimatedControl.animations.get(i).updateOffSet();
+        }
 
-        for (int i = 0; i < MirAnimatedButton.animations.size(); i++)
+        for (int i = 0; i < MirAnimatedButton.animations.size(); i++) {
             MirAnimatedButton.animations.get(i).updateOffSet();
+        }
     }
 
     private static void updateTime()
@@ -47,96 +58,75 @@ public class MirMain {
 
         //MPoint = pos;
 
-        try
-        {
-            if (MirScene.ActiveScene != null)
-                MirScene.ActiveScene.onMouseMove(pos);
-        }
-        catch (Exception ex)
-        {
+        try {
+            if (MirScene.ActiveScene != null) {
+                MirScene.ActiveScene.onCommonEvent(new CommonEvent(EventEnum.MouseMove,pos));
+            }
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
 
     public static void mainMouseDown(Point pos, int type)
     {
-        if (type == SDL_Button.SDL_BUTTON_RIGHT && (GameScene.SelectedCell != null || GameScene.PickedUpGold))
-        {
+        if (type == SDL_Button.SDL_BUTTON_RIGHT && (GameScene.SelectedCell != null || GameScene.PickedUpGold)) {
             GameScene.SelectedCell = null;
             GameScene.PickedUpGold = false;
             return;
         }
 
-        try
-        {
-            if (MirScene.ActiveScene != null)
-                MirScene.ActiveScene.onMouseDown(pos);
-        }
-        catch (Exception ex)
-        {
+        try {
+            if (MirScene.ActiveScene != null) {
+                if (type == SDL_Button.SDL_BUTTON_LEFT) {
+                    MirScene.ActiveScene.onCommonEvent(new CommonEvent(EventEnum.MouseLeftDown,pos));
+                } else if(type == SDL_Button.SDL_BUTTON_RIGHT) {
+                    MirScene.ActiveScene.onCommonEvent(new CommonEvent(EventEnum.MouseRightDown,pos));
+                }
+            }
+
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
 
-    //make a virtual click event
-    public static void mainMouseClick(Point pos, int type)
-    {
-        if (type == SDL_Button.SDL_BUTTON_RIGHT && (GameScene.SelectedCell != null || GameScene.PickedUpGold))
-        {
-            GameScene.SelectedCell = null;
-            GameScene.PickedUpGold = false;
-            return;
-        }
-
-        try
-        {
-            if (MirScene.ActiveScene != null)
-                MirScene.ActiveScene.onMouseClick(pos);
-        }
-        catch (Exception ex)
-        {
-            ex.printStackTrace();
-        }
-    }
-
-    public static void mainMouseUp(Point pos, int type)
-    {
+    public static void mainMouseUp(Point pos, int type) {
 
 //        MapControl.MapButtons &= ~e.Button;
 //
 //        if (!GlobalUtil.EnumHasFlag((int)MapControl.MapButtons, (int)MouseButtons.Right))
 //            GameScene.CanRun = false;
 
-        try
-        {
-            if (MirScene.ActiveScene != null)
-                MirScene.ActiveScene.onMouseUp(pos);
-        }
-        catch (Exception ex)
-        {
+        try {
+            if (MirScene.ActiveScene != null) {
+                if (type == SDL_Button.SDL_BUTTON_LEFT) {
+                    MirScene.ActiveScene.onCommonEvent(new CommonEvent(EventEnum.MouseLeftUp,pos));
+                } else if(type == SDL_Button.SDL_BUTTON_RIGHT) {
+                    MirScene.ActiveScene.onCommonEvent(new CommonEvent(EventEnum.MouseRightUp,pos));
+                }
+            }
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
 
-    private static void renderEnvironment(long renderer_id)
-    {
-        if (MirScene.ActiveScene != null)
-        {
-            MirScene.ActiveScene.draw(renderer_id);
+    private static void renderEnvironment(long renderer_id) {
+        MirJNI.ImGui_SDLRenderer2_NewFrame();
+
+        MirJNI.ImGui_SDL2_NewFrame();
+
+        if (MirScene.ActiveScene != null) {
+            MirScene.ActiveScene.show();
             MirJNI.SDL_RenderPresent(renderer_id);
         }
     }
 
-    public static void main(String args[])
-    {
-        try
-        {
+    public static void main(String args[]) {
+        try {
             int result = MirJNI.SDL_Init(SdlSubSystemConst.SDL_INIT_EVERYTHING);
             if (result != 0) {
                 throw new IllegalStateException("Unable to initialize SDL library (Error code " + result + "): " + MirJNI.SDL_GetError());
             }
-            if (!MirJNI.SDL_SetHint(Util.toCstyleBytes(SDL_Hints.SDL_HINT_IME_SHOW_UI), Util.toCstyleBytes("1")))
-            {
+            if (!MirJNI.SDL_SetHint(Util.toCstyleBytes(SDL_Hints.SDL_HINT_IME_SHOW_UI), Util.toCstyleBytes("1"))) {
                 throw new IllegalStateException("Unable to set hint: " + MirJNI.SDL_GetError());
             }
             // Create and init the window
@@ -157,6 +147,8 @@ public class MirMain {
             if (renderer_id == 0) {
                 throw new IllegalStateException("Unable to create SDL renderer: " + MirJNI.SDL_GetError());
             }
+
+            initFonts();
 
             //init imgui
             MirJNI.ImGui_SDL2_Init(win_id, renderer_id);
@@ -197,7 +189,7 @@ public class MirMain {
                         case SDLEventType.SDL_MOUSEMOTION:
                             int[] pos_motion = MirJNI.SDL_GetEventMouseMotionPos(event_id);
                             mainMouseMove(new Point(pos_motion[0], pos_motion[1]));
-                            System.out.println("mouse move: x: " + pos_motion[0]+", y: "+pos_motion[1]);
+                            //System.out.println("mouse move: x: " + pos_motion[0]+", y: "+pos_motion[1]);
                             break;
                         case SDLEventType.SDL_MOUSEWHEEL:
                             int[] pos_wheel = MirJNI.SDL_GetEventMouseWheelPos(event_id);
@@ -217,7 +209,7 @@ public class MirMain {
             MirJNI.SDL_DestroyRenderer(renderer_id);
             MirJNI.SDL_DestroyWindow(win_id);
             MirJNI.SDL_Quit();
-        }catch(Exception e){
+        } catch(Exception e) {
             e.printStackTrace();
         }
     }

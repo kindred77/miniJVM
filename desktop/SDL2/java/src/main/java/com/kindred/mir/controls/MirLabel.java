@@ -2,66 +2,73 @@ package com.kindred.mir.controls;
 
 import com.kindred.mir.controls.listener.ControlCommonListener;
 import com.kindred.mir.engine.Font;
+import com.kindred.mir.engine.MirJNI;
 import com.kindred.mir.engine.TextFormatFlags;
 import com.kindred.mir.util.Color;
 import com.kindred.mir.util.Size;
 
+import com.kindred.mir.util.Util;
 import java.util.Optional;
 
 public class MirLabel extends MirControlWithTexture{
 
+    private long drawData_ptr=0L;
+
     private boolean isAutoSize;
-    public ControlCommonListener autoSizeChanged;
+    protected ControlCommonListener onAutoSizeChanged;
 
     private String text;
-    public ControlCommonListener textChanged;
+    protected ControlCommonListener onTextChanged;
 
     private TextFormatFlags drawFormat;
-    public ControlCommonListener drawFormatChanged;
+    protected ControlCommonListener onDrawFormatChanged;
 
     private Font font;
-    public ControlCommonListener fontChanged;
+    protected ControlCommonListener onFontChanged;
 
     private boolean isOutLine;
-    public ControlCommonListener outLineChanged;
+    protected ControlCommonListener onOutLineChanged;
 
     private Color outLineColor;
-    public ControlCommonListener outLineColorChanged;
+    protected ControlCommonListener onOutLineColorChanged;
 
-    public MirLabel(MirControl parent, long renderer_id)
+    public MirLabel(String text, MirControl parent, long renderer_id, Size size)
     {
         super(parent,renderer_id);
+
         isDrawControlTexture = true;
         drawFormat = TextFormatFlags.WordBreak;
 
         //font = new Font(Settings.FontName, 8F);
         isOutLine = true;
         outLineColor = Color.Black;
-        text = "";
-
+        this.text = text;
+        setSize(size);
     }
 
-    public boolean getIsAutoSize()
+    public final boolean getIsAutoSize()
     {
         return isAutoSize;
     }
-    public void setIsAutoSize(boolean isAutoSize)
+    public final void setIsAutoSize(boolean isAutoSize)
     {
-        if (this.isAutoSize == isAutoSize)
+        if (this.isAutoSize == isAutoSize) {
             return;
+        }
         this.isAutoSize = isAutoSize;
         onAutoSizeChanged();
     }
 
     private void updateSize()
     {
-        if (!isAutoSize)
+        if (!isAutoSize) {
             return;
+        }
 
-        if (Optional.ofNullable(text).orElse("").isEmpty())
+        if (Optional.ofNullable(text).orElse("").isEmpty()) {
             size = Size.Empty;
-        else
-        {
+        }
+        else {
             //size = TextRenderer.MeasureText(CMain.Graphics, text, Font);
             //Size = new Size(Size.Width, Size.Height + 5);
 
@@ -72,21 +79,20 @@ public class MirLabel extends MirControlWithTexture{
 
     private void onAutoSizeChanged()
     {
-        isTextureValid = false;
         updateSize();
-        if (autoSizeChanged != null)
-            autoSizeChanged.doAction(this, null);
+        if (onAutoSizeChanged != null) {
+            onAutoSizeChanged.doAction(this, null);
+        }
     }
 
-    public TextFormatFlags getDrawFormat()
+    public final TextFormatFlags getDrawFormat()
     {
         return  drawFormat;
     }
 
-    public void setDrawFormat(TextFormatFlags drawFormat)
+    public final void setDrawFormat(TextFormatFlags drawFormat)
     {
-        if (this.drawFormat == drawFormat)
-        {
+        if (this.drawFormat == drawFormat) {
             return;
         }
         this.drawFormat = drawFormat;
@@ -95,17 +101,16 @@ public class MirLabel extends MirControlWithTexture{
 
     private void onDrawFormatChanged()
     {
-        isTextureValid = false;
-
-        if (drawFormatChanged != null)
-            drawFormatChanged.doAction(this, null);
+        if (onDrawFormatChanged != null) {
+            onDrawFormatChanged.doAction(this, null);
+        }
     }
 
-    public Font getFont()
+    public final Font getFont()
     {
         return font;
     }
-    public void setFont(Font font)
+    public final void setFont(Font font)
     {
         if (this.font == font)
         {
@@ -117,62 +122,63 @@ public class MirLabel extends MirControlWithTexture{
 
     private void onFontChanged()
     {
-        isTextureValid = false;
-
         updateSize();
 
-        if (fontChanged != null)
-            fontChanged.doAction(this, null);
+        if (onFontChanged != null) {
+            onFontChanged.doAction(this, null);
+        }
     }
 
-    public boolean getIsOutLine()
+    public final boolean getIsOutLine()
     {
         return isOutLine;
     }
-    public void setIsOutLine(boolean isOutLine)
+    public final void setIsOutLine(boolean isOutLine)
     {
-        if (this.isOutLine == isOutLine)
+        if (this.isOutLine == isOutLine) {
             return;
+        }
         this.isOutLine = isOutLine;
         onOutLineChanged();
     }
     private void onOutLineChanged()
     {
-        isTextureValid = false;
         updateSize();
 
-        if (outLineChanged != null)
-            outLineChanged.doAction(this, null);
+        if (onOutLineChanged != null) {
+            onOutLineChanged.doAction(this, null);
+        }
     }
 
-    public Color getOutLineColor()
+    public final Color getOutLineColor()
     {
         return outLineColor;
     }
-    public void setOutLineColor(Color outLineColor)
+    public final void setOutLineColor(Color outLineColor)
     {
-        if (this.outLineColor == outLineColor)
+        if (this.outLineColor == outLineColor) {
             return;
+        }
         this.outLineColor = outLineColor;
         onOutLineColorChanged();
     }
 
     private void onOutLineColorChanged()
     {
-        isTextureValid = false;
-
-        if (outLineColorChanged != null)
-            outLineColorChanged.doAction(this, null);
+        if (onOutLineColorChanged != null) {
+            onOutLineColorChanged.doAction(this, null);
+        }
     }
 
-    public String getText()
+    public final String getText()
     {
         return text;
     }
-    public void setText(String text)
+    public final void setText(String text)
     {
-        if (this.text == text)
+        if (this.text == text) {
             return;
+        }
 
         this.text = text;
         onTextChanged();
@@ -181,23 +187,60 @@ public class MirLabel extends MirControlWithTexture{
     private void onTextChanged()
     {
         isDrawControlTexture = !Optional.ofNullable(text).orElse("").isEmpty();
-        isTextureValid = false;
-        redraw();
 
         updateSize();
 
-        if (textChanged != null)
-            textChanged.doAction(this, null);
+        if (onTextChanged != null) {
+            onTextChanged.doAction(this, null);
+        }
     }
 
     @Override
-    protected boolean updateTexture()
-    {
-        if (Optional.ofNullable(text).orElse("").isEmpty())
+    protected boolean updateTexture(long surface_id) {
+        MirJNI.ImGui_NewFrame();
+        if (!MirJNI.ImGui_Begin(Util.toCstyleBytes("login"), 100,50, 200, 25, true)) {
+            MirJNI.ImGui_End();
             return false;
+        } else {
+            //MirJNI.ImGui_Text(toCstyleBytes("标签"));
 
-        if (size.getWidth() == 0 || size.getHeight() == 0)
-            return false;
+            //动态修改一些属性
+//            long cur_ts = MirJNI.SDL_GetTicks();
+//            if ((cur_ts - prev_ts) > 5000)
+//            {
+//                color_mod++;
+//                //color_mod = color_mod % 3;
+//                prev_ts = cur_ts;
+//                MirJNI.ImGui_SetWindowFontScale(color_mod);
+//                MirJNI.ImGui_InitBackColor(color_mod%3 == 1 ? 1.0f:0f, color_mod%3 == 2 ? 1.0f:0f, color_mod%3 == 0 ? 1.0f:0f, 0.5f);
+//                MirJNI.ImGui_InitForeColor(color_mod%3 == 0 ? 1.0f:0f, color_mod%3 == 1 ? 1.0f:0f, color_mod%3 == 2 ? 1.0f:0f, 0.5f);
+//            }
+
+            MirJNI.ImGui_Text(Util.toCstyleBytes("这是一个标签的例子"));
+
+        }
+
+        drawData_ptr = MirJNI.ImGui_RenderAndGetDrawData();
+        return true;
+    }
+
+    @Override
+    protected boolean drawControl() {
+        if (drawData_ptr!=0) {
+            MirJNI.ImGui_Render(renderer_id, drawData_ptr);
+        }
+
+        return true;
+    }
+
+//    @Override
+//    protected boolean updateTexture()
+//    {
+//        if (Optional.ofNullable(text).orElse("").isEmpty())
+//            return false;
+//
+//        if (size.getWidth() == 0 || size.getHeight() == 0)
+//            return false;
 
 //        if (controlTexture != null && !controlTexture.Disposed && textureSize != size)
 //            controlTexture.Dispose();
@@ -243,34 +286,35 @@ public class MirLabel extends MirControlWithTexture{
 //        }
 //        ControlTexture.UnlockRectangle(0);
 //        DXManager.Sprite.Flush();
-        isTextureValid = true;
 
-        return true;
-    }
+//        return true;
+//    }
 
     @Override
     protected void dispose(boolean disposing)
     {
         super.dispose(disposing);
 
-        if (!disposing) return;
+        if (!disposing) {
+            return;
+        }
 
-        autoSizeChanged = null;
+        onAutoSizeChanged = null;
         isAutoSize = false;
 
-        drawFormatChanged = null;
+        onDrawFormatChanged = null;
         //drawFormat = 0;
 
-        fontChanged = null;
+        onFontChanged = null;
         font = null;
 
-        outLineChanged = null;
+        onOutLineChanged = null;
         isOutLine = false;
 
-        outLineColorChanged = null;
+        onOutLineColorChanged = null;
         outLineColor = Color.Empty;
 
-        textChanged = null;
+        onTextChanged = null;
         text = null;
     }
 

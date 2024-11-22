@@ -35,8 +35,8 @@ public class MirCheckBox extends MirButton {
     public void setIsChecked(boolean isChecked)
     {
         this.isChecked = isChecked;
-        setImage(isChecked ? tickedImage : unTickedImage);
-        redraw();
+        //setImage(isChecked ? tickedImage : unTickedImage);
+        //redraw();
     }
 
     public MirCheckBox(MirControl parent, long renderer_id, MirImage unTickedImage) throws Exception
@@ -44,12 +44,12 @@ public class MirCheckBox extends MirButton {
         super(parent, renderer_id, unTickedImage, null, null);
         this.tickedImage = null;
         this.unTickedImage = unTickedImage;
-        setMouseClick((control, argObj) -> {
+        this.onMouseLeftClick = (control, argObj) -> {
             isChecked = !isChecked;
-            if (isChecked) setImage(tickedImage);
-            else setImage(unTickedImage);
-            redraw();
-        });
+//            if (isChecked) setImage(tickedImage);
+//            else setImage(unTickedImage);
+//            redraw();
+        };
 
         label.setIsAutoSize(true);
         label.setLocation(new Point(15, -2));

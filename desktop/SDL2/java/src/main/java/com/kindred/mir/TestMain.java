@@ -49,9 +49,10 @@ public class TestMain {
 
             //test imgui
             MirJNI.ImGui_SDL2_Init(win_id, renderer_id);
-            MirJNI.ImGui_InitFont(Util.toCstyleBytes("NotoEmoji+NotoSansCJKSC-Regular.ttf"), 10f);
-            MirJNI.ImGui_InitBackColor(1.0f, 1.0f, 1.0f, 0.5f);
-            MirJNI.ImGui_InitForeColor(1.0f, 0.0f, 0.0f, 0.5f);
+            long font_id_1 = MirJNI.ImGui_InitFont(Util.toCstyleBytes("NotoEmoji+NotoSansCJKSC-Regular.ttf"), 20f);
+            long font_id_2 = MirJNI.ImGui_InitFont(Util.toCstyleBytes("C:\\Windows\\Fonts\\STKAITI.TTF"), 20f);
+            //MirJNI.ImGui_InitBackColor(1.0f, 1.0f, 1.0f, 0.5f);
+            //MirJNI.ImGui_InitForeColor(1.0f, 0.0f, 0.0f, 0.5f);
             //---------------------
 
             MirLib mir_lib = MirLibFactory.getMirLib("../mir_client/ChrSel.Lib");
@@ -128,7 +129,7 @@ public class TestMain {
 //            System.out.println("222222-------"+new String(buf,0,const_str.length,"utf-8"));
 //            Test.fileOut("2--------"+new String(buf,0,const_str.length,"utf-8")+"\n");
 
-            long prev_ts = 0l;
+            long prev_ts = 0L;
             int color_mod=0;
             while (shouldRun) {
 
@@ -169,43 +170,27 @@ public class TestMain {
 
                 MirJNI.ImGui_SDL2_NewFrame();
 
-                MirJNI.ImGui_NewFrame();
+                //MirJNI.SDL_RenderCopy(renderer_id, testTexture_id, null, dstRect);
 
-                if (!MirJNI.ImGui_Begin(Util.toCstyleBytes("login"), 100,350, 200, 25, true))
+                //long label_data_ptr=generateLabel(font_id_2, color_mod);
+                //MirJNI.ImGui_Render(renderer_id, label_data_ptr);
+
+                long textinput_data_ptr1=generateTextInput(100,350, font_id_1, color_mod, buf);
+                MirJNI.ImGui_Render(renderer_id, textinput_data_ptr1);
+
+                long textinput_data_ptr2=generateTextInput(50,100, font_id_1, color_mod, buf);
+                MirJNI.ImGui_Render(renderer_id, textinput_data_ptr2);
+
+                //动态修改一些属性
+                long cur_ts = MirJNI.SDL_GetTicks();
+                if ((cur_ts - prev_ts) > 5000)
                 {
-                    System.out.println("-------------------0000-----------------------");
-                    MirJNI.ImGui_End();
-                }
-                else
-                {
-                    //MirJNI.ImGui_Text(toCstyleBytes("标签"));
-
-                    //动态修改一些属性
-                    long cur_ts = MirJNI.SDL_GetTicks();
-                    if ((cur_ts - prev_ts) > 5000)
-                    {
-                        color_mod++;
-                        //color_mod = color_mod % 3;
-                        prev_ts = cur_ts;
-                        MirJNI.ImGui_SetWindowFontScale(color_mod);
-                        MirJNI.ImGui_InitBackColor(color_mod%3 == 1 ? 1.0f:0f, color_mod%3 == 2 ? 1.0f:0f, color_mod%3 == 0 ? 1.0f:0f, 0.5f);
-                        MirJNI.ImGui_InitForeColor(color_mod%3 == 0 ? 1.0f:0f, color_mod%3 == 1 ? 1.0f:0f, color_mod%3 == 2 ? 1.0f:0f, 0.5f);
-                    }
-
-                    //if(MirJNI.ImGui_InputTextMultiline(toCstyleBytes("##"),buf, 200.0f, 25))
-                    if(MirJNI.ImGui_InputText(0, 0, 198, Util.toCstyleBytes("##"), Util.toCstyleBytes("请输入内容..."), buf, false))
-                    {
-                        Test.fileOut(Util.zeroEndBytesToString(buf)+"\n");
-                        System.out.println("----------------------enter return--------------------");
-                    }
-
-                    MirJNI.ImGui_End();
+                    color_mod++;
+                    prev_ts = cur_ts;
                 }
 
-                MirJNI.SDL_SetWindowOpacity(win_id,1f);
-                MirJNI.ImGui_Render(renderer_id);
-                //覆盖inputtext
-                MirJNI.SDL_RenderCopy(renderer_id, testTexture_id, null, dstRect);
+                //MirJNI.SDL_SetWindowOpacity(win_id,1f);
+
                 MirJNI.SDL_RenderPresent(renderer_id);
 
             }
@@ -218,5 +203,51 @@ public class TestMain {
         }catch(Exception e){
             e.printStackTrace();
         }
+    }
+
+    private static long generateLabel(long font, int color_mod)
+    {
+        MirJNI.ImGui_NewFrame();
+        if (!MirJNI.ImGui_Begin(Util.toCstyleBytes("test2"), 50,100, 200, 25, false))
+        {
+            MirJNI.ImGui_End();
+        }
+        else
+        {
+            MirJNI.ImGui_PushFont(font);
+            MirJNI.ImGui_InitBackColor(color_mod%3 == 1 ? 1.0f:0f, color_mod%3 == 2 ? 1.0f:0f, color_mod%3 == 0 ? 1.0f:0f, 0.5f);
+            MirJNI.ImGui_InitForeColor(color_mod%3 == 0 ? 1.0f:0f, color_mod%3 == 1 ? 1.0f:0f, color_mod%3 == 2 ? 1.0f:0f, 0.5f);
+
+            MirJNI.ImGui_Text(Util.toCstyleBytes("这是一个标签测试"));
+            MirJNI.ImGui_PopFont();
+            MirJNI.ImGui_End();
+        }
+        return MirJNI.ImGui_RenderAndGetDrawData();
+    }
+
+    private static long generateTextInput(int x, int y, long font, int color_mod, byte[] buf) throws Exception
+    {
+        MirJNI.ImGui_NewFrame();
+        if (!MirJNI.ImGui_Begin(Util.toCstyleBytes("login-"+x+"-"+y), x, y, 200, 25, false))
+        {
+            System.out.println("-------------------0000-----------------------");
+            MirJNI.ImGui_End();
+        }
+        else
+        {
+            MirJNI.ImGui_PushFont(font);
+
+            MirJNI.ImGui_InitBackColor(color_mod%3 == 1 ? 1.0f:0f, color_mod%3 == 2 ? 1.0f:0f, color_mod%3 == 0 ? 1.0f:0f, 0.5f);
+            MirJNI.ImGui_InitForeColor(color_mod%3 == 0 ? 1.0f:0f, color_mod%3 == 1 ? 1.0f:0f, color_mod%3 == 2 ? 1.0f:0f, 0.5f);
+
+            if(MirJNI.ImGui_InputText(0, 0, 198, Util.toCstyleBytes("login-"+x+"-"+y), Util.toCstyleBytes("请输入内容..."), buf, false))
+            {
+                Test.fileOut(Util.zeroEndBytesToString(buf)+"\n");
+                System.out.println("----------------------enter return--------------------");
+            }
+            MirJNI.ImGui_PopFont();
+            MirJNI.ImGui_End();
+        }
+        return MirJNI.ImGui_RenderAndGetDrawData();
     }
 }

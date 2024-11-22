@@ -19,46 +19,9 @@ public abstract class MirScene extends MirControl {
     {
         super(parent);
         //isDrawControlTexture = true;
-        backColor = Color.Black;
+        //backColor = Color.Black;
         size = new Size(Settings.ScreenWidth, Settings.ScreenHeight);
 
-    }
-
-    @Override
-    public void onMouseDown(Point pos)
-    {
-        if (!getIsEnabled())
-            return;
-
-        if (MouseControl != null && MouseControl != this)
-            MouseControl.onMouseDown(pos);
-        else
-            super.onMouseDown(pos);
-    }
-
-
-    @Override
-    public void onMouseUp(Point pos)
-    {
-        if (!getIsEnabled())
-            return;
-        if (MouseControl != null && MouseControl != this)
-            MouseControl.onMouseUp(pos);
-        else
-            super.onMouseUp(pos);
-    }
-
-
-    @Override
-    public void onMouseMove(Point pos)
-    {
-        if (!getIsEnabled())
-            return;
-
-        if (MouseControl != null && MouseControl != this && MouseControl.isMoving)
-            MouseControl.onMouseMove(pos);
-        else
-            super.onMouseMove(pos);
     }
 
 //
@@ -126,12 +89,6 @@ public abstract class MirScene extends MirControl {
 //        }
 //    }
 
-    @Override
-    public void redraw()
-    {
-        isTextureValid = false;
-    }
-
     public abstract void process();
 
     @Override
@@ -140,9 +97,13 @@ public abstract class MirScene extends MirControl {
 
         super.dispose(disposing);
 
-        if (!disposing) return;
+        if (!disposing) {
+            return;
+        }
 
-        if (ActiveScene == this) ActiveScene = null;
+        if (ActiveScene == this) {
+            ActiveScene = null;
+        }
 
         //mouseButtons = 0;
         lastClickTime = 0;
