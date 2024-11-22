@@ -500,6 +500,21 @@ int com_kindred_sdl_SDL_SDL_GetEventMouseWheelPos(Runtime *runtime, JClass *claz
     return 0;
 }
 
+int com_kindred_sdl_SDL_SDL_GetEventTextText(Runtime *runtime, JClass *clazz) {
+    JniEnv *env = runtime->jnienv;
+    s32 pos = 0;
+
+    SDL_Event *event = (__refer) (intptr_t) env->localvar_getLong_2slot(runtime->localvar, pos);
+    pos += 2;
+
+    Utf8String *ustr = env->utf8_create_part_c(event->text.text, 0, strlen(event->text.text));
+    Instance *jstr = env->jstring_create(ustr, runtime);
+    env->utf8_destory(ustr);
+    env->push_ref(runtime->stack, jstr);
+
+    return 0;
+}
+
 int com_kindred_sdl_SDL_SDL_Quit(Runtime *runtime, JClass *clazz) {
     JniEnv *env = runtime->jnienv;
     s32 pos = 0;
@@ -754,6 +769,75 @@ int com_kindred_sdl_SDL_SDL_UpdateTexture(Runtime *runtime, JClass *clazz) {
     return 0;
 }
 
+int com_kindred_sdl_SDL_SDL_StartTextInput(Runtime *runtime, JClass *clazz) {
+    JniEnv *env = runtime->jnienv;
+    s32 pos = 0;
+
+    SDL_StartTextInput();
+
+    return 0;
+}
+
+int com_kindred_sdl_SDL_SDL_StopTextInput(Runtime *runtime, JClass *clazz) {
+    JniEnv *env = runtime->jnienv;
+    s32 pos = 0;
+
+    SDL_StopTextInput();
+
+    return 0;
+}
+
+int com_kindred_sdl_SDL_SDL_SetTextInputRect(Runtime *runtime, JClass *clazz) {
+    JniEnv *env = runtime->jnienv;
+    s32 pos = 0;
+
+    Instance *rect_ref = env->localvar_getRefer(runtime->localvar, pos++);
+    __refer ptr_rect = NULL;
+    if (rect_ref) {
+        ptr_rect = rect_ref->arr_body;
+    }
+
+    SDL_Rect rect;
+
+    if (ptr_rect) {
+        rect.x = ((int*)ptr_rect)[0];
+        rect.y = ((int*)ptr_rect)[1];
+        rect.w = ((int*)ptr_rect)[2];
+        rect.h = ((int*)ptr_rect)[3];
+    }
+
+    SDL_SetTextInputRect(&rect);
+
+    return 0;
+}
+
+int com_kindred_sdl_SDL_SDL_RenderDrawRect(Runtime *runtime, JClass *clazz) {
+    JniEnv *env = runtime->jnienv;
+    s32 pos = 0;
+
+    SDL_Renderer *renderer = (__refer) (intptr_t) env->localvar_getLong_2slot(runtime->localvar, pos);
+    pos += 2;
+
+    Instance *rect_ref = env->localvar_getRefer(runtime->localvar, pos++);
+    __refer ptr_rect = NULL;
+    if (rect_ref) {
+        ptr_rect = rect_ref->arr_body;
+    }
+
+    SDL_Rect rect;
+
+    if (ptr_rect) {
+        rect.x = ((int*)ptr_rect)[0];
+        rect.y = ((int*)ptr_rect)[1];
+        rect.w = ((int*)ptr_rect)[2];
+        rect.h = ((int*)ptr_rect)[3];
+    }
+
+    int ret = SDL_RenderDrawRect(renderer, &rect);
+    env->push_int(runtime->stack, ret);
+    return 0;
+}
+
 static java_native_method method_sdl_table[] = {
     {"com/kindred/sdl/SDL", "SDL_Init",                       "(I)I",                       com_kindred_sdl_SDL_SDL_Init},
     {"com/kindred/sdl/SDL", "SDL_SetHint",                    "([B[B)Z",                    com_kindred_sdl_SDL_SDL_SetHint},
@@ -783,6 +867,7 @@ static java_native_method method_sdl_table[] = {
     {"com/kindred/sdl/SDL", "SDL_GetEventMouseButtonPos",     "(J)[I",                      com_kindred_sdl_SDL_SDL_GetEventMouseButtonPos},
     {"com/kindred/sdl/SDL", "SDL_GetEventMouseMotionPos",     "(J)[I",                      com_kindred_sdl_SDL_SDL_GetEventMouseMotionPos},
     {"com/kindred/sdl/SDL", "SDL_GetEventMouseWheelPos",      "(J)[I",                      com_kindred_sdl_SDL_SDL_GetEventMouseWheelPos},
+    {"com/kindred/sdl/SDL", "SDL_GetEventTextText",           "(J)Ljava/lang/String;",      com_kindred_sdl_SDL_SDL_GetEventTextText},
     {"com/kindred/sdl/SDL", "SDL_PollEvent",                  "(J)I",                       com_kindred_sdl_SDL_SDL_PollEvent},
     {"com/kindred/sdl/SDL", "SDL_GetWindowFlags",             "(J)I",                       com_kindred_sdl_SDL_SDL_GetWindowFlags},
     {"com/kindred/sdl/SDL", "SDL_DestroyWindow",              "(J)V",                       com_kindred_sdl_SDL_SDL_DestroyWindow},
@@ -805,6 +890,11 @@ static java_native_method method_sdl_table[] = {
     {"com/kindred/sdl/SDL", "SDL_FreeSurface",                "(J)V",                       com_kindred_sdl_SDL_SDL_FreeSurface},
     {"com/kindred/sdl/SDL", "SDL_CreateTexture",              "(JIIII)J",                   com_kindred_sdl_SDL_SDL_CreateTexture},
     {"com/kindred/sdl/SDL", "SDL_UpdateTexture",              "(J[I[BI)I",                  com_kindred_sdl_SDL_SDL_UpdateTexture},
+    //for try
+    {"com/kindred/sdl/SDL", "SDL_StartTextInput",             "()V",                        com_kindred_sdl_SDL_SDL_StartTextInput},
+    {"com/kindred/sdl/SDL", "SDL_StopTextInput",              "()V",                        com_kindred_sdl_SDL_SDL_StopTextInput},
+    {"com/kindred/sdl/SDL", "SDL_SetTextInputRect",           "([I)V",                      com_kindred_sdl_SDL_SDL_SetTextInputRect},
+    {"com/kindred/sdl/SDL", "SDL_RenderDrawRect",             "(J[I)I",                     com_kindred_sdl_SDL_SDL_RenderDrawRect},
     
     
     

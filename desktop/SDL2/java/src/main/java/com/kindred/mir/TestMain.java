@@ -175,11 +175,17 @@ public class TestMain {
                 //long label_data_ptr=generateLabel(font_id_2, color_mod);
                 //MirJNI.ImGui_Render(renderer_id, label_data_ptr);
 
-                long textinput_data_ptr1=generateTextInput(100,350, font_id_1, color_mod, buf);
-                MirJNI.ImGui_Render(renderer_id, textinput_data_ptr1);
+                //long textinput_data_ptr1=generateTextInput(100,350, font_id_1, color_mod, buf);
+                //MirJNI.ImGui_Render(renderer_id, textinput_data_ptr1);
 
                 long textinput_data_ptr2=generateTextInput(50,100, font_id_1, color_mod, buf);
                 MirJNI.ImGui_Render(renderer_id, textinput_data_ptr2);
+
+                //TODO 只要再new一个frame，textinput就要失效
+                MirJNI.ImGui_NewFrame();
+                MirJNI.ImGui_EndFrame();
+
+
 
                 //动态修改一些属性
                 long cur_ts = MirJNI.SDL_GetTicks();

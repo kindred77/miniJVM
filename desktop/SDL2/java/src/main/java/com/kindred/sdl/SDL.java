@@ -56,6 +56,7 @@ public class SDL {
     public static native int[] SDL_GetEventMouseButtonPos(long event_id);
     public static native int[] SDL_GetEventMouseMotionPos(long event_id);
     public static native int[] SDL_GetEventMouseWheelPos(long event_id);
+    public static native String SDL_GetEventTextText(long event_id);
     public static native int SDL_GetKeyEventKeySym(long event_id);
     public static native void SDL_FreeEvent(long event_id);
 
@@ -83,4 +84,9 @@ public class SDL {
     public static native long SDL_CreateTexture(long renderer_id, int pixel_format, int access_method, int width, int height);
     public static native int SDL_UpdateTexture(long texture_id, int[] rect, byte[] pixel, int pitch);
 
+    //for try
+    public static native void SDL_StartTextInput();
+    public static native void SDL_StopTextInput();
+    public static native void SDL_SetTextInputRect(int[] rect);
+    public static native int SDL_RenderDrawRect(long renderer_id, int[] rect);
 }
