@@ -1,3 +1,5 @@
 SDL2: release-2.30.x
 SDL_image: SDL2(branch)
 SDL_ttf: SDL2(branch)(not used yet)
+
+cmake -G "Unix Makefiles" -DSDL2TTF_VENDORED=1 -DCMAKE_INSTALL_PREFIX=d:\mywork\projects\cpp\SDL_ttf\install ..

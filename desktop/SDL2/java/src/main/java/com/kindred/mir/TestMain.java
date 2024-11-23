@@ -50,7 +50,7 @@ public class TestMain {
             //test imgui
             MirJNI.ImGui_SDL2_Init(win_id, renderer_id);
             long font_id_1 = MirJNI.ImGui_InitFont(Util.toCstyleBytes("NotoEmoji+NotoSansCJKSC-Regular.ttf"), 20f);
-            long font_id_2 = MirJNI.ImGui_InitFont(Util.toCstyleBytes("C:\\Windows\\Fonts\\STKAITI.TTF"), 20f);
+            long font_id_2 = MirJNI.ImGui_InitFont(Util.toCstyleBytes("NotoEmoji+NotoSansCJKSC-Regular.ttf"), 20f);
             //MirJNI.ImGui_InitBackColor(1.0f, 1.0f, 1.0f, 0.5f);
             //MirJNI.ImGui_InitForeColor(1.0f, 0.0f, 0.0f, 0.5f);
             //---------------------
