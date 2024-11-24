@@ -131,6 +131,10 @@ public class TestMain {
 
             long prev_ts = 0L;
             int color_mod=0;
+
+            MirJNI.ImGui_SDLRenderer2_NewFrame();
+            MirJNI.ImGui_SDL2_NewFrame();
+
             while (shouldRun) {
 
                 while (MirJNI.SDL_PollEvent(event_id) != 0) {
@@ -166,24 +170,33 @@ public class TestMain {
 //                    continue;
 //                }
 
-                MirJNI.ImGui_SDLRenderer2_NewFrame();
 
-                MirJNI.ImGui_SDL2_NewFrame();
+                //TODO 只要再new一个frame，textinput就要失效
+                //MirJNI.ImGui_NewFrame();
+                //MirJNI.ImGui_EndFrame();
+
+
 
                 //MirJNI.SDL_RenderCopy(renderer_id, testTexture_id, null, dstRect);
 
-                //long label_data_ptr=generateLabel(font_id_2, color_mod);
-                //MirJNI.ImGui_Render(renderer_id, label_data_ptr);
+                if (color_mod%2 == 0)
+                {
+                    //long label_data_ptr=generateLabel(font_id_2, color_mod);
+                    //MirJNI.ImGui_Render(renderer_id, label_data_ptr);
 
-                //long textinput_data_ptr1=generateTextInput(100,350, font_id_1, color_mod, buf);
-                //MirJNI.ImGui_Render(renderer_id, textinput_data_ptr1);
+                    long textinput_data_ptr1=generateTextInput(100,350, font_id_1, color_mod, buf);
+                    MirJNI.ImGui_Render(renderer_id, textinput_data_ptr1);
+                }
+                else
+                {
+                    //long textinput_data_ptr1=generateTextInput(100,350, font_id_1, color_mod, buf);
+                    //MirJNI.ImGui_Render(renderer_id, textinput_data_ptr1);
 
-                long textinput_data_ptr2=generateTextInput(50,100, font_id_1, color_mod, buf);
-                MirJNI.ImGui_Render(renderer_id, textinput_data_ptr2);
+                    long textinput_data_ptr2=generateTextInput(50,100, font_id_1, color_mod, buf);
+                    MirJNI.ImGui_Render(renderer_id, textinput_data_ptr2);
+                }
 
-                //TODO 只要再new一个frame，textinput就要失效
-                MirJNI.ImGui_NewFrame();
-                MirJNI.ImGui_EndFrame();
+
 
 
 
