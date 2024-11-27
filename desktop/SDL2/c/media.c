@@ -18,12 +18,14 @@ void JNI_OnLoad(MiniJVM *jvm) {
     refers.runtime_list = env->pairlist_create(10);
     env->native_reg_lib(jvm, ptr_SDLFuncTable(), count_SDL2FuncTable());
     env->native_reg_lib(jvm, ptr_MIRFuncTable(), count_MIRFuncTable());
+    env->native_reg_lib(jvm, ptr_KissFuncTable(), count_KissFuncTable());
 }
 
 void JNI_OnUnload(MiniJVM *jvm) {
     JniEnv *env = jvm->env;
     env->native_remove_lib(jvm, ptr_SDLFuncTable());
     env->native_remove_lib(jvm, ptr_MIRFuncTable());
+    env->native_remove_lib(jvm, ptr_KissFuncTable());
 }
 
 Runtime *getRuntimeCurThread(JniEnv *env) {
@@ -48,7 +50,7 @@ Runtime *getRuntimeCurThread(JniEnv *env) {
  *
  * ===============================================================*/
 
-int main(void) {
+// int main(void) {
 
-    return 0;
-}
+//     return 0;
+// }

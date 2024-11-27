@@ -1571,7 +1571,10 @@ int com_kindred_sdl_SDL_Mir_SurfaceBlendAddTransparent(Runtime *runtime, JClass 
 
 
 
-void Mir_ImGui_SDL2_Init(SDL_Window * window, SDL_Renderer *renderer);
+intptr_t Mir_ImGui_SDL2_InitImGuiContext();
+int Mir_ImGui_ImplSDL2_InitForSDLRenderer(SDL_Window * window, SDL_Renderer *renderer);
+int Mir_ImGui_ImplSDLRenderer2_Init(SDL_Renderer *renderer);
+void Mir_ImGui_SetCurrentContext(intptr_t context_ptr);
 void Mir_ImGui_InitBackColor(float r, float g, float b, float alpha);
 void Mir_ImGui_InitForeColor(float r, float g, float b, float alpha);
 intptr_t Mir_ImGui_InitFont(const char * font_name, float size);
@@ -1582,7 +1585,11 @@ void Mir_ImGui_SDLRenderer2_NewFrame();
 void Mir_ImGui_SDL2_NewFrame();
 void Mir_ImGui_NewFrame();
 void Mir_ImGui_EndFrame();
-int Mir_ImGui_Begin(const char * label, float x, float y, float width, float height, int no_background);
+int Mir_ImGui_Begin(const char * label, float x, float y, float width, float height,
+    int no_titlebar_arg, int no_scrollbar_arg, int no_menu_arg, int no_move_arg, 
+    int no_resize_arg, int no_collapse_arg, int no_close_arg, int no_nav_arg,
+    int no_background_arg, int no_bring_to_front_arg, int unsaved_document_arg,
+    int no_saved_settings_arg);
 void Mir_ImGui_Text(const char * text);
 int Mir_ImGui_InputText(float x, float y, float width, const char * label, const char * hint, char * buf, int length, int isPassword);
 int Mir_ImGui_InputTextMultiline(const char* label, char * buf, int buf_length, float width, int line_height_cnt);
@@ -1592,14 +1599,48 @@ void Mir_ImGui_Render(SDL_Renderer * renderer, intptr_t drawData_ptr);
 intptr_t Mir_ImGui_RenderAndGetDrawData();
 void Mir_ImGui_Destroy();
 
-int com_kindred_sdl_SDL_ImGui_SDL2_Init(Runtime *runtime, JClass *clazz) {
+int com_kindred_sdl_SDL_ImGui_SDL2_InitImGuiContext(Runtime *runtime, JClass *clazz) {
+    JniEnv *env = runtime->jnienv;
+    s32 pos = 0;
+    // SDL_Window *window = (__refer) (intptr_t) env->localvar_getLong_2slot(runtime->localvar, pos);
+    // pos += 2;
+    // SDL_Renderer *renderer = (__refer) (intptr_t) env->localvar_getLong_2slot(runtime->localvar, pos);
+    // pos += 2;
+    intptr_t res = Mir_ImGui_SDL2_InitImGuiContext();
+    env->push_long(runtime->stack, res);
+    return 0;
+}
+
+int com_kindred_sdl_SDL_ImGui_ImplSDL2_InitForSDLRenderer(Runtime *runtime, JClass *clazz) {
     JniEnv *env = runtime->jnienv;
     s32 pos = 0;
     SDL_Window *window = (__refer) (intptr_t) env->localvar_getLong_2slot(runtime->localvar, pos);
     pos += 2;
     SDL_Renderer *renderer = (__refer) (intptr_t) env->localvar_getLong_2slot(runtime->localvar, pos);
     pos += 2;
-    Mir_ImGui_SDL2_Init(window, renderer);
+    int ret = Mir_ImGui_ImplSDL2_InitForSDLRenderer(window, renderer);
+    env->push_int(runtime->stack, ret);
+    return 0;
+}
+
+int com_kindred_sdl_SDL_ImGui_ImplSDLRenderer2_Init(Runtime *runtime, JClass *clazz) {
+    JniEnv *env = runtime->jnienv;
+    s32 pos = 0;
+
+    SDL_Renderer *renderer = (__refer) (intptr_t) env->localvar_getLong_2slot(runtime->localvar, pos);
+    pos += 2;
+
+    int ret = Mir_ImGui_ImplSDLRenderer2_Init(renderer);
+    env->push_int(runtime->stack, ret);
+    return 0;
+}
+
+int com_kindred_sdl_SDL_ImGui_SetCurrentContext(Runtime *runtime, JClass *clazz) {
+    JniEnv *env = runtime->jnienv;
+    s32 pos = 0;
+    intptr_t context_ptr = (intptr_t) env->localvar_getLong_2slot(runtime->localvar, pos);
+
+    Mir_ImGui_SetCurrentContext(context_ptr);
     return 0;
 }
 
@@ -1739,9 +1780,22 @@ int com_kindred_sdl_SDL_ImGui_Begin(Runtime *runtime, JClass *clazz) {
     pheight.i = env->localvar_getInt(runtime->localvar, pos++);
     float height = (float)pheight.f;
 
-    s32 no_background = env->localvar_getInt(runtime->localvar, pos++);
+    s32 no_titlebar_arg = env->localvar_getInt(runtime->localvar, pos++);
+    s32 no_scrollbar_arg = env->localvar_getInt(runtime->localvar, pos++);
+    s32 no_menu_arg = env->localvar_getInt(runtime->localvar, pos++);
+    s32 no_move_arg = env->localvar_getInt(runtime->localvar, pos++);
+    s32 no_resize_arg = env->localvar_getInt(runtime->localvar, pos++);
+    s32 no_collapse_arg = env->localvar_getInt(runtime->localvar, pos++);
+    s32 no_close_arg = env->localvar_getInt(runtime->localvar, pos++);
+    s32 no_nav_arg = env->localvar_getInt(runtime->localvar, pos++);
+    s32 no_background_arg = env->localvar_getInt(runtime->localvar, pos++);
+    s32 no_bring_to_front_arg = env->localvar_getInt(runtime->localvar, pos++);
+    s32 unsaved_document_arg = env->localvar_getInt(runtime->localvar, pos++);
+    s32 no_saved_settings_arg = env->localvar_getInt(runtime->localvar, pos++);
 
-    int ret = Mir_ImGui_Begin(label, x, y, width, height, no_background);
+    int ret = Mir_ImGui_Begin(label, x, y, width, height, no_titlebar_arg, no_scrollbar_arg,
+        no_menu_arg, no_move_arg, no_resize_arg, no_collapse_arg, no_close_arg, no_nav_arg,
+        no_background_arg, no_bring_to_front_arg, unsaved_document_arg, no_saved_settings_arg);
 
     env->push_int(runtime->stack, ret);
     return 0;
@@ -1878,6 +1932,24 @@ int com_kindred_sdl_SDL_ImGui_Destroy(Runtime *runtime, JClass *clazz) {
     return 0;
 }
 
+//for test
+SDL_Texture* convertDrawDataToTexture(intptr_t draw_data_ptr, SDL_Renderer* renderer);
+int com_kindred_sdl_SDL_ImGui_ConvertDrawDataToTexture(Runtime *runtime, JClass *clazz) {
+    JniEnv *env = runtime->jnienv;
+    s32 pos = 0;
+
+    intptr_t drawData_ptr = (intptr_t) env->localvar_getLong_2slot(runtime->localvar, pos);
+    pos += 2;
+
+    SDL_Renderer *renderer = (__refer) (intptr_t) env->localvar_getLong_2slot(runtime->localvar, pos);
+    pos += 2;
+
+    SDL_Texture* texture = convertDrawDataToTexture(drawData_ptr, renderer);
+
+    env->push_long(runtime->stack, (intptr_t) texture);
+    return 0;
+}
+
 static java_native_method method_mir_table[] = {
 
     //for test and use in future
@@ -1906,7 +1978,10 @@ static java_native_method method_mir_table[] = {
     {"com/kindred/mir/engine/MirJNI", "Mir_SurfaceBlendAddTransparent", "(JJIIFIII)I",                com_kindred_sdl_SDL_Mir_SurfaceBlendAddTransparent},
 
     //test imgui
-    {"com/kindred/mir/engine/MirJNI", "ImGui_SDL2_Init", "(JJ)V",                com_kindred_sdl_SDL_ImGui_SDL2_Init},
+    {"com/kindred/mir/engine/MirJNI", "ImGui_SDL2_InitImGuiContext", "()J",                com_kindred_sdl_SDL_ImGui_SDL2_InitImGuiContext},
+    {"com/kindred/mir/engine/MirJNI", "ImGui_SetCurrentContext", "(J)V",                com_kindred_sdl_SDL_ImGui_SetCurrentContext},
+    {"com/kindred/mir/engine/MirJNI", "ImGui_ImplSDL2_InitForSDLRenderer", "(JJ)Z",                com_kindred_sdl_SDL_ImGui_ImplSDL2_InitForSDLRenderer},
+    {"com/kindred/mir/engine/MirJNI", "ImGui_ImplSDLRenderer2_Init", "(J)Z",                com_kindred_sdl_SDL_ImGui_ImplSDLRenderer2_Init},
     {"com/kindred/mir/engine/MirJNI", "ImGui_InitBackColor", "(FFFF)V",                com_kindred_sdl_SDL_ImGui_InitBackColor},
     {"com/kindred/mir/engine/MirJNI", "ImGui_InitForeColor", "(FFFF)V",                com_kindred_sdl_SDL_ImGui_InitForeColor},
     {"com/kindred/mir/engine/MirJNI", "ImGui_InitFont", "([BF)J",                com_kindred_sdl_SDL_ImGui_InitFont},
@@ -1917,7 +1992,7 @@ static java_native_method method_mir_table[] = {
     {"com/kindred/mir/engine/MirJNI", "ImGui_SDL2_NewFrame", "()V",                com_kindred_sdl_SDL_ImGui_SDL2_NewFrame},
     {"com/kindred/mir/engine/MirJNI", "ImGui_NewFrame", "()V",                com_kindred_sdl_SDL_ImGui_NewFrame},
     {"com/kindred/mir/engine/MirJNI", "ImGui_EndFrame", "()V",                com_kindred_sdl_SDL_ImGui_EndFrame},
-    {"com/kindred/mir/engine/MirJNI", "ImGui_Begin", "([BFFFFZ)Z",                com_kindred_sdl_SDL_ImGui_Begin},
+    {"com/kindred/mir/engine/MirJNI", "ImGui_Begin", "([BFFFFZZZZZZZZZZZZ)Z",                com_kindred_sdl_SDL_ImGui_Begin},
     {"com/kindred/mir/engine/MirJNI", "ImGui_Text", "([B)V",                com_kindred_sdl_SDL_ImGui_Text},
     {"com/kindred/mir/engine/MirJNI", "ImGui_InputText", "(FFF[B[B[BZ)Z",                com_kindred_sdl_SDL_ImGui_InputText},
     {"com/kindred/mir/engine/MirJNI", "ImGui_InputTextMultiline", "([B[BFI)Z",                com_kindred_sdl_SDL_ImGui_InputTextMultiline},
@@ -1926,6 +2001,9 @@ static java_native_method method_mir_table[] = {
     {"com/kindred/mir/engine/MirJNI", "ImGui_Render", "(JJ)V",                com_kindred_sdl_SDL_ImGui_Render},
     {"com/kindred/mir/engine/MirJNI", "ImGui_RenderAndGetDrawData", "()J",                com_kindred_sdl_SDL_ImGui_RenderAndGetDrawData},
     {"com/kindred/mir/engine/MirJNI", "ImGui_Destroy", "()V",                com_kindred_sdl_SDL_ImGui_Destroy},
+
+    //for test(不可用)
+    {"com/kindred/mir/engine/MirJNI", "ImGui_ConvertDrawDataToTexture", "(JJ)J",                com_kindred_sdl_SDL_ImGui_ConvertDrawDataToTexture},
 };
 
 s32 count_MIRFuncTable() {

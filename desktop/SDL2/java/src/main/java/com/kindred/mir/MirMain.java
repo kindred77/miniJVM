@@ -1,6 +1,8 @@
 
 package com.kindred.mir;
 
+import static com.kindred.sdl.constcode.SDLWindowFlags.SDL_WINDOW_MINIMIZED;
+
 import com.kindred.mir.controls.events.CommonEvent;
 import com.kindred.mir.controls.events.CommonEvent.EventEnum;
 import com.kindred.mir.engine.Font;
@@ -143,16 +145,19 @@ public class MirMain {
             int win_pf = MirJNI.SDL_GetWindowPixelFormat(win_id);
             System.out.println("----windows---pixelformat: "+ SDL_PixelFormatEnum.toString(win_pf));
 
-            long renderer_id = MirJNI.SDL_CreateRenderer(win_id, -1, SDLRendererFlags.SDL_RENDERER_ACCELERATED);
+            long renderer_id = MirJNI.SDL_CreateRenderer(win_id, -1, SDLRendererFlags.SDL_RENDERER_PRESENTVSYNC|SDLRendererFlags.SDL_RENDERER_ACCELERATED);
             if (renderer_id == 0) {
                 throw new IllegalStateException("Unable to create SDL renderer: " + MirJNI.SDL_GetError());
             }
 
-            initFonts();
-
             //init imgui
-            MirJNI.ImGui_SDL2_Init(win_id, renderer_id);
+            long imgui_context = MirJNI.ImGui_SDL2_InitImGuiContext();
+            MirJNI.ImGui_SetCurrentContext(imgui_context);
 
+            MirJNI.ImGui_ImplSDL2_InitForSDLRenderer(win_id, renderer_id);
+            MirJNI.ImGui_ImplSDLRenderer2_Init(renderer_id);
+
+            initFonts();
             boolean shouldRun = true;
             long event_id = MirJNI.SDL_CreateEvent();
 
@@ -198,6 +203,12 @@ public class MirMain {
                         default:
                             break;
                     }
+                }
+
+                if ((MirJNI.SDL_GetWindowFlags(win_id) & SDL_WINDOW_MINIMIZED)!=0)
+                {
+                    MirJNI.SDL_Delay(10);
+                    continue;
                 }
 
                 renderEnvironment(renderer_id);

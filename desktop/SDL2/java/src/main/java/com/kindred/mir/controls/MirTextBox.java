@@ -143,7 +143,9 @@ public class MirTextBox extends MirControlWithTexture {
     {
         MirJNI.ImGui_NewFrame();
 
-        if (!MirJNI.ImGui_Begin(Util.toCstyleBytes("login"), 100,350, 200, 25, true))
+        if (!MirJNI.ImGui_Begin(Util.toCstyleBytes("login"), 100,350, 200, 25,
+            true,true,true,true,true,
+            true,true, true, true, true, true, true))
         {
             MirJNI.ImGui_End();
             return false;

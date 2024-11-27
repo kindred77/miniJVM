@@ -32,7 +32,10 @@ public class MirJNI extends SDL {
     public static native int Mir_SurfaceBlendAddTransparent(long dst_surface_id, long src_surface_id, int x, int y, float alpha, int transparent_r, int transparent_g, int transparent_b);
 
 
-    public static native void ImGui_SDL2_Init(long window_id,long renderer_id);
+    public static native long ImGui_SDL2_InitImGuiContext();
+    public static native void ImGui_SetCurrentContext(long context_ptr);
+    public static native boolean ImGui_ImplSDL2_InitForSDLRenderer(long window_id,long renderer_id);
+    public static native boolean ImGui_ImplSDLRenderer2_Init(long renderer_id);
     public static native void ImGui_InitBackColor(float red, float green, float blue, float alpha);
     public static native void ImGui_InitForeColor(float red, float green, float blue, float alpha);
     public static native long ImGui_InitFont(byte[] font_name, float size);
@@ -43,7 +46,12 @@ public class MirJNI extends SDL {
     public static native void ImGui_SDL2_NewFrame();
     public static native void ImGui_NewFrame();
     public static native void ImGui_EndFrame();
-    public static native boolean ImGui_Begin(byte[] label, float x, float y, float width, float height, boolean no_background);
+
+    public static native boolean ImGui_Begin(byte[] label, float x, float y, float width, float height,
+        boolean no_titlebar,boolean no_scrollbar,boolean no_menu,boolean no_move,
+        boolean no_resize,boolean no_collapse,boolean no_close,boolean no_nav,
+        boolean no_background,boolean no_bring_to_front,boolean unsaved_document,
+        boolean no_saved_settings);
     public static native void ImGui_Text(byte[] text);
     public static native boolean ImGui_InputText(float x, float y, float width, byte[] label, byte[] hint, byte[] buf, boolean isPassword);
     public static native boolean ImGui_InputTextMultiline(byte[] label, byte[] buf, float width, int line_height_cnt);
@@ -52,6 +60,13 @@ public class MirJNI extends SDL {
     public static native void ImGui_Render(long renderer_id, long drawData_ptr);
     public static native long ImGui_RenderAndGetDrawData();
     public static native void ImGui_Destroy();
+
+    //for test(不可用)
+    public static native long ImGui_ConvertDrawDataToTexture(long drawData_ptr, long renderer_id);
+
+
+    //for kiss test
+    public static native void Kiss_Init();
 
 
 }

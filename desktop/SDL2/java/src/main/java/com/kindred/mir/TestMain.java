@@ -1,6 +1,8 @@
 
 package com.kindred.mir;
 
+import static com.kindred.sdl.constcode.SDLWindowFlags.SDL_WINDOW_MINIMIZED;
+
 import java.io.UnsupportedEncodingException;
 
 import com.kindred.mir.engine.MirJNI;
@@ -48,9 +50,21 @@ public class TestMain {
             }
 
             //test imgui
-            MirJNI.ImGui_SDL2_Init(win_id, renderer_id);
+            long imgui_context = MirJNI.ImGui_SDL2_InitImGuiContext();
+            MirJNI.ImGui_SetCurrentContext(imgui_context);
+            MirJNI.ImGui_ImplSDL2_InitForSDLRenderer(win_id, renderer_id);
+            MirJNI.ImGui_ImplSDLRenderer2_Init(renderer_id);
+
             long font_id_1 = MirJNI.ImGui_InitFont(Util.toCstyleBytes("NotoEmoji+NotoSansCJKSC-Regular.ttf"), 20f);
             long font_id_2 = MirJNI.ImGui_InitFont(Util.toCstyleBytes("NotoEmoji+NotoSansCJKSC-Regular.ttf"), 20f);
+
+            long imgui_context2 = MirJNI.ImGui_SDL2_InitImGuiContext();
+            MirJNI.ImGui_SetCurrentContext(imgui_context2);
+            MirJNI.ImGui_ImplSDL2_InitForSDLRenderer(win_id, renderer_id);
+            MirJNI.ImGui_ImplSDLRenderer2_Init(renderer_id);
+
+            //long font_id_2_1 = MirJNI.ImGui_InitFont(Util.toCstyleBytes("NotoEmoji+NotoSansCJKSC-Regular.ttf"), 20f);
+            //long font_id_2_2 = MirJNI.ImGui_InitFont(Util.toCstyleBytes("NotoEmoji+NotoSansCJKSC-Regular.ttf"), 20f);
             //MirJNI.ImGui_InitBackColor(1.0f, 1.0f, 1.0f, 0.5f);
             //MirJNI.ImGui_InitForeColor(1.0f, 0.0f, 0.0f, 0.5f);
             //---------------------
@@ -106,7 +120,7 @@ public class TestMain {
 
             int[] rgba = MirJNI.SDL_GetRenderDrawColor(renderer_id);
             System.out.println("-----r: "+rgba[0]+"------"+rgba[1]+"--------------"+rgba[2]+"--------------"+rgba[3]);
-            MirJNI.SDL_SetRenderDrawColor(renderer_id, 0, 0, 0, 255);
+            MirJNI.SDL_SetRenderDrawColor(renderer_id, 255, 255, 255, 255);
             rgba = MirJNI.SDL_GetRenderDrawColor(renderer_id);
             System.out.println("-----r: "+rgba[0]+"------"+rgba[1]+"--------------"+rgba[2]+"--------------"+rgba[3]);
             MirJNI.SDL_RenderClear(renderer_id);
@@ -122,6 +136,7 @@ public class TestMain {
             boolean shouldRun = true;
             long event_id = MirJNI.SDL_CreateEvent();
             byte[] buf=new byte[64];
+            byte[] buf2=new byte[64];
             //byte[] const_str=toCstyleBytes("请输入你的text");
 //            System.out.println("111111-------"+new String(const_str,0,const_str.length,"utf-8"));
 //            Test.fileOut("1--------"+new String(const_str,0,const_str.length,"utf-8")+"\n");
@@ -132,13 +147,11 @@ public class TestMain {
             long prev_ts = 0L;
             int color_mod=0;
 
-            MirJNI.ImGui_SDLRenderer2_NewFrame();
-            MirJNI.ImGui_SDL2_NewFrame();
 
             while (shouldRun) {
 
-                while (MirJNI.SDL_PollEvent(event_id) != 0) {
-                    MirJNI.ImGui_SDL2_ProcessEvent(event_id);
+                //imgui没处理我们就要处理
+                while (MirJNI.SDL_PollEvent(event_id) != 0 && (MirJNI.ImGui_SDL2_ProcessEvent(event_id) == 0)) {
                     switch (MirJNI.SDL_GetEventType(event_id)) {
                         case SDLEventType.SDL_QUIT:
                             shouldRun = false;
@@ -164,11 +177,14 @@ public class TestMain {
                     }
                 }
 
-//                if (MirJNI.SDL_GetWindowFlags(win_id) & SDL_WINDOW_MINIMIZED)
-//                {
-//                    SDL_Delay(10);
-//                    continue;
-//                }
+                MirJNI.SDL_SetRenderDrawColor(renderer_id, 0, 0, 0, 255);
+                MirJNI.SDL_RenderClear(renderer_id);
+
+                if ((MirJNI.SDL_GetWindowFlags(win_id) & SDL_WINDOW_MINIMIZED)!=0)
+                {
+                    MirJNI.SDL_Delay(10);
+                    continue;
+                }
 
 
                 //TODO 只要再new一个frame，textinput就要失效
@@ -179,25 +195,27 @@ public class TestMain {
 
                 //MirJNI.SDL_RenderCopy(renderer_id, testTexture_id, null, dstRect);
 
-                if (color_mod%2 == 0)
-                {
-                    //long label_data_ptr=generateLabel(font_id_2, color_mod);
-                    //MirJNI.ImGui_Render(renderer_id, label_data_ptr);
+//                if (color_mod%2 == 0)
+//                {
+//                    //long label_data_ptr=generateLabel(font_id_2, color_mod);
+//                    //MirJNI.ImGui_Render(renderer_id, label_data_ptr);
+//                    long textinput_data_ptr1=generateTextInput(100,350, font_id_1, color_mod, buf);
+//                    MirJNI.ImGui_Render(renderer_id, textinput_data_ptr1);
+//                }
+//                else
+//                {
+//                    long textinput_data_ptr2=generateTextInput(50,100, font_id_1, color_mod, buf);
+//                    MirJNI.ImGui_Render(renderer_id, textinput_data_ptr2);
+//                }
 
-                    long textinput_data_ptr1=generateTextInput(100,350, font_id_1, color_mod, buf);
-                    MirJNI.ImGui_Render(renderer_id, textinput_data_ptr1);
-                }
-                else
-                {
-                    //long textinput_data_ptr1=generateTextInput(100,350, font_id_1, color_mod, buf);
-                    //MirJNI.ImGui_Render(renderer_id, textinput_data_ptr1);
+                long textinput_data_ptr1=generateTextInput(imgui_context2, 50,50, font_id_2, color_mod, buf);
+                MirJNI.ImGui_Render(renderer_id, textinput_data_ptr1);
 
-                    long textinput_data_ptr2=generateTextInput(50,100, font_id_1, color_mod, buf);
-                    MirJNI.ImGui_Render(renderer_id, textinput_data_ptr2);
-                }
+                //long label_data_ptr=generateLabel(imgui_context2,font_id_2, color_mod);
+                //MirJNI.ImGui_Render(renderer_id, label_data_ptr);
 
-
-
+                long textinput_data_ptr2=generateTextInput(imgui_context,200,300, font_id_1, color_mod, buf2);
+                MirJNI.ImGui_Render(renderer_id, textinput_data_ptr2);
 
 
                 //动态修改一些属性
@@ -224,10 +242,15 @@ public class TestMain {
         }
     }
 
-    private static long generateLabel(long font, int color_mod)
+    private static long generateLabel(long context, long font, int color_mod)
     {
+        MirJNI.ImGui_SetCurrentContext(context);
+        MirJNI.ImGui_SDLRenderer2_NewFrame();
+        MirJNI.ImGui_SDL2_NewFrame();
         MirJNI.ImGui_NewFrame();
-        if (!MirJNI.ImGui_Begin(Util.toCstyleBytes("test2"), 50,100, 200, 25, false))
+        if (!MirJNI.ImGui_Begin(Util.toCstyleBytes("test2"), 50,100, 200, 25,
+            false,true,true,false,false,
+            false,true, true, false, false, true, true))
         {
             MirJNI.ImGui_End();
         }
@@ -244,12 +267,18 @@ public class TestMain {
         return MirJNI.ImGui_RenderAndGetDrawData();
     }
 
-    private static long generateTextInput(int x, int y, long font, int color_mod, byte[] buf) throws Exception
+    private static long generateTextInput(long context,int x, int y, long font, int color_mod, byte[] buf) throws Exception
     {
+        MirJNI.ImGui_SetCurrentContext(context);
+        MirJNI.ImGui_SDLRenderer2_NewFrame();
+        MirJNI.ImGui_SDL2_NewFrame();
         MirJNI.ImGui_NewFrame();
-        if (!MirJNI.ImGui_Begin(Util.toCstyleBytes("login-"+x+"-"+y), x, y, 200, 25, false))
+        String label = "login-"+x+"-"+y;
+        //System.out.println("label----------"+label);
+        if (!MirJNI.ImGui_Begin(Util.toCstyleBytes(label), x, y, 200, 50,
+            false,true,true,false,false,
+            false,true, true, false, false, true, true))
         {
-            System.out.println("-------------------0000-----------------------");
             MirJNI.ImGui_End();
         }
         else
@@ -259,10 +288,9 @@ public class TestMain {
             MirJNI.ImGui_InitBackColor(color_mod%3 == 1 ? 1.0f:0f, color_mod%3 == 2 ? 1.0f:0f, color_mod%3 == 0 ? 1.0f:0f, 0.5f);
             MirJNI.ImGui_InitForeColor(color_mod%3 == 0 ? 1.0f:0f, color_mod%3 == 1 ? 1.0f:0f, color_mod%3 == 2 ? 1.0f:0f, 0.5f);
 
-            if(MirJNI.ImGui_InputText(0, 0, 198, Util.toCstyleBytes("login-"+x+"-"+y), Util.toCstyleBytes("请输入内容..."), buf, false))
+            if(MirJNI.ImGui_InputText(10, 25, 198, Util.toCstyleBytes("login-"+x+"-"+y), Util.toCstyleBytes("请输入内容..."), buf, false))
             {
                 Test.fileOut(Util.zeroEndBytesToString(buf)+"\n");
-                System.out.println("----------------------enter return--------------------");
             }
             MirJNI.ImGui_PopFont();
             MirJNI.ImGui_End();

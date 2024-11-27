@@ -533,6 +533,16 @@ int com_kindred_sdl_SDL_SDL_GetTicks(Runtime *runtime, JClass *clazz) {
     return 0;
 }
 
+int com_kindred_sdl_SDL_SDL_Delay(Runtime *runtime, JClass *clazz) {
+    JniEnv *env = runtime->jnienv;
+    s32 pos = 0;
+
+    s32 delay_ms = env->localvar_getInt(runtime->localvar, pos++);
+    SDL_Delay(delay_ms);
+
+    return 0;
+}
+
 int com_kindred_sdl_SDL_SDL_RWFromFile(Runtime *runtime, JClass *clazz) {
     JniEnv *env = runtime->jnienv;
     s32 pos = 0;
@@ -875,6 +885,7 @@ static java_native_method method_sdl_table[] = {
     {"com/kindred/sdl/SDL", "SDL_DestroyTexture",             "(J)V",                       com_kindred_sdl_SDL_SDL_DestroyTexture},
     {"com/kindred/sdl/SDL", "SDL_Quit",                       "()V",                        com_kindred_sdl_SDL_SDL_Quit},
     {"com/kindred/sdl/SDL", "SDL_GetTicks",                   "()J",                        com_kindred_sdl_SDL_SDL_GetTicks},
+    {"com/kindred/sdl/SDL", "SDL_Delay",                      "(J)V",                       com_kindred_sdl_SDL_SDL_Delay},
 
     {"com/kindred/sdl/SDL", "SDL_IMG_LoadPNG_RW",             "(J)J",                       com_kindred_sdl_SDL_SDL_IMG_LoadPNG_RW},
     {"com/kindred/sdl/SDL", "SDL_RWFromFile",                 "([B[B)J",                    com_kindred_sdl_SDL_SDL_RWFromFile},

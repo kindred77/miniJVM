@@ -33,6 +33,8 @@ set(SOURCE_FILES
         kiss/kiss_posix.c
         kiss/kiss_widgets.c
 
+        jni_kiss.c
+
         mir_imgui.cpp
         
         )

@@ -23,6 +23,10 @@ __refer ptr_MIRFuncTable();
 
 s32 count_MIRFuncTable();
 
+__refer ptr_KissFuncTable();
+
+s32 count_KissFuncTable();
+
 //
 Runtime *getRuntimeCurThread(JniEnv *env);
 
