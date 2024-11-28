@@ -50,6 +50,7 @@ public class MirControl {
     private ControlCommonListener onEnabledChanged;
 
     protected boolean isDrawControlTexture=false;
+    protected boolean isShowChildren=true;
 
     //是否已显示
     protected boolean isHasShown;
@@ -110,7 +111,7 @@ public class MirControl {
         return ID;
     }
 
-    public final MirControl getParent()
+    public MirControl getParent()
     {
         return parent;
     }
@@ -581,6 +582,20 @@ public class MirControl {
         return true;
     }
 
+    /*
+    用于imgui
+     */
+    public boolean beginDraw() {
+        return true;
+    }
+
+    /*
+    用于imgui
+     */
+    public boolean endDraw() {
+        return true;
+    }
+
     public final boolean show()
     {
         if (isDisposed || !getIsVisible()) {
@@ -605,11 +620,19 @@ public class MirControl {
 
         onBeforeShown();
 
+        if (!beginDraw()) {
+            return false;
+        }
+
         if (isDrawControlTexture) {
             drawControl();
         }
 
-        showChildren();
+        if (isShowChildren) {
+            showChildren();
+        }
+
+        endDraw();
 
         //cleanTime = CMain.Time + Settings.CleanDelay;
 

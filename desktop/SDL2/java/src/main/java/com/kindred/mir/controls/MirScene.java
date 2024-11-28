@@ -1,11 +1,7 @@
 package com.kindred.mir.controls;
 
 import com.kindred.mir.Settings;
-import com.kindred.mir.engine.MirTexture;
-import com.kindred.mir.util.Color;
-import com.kindred.mir.util.Point;
 import com.kindred.mir.util.Size;
-import com.kindred.sdl.constcode.SDL_PixelFormatEnum;
 
 public abstract class MirScene extends MirControl {
 
@@ -14,14 +10,25 @@ public abstract class MirScene extends MirControl {
     //private static MouseButtons mouseButtons;
     private static long lastClickTime;
     private static MirControl clickedControl;
+    private long window_id;
+    private long renderer_id;
 
-    protected MirScene(MirControl parent)
+    protected MirScene(MirControl parent, long window_id, long renderer_id)
     {
         super(parent);
         //isDrawControlTexture = true;
         //backColor = Color.Black;
         size = new Size(Settings.ScreenWidth, Settings.ScreenHeight);
+        this.window_id=window_id;
+        this.renderer_id=renderer_id;
+    }
 
+    public final long getWindow() {
+        return this.window_id;
+    }
+
+    public final long getRenderer() {
+        return this.renderer_id;
     }
 
 //

@@ -27,7 +27,7 @@ public class MirMain {
     //public static Point MPoint;
     public static long Time = 0L;
 
-    private static void initFonts()
+    private static void initFonts() throws Exception
     {
         Settings.FONT_SIZE15=new Font(Settings.MIRFONT, 15);
         Settings.FONT_SIZE20=new Font(Settings.MIRFONT, 20);
@@ -122,7 +122,7 @@ public class MirMain {
         }
     }
 
-    public static void main(String args[]) {
+    public static void main(String args[]) throws Exception{
         try {
             int result = MirJNI.SDL_Init(SdlSubSystemConst.SDL_INIT_EVERYTHING);
             if (result != 0) {
@@ -162,7 +162,7 @@ public class MirMain {
             long event_id = MirJNI.SDL_CreateEvent();
 
             //for test
-            MirScene.ActiveScene = new LoginScene(null, renderer_id);
+            MirScene.ActiveScene = new LoginScene(null, win_id, renderer_id);
 
             while (shouldRun) {
                 updateTime();

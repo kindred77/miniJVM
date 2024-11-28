@@ -537,7 +537,8 @@ int com_kindred_sdl_SDL_SDL_Delay(Runtime *runtime, JClass *clazz) {
     JniEnv *env = runtime->jnienv;
     s32 pos = 0;
 
-    s32 delay_ms = env->localvar_getInt(runtime->localvar, pos++);
+    s64 delay_ms = env->localvar_getInt(runtime->localvar, pos);
+    pos += 2;
     SDL_Delay(delay_ms);
 
     return 0;

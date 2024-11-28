@@ -26,9 +26,9 @@ public class LoginScene extends MirScene {
 
     public MirLabel TestLabel, ViolenceLabel, MinorLabel, YouthLabel;
 
-    public LoginScene(MirControl parent, long renderer_id) throws Exception
+    public LoginScene(MirControl parent, long window_id,long renderer_id) throws Exception
     {
-        super(parent);
+        super(parent,window_id,renderer_id);
         SoundManager.playSound(SoundList.IntroMusic, true);
 
         onDisposing = (control, argObj) -> {
@@ -43,7 +43,7 @@ public class LoginScene extends MirScene {
 
         MirImage loginDialogImg = MirLibFactory.getMirLib(MirLibFactory.Prguse).GetMirImage(60);
         //Point loginDialogPos = new Point((Settings.ScreenWidth - loginDialogImg.getWidth())/2, (Settings.ScreenHeight - loginDialogImg.getHeight())/2);
-        loginDialog = new LoginDialog(background,renderer_id,loginDialogImg);
+        loginDialog = new LoginDialog(background,window_id,renderer_id,loginDialogImg);
 //        login.accountButton.click += (o, e) =>
 //        {
 //            _login.Hide();

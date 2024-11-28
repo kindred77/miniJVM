@@ -7,12 +7,15 @@ public class Font {
   private float size;
   private long font_id;
 
-  public Font(String fontFileName, float size)
+  public Font(String fontFileName, float size) throws Exception
   {
     this.fontFileName=fontFileName;
     this.size=size;
 
     font_id=MirJNI.ImGui_InitFont(Util.toCstyleBytes(fontFileName), size);
+    if (font_id == 0) {
+      throw new Exception("Can not init font: "+fontFileName);
+    }
   }
 
   public float getSize() {

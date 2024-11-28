@@ -2,6 +2,8 @@ package com.kindred.mir.scene.login;
 
 import com.kindred.mir.Settings;
 import com.kindred.mir.controls.*;
+import com.kindred.mir.controls.imgui.ImGuiTextBox;
+import com.kindred.mir.controls.imgui.ImGuiWindow;
 import com.kindred.mir.libs.MirImage;
 import com.kindred.mir.libs.MirLib;
 import com.kindred.mir.libs.MirLibFactory;
@@ -13,15 +15,18 @@ public class LoginDialog extends MirControlWithStaticImage {
 
     private MirLabel titleLabel, accountIDLabel, passLabel;
     private MirButton accountButton, closeButton, OKButton, passButton, viewKeyButton;
-    private MirTextBox accountIDTextBox, passwordTextBox;
+    private MirImGuiLayout imGuiLayout;
+    private ImGuiWindow imGuiWindow;
+    private ImGuiTextBox accountIDTextBox, passwordTextBox;
     private boolean isAccountIDValid, isPasswordValid;
 
-    public LoginDialog(MirControl parent, long renderer_id, MirImage img) throws Exception
+    public LoginDialog(MirControl parent, long window_id, long renderer_id, MirImage img) throws Exception
     {
         super(parent, renderer_id, img);
 
         setIsPixelDetect(false);
 
+        //title label
         titleLabel = new MirLabel("title label",this, renderer_id, new Size(50, 20));
         titleLabel.setLocation(titleLabel.Top());
         titleLabel.setIsBorder(true);
@@ -33,8 +38,13 @@ public class LoginDialog extends MirControlWithStaticImage {
         passLabel = new MirLabel("password label",this, renderer_id, new Size(50, 20));
         passLabel.setLocation(new Point(43, 105));
 
-        MirImage okBtnPressedImg = MirLibFactory.getMirLib(MirLibFactory.Prguse).GetMirImage(63);
 
+        imGuiLayout = new MirImGuiLayout(this, window_id, renderer_id);
+        imGuiWindow=new ImGuiWindow(imGuiLayout, window_id, renderer_id, "login",new Point(50,50),this.getSize());
+        accountIDTextBox = new ImGuiTextBox(imGuiWindow, window_id, renderer_id,"account", new Point(5,5),200,64);
+
+
+        MirImage okBtnPressedImg = MirLibFactory.getMirLib(MirLibFactory.Prguse).GetMirImage(63);
         OKButton = new MirButton(this, renderer_id, null, null, okBtnPressedImg);
         OKButton.setSize(new Size(42,42));
         OKButton.setIsBorder(true);
@@ -45,7 +55,7 @@ public class LoginDialog extends MirControlWithStaticImage {
 
         this.onShown=(control, argObj) -> {
             if (accountIDTextBox!=null) {
-                accountIDTextBox.setFocus();
+                //accountIDTextBox.setFocus();
             }
         };
     }
@@ -66,8 +76,8 @@ public class LoginDialog extends MirControlWithStaticImage {
 
     public void clear()
     {
-        accountIDTextBox.setText("");
-        passwordTextBox.setText("");
+        //accountIDTextBox.setText("");
+        //passwordTextBox.setText("");
     }
 
     @Override

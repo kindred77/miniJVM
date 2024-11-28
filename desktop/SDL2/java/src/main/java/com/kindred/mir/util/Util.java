@@ -21,14 +21,24 @@ public class Util {
         return barr;
     }
 
-    public static String zeroEndBytesToString(byte[]  buf) throws Exception
+    public static String zeroEndBytesToString(byte[]  buf)
     {
         int acture_length=0;
         for (byte b : buf) {
-            if (b != 0) acture_length++;
-            else break;
+            if (b != 0) {
+                acture_length++;
+            }
+            else {
+                break;
+            }
         }
-        return new String(buf, 0, acture_length, "utf-8");
+        String result;
+        try {
+            result=new String(buf, 0, acture_length, "utf-8");
+        } catch (Exception e) {
+            return "";
+        }
+        return result;
     }
 
     public static int[] genSeq(int startInclude, int endInclude)

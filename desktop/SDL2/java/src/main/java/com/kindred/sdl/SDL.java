@@ -66,7 +66,7 @@ public class SDL {
     public static native void SDL_DestroyRenderer(long renderer_id);
     public static native void SDL_DestroyTexture(long texture_id);
     public static native long SDL_GetTicks();
-    public static native void SDL_Delay(int delay_ms);
+    public static native void SDL_Delay(long delay_ms);
 
     public static native void SDL_Quit();
 

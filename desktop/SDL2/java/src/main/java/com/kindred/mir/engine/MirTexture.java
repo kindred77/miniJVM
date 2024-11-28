@@ -57,8 +57,11 @@ public class MirTexture {
         {
             MirJNI.SDL_DestroyTexture(this.texture_id);
         }
-        this.texture_id=MirJNI.SDL_CreateTextureFromSurface(renderer_id,surface_id);
-        isValid=true;
+        if (surface_id != 0) {
+            this.texture_id=MirJNI.SDL_CreateTextureFromSurface(renderer_id,surface_id);
+            isValid=true;
+        }
+
     }
 
     public Size getSize()
