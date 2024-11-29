@@ -118,6 +118,10 @@ public class MirMain {
             if (result != 0) {
                 throw new IllegalStateException("Unable to initialize SDL library (Error code " + result + "): " + MirJNI.SDL_GetError());
             }
+            result=MirJNI.SDL_TTF_Init();
+            if (result != 0) {
+                throw new IllegalStateException("Unable to initialize SDL ttf (Error code " + result + "): " + MirJNI.SDL_GetError());
+            }
             if (!MirJNI.SDL_SetHint(Util.toCstyleBytes(SDL_Hints.SDL_HINT_IME_SHOW_UI), Util.toCstyleBytes("1"))) {
                 throw new IllegalStateException("Unable to set hint: " + MirJNI.SDL_GetError());
             }
@@ -203,6 +207,7 @@ public class MirMain {
 
             MirJNI.SDL_DestroyRenderer(renderer_id);
             MirJNI.SDL_DestroyWindow(win_id);
+            MirJNI.SDL_TTF_Quit();
             MirJNI.SDL_Quit();
         } catch(Exception e) {
             e.printStackTrace();

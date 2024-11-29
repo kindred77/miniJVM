@@ -1592,7 +1592,7 @@ int Mir_ImGui_Begin(const char * label, float x, float y, float width, float hei
     int no_saved_settings_arg);
 void Mir_ImGui_Text(const char * text);
 int Mir_ImGui_InputText(float x, float y, float width, const char * label, const char * hint, char * buf, int length, int isPassword);
-int Mir_ImGui_InputTextMultiline(const char* label, char * buf, int buf_length, float width, int line_height_cnt);
+int Mir_ImGui_InputTextMultiline(float x, float y, const char* label, char * buf, int buf_length, float width, int line_height_cnt);
 int Mir_SetWindowFontScale(float scale);
 void Mir_ImGui_End();
 void Mir_ImGui_Render(SDL_Renderer * renderer, intptr_t drawData_ptr);
@@ -1861,6 +1861,14 @@ int com_kindred_sdl_SDL_ImGui_InputTextMultiline(Runtime *runtime, JClass *clazz
     JniEnv *env = runtime->jnienv;
     s32 pos = 0;
 
+    Int2Float px;
+    px.i = env->localvar_getInt(runtime->localvar, pos++);
+    float x = (float)px.f;
+
+    Int2Float py;
+    py.i = env->localvar_getInt(runtime->localvar, pos++);
+    float y = (float)py.f;
+
     Instance *label_arr = env->localvar_getRefer(runtime->localvar, pos++);
     c8 *label = NULL;
     if (label_arr) {
@@ -1881,7 +1889,7 @@ int com_kindred_sdl_SDL_ImGui_InputTextMultiline(Runtime *runtime, JClass *clazz
     }
     else {
         c8 *buf = buf_arr->arr_body;
-        ret = Mir_ImGui_InputTextMultiline(label, buf, buf_arr->arr_length, width, line_height_cnt);
+        ret = Mir_ImGui_InputTextMultiline(x, y, label, buf, buf_arr->arr_length, width, line_height_cnt);
     }
     env->push_int(runtime->stack, ret);
     return 0;
@@ -1995,7 +2003,7 @@ static java_native_method method_mir_table[] = {
     {"com/kindred/mir/engine/MirJNI", "ImGui_Begin", "([BFFFFZZZZZZZZZZZZ)Z",                com_kindred_sdl_SDL_ImGui_Begin},
     {"com/kindred/mir/engine/MirJNI", "ImGui_Text", "([B)V",                com_kindred_sdl_SDL_ImGui_Text},
     {"com/kindred/mir/engine/MirJNI", "ImGui_InputText", "(FFF[B[B[BZ)Z",                com_kindred_sdl_SDL_ImGui_InputText},
-    {"com/kindred/mir/engine/MirJNI", "ImGui_InputTextMultiline", "([B[BFI)Z",                com_kindred_sdl_SDL_ImGui_InputTextMultiline},
+    {"com/kindred/mir/engine/MirJNI", "ImGui_InputTextMultiline", "(FF[B[BFI)Z",                com_kindred_sdl_SDL_ImGui_InputTextMultiline},
     {"com/kindred/mir/engine/MirJNI", "ImGui_SetWindowFontScale", "(F)V",                com_kindred_sdl_SDL_ImGui_SetWindowFontScale},
     {"com/kindred/mir/engine/MirJNI", "ImGui_End", "()V",                com_kindred_sdl_SDL_ImGui_End},
     {"com/kindred/mir/engine/MirJNI", "ImGui_Render", "(JJ)V",                com_kindred_sdl_SDL_ImGui_Render},

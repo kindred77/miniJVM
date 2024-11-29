@@ -85,6 +85,12 @@ public class SDL {
     public static native long SDL_CreateTexture(long renderer_id, int pixel_format, int access_method, int width, int height);
     public static native int SDL_UpdateTexture(long texture_id, int[] rect, byte[] pixel, int pitch);
 
+    public static native int SDL_TTF_Init();
+    public static native long SDL_TTF_OpenFont(byte[] font_name, float size);
+    //return surface
+    public static native long SDL_TTF_RenderText_Solid(long font_id,byte[] text, int red, int green, int blue, int alpha);
+    public static native void SDL_TTF_Quit();
+
     //for try
     public static native void SDL_StartTextInput();
     public static native void SDL_StopTextInput();

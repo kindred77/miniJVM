@@ -44,11 +44,11 @@ public class LoginDialog extends MirControlWithStaticImage {
             false,false,false,false,false);
         accountIDTextBox = new ImGuiTextBox(imGuiWindow, window_id, renderer_id,"##log_account",
             new Point(5,5),140,64,
-            Settings.FONT_SIZE15, Color.Black,Color.White,false);
+            Settings.FONT_SIZE15, Color.Black,Color.White,false, 1);
 
         passwordTextBox = new ImGuiTextBox(imGuiWindow, window_id, renderer_id,"##log_password",
             new Point(5,36),140,64,
-            Settings.FONT_SIZE15, Color.Black,Color.White,true);
+            Settings.FONT_SIZE15, Color.Black,Color.White,true, 1);
 
 
         MirImage okBtnPressedImg = MirLibFactory.getMirLib(MirLibFactory.Prguse).GetMirImage(63);

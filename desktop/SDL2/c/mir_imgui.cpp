@@ -185,8 +185,9 @@ int Mir_ImGui_InputText(float x, float y, float width, const char* label, const 
     return ret;
 }
 
-int Mir_ImGui_InputTextMultiline(const char* label, char * buf, int buf_length, float width, int line_height_cnt)
+int Mir_ImGui_InputTextMultiline(float x, float y, const char* label, char * buf, int buf_length, float width, int line_height_cnt)
 {
+    ImGui::SetCursorPos(ImVec2(x, y));
     int ret = ImGui::InputTextMultiline(!label ? "##" : label, buf, buf_length, ImVec2(width, ImGui::GetTextLineHeight() * line_height_cnt), ImGuiInputTextFlags_AllowTabInput);
 
     return ret;

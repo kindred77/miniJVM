@@ -1,8 +1,9 @@
 #include <stdio.h>
 #include <string.h>
-#include "depends/include/SDL2/SDL.h"
-#include "depends/include/SDL2/SDL_rect.h"
-#include "depends/include/SDL2/SDL_image.h"
+#include "SDL.h"
+#include "SDL_rect.h"
+#include "SDL_image.h"
+#include "SDL_ttf.h"
 
 #include "jvm.h"
 #include "media.h"
@@ -780,6 +781,68 @@ int com_kindred_sdl_SDL_SDL_UpdateTexture(Runtime *runtime, JClass *clazz) {
     return 0;
 }
 
+int com_kindred_sdl_SDL_SDL_TTF_Init(Runtime *runtime, JClass *clazz) {
+    JniEnv *env = runtime->jnienv;
+    s32 pos = 0;
+
+    int ret = TTF_Init();
+    env->push_int(runtime->stack, ret);
+    return 0;
+}
+
+int com_kindred_sdl_SDL_SDL_TTF_OpenFont(Runtime *runtime, JClass *clazz) {
+    JniEnv *env = runtime->jnienv;
+    s32 pos = 0;
+
+    Instance *font_name_arr = env->localvar_getRefer(runtime->localvar, pos++);
+    c8 *font_name = NULL;
+    if (font_name_arr) {
+        font_name = font_name_arr->arr_body;
+    }
+
+    Int2Float psize;
+    psize.i = env->localvar_getInt(runtime->localvar, pos++);
+    float size = (float)psize.f;
+    TTF_Font * font_ptr = TTF_OpenFont(font_name, size);
+
+    env->push_long(runtime->stack, (intptr_t) font_ptr);
+    return 0;
+}
+
+int com_kindred_sdl_SDL_SDL_TTF_RenderText_Solid(Runtime *runtime, JClass *clazz) {
+    JniEnv *env = runtime->jnienv;
+    s32 pos = 0;
+
+    TTF_Font *font = (__refer) (intptr_t) env->localvar_getLong_2slot(runtime->localvar, pos);
+    pos += 2;
+
+    Instance *text_arr = env->localvar_getRefer(runtime->localvar, pos++);
+    c8 *text = NULL;
+    if (text_arr) {
+        text = text_arr->arr_body;
+    }
+
+    SDL_Color color;
+    color.r = env->localvar_getInt(runtime->localvar, pos++);
+    color.g = env->localvar_getInt(runtime->localvar, pos++);
+    color.b = env->localvar_getInt(runtime->localvar, pos++);
+    color.a = env->localvar_getInt(runtime->localvar, pos++);
+    
+    SDL_Surface * surface = TTF_RenderText_Solid(font, text, color);
+
+    env->push_long(runtime->stack, (intptr_t) surface);
+    return 0;
+}
+
+int com_kindred_sdl_SDL_SDL_TTF_Quit(Runtime *runtime, JClass *clazz) {
+    JniEnv *env = runtime->jnienv;
+    s32 pos = 0;
+
+    TTF_Quit();
+
+    return 0;
+}
+
 int com_kindred_sdl_SDL_SDL_StartTextInput(Runtime *runtime, JClass *clazz) {
     JniEnv *env = runtime->jnienv;
     s32 pos = 0;
@@ -885,6 +948,7 @@ static java_native_method method_sdl_table[] = {
     {"com/kindred/sdl/SDL", "SDL_DestroyRenderer",            "(J)V",                       com_kindred_sdl_SDL_SDL_DestroyRenderer},
     {"com/kindred/sdl/SDL", "SDL_DestroyTexture",             "(J)V",                       com_kindred_sdl_SDL_SDL_DestroyTexture},
     {"com/kindred/sdl/SDL", "SDL_Quit",                       "()V",                        com_kindred_sdl_SDL_SDL_Quit},
+    
     {"com/kindred/sdl/SDL", "SDL_GetTicks",                   "()J",                        com_kindred_sdl_SDL_SDL_GetTicks},
     {"com/kindred/sdl/SDL", "SDL_Delay",                      "(J)V",                       com_kindred_sdl_SDL_SDL_Delay},
 
@@ -902,6 +966,13 @@ static java_native_method method_sdl_table[] = {
     {"com/kindred/sdl/SDL", "SDL_FreeSurface",                "(J)V",                       com_kindred_sdl_SDL_SDL_FreeSurface},
     {"com/kindred/sdl/SDL", "SDL_CreateTexture",              "(JIIII)J",                   com_kindred_sdl_SDL_SDL_CreateTexture},
     {"com/kindred/sdl/SDL", "SDL_UpdateTexture",              "(J[I[BI)I",                  com_kindred_sdl_SDL_SDL_UpdateTexture},
+    
+    
+    {"com/kindred/sdl/SDL", "SDL_TTF_Init",                   "()I",                       com_kindred_sdl_SDL_SDL_TTF_Init},
+    {"com/kindred/sdl/SDL", "SDL_TTF_OpenFont",               "([BF)J",                     com_kindred_sdl_SDL_SDL_TTF_OpenFont},
+    {"com/kindred/sdl/SDL", "SDL_TTF_RenderText_Solid",       "(J[BIIII)J",                 com_kindred_sdl_SDL_SDL_TTF_RenderText_Solid},
+    {"com/kindred/sdl/SDL", "SDL_TTF_Quit",                   "()V",                        com_kindred_sdl_SDL_SDL_TTF_Quit},
+    
     //for try
     {"com/kindred/sdl/SDL", "SDL_StartTextInput",             "()V",                        com_kindred_sdl_SDL_SDL_StartTextInput},
     {"com/kindred/sdl/SDL", "SDL_StopTextInput",              "()V",                        com_kindred_sdl_SDL_SDL_StopTextInput},
