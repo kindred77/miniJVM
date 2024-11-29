@@ -809,6 +809,19 @@ int com_kindred_sdl_SDL_SDL_TTF_OpenFont(Runtime *runtime, JClass *clazz) {
     return 0;
 }
 
+int com_kindred_sdl_SDL_SDL_TTF_SetFontStyle(Runtime *runtime, JClass *clazz) {
+    JniEnv *env = runtime->jnienv;
+    s32 pos = 0;
+
+    TTF_Font *font = (__refer) (intptr_t) env->localvar_getLong_2slot(runtime->localvar, pos);
+    pos += 2;
+
+    s32 flags = env->localvar_getInt(runtime->localvar, pos++);
+
+    TTF_SetFontStyle(font, flags);
+    return 0;
+}
+
 int com_kindred_sdl_SDL_SDL_TTF_RenderText_Solid(Runtime *runtime, JClass *clazz) {
     JniEnv *env = runtime->jnienv;
     s32 pos = 0;
@@ -831,6 +844,31 @@ int com_kindred_sdl_SDL_SDL_TTF_RenderText_Solid(Runtime *runtime, JClass *clazz
     SDL_Surface * surface = TTF_RenderText_Solid(font, text, color);
 
     env->push_long(runtime->stack, (intptr_t) surface);
+    return 0;
+}
+
+int com_kindred_sdl_SDL_SDL_TTF_GetError(Runtime *runtime, JClass *clazz) {
+    JniEnv *env = runtime->jnienv;
+    c8 *cstr = (c8 *) TTF_GetError();
+    if (cstr) {
+        Utf8String *ustr = env->utf8_create_part_c(cstr, 0, strlen(cstr));
+        Instance *jstr = env->jstring_create(ustr, runtime);
+        env->utf8_destory(ustr);
+        env->push_ref(runtime->stack, jstr);
+    } else {
+        env->push_ref(runtime->stack, NULL);
+    }
+    return 0;
+}
+
+int com_kindred_sdl_SDL_SDL_TTF_CloseFont(Runtime *runtime, JClass *clazz) {
+    JniEnv *env = runtime->jnienv;
+    s32 pos = 0;
+
+    TTF_Font *font = (__refer) (intptr_t) env->localvar_getLong_2slot(runtime->localvar, pos);
+    pos += 2;
+
+    TTF_CloseFont(font);
     return 0;
 }
 
@@ -968,9 +1006,12 @@ static java_native_method method_sdl_table[] = {
     {"com/kindred/sdl/SDL", "SDL_UpdateTexture",              "(J[I[BI)I",                  com_kindred_sdl_SDL_SDL_UpdateTexture},
     
     
-    {"com/kindred/sdl/SDL", "SDL_TTF_Init",                   "()I",                       com_kindred_sdl_SDL_SDL_TTF_Init},
+    {"com/kindred/sdl/SDL", "SDL_TTF_Init",                   "()I",                        com_kindred_sdl_SDL_SDL_TTF_Init},
     {"com/kindred/sdl/SDL", "SDL_TTF_OpenFont",               "([BF)J",                     com_kindred_sdl_SDL_SDL_TTF_OpenFont},
+    {"com/kindred/sdl/SDL", "SDL_TTF_SetFontStyle",           "(JI)V",                      com_kindred_sdl_SDL_SDL_TTF_SetFontStyle},
     {"com/kindred/sdl/SDL", "SDL_TTF_RenderText_Solid",       "(J[BIIII)J",                 com_kindred_sdl_SDL_SDL_TTF_RenderText_Solid},
+    {"com/kindred/sdl/SDL", "SDL_TTF_GetError",               "()Ljava/lang/String;",       com_kindred_sdl_SDL_SDL_TTF_GetError},
+    {"com/kindred/sdl/SDL", "SDL_TTF_CloseFont",              "(J)V",                       com_kindred_sdl_SDL_SDL_TTF_CloseFont},
     {"com/kindred/sdl/SDL", "SDL_TTF_Quit",                   "()V",                        com_kindred_sdl_SDL_SDL_TTF_Quit},
     
     //for try

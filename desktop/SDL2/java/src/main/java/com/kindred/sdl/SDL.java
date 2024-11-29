@@ -87,8 +87,11 @@ public class SDL {
 
     public static native int SDL_TTF_Init();
     public static native long SDL_TTF_OpenFont(byte[] font_name, float size);
+    public static native void SDL_TTF_SetFontStyle(long font_id, int flags);
     //return surface
     public static native long SDL_TTF_RenderText_Solid(long font_id,byte[] text, int red, int green, int blue, int alpha);
+    public static native String SDL_TTF_GetError();
+    public static native void SDL_TTF_CloseFont(long font_id);
     public static native void SDL_TTF_Quit();
 
     //for try
