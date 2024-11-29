@@ -16,7 +16,8 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /*
-所有控件的基类
+所有控件的基类，
+默认是不会显示子控件的
  */
 public class MirControl {
     
@@ -519,27 +520,54 @@ public class MirControl {
 
     public final Point Center()
     {
-        return new Point((Settings.ScreenWidth - size.getWidth()) / 2, (Settings.ScreenHeight - size.getHeight()) / 2);
+        int parentWidth=Settings.ScreenWidth;
+        int parentHeight=Settings.ScreenHeight;
+        if (parent!=null) {
+            parentWidth=parent.getSize().getWidth();
+            parentHeight=parent.getSize().getHeight();
+        }
+
+        return new Point((parentWidth - size.getWidth()) / 2, (parentHeight - size.getHeight()) / 2);
     }
 
     public final Point Left()
     {
-        return new Point(0, (Settings.ScreenHeight - size.getHeight()) / 2);
+        int parentHeight=Settings.ScreenHeight;
+        if (parent!=null) {
+            parentHeight=parent.getSize().getHeight();
+        }
+        return new Point(0, (parentHeight - size.getHeight()) / 2);
     }
 
     public final Point Top()
     {
-        return new Point((Settings.ScreenWidth - size.getWidth()) / 2, 0);
+        int parentWidth=Settings.ScreenWidth;
+        if (parent!=null) {
+            parentWidth=parent.getSize().getWidth();
+        }
+        return new Point((parentWidth - size.getWidth()) / 2, 0);
     }
 
     public final Point Right()
     {
-        return new Point(Settings.ScreenWidth - size.getWidth(), (Settings.ScreenHeight - size.getHeight()) / 2);
+        int parentWidth=Settings.ScreenWidth;
+        int parentHeight=Settings.ScreenHeight;
+        if (parent!=null) {
+            parentWidth=parent.getSize().getWidth();
+            parentHeight=parent.getSize().getHeight();
+        }
+        return new Point(parentWidth - size.getWidth(), (parentHeight - size.getHeight()) / 2);
     }
 
     public final Point Bottom()
     {
-        return new Point((Settings.ScreenWidth - size.getWidth()) / 2, Settings.ScreenHeight - size.getHeight());
+        int parentWidth=Settings.ScreenWidth;
+        int parentHeight=Settings.ScreenHeight;
+        if (parent!=null) {
+            parentWidth=parent.getSize().getWidth();
+            parentHeight=parent.getSize().getHeight();
+        }
+        return new Point((parentWidth - size.getWidth()) / 2, parentHeight - size.getHeight());
     }
 
     public final Point TopLeft()
@@ -549,17 +577,31 @@ public class MirControl {
 
     public final Point TopRight()
     {
-        return new Point(Settings.ScreenWidth - size.getWidth(), 0);
+        int parentWidth=Settings.ScreenWidth;
+        if (parent!=null) {
+            parentWidth=parent.getSize().getWidth();
+        }
+        return new Point(parentWidth - size.getWidth(), 0);
     }
 
     public final Point BottomRight()
     {
-        return new Point(Settings.ScreenWidth - size.getWidth(), Settings.ScreenHeight - size.getHeight());
+        int parentWidth=Settings.ScreenWidth;
+        int parentHeight=Settings.ScreenHeight;
+        if (parent!=null) {
+            parentWidth=parent.getSize().getWidth();
+            parentHeight=parent.getSize().getHeight();
+        }
+        return new Point(parentWidth - size.getWidth(), parentHeight - size.getHeight());
     }
 
     public final Point BottomLeft()
     {
-        return new Point(0, Settings.ScreenHeight - size.getHeight());
+        int parentHeight=Settings.ScreenHeight;
+        if (parent!=null) {
+            parentHeight=parent.getSize().getHeight();
+        }
+        return new Point(0, parentHeight - size.getHeight());
     }
 
     public final void bringToFront()
@@ -585,14 +627,36 @@ public class MirControl {
     /*
     用于imgui
      */
-    public boolean beginDraw() {
+    protected boolean beginDraw() {
         return true;
     }
 
     /*
     用于imgui
      */
-    public boolean endDraw() {
+    protected boolean endDraw() {
+        return true;
+    }
+
+    /*
+      show有两种方式，
+      一种是先画父控件，再画子控件
+      另一种是父控件begin，然后再子控件begin，子控件end，父控件end，imgui式的画法
+    */
+    protected final boolean showImpl() {
+        if (!beginDraw()) {
+            return false;
+        }
+
+        if (isDrawControlTexture) {
+            drawControl();
+        }
+
+        if (isShowChildren) {
+            showChildren();
+        }
+
+        endDraw();
         return true;
     }
 
@@ -617,22 +681,11 @@ public class MirControl {
             return false;
         }
 
-
         onBeforeShown();
 
-        if (!beginDraw()) {
+        if(!showImpl()) {
             return false;
         }
-
-        if (isDrawControlTexture) {
-            drawControl();
-        }
-
-        if (isShowChildren) {
-            showChildren();
-        }
-
-        endDraw();
 
         //cleanTime = CMain.Time + Settings.CleanDelay;
 
@@ -641,7 +694,7 @@ public class MirControl {
         return true;
     }
 
-    private void showChildren()
+    protected final void showChildren()
     {
         if (children != null) {
             for (int i = 0; i < children.size(); i++) {

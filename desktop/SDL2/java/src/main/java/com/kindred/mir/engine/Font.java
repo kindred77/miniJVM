@@ -11,7 +11,12 @@ public class Font {
   {
     this.fontFileName=fontFileName;
     this.size=size;
+  }
 
+  /*
+  需要选初始化imgui context，并且设置正确的context
+   */
+  public void initFont() throws Exception{
     font_id=MirJNI.ImGui_InitFont(Util.toCstyleBytes(fontFileName), size);
     if (font_id == 0) {
       throw new Exception("Can not init font: "+fontFileName);

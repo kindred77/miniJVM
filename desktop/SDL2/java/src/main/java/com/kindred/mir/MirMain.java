@@ -27,12 +27,6 @@ public class MirMain {
     //public static Point MPoint;
     public static long Time = 0L;
 
-    private static void initFonts() throws Exception
-    {
-        Settings.FONT_SIZE15=new Font(Settings.MIRFONT, 15);
-        Settings.FONT_SIZE20=new Font(Settings.MIRFONT, 20);
-    }
-
     private static void updateEnviroment()
     {
         if (MirScene.ActiveScene != null) {
@@ -112,10 +106,6 @@ public class MirMain {
     }
 
     private static void renderEnvironment(long renderer_id) {
-        MirJNI.ImGui_SDLRenderer2_NewFrame();
-
-        MirJNI.ImGui_SDL2_NewFrame();
-
         if (MirScene.ActiveScene != null) {
             MirScene.ActiveScene.show();
             MirJNI.SDL_RenderPresent(renderer_id);
@@ -150,14 +140,6 @@ public class MirMain {
                 throw new IllegalStateException("Unable to create SDL renderer: " + MirJNI.SDL_GetError());
             }
 
-            //init imgui
-            long imgui_context = MirJNI.ImGui_SDL2_InitImGuiContext();
-            MirJNI.ImGui_SetCurrentContext(imgui_context);
-
-            MirJNI.ImGui_ImplSDL2_InitForSDLRenderer(win_id, renderer_id);
-            MirJNI.ImGui_ImplSDLRenderer2_Init(renderer_id);
-
-            initFonts();
             boolean shouldRun = true;
             long event_id = MirJNI.SDL_CreateEvent();
 
@@ -215,7 +197,9 @@ public class MirMain {
 
             }
 
-            MirJNI.ImGui_Destroy();
+            if (Settings.isImguiUsed) {
+                MirJNI.ImGui_Destroy();
+            }
 
             MirJNI.SDL_DestroyRenderer(renderer_id);
             MirJNI.SDL_DestroyWindow(win_id);

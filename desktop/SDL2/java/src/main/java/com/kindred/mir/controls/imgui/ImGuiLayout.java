@@ -1,32 +1,35 @@
-package com.kindred.mir.controls;
+package com.kindred.mir.controls.imgui;
 
 import com.kindred.mir.Settings;
+import com.kindred.mir.controls.MirControl;
 import com.kindred.mir.engine.MirJNI;
-import com.kindred.mir.util.Size;
+import com.kindred.mir.util.Point;
 
 /*
 mir中嵌入的imgui图层，
 imgui不能跨图层渲染，同一个图层使用同一个imguiContext
  */
-public class MirImGuiLayout extends MirControl {
+public class ImGuiLayout extends ImGuiControl {
 
   private long imgui_context;
 
   private long window_id;
   private long renderer_id;
 
-  public MirImGuiLayout(MirControl parent, long window_id, long renderer_id) throws Exception{
-    super(parent);
+  public ImGuiLayout(MirControl parent, long window_id, long renderer_id) throws Exception{
+    super(parent,window_id,renderer_id,null,new Point(0,0));
     imgui_context = MirJNI.ImGui_SDL2_InitImGuiContext();
-    MirJNI.ImGui_SetCurrentContext(imgui_context);
-    if (!MirJNI.ImGui_ImplSDL2_InitForSDLRenderer(window_id, renderer_id)
-      || !MirJNI.ImGui_ImplSDLRenderer2_Init(renderer_id)) {
-      throw new Exception("Can not init imgui.");
-    }
     this.window_id=window_id;
     this.renderer_id=renderer_id;
-    //默认和总窗口一样大
-    super.setSize(new Size(Settings.ScreenWidth,Settings.ScreenHeight));
+    MirJNI.ImGui_SetCurrentContext(imgui_context);
+    if (!MirJNI.ImGui_ImplSDL2_InitForSDLRenderer(this.window_id, this.renderer_id)
+        || !MirJNI.ImGui_ImplSDLRenderer2_Init(renderer_id)) {
+      throw new Exception("Can not init imgui.");
+    }
+    //默认和父窗口一样大
+    setSize(parent.getSize());
+    Settings.makeSureFontsInited();
+    Settings.isImguiUsed=true;
   }
 
   @Override

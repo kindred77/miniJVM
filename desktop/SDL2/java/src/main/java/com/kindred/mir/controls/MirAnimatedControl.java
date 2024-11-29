@@ -3,7 +3,6 @@ package com.kindred.mir.controls;
 import com.kindred.mir.Settings;
 import com.kindred.mir.controls.listener.ControlCommonListener;
 import com.kindred.mir.libs.MirImage;
-import com.kindred.mir.libs.MirLib;
 
 import java.util.ArrayList;
 import java.util.List;

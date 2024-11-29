@@ -1,6 +1,5 @@
 package com.kindred.mir.controls.imgui;
 
-import com.kindred.mir.controls.MirImGuiLayout;
 import com.kindred.mir.engine.MirJNI;
 import com.kindred.mir.util.Point;
 import com.kindred.mir.util.Size;
@@ -11,16 +10,30 @@ imgui window
  */
 public class ImGuiWindow extends ImGuiControl {
 
-  public ImGuiWindow(MirImGuiLayout parent, long window_id, long renderer_id, String label, Point location, Size size) throws Exception {
+  private boolean isHasTitlebar;
+  private boolean isMovable;
+  private boolean isResizable;
+  private boolean isHasBackground;
+  private boolean isCanBringToFront;
+
+
+  public ImGuiWindow(ImGuiLayout parent, long window_id, long renderer_id, String label, Point location, Size size,
+      boolean isHasTitlebar, boolean isMovable, boolean isResizable, boolean isHasBackground, boolean isCanBringToFront) throws Exception {
     super(parent, window_id, renderer_id, label, location);
     setSize(size);
+    this.isHasTitlebar=isHasTitlebar;
+    this.isMovable=isMovable;
+    this.isResizable=isResizable;
+    this.isHasBackground=isHasBackground;
+    this.isCanBringToFront=isCanBringToFront;
   }
 
   @Override
   public boolean beginDraw() {
-    if (!MirJNI.ImGui_Begin(Util.toCstyleBytes(this.getLabel()), getLocation().getX(), getLocation().getY(), size.getWidth(), size.getHeight(),
-        false,true,true,false,false,
-        false,true, true, false, false, true, true))
+    Point pos = getDisplayLocation();
+    if (!MirJNI.ImGui_Begin(Util.toCstyleBytes(this.getLabel()), pos.getX(), pos.getY(), size.getWidth(), size.getHeight(),
+        !this.isHasTitlebar,true,true,!this.isMovable,!this.isResizable,
+        true,true, true, !this.isHasBackground, !this.isCanBringToFront, true, true))
     {
       MirJNI.ImGui_End();
       return false;

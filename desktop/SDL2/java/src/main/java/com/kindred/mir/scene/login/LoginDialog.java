@@ -2,10 +2,10 @@ package com.kindred.mir.scene.login;
 
 import com.kindred.mir.Settings;
 import com.kindred.mir.controls.*;
+import com.kindred.mir.controls.imgui.ImGuiLayout;
 import com.kindred.mir.controls.imgui.ImGuiTextBox;
 import com.kindred.mir.controls.imgui.ImGuiWindow;
 import com.kindred.mir.libs.MirImage;
-import com.kindred.mir.libs.MirLib;
 import com.kindred.mir.libs.MirLibFactory;
 import com.kindred.mir.util.Color;
 import com.kindred.mir.util.Point;
@@ -15,7 +15,7 @@ public class LoginDialog extends MirControlWithStaticImage {
 
     private MirLabel titleLabel, accountIDLabel, passLabel;
     private MirButton accountButton, closeButton, OKButton, passButton, viewKeyButton;
-    private MirImGuiLayout imGuiLayout;
+    private ImGuiLayout imGuiLayout;
     private ImGuiWindow imGuiWindow;
     private ImGuiTextBox accountIDTextBox, passwordTextBox;
     private boolean isAccountIDValid, isPasswordValid;
@@ -39,9 +39,18 @@ public class LoginDialog extends MirControlWithStaticImage {
         passLabel.setLocation(new Point(43, 105));
 
 
-        imGuiLayout = new MirImGuiLayout(this, window_id, renderer_id);
-        imGuiWindow=new ImGuiWindow(imGuiLayout, window_id, renderer_id, "login",new Point(50,50),this.getSize());
-        accountIDTextBox = new ImGuiTextBox(imGuiWindow, window_id, renderer_id,"account", new Point(5,5),200,64);
+        imGuiLayout = new ImGuiLayout(this, window_id, renderer_id);
+        imGuiWindow=new ImGuiWindow(imGuiLayout, window_id, renderer_id, "##login_dialog",new Point(0,0),new Size(210, 70),
+            false,false,false,true,false);
+        accountIDTextBox = new ImGuiTextBox(imGuiWindow, window_id, renderer_id,"##log_account",
+            new Point(5,5),200,64,
+            Settings.FONT_SIZE15, new Color(0, 0, 0, 255),
+            new Color(255, 0, 0, 255),false);
+
+        passwordTextBox = new ImGuiTextBox(imGuiWindow, window_id, renderer_id,"##log_password",
+            new Point(5,40),200,64,
+            Settings.FONT_SIZE15, new Color(0, 0, 0, 255),
+            new Color(255, 0, 0, 255),true);
 
 
         MirImage okBtnPressedImg = MirLibFactory.getMirLib(MirLibFactory.Prguse).GetMirImage(63);

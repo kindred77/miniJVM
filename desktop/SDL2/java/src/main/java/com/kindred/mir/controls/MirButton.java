@@ -1,10 +1,7 @@
 package com.kindred.mir.controls;
 
-import com.kindred.mir.controls.listener.ControlCommonListener;
 import com.kindred.mir.engine.SoundList;
 import com.kindred.mir.libs.MirImage;
-import com.kindred.mir.util.Color;
-
 import com.kindred.mir.util.Size;
 import java.util.Optional;
 

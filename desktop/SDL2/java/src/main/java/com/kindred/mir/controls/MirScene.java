@@ -3,7 +3,7 @@ package com.kindred.mir.controls;
 import com.kindred.mir.Settings;
 import com.kindred.mir.util.Size;
 
-public abstract class MirScene extends MirControl {
+public abstract class MirScene extends MirControlCanBeDrawn {
 
     public static MirScene ActiveScene = null;
 
@@ -15,7 +15,7 @@ public abstract class MirScene extends MirControl {
 
     protected MirScene(MirControl parent, long window_id, long renderer_id)
     {
-        super(parent);
+        super(parent,renderer_id);
         //isDrawControlTexture = true;
         //backColor = Color.Black;
         size = new Size(Settings.ScreenWidth, Settings.ScreenHeight);

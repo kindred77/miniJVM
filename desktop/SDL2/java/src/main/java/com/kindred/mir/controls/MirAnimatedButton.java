@@ -259,7 +259,9 @@ public class MirAnimatedButton extends MirButton {
         nextOffSet = MirMain.Time + animationDelay;
 
         setOffSet(offSet+1);
-        if (offSet < animationCount) return;
+        if (offSet < animationCount) {
+            return;
+        }
 
         ControlCommonListener temp = afterAnimation;
         afterAnimation = null;
