@@ -40,17 +40,15 @@ public class LoginDialog extends MirControlWithStaticImage {
 
 
         imGuiLayout = new ImGuiLayout(this, window_id, renderer_id);
-        imGuiWindow=new ImGuiWindow(imGuiLayout, window_id, renderer_id, "##login_dialog",new Point(0,0),new Size(210, 70),
-            false,false,false,true,false);
+        imGuiWindow=new ImGuiWindow(imGuiLayout, window_id, renderer_id, "##login_dialog",new Point(93,80),new Size(150, 60),
+            false,false,false,false,false);
         accountIDTextBox = new ImGuiTextBox(imGuiWindow, window_id, renderer_id,"##log_account",
-            new Point(5,5),200,64,
-            Settings.FONT_SIZE15, new Color(0, 0, 0, 255),
-            new Color(255, 0, 0, 255),false);
+            new Point(5,5),140,64,
+            Settings.FONT_SIZE15, Color.Black,Color.White,false);
 
         passwordTextBox = new ImGuiTextBox(imGuiWindow, window_id, renderer_id,"##log_password",
-            new Point(5,40),200,64,
-            Settings.FONT_SIZE15, new Color(0, 0, 0, 255),
-            new Color(255, 0, 0, 255),true);
+            new Point(5,36),140,64,
+            Settings.FONT_SIZE15, Color.Black,Color.White,true);
 
 
         MirImage okBtnPressedImg = MirLibFactory.getMirLib(MirLibFactory.Prguse).GetMirImage(63);
