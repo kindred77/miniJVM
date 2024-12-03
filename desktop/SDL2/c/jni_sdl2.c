@@ -781,6 +781,46 @@ int com_kindred_sdl_SDL_SDL_UpdateTexture(Runtime *runtime, JClass *clazz) {
     return 0;
 }
 
+int com_kindred_sdl_SDL_SDL_RenderFillRect(Runtime *runtime, JClass *clazz) {
+    JniEnv *env = runtime->jnienv;
+    s32 pos = 0;
+
+    SDL_Renderer *renderer = (__refer) (intptr_t) env->localvar_getLong_2slot(runtime->localvar, pos);
+    pos += 2;
+
+    Instance *rect_ref = env->localvar_getRefer(runtime->localvar, pos++);
+    __refer ptr_rect = NULL;
+    if (rect_ref) {
+        ptr_rect = rect_ref->arr_body;
+    }
+    SDL_Rect rect;
+    if (ptr_rect) {
+        rect.x = ((int*)ptr_rect)[0];
+        rect.y = ((int*)ptr_rect)[1];
+        rect.w = ((int*)ptr_rect)[2];
+        rect.h = ((int*)ptr_rect)[3];
+    }
+
+    int ret = SDL_RenderFillRect(renderer, &rect);
+    env->push_int(runtime->stack, ret);
+    return 0;
+}
+
+int com_kindred_sdl_SDL_SDL_SetRenderTarget(Runtime *runtime, JClass *clazz) {
+    JniEnv *env = runtime->jnienv;
+    s32 pos = 0;
+
+    SDL_Renderer *renderer = (__refer) (intptr_t) env->localvar_getLong_2slot(runtime->localvar, pos);
+    pos += 2;
+
+    SDL_Texture *texture = (__refer) (intptr_t) env->localvar_getLong_2slot(runtime->localvar, pos);
+    pos += 2;
+
+    int ret = SDL_SetRenderTarget(renderer, texture);
+    env->push_int(runtime->stack, ret);
+    return 0;
+}
+
 int com_kindred_sdl_SDL_SDL_TTF_Init(Runtime *runtime, JClass *clazz) {
     JniEnv *env = runtime->jnienv;
     s32 pos = 0;
@@ -822,7 +862,7 @@ int com_kindred_sdl_SDL_SDL_TTF_SetFontStyle(Runtime *runtime, JClass *clazz) {
     return 0;
 }
 
-int com_kindred_sdl_SDL_SDL_TTF_RenderText_Solid(Runtime *runtime, JClass *clazz) {
+int com_kindred_sdl_SDL_SDL_TTF_RenderUTF8_LCD_Wrapped(Runtime *runtime, JClass *clazz) {
     JniEnv *env = runtime->jnienv;
     s32 pos = 0;
 
@@ -835,13 +875,47 @@ int com_kindred_sdl_SDL_SDL_TTF_RenderText_Solid(Runtime *runtime, JClass *clazz
         text = text_arr->arr_body;
     }
 
+    Instance *color_ref = env->localvar_getRefer(runtime->localvar, pos++);
+    __refer ptr_color = NULL;
+    if (color_ref) {
+        ptr_color = color_ref->arr_body;
+    }
     SDL_Color color;
-    color.r = env->localvar_getInt(runtime->localvar, pos++);
-    color.g = env->localvar_getInt(runtime->localvar, pos++);
-    color.b = env->localvar_getInt(runtime->localvar, pos++);
-    color.a = env->localvar_getInt(runtime->localvar, pos++);
+    if (ptr_color) {
+        color.r = ((int*)ptr_color)[0];
+        color.g = ((int*)ptr_color)[1];
+        color.b = ((int*)ptr_color)[2];
+        color.a = ((int*)ptr_color)[3];
+    }
+
+    color_ref = env->localvar_getRefer(runtime->localvar, pos++);
+    ptr_color = NULL;
+    if (color_ref) {
+        ptr_color = color_ref->arr_body;
+    }
     
-    SDL_Surface * surface = TTF_RenderText_Solid(font, text, color);
+    SDL_Color color2;
+    if (ptr_color) {
+        color2.r = ((int*)ptr_color)[0];
+        color2.g = ((int*)ptr_color)[1];
+        color2.b = ((int*)ptr_color)[2];
+        color2.a = ((int*)ptr_color)[3];
+    }
+
+    s32 wrapLength = env->localvar_getInt(runtime->localvar, pos++);
+    
+    //SDL_Surface * surface = TTF_RenderUTF8_Solid(font, text, color);
+    SDL_Surface * surface = TTF_RenderUTF8_LCD_Wrapped(font, text, color, color2, wrapLength);
+    if (surface) {
+        SDL_Surface * tgt_surface = SDL_ConvertSurfaceFormat(surface, SDL_PIXELFORMAT_ARGB8888, 0);
+        if (!tgt_surface) {
+            fprintf(stderr, "Unable to convert surface to SDL_PIXELFORMAT_ARGB8888! SDL Error: %s\n", SDL_GetError() );
+            env->push_long(runtime->stack, 0L);
+            return 0;
+        }
+        SDL_FreeSurface(surface);
+        surface = tgt_surface;
+    }
 
     env->push_long(runtime->stack, (intptr_t) surface);
     return 0;
@@ -1004,12 +1078,13 @@ static java_native_method method_sdl_table[] = {
     {"com/kindred/sdl/SDL", "SDL_FreeSurface",                "(J)V",                       com_kindred_sdl_SDL_SDL_FreeSurface},
     {"com/kindred/sdl/SDL", "SDL_CreateTexture",              "(JIIII)J",                   com_kindred_sdl_SDL_SDL_CreateTexture},
     {"com/kindred/sdl/SDL", "SDL_UpdateTexture",              "(J[I[BI)I",                  com_kindred_sdl_SDL_SDL_UpdateTexture},
-    
+    {"com/kindred/sdl/SDL", "SDL_RenderFillRect",             "(J[I)I",                     com_kindred_sdl_SDL_SDL_RenderFillRect},
+    {"com/kindred/sdl/SDL", "SDL_SetRenderTarget",            "(JJ)I",                      com_kindred_sdl_SDL_SDL_SetRenderTarget},
     
     {"com/kindred/sdl/SDL", "SDL_TTF_Init",                   "()I",                        com_kindred_sdl_SDL_SDL_TTF_Init},
     {"com/kindred/sdl/SDL", "SDL_TTF_OpenFont",               "([BF)J",                     com_kindred_sdl_SDL_SDL_TTF_OpenFont},
     {"com/kindred/sdl/SDL", "SDL_TTF_SetFontStyle",           "(JI)V",                      com_kindred_sdl_SDL_SDL_TTF_SetFontStyle},
-    {"com/kindred/sdl/SDL", "SDL_TTF_RenderText_Solid",       "(J[BIIII)J",                 com_kindred_sdl_SDL_SDL_TTF_RenderText_Solid},
+    {"com/kindred/sdl/SDL", "SDL_TTF_RenderUTF8_LCD_Wrapped", "(J[B[I[II)J",                com_kindred_sdl_SDL_SDL_TTF_RenderUTF8_LCD_Wrapped},
     {"com/kindred/sdl/SDL", "SDL_TTF_GetError",               "()Ljava/lang/String;",       com_kindred_sdl_SDL_SDL_TTF_GetError},
     {"com/kindred/sdl/SDL", "SDL_TTF_CloseFont",              "(J)V",                       com_kindred_sdl_SDL_SDL_TTF_CloseFont},
     {"com/kindred/sdl/SDL", "SDL_TTF_Quit",                   "()V",                        com_kindred_sdl_SDL_SDL_TTF_Quit},

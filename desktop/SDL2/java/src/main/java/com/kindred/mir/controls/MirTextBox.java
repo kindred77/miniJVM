@@ -183,7 +183,7 @@ public class MirTextBox extends MirControlWithTexture {
     protected boolean drawControl() {
 
         if (drawData_ptr!=0) {
-            MirJNI.ImGui_Render(renderer_id, drawData_ptr);
+            MirJNI.ImGui_Render(getRenderer(), drawData_ptr);
         }
 
         return true;

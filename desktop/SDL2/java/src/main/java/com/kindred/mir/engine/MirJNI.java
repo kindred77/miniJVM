@@ -31,6 +31,8 @@ public class MirJNI extends SDL {
     public static native int Mir_SurfaceBlendAdd(long dst_surface_id, long src_surface_id, int x, int y, float alpha);
     public static native int Mir_SurfaceBlendAddTransparent(long dst_surface_id, long src_surface_id, int x, int y, float alpha, int transparent_r, int transparent_g, int transparent_b);
 
+    //return surface
+    public static native long Mir_FillRect(int width, int height, int[] color);
 
     public static native long ImGui_SDL2_InitImGuiContext();
     public static native void ImGui_SetCurrentContext(long context_ptr);

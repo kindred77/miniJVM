@@ -50,7 +50,7 @@ public class MirCheckBox extends MirButton {
 //            redraw();
         };
 
-        label.setIsAutoSize(true);
-        label.setLocation(new Point(15, -2));
+        //label.setIsAutoSize(true);
+        //label.setLocation(new Point(15, -2));
     }
 }

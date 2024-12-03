@@ -27,16 +27,16 @@ public class LoginDialog extends MirControlWithStaticImage {
         setIsPixelDetect(false);
 
         //title label
-        titleLabel = new MirLabel("title label",this, renderer_id, new Size(50, 20));
-        titleLabel.setLocation(titleLabel.Top());
+        titleLabel = new MirLabel(this, renderer_id, new Size(50, 20),
+            new Point(50,0), Settings.FONT_SIZE20, "服务器名称",Color.Blue, Color.Red,100);
         titleLabel.setIsBorder(true);
         titleLabel.setBorderColor(Color.Green);
 
-        accountIDLabel = new MirLabel("account label", this, renderer_id, new Size(50, 20));
-        accountIDLabel.setLocation(new Point(52, 83));
+        accountIDLabel = new MirLabel( this, renderer_id, new Size(50, 20),
+            new Point(52,83), Settings.FONT_SIZE20, "账号",Color.Blue, Color.Red, 100);
 
-        passLabel = new MirLabel("password label",this, renderer_id, new Size(50, 20));
-        passLabel.setLocation(new Point(43, 105));
+        passLabel = new MirLabel(this, renderer_id, new Size(50, 20),
+            new Point(43,105),Settings.FONT_SIZE20,"密码",Color.Blue, Color.Red, 100);
 
 
         imGuiLayout = new ImGuiLayout(this, window_id, renderer_id);

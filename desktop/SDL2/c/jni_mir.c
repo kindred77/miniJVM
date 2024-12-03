@@ -1211,12 +1211,10 @@ int com_kindred_sdl_SDL_Mir_SurfaceBlendNormal(Runtime *runtime, JClass *clazz) 
     int dst_width = dst_surface->w;
     int dst_height = dst_surface->h;
     int dst_pitch = dst_surface->pitch;
-
     Uint32 * src_pixels = ((Uint32*)src_surface->pixels);
     int src_width = src_surface->w;
     int src_height = src_surface->h;
     int src_pitch = src_surface->pitch;
-
     if (x > dst_width || y > dst_height || (x < 0 && -x >= src_width) || (y < 0 && -y >= src_height)) {
         fprintf(stdout, "Do noting. \n");
         env->push_int(runtime->stack, 0);
@@ -1229,10 +1227,8 @@ int com_kindred_sdl_SDL_Mir_SurfaceBlendNormal(Runtime *runtime, JClass *clazz) 
         env->push_int(runtime->stack, -1);
         return 0;
     }
-    
     if (dst_surface->format->format == SDL_PIXELFORMAT_ARGB8888
         && src_surface->format->format == SDL_PIXELFORMAT_ARGB8888) {
-        
         int left = x < 0 ? 0 : x;
         int top = y < 0 ? 0 : y;
         int tarleft = x < 0 ? -x : 0;
@@ -1569,6 +1565,58 @@ int com_kindred_sdl_SDL_Mir_SurfaceBlendAddTransparent(Runtime *runtime, JClass 
     return 0;
 }
 
+int com_kindred_sdl_SDL_Mir_FillRect(Runtime *runtime, JClass *clazz) {
+    JniEnv *env = runtime->jnienv;
+    s32 pos = 0;
+    
+    s32 width = env->localvar_getInt(runtime->localvar, pos++);
+    s32 height = env->localvar_getInt(runtime->localvar, pos++);
+    
+    Instance *color_ref = env->localvar_getRefer(runtime->localvar, pos++);
+    __refer ptr_color = NULL;
+    if (color_ref) {
+        ptr_color = color_ref->arr_body;
+    }
+    
+    SDL_Color color;
+    if (ptr_color) {
+        color.r = ((int*)ptr_color)[0];
+        color.g = ((int*)ptr_color)[1];
+        color.b = ((int*)ptr_color)[2];
+        color.a = ((int*)ptr_color)[3];
+    }
+    
+    SDL_Surface * surface = SDL_CreateRGBSurfaceWithFormat(0, width, height, 32, SDL_PIXELFORMAT_ARGB8888);
+    if (!surface) {
+        fprintf(stderr, "Unable to create surface! SDL Error: %s\n", SDL_GetError() );
+        env->push_long(runtime->stack, 0L);
+        return 0;
+    }
+    
+    int ret = SDL_LockSurface(surface);
+    if (ret) {
+        fprintf(stderr, "Unable to lock surface! SDL Error: %s\n", SDL_GetError() );
+        env->push_int(runtime->stack, 0L);
+        return 0;
+    }
+    
+    int pitch = surface->pitch;
+    Uint32 * pixels = ((Uint32*)surface->pixels);
+
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+            // 计算当前像素在像素数据中的索引
+            int index = y * width + x;
+            // 获取当前像素的红、绿、蓝颜色通道值
+
+            pixels[index] = (color.a << 24) | (color.r << 16) | (color.g << 8) | color.b;
+        }
+    }
+    
+    SDL_UnlockSurface(surface);
+    env->push_long(runtime->stack, (intptr_t) surface);
+    return 0;
+}
 
 
 intptr_t Mir_ImGui_SDL2_InitImGuiContext();
@@ -1984,6 +2032,7 @@ static java_native_method method_mir_table[] = {
     {"com/kindred/mir/engine/MirJNI", "Mir_SurfaceBlendNormalTransparent",         "(JJIIFIII)I",     com_kindred_sdl_SDL_Mir_SurfaceBlendNormalTransparent},
     {"com/kindred/mir/engine/MirJNI", "Mir_SurfaceBlendAdd",            "(JJIIF)I",                   com_kindred_sdl_SDL_Mir_SurfaceBlendAdd},
     {"com/kindred/mir/engine/MirJNI", "Mir_SurfaceBlendAddTransparent", "(JJIIFIII)I",                com_kindred_sdl_SDL_Mir_SurfaceBlendAddTransparent},
+    {"com/kindred/mir/engine/MirJNI", "Mir_FillRect",                   "(II[I)J",                    com_kindred_sdl_SDL_Mir_FillRect},
 
     //test imgui
     {"com/kindred/mir/engine/MirJNI", "ImGui_SDL2_InitImGuiContext", "()J",                com_kindred_sdl_SDL_ImGui_SDL2_InitImGuiContext},

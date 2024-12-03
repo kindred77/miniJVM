@@ -14,12 +14,8 @@ public class MirControlWithTexture extends MirControlCanBeDrawn {
 
     public MirControlWithTexture(MirControl parent, long renderer_id) {
         super(parent, renderer_id);
-        this.renderer_id=renderer_id;
-        isDrawControlTexture=true;
         controlTexture=new MirTexture();
     }
-
-
 
 
 //    public Size getTrueSize()
@@ -37,7 +33,7 @@ public class MirControlWithTexture extends MirControlCanBeDrawn {
 //            controlTexture.dispose();
 //            return false;
 //        }
-        controlTexture.update(renderer_id, surface_id);
+        controlTexture.update(getRenderer(), surface_id);
 
         //TODO 在surface上画边框，再render
         if(getIsBorder())
@@ -66,9 +62,9 @@ public class MirControlWithTexture extends MirControlCanBeDrawn {
     @Override
     protected boolean drawControl()
     {
-        beforeDrawControl();
+        //beforeDrawControl();
 
-        if (/*isDrawImage && */controlTexture != null && controlTexture.getIsValid()) {
+        if (controlTexture != null && controlTexture.getIsValid()) {
             if (isBlending) {
                 MirJNI.SDL_SetTextureBlendMode(controlTexture.getTexture(), SDLBlendMode.SDL_BLENDMODE_BLEND);
             }
@@ -76,14 +72,14 @@ public class MirControlWithTexture extends MirControlCanBeDrawn {
             Rectangle dstRect = getDisplayRectangle();
 
             int[] rct = {dstRect.getX(), dstRect.getY(), dstRect.getWidth(), dstRect.getHeight()};
-            MirJNI.SDL_RenderCopy(renderer_id, controlTexture.getTexture(), null, rct);
+            MirJNI.SDL_RenderCopy(getRenderer(), controlTexture.getTexture(), null, rct);
         }
 
         if (getIsBorder()) {
             drawBorder();
         }
 
-        afterDrawControl();
+        //afterDrawControl();
 
         return true;
     }

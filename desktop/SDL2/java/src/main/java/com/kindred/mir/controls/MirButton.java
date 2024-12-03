@@ -1,15 +1,13 @@
 package com.kindred.mir.controls;
 
+import com.kindred.mir.Settings;
 import com.kindred.mir.engine.SoundList;
 import com.kindred.mir.libs.MirImage;
+import com.kindred.mir.util.Point;
 import com.kindred.mir.util.Size;
 import java.util.Optional;
 
 public class MirButton extends MirControlWithDynamicImagesMouseEventDriven {
-
-    protected MirLabel label;
-
-
 
     private boolean isCenterText;
 
@@ -18,15 +16,6 @@ public class MirButton extends MirControlWithDynamicImagesMouseEventDriven {
         super(parent, renderer_id, new MirImage[]{ normalImage, hoverImage, pressedImage});
 
         sound = SoundList.ButtonB;
-
-        label = new MirLabel("",this, renderer_id, new Size(20,10));
-        label.setIsNotControl(true);
-
-        onSizeChanged = (control, obj) -> {
-            if (label != null && !label.getIsDisposed()) {
-                label.setSize(size);
-            }
-        };
     }
 
 //    public Color getFontColor()
@@ -76,20 +65,20 @@ public class MirButton extends MirControlWithDynamicImagesMouseEventDriven {
 //        return super.getMirImage();
 //    }
 
-    public boolean getIsCenterText()
-    {
-        return isCenterText;
-    }
-    public void setIsCenterText(boolean isCenterText)
-    {
-        this.isCenterText = isCenterText;
-        if (this.isCenterText) {
-            label.setSize(size);
-            //label.setDrawFormat(TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
-        } else {
-            label.setIsAutoSize(true);
-        }
-    }
+//    public boolean getIsCenterText()
+//    {
+//        return isCenterText;
+//    }
+//    public void setIsCenterText(boolean isCenterText)
+//    {
+//        this.isCenterText = isCenterText;
+//        if (this.isCenterText) {
+//            label.setSize(size);
+//            //label.setDrawFormat(TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
+//        } else {
+//            label.setIsAutoSize(true);
+//        }
+//    }
 
     public MirImage getPressedImage()
     {
@@ -111,24 +100,24 @@ public class MirButton extends MirControlWithDynamicImagesMouseEventDriven {
         }
     }
 
-    public void setText(String text)
-    {
-        if (label == null || label.getIsDisposed()) {
-            return;
-        }
-        label.setText(text);
-        label.setIsVisible(!Optional.ofNullable(text).orElse("").isEmpty());
-    }
+//    public void setText(String text)
+//    {
+//        if (label == null || label.getIsDisposed()) {
+//            return;
+//        }
+//        label.setText(text);
+//        label.setIsVisible(!Optional.ofNullable(text).orElse("").isEmpty());
+//    }
 
     @Override
     protected void dispose(boolean disposing)
     {
         super.dispose(disposing);
 
-        if (label != null && !label.getIsDisposed()) {
-            label.dispose();
-        }
-        label = null;
+//        if (label != null && !label.getIsDisposed()) {
+//            label.dispose();
+//        }
+//        label = null;
     }
 
 }

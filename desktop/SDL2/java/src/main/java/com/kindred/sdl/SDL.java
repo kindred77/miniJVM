@@ -84,12 +84,14 @@ public class SDL {
     public static native void SDL_FreeSurface(long surface_id);
     public static native long SDL_CreateTexture(long renderer_id, int pixel_format, int access_method, int width, int height);
     public static native int SDL_UpdateTexture(long texture_id, int[] rect, byte[] pixel, int pitch);
+    public static native int SDL_RenderFillRect(long renderer_id, int[] rect);
+    public static native int SDL_SetRenderTarget(long renderer_id, long texture_id);
 
     public static native int SDL_TTF_Init();
     public static native long SDL_TTF_OpenFont(byte[] font_name, float size);
     public static native void SDL_TTF_SetFontStyle(long font_id, int flags);
     //return surface
-    public static native long SDL_TTF_RenderText_Solid(long font_id,byte[] text, int red, int green, int blue, int alpha);
+    public static native long SDL_TTF_RenderUTF8_LCD_Wrapped(long font_id,byte[] text, int[] foreColor, int[] backColor, int wrapLength);
     public static native String SDL_TTF_GetError();
     public static native void SDL_TTF_CloseFont(long font_id);
     public static native void SDL_TTF_Quit();

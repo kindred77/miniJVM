@@ -28,7 +28,7 @@ public class ImGuiLayout extends ImGuiControl {
     }
     //默认和父窗口一样大
     setSize(parent.getSize());
-    Settings.makeSureFontsInited();
+    Settings.makeSureImGuiFontsInited();
     Settings.isImguiUsed=true;
   }
 

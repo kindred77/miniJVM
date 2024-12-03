@@ -27,10 +27,6 @@ public abstract class MirScene extends MirControlCanBeDrawn {
         return this.window_id;
     }
 
-    public final long getRenderer() {
-        return this.renderer_id;
-    }
-
 //
 //    @Override
 //    public void onMouseWheel(MouseEventArgs e)

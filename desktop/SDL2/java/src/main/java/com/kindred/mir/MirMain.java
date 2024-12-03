@@ -144,6 +144,8 @@ public class MirMain {
                 throw new IllegalStateException("Unable to create SDL renderer: " + MirJNI.SDL_GetError());
             }
 
+            Settings.makeSureSDLFontsInited();
+
             boolean shouldRun = true;
             long event_id = MirJNI.SDL_CreateEvent();
 

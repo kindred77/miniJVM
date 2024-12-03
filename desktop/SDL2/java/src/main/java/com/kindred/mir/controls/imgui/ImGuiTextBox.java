@@ -22,7 +22,7 @@ public class ImGuiTextBox extends ImGuiControl{
   public ImGuiTextBox(ImGuiWindow parent, long window_id, long renderer_id, String label, Point location,
       int width, int text_max_length,Font font, Color backColor, Color foreColor, boolean isPassword, int multiLines) throws Exception{
     super(parent, window_id, renderer_id, label, location);
-    if (font.getFontID() == 0) {
+    if (font.getImGuiFontID() == 0) {
       throw new Exception("Invalid font.");
     }
     if (multiLines == 0) {
@@ -44,7 +44,7 @@ public class ImGuiTextBox extends ImGuiControl{
 
   @Override
   public boolean beginDraw() {
-    MirJNI.ImGui_PushFont(font.getFontID());
+    MirJNI.ImGui_PushFont(font.getImGuiFontID());
     Point pos = getDisplayLocation();
     if (this.multiLines <= 1) {
       if(MirJNI.ImGui_InputText(pos.getX(), pos.getY(), this.getSize().getWidth(), Util.toCstyleBytes(getLabel()), Util.toCstyleBytes("请输入内容..."), text_buf, this.isPassword)) {

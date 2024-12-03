@@ -648,9 +648,7 @@ public class MirControl {
             return false;
         }
 
-        if (isDrawControlTexture) {
-            drawControl();
-        }
+        drawControl();
 
         if (isShowChildren) {
             showChildren();
@@ -683,7 +681,7 @@ public class MirControl {
 
         onBeforeShown();
 
-        if(!showImpl()) {
+        if(!isDrawControlTexture || !showImpl()) {
             return false;
         }
 

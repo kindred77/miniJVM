@@ -11,7 +11,7 @@ import com.kindred.mir.util.Vector2;
 
 public class MirControlCanBeDrawn extends MirControl {
 
-  protected long renderer_id;
+  private long renderer_id;
 
   private Rectangle borderRectangle=Rectangle.Empty;
   private boolean isBorder=false;
@@ -32,7 +32,7 @@ public class MirControlCanBeDrawn extends MirControl {
   protected Color foreColor = Color.White;
   private ControlCommonListener onForeColorChanged;
 
-  protected ControlCommonListener onBeforeDraw , onAfterDraw;
+  //protected ControlCommonListener onBeforeDraw , onAfterDraw;
 
   public MirControlCanBeDrawn(MirControl parent, long renderer_id) {
     super(parent);
@@ -53,12 +53,12 @@ public class MirControlCanBeDrawn extends MirControl {
     return new Rectangle(getDisplayLocation(), getSize());
   }
 
-  protected final void beforeDrawControl()
-  {
-    if (onBeforeDraw != null) {
-      onBeforeDraw.doAction(this, null);
-    }
-  }
+//  protected final void beforeDrawControl()
+//  {
+//    if (onBeforeDraw != null) {
+//      onBeforeDraw.doAction(this, null);
+//    }
+//  }
 
   protected final void drawBorder()
   {
@@ -77,12 +77,13 @@ public class MirControlCanBeDrawn extends MirControl {
       MirJNI.SDL_SetRenderDrawColor(renderer_id, Color.Black.getRed(), Color.Black.getGreen(), Color.Black.getBlue(), Color.Black.getAlpha());
     }
   }
-  protected final void afterDrawControl()
-  {
-    if (onAfterDraw != null) {
-      onAfterDraw.doAction(this, null);
-    }
-  }
+
+//  protected final void afterDrawControl()
+//  {
+//    if (onAfterDraw != null) {
+//      onAfterDraw.doAction(this, null);
+//    }
+//  }
 
   protected final void updateBorderInfo()
   {
@@ -227,6 +228,10 @@ public class MirControlCanBeDrawn extends MirControl {
     }
     this.foreColor = foreColor;
     onForeColorChanged();
+  }
+
+  protected final long getRenderer() {
+    return this.renderer_id;
   }
 
   protected final void onForeColorChanged()

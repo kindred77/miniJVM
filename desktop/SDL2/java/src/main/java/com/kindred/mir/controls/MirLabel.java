@@ -1,18 +1,20 @@
 package com.kindred.mir.controls;
 
+import static com.kindred.sdl.constcode.SDLTTFStyle.*;
+
 import com.kindred.mir.controls.listener.ControlCommonListener;
 import com.kindred.mir.engine.Font;
 import com.kindred.mir.engine.MirJNI;
 import com.kindred.mir.engine.TextFormatFlags;
 import com.kindred.mir.util.Color;
+import com.kindred.mir.util.Point;
+import com.kindred.mir.util.Rectangle;
 import com.kindred.mir.util.Size;
 
 import com.kindred.mir.util.Util;
 import java.util.Optional;
 
 public class MirLabel extends MirControlWithTexture{
-
-    private long drawData_ptr=0L;
 
     private boolean isAutoSize;
     protected ControlCommonListener onAutoSizeChanged;
@@ -32,18 +34,33 @@ public class MirLabel extends MirControlWithTexture{
     private Color outLineColor;
     protected ControlCommonListener onOutLineColorChanged;
 
-    public MirLabel(String text, MirControl parent, long renderer_id, Size size)
+    private int wraplength;
+
+    public MirLabel(MirControl parent, long renderer_id, Size size, Point pos, Font font, String text, Color foreColor, Color backColor, int wraplength)
     {
         super(parent,renderer_id);
-
-        isDrawControlTexture = true;
         drawFormat = TextFormatFlags.WordBreak;
-
-        //font = new Font(Settings.FontName, 8F);
         isOutLine = true;
         outLineColor = Color.Black;
         this.text = text;
+        setLocation(pos);
         setSize(size);
+        this.font=font;
+        this.foreColor=foreColor;
+        this.backColor=backColor;
+        this.wraplength=wraplength;
+
+        //int[] back_color_arr = new int[]{backColor.getRed(), backColor.getGreen(), backColor.getBlue(), backColor.getAlpha()};
+        //long main_surface = MirJNI.Mir_FillRect(size.getWidth(), size.getHeight(), back_color_arr);
+
+        MirJNI.SDL_TTF_SetFontStyle(this.font.getSDLFontID(), this.font.getStyleFlags());
+        long font_surface=MirJNI.SDL_TTF_RenderUTF8_LCD_Wrapped(this.font.getSDLFontID(), Util.toCstyleBytes(text),
+            new int[]{foreColor.getRed(),foreColor.getGreen(),foreColor.getBlue(),foreColor.getAlpha()},
+            new int[]{backColor.getRed(),backColor.getGreen(),backColor.getBlue(),backColor.getAlpha()},
+            this.wraplength);
+        //MirJNI.Mir_SurfaceBlendNormal(main_surface,font_surface,0,0,1f);
+        //MirJNI.SDL_FreeSurface(font_surface);
+        updateTexture(font_surface);
     }
 
     public final boolean getIsAutoSize()
@@ -197,99 +214,25 @@ public class MirLabel extends MirControlWithTexture{
 
     @Override
     protected boolean updateTexture(long surface_id) {
-        MirJNI.ImGui_NewFrame();
-        if (!MirJNI.ImGui_Begin(Util.toCstyleBytes("login"), 100,50, 200, 25,
-            true,true,true,true,true,
-            true,true, true, true, true, true, true)) {
-            MirJNI.ImGui_End();
-            return false;
-        } else {
-            //MirJNI.ImGui_Text(toCstyleBytes("标签"));
 
-            //动态修改一些属性
-//            long cur_ts = MirJNI.SDL_GetTicks();
-//            if ((cur_ts - prev_ts) > 5000)
-//            {
-//                color_mod++;
-//                //color_mod = color_mod % 3;
-//                prev_ts = cur_ts;
-//                MirJNI.ImGui_SetWindowFontScale(color_mod);
-//                MirJNI.ImGui_InitBackColor(color_mod%3 == 1 ? 1.0f:0f, color_mod%3 == 2 ? 1.0f:0f, color_mod%3 == 0 ? 1.0f:0f, 0.5f);
-//                MirJNI.ImGui_InitForeColor(color_mod%3 == 0 ? 1.0f:0f, color_mod%3 == 1 ? 1.0f:0f, color_mod%3 == 2 ? 1.0f:0f, 0.5f);
-//            }
-
-            MirJNI.ImGui_Text(Util.toCstyleBytes("这是一个标签的例子"));
-
-        }
-
-        drawData_ptr = MirJNI.ImGui_RenderAndGetDrawData();
-        return true;
-    }
-
-    @Override
-    protected boolean drawControl() {
-        if (drawData_ptr!=0) {
-            MirJNI.ImGui_Render(renderer_id, drawData_ptr);
-        }
-
+        controlTexture.update(getRenderer(),surface_id);
         return true;
     }
 
 //    @Override
-//    protected boolean updateTexture()
-//    {
-//        if (Optional.ofNullable(text).orElse("").isEmpty())
-//            return false;
+//    protected boolean drawControl() {
 //
-//        if (size.getWidth() == 0 || size.getHeight() == 0)
-//            return false;
-
-//        if (controlTexture != null && !controlTexture.Disposed && textureSize != size)
-//            controlTexture.Dispose();
-//
-//        if (controlTexture == null || controlTexture.Disposed)
-//        {
-//            DXManager.ControlList.Add(this);
-//
-//            controlTexture = new Texture(DXManager.Device, Size.Width, Size.Height, 1, Usage.None, Format.A8R8G8B8, Pool.Managed);
-//            controlTexture.Disposing += ControlTexture_Disposing;
-//            textureSize = size;
-//        }
-//
-//        using (GraphicsStream stream = ControlTexture.LockRectangle(0, LockFlags.Discard))
-//        using (Bitmap image = new Bitmap(Size.Width, Size.Height, Size.Width * 4, PixelFormat.Format32bppArgb, (IntPtr) stream.InternalDataPointer))
-//        {
-//            using (Graphics graphics = Graphics.FromImage(image))
-//            {
-//                graphics.SmoothingMode = SmoothingMode.AntiAlias;
-//                graphics.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
-//                graphics.CompositingQuality = CompositingQuality.HighQuality;
-//                graphics.InterpolationMode = InterpolationMode.NearestNeighbor;
-//                graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
-//                graphics.TextContrast = 0;
-//                graphics.Clear(BackColour);
-//
-//
-//                if (OutLine)
-//                {
-//                    TextRenderer.DrawText(graphics, Text, Font, new Rectangle(1, 0, Size.Width, Size.Height), OutLineColour, DrawFormat);
-//                    TextRenderer.DrawText(graphics, Text, Font, new Rectangle(0, 1, Size.Width, Size.Height), OutLineColour, DrawFormat);
-//                    TextRenderer.DrawText(graphics, Text, Font, new Rectangle(2, 1, Size.Width, Size.Height), OutLineColour, DrawFormat);
-//                    TextRenderer.DrawText(graphics, Text, Font, new Rectangle(1, 2, Size.Width, Size.Height), OutLineColour, DrawFormat);
-//                    TextRenderer.DrawText(graphics, Text, Font, new Rectangle(1, 1, Size.Width, Size.Height), ForeColour, DrawFormat);
-//
-//                    //LinearGradientBrush brush = new LinearGradientBrush(new Rectangle(0, 0, this.Size.Width, this.Size.Height), Color.FromArgb(239, 243, 239), Color.White, LinearGradientMode.Vertical);
-//                    ////graphics.DrawString(Text, Font, brush, 37, 9);
-//                    ////graphics.DrawString(this.Text, this.Font, new SolidBrush(Color.Black), 39, 9, StringFormat.GenericDefault);
-//                }
-//                else
-//                    TextRenderer.DrawText(graphics, Text, Font, new Rectangle(1, 0, Size.Width, Size.Height), ForeColour, DrawFormat);
-//            }
-//        }
-//        ControlTexture.UnlockRectangle(0);
-//        DXManager.Sprite.Flush();
-
-//        return true;
+//        Rectangle rct = getDisplayRectangle();
+//        int[] rct_arr = {rct.getX(), rct.getY(), rct.getWidth(), rct.getHeight()};
+//        //暂存原来的颜色
+//        int[] origin_color = MirJNI.SDL_GetRenderDrawColor(getRenderer());
+//        Color backColor=getBackColor();
+//        //设置现在的颜色
+//        MirJNI.SDL_SetRenderDrawColor(getRenderer(),backColor.getRed(),backColor.getGreen(),backColor.getBlue(),backColor.getAlpha());
+//        MirJNI.SDL_RenderFillRect(getRenderer(), rct_arr);
+//        //画完以后恢复原来的颜色
+//        MirJNI.SDL_SetRenderDrawColor(getRenderer(),origin_color[0],origin_color[1],origin_color[2],origin_color[3]);
+//        return super.drawControl();
 //    }
 
     @Override
