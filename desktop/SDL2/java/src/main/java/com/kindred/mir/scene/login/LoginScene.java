@@ -7,13 +7,16 @@ import com.kindred.mir.engine.SoundList;
 import com.kindred.mir.engine.SoundManager;
 import com.kindred.mir.libs.MirImage;
 import com.kindred.mir.libs.MirLibFactory;
+import com.kindred.mir.util.Color;
 import com.kindred.mir.util.Point;
+import com.kindred.mir.util.Size;
 import com.kindred.mir.util.Util;
 
 public class LoginScene extends MirScene {
 
     private MirAnimatedControl background;
     public MirLabel Version;
+    private MirLabel titleLabel;
 
     private LoginDialog loginDialog;
 
@@ -40,6 +43,13 @@ public class LoginScene extends MirScene {
         background.setIsAnimated(false);
         background.setAnimationCount(19);
         background.setAnimationDelay(100);
+
+        setSize(background.getSize());
+
+        //title label
+        titleLabel = new MirLabel(this, renderer_id, new Size(100, 25),
+            new Point(0,0), Settings.FONT_SIZE20, "服务器名称", Color.Yellow, Color.Empty,100);
+        titleLabel.setLocation(titleLabel.Top());
 
         MirImage loginDialogImg = MirLibFactory.getMirLib(MirLibFactory.Prguse).GetMirImage(60);
         //Point loginDialogPos = new Point((Settings.ScreenWidth - loginDialogImg.getWidth())/2, (Settings.ScreenHeight - loginDialogImg.getHeight())/2);

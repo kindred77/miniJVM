@@ -12,7 +12,7 @@ public class Settings {
     public static boolean isImguiUsed=false;
 
     //fonts
-    public static final String MIRFONT="NotoEmoji+NotoSansCJKSC-Regular.ttf";
+    public static final String MIRFONT="FZSSJW.TTF";
     public static Font FONT_SIZE15;
     public static Font FONT_SIZE20;
     public static void makeSureImGuiFontsInited() throws Exception{

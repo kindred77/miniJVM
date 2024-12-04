@@ -13,7 +13,7 @@ import com.kindred.mir.util.Size;
 
 public class LoginDialog extends MirControlWithStaticImage {
 
-    private MirLabel titleLabel, accountIDLabel, passLabel;
+    //private MirLabel titleLabel, accountIDLabel, passLabel;
     private MirButton accountButton, closeButton, OKButton, passButton, viewKeyButton;
     private ImGuiLayout imGuiLayout;
     private ImGuiWindow imGuiWindow;
@@ -26,17 +26,11 @@ public class LoginDialog extends MirControlWithStaticImage {
 
         setIsPixelDetect(false);
 
-        //title label
-        titleLabel = new MirLabel(this, renderer_id, new Size(50, 20),
-            new Point(50,0), Settings.FONT_SIZE20, "服务器名称",Color.Blue, Color.Red,100);
-        titleLabel.setIsBorder(true);
-        titleLabel.setBorderColor(Color.Green);
-
-        accountIDLabel = new MirLabel( this, renderer_id, new Size(50, 20),
-            new Point(52,83), Settings.FONT_SIZE20, "账号",Color.Blue, Color.Red, 100);
-
-        passLabel = new MirLabel(this, renderer_id, new Size(50, 20),
-            new Point(43,105),Settings.FONT_SIZE20,"密码",Color.Blue, Color.Red, 100);
+//        accountIDLabel = new MirLabel( this, renderer_id, new Size(50, 20),
+//            new Point(52,83), Settings.FONT_SIZE20, "账号",Color.Blue, Color.Red, 100);
+//
+//        passLabel = new MirLabel(this, renderer_id, new Size(50, 20),
+//            new Point(43,105),Settings.FONT_SIZE20,"密码",Color.Blue, Color.Red, 100);
 
 
         imGuiLayout = new ImGuiLayout(this, window_id, renderer_id);
@@ -92,12 +86,12 @@ public class LoginDialog extends MirControlWithStaticImage {
     {
         if (disposing)
         {
-            titleLabel.dispose();
-            titleLabel=null;
-            accountIDLabel.dispose();
-            accountIDLabel = null;
-            passLabel.dispose();
-            passLabel = null;
+//            titleLabel.dispose();
+//            titleLabel=null;
+//            accountIDLabel.dispose();
+//            accountIDLabel = null;
+//            passLabel.dispose();
+//            passLabel = null;
             accountButton.dispose();
             accountButton = null;
             closeButton.dispose();

@@ -37,7 +37,7 @@ public final class Font {
   public final void initSDLFont() throws Exception{
     sdl_font_id=MirJNI.SDL_TTF_OpenFont(Util.toCstyleBytes(fontFileName), size);
     if (sdl_font_id == 0) {
-      throw new Exception("Can not init sdl font: "+fontFileName);
+      throw new Exception("Can not init sdl font: "+fontFileName+", "+MirJNI.SDL_GetError());
     }
   }
 
