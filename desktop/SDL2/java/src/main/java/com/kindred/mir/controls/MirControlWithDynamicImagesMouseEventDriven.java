@@ -1,6 +1,7 @@
 package com.kindred.mir.controls;
 
 import com.kindred.mir.controls.events.CommonEvent;
+import com.kindred.mir.controls.events.CommonEvent.EventEnum;
 import com.kindred.mir.controls.listener.ControlCommonListener;
 import com.kindred.mir.libs.MirImage;
 import com.kindred.mir.util.Point;
@@ -20,15 +21,10 @@ public class MirControlWithDynamicImagesMouseEventDriven extends MirControlWithD
         this.hoverImage=images[1];
         this.pressedImage=images[2];
 
-        register(CommonEvent.EventEnum.MouseLeave,() -> {
-            return images[0];
-        });
-        register(CommonEvent.EventEnum.MouseEnter,() -> {
-            return images[1];
-        });
-        register(CommonEvent.EventEnum.MouseLeftDown,() -> {
-            return images[2];
-        });
+        register(CommonEvent.EventEnum.MouseLeave,() -> images[0]);
+        register(CommonEvent.EventEnum.MouseLeftUp,() -> images[0]);
+        register(CommonEvent.EventEnum.MouseEnter,() -> images[1]);
+        register(CommonEvent.EventEnum.MouseLeftDown,() -> images[2]);
 
         this.onMouseEnter = (control, obj) -> {
             MirImage img = getEventImage(CommonEvent.EventEnum.MouseEnter);
@@ -46,6 +42,12 @@ public class MirControlWithDynamicImagesMouseEventDriven extends MirControlWithD
 
         this.onMouseLeftUp = (control, obj) -> {
             MirImage img = getEventImage(CommonEvent.EventEnum.MouseLeftUp);
+            if(img!=null) {
+                updateTexture(img.getSurface(MirImage.ImageEffect.None));
+            }
+        };
+        this.onMouseLeave = (control, obj) -> {
+            MirImage img = getEventImage(EventEnum.MouseLeave);
             if(img!=null) {
                 updateTexture(img.getSurface(MirImage.ImageEffect.None));
             }

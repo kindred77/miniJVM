@@ -1,20 +1,22 @@
 package com.kindred.mir.controls;
 
-import com.kindred.mir.Settings;
 import com.kindred.mir.engine.SoundList;
 import com.kindred.mir.libs.MirImage;
 import com.kindred.mir.util.Point;
 import com.kindred.mir.util.Size;
-import java.util.Optional;
 
 public class MirButton extends MirControlWithDynamicImagesMouseEventDriven {
 
     private boolean isCenterText;
 
-    public MirButton(MirControl parent, long renderer_id, MirImage normalImage, MirImage hoverImage, MirImage pressedImage) throws Exception
+    public MirButton(MirControl parent, long renderer_id, MirImage normalImage, MirImage hoverImage, MirImage pressedImage,
+        Size size, Point pos) throws Exception
     {
         super(parent, renderer_id, new MirImage[]{ normalImage, hoverImage, pressedImage});
-
+        if (normalImage==null) {
+            setSize(size);
+        }
+        setLocation(pos);
         sound = SoundList.ButtonB;
     }
 

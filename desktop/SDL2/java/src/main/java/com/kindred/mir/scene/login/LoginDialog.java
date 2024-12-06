@@ -13,7 +13,6 @@ import com.kindred.mir.util.Size;
 
 public class LoginDialog extends MirControlWithStaticImage {
 
-    //private MirLabel titleLabel, accountIDLabel, passLabel;
     private MirButton accountButton, closeButton, OKButton, passButton, viewKeyButton;
     private ImGuiLayout imGuiLayout;
     private ImGuiWindow imGuiWindow;
@@ -26,33 +25,29 @@ public class LoginDialog extends MirControlWithStaticImage {
 
         setIsPixelDetect(false);
 
-//        accountIDLabel = new MirLabel( this, renderer_id, new Size(50, 20),
-//            new Point(52,83), Settings.FONT_SIZE20, "账号",Color.Blue, Color.Red, 100);
-//
-//        passLabel = new MirLabel(this, renderer_id, new Size(50, 20),
-//            new Point(43,105),Settings.FONT_SIZE20,"密码",Color.Blue, Color.Red, 100);
-
-
         imGuiLayout = new ImGuiLayout(this, window_id, renderer_id);
+        System.out.println("imGuiLayout ID: "+imGuiLayout.getID());
         imGuiWindow=new ImGuiWindow(imGuiLayout, window_id, renderer_id, "##login_dialog",new Point(93,80),new Size(150, 60),
             false,false,false,false,false);
+        System.out.println("imGuiWindow ID: "+imGuiWindow.getID());
         accountIDTextBox = new ImGuiTextBox(imGuiWindow, window_id, renderer_id,"##log_account",
             new Point(5,5),140,64,
             Settings.FONT_SIZE15, Color.Black,Color.White,false, 1);
-
+        System.out.println("accountIDTextBox ID: "+accountIDTextBox.getID());
         passwordTextBox = new ImGuiTextBox(imGuiWindow, window_id, renderer_id,"##log_password",
             new Point(5,36),140,64,
             Settings.FONT_SIZE15, Color.Black,Color.White,true, 1);
-
+        System.out.println("passwordTextBox ID: "+passwordTextBox.getID());
 
         MirImage okBtnPressedImg = MirLibFactory.getMirLib(MirLibFactory.Prguse).GetMirImage(63);
-        OKButton = new MirButton(this, renderer_id, null, null, okBtnPressedImg);
-        OKButton.setSize(new Size(42,42));
+        OKButton = new MirButton(this, renderer_id, null, null, okBtnPressedImg,
+            new Size(76,33), new Point(170,163));
         OKButton.setIsBorder(true);
 
         OKButton.setOnMouseLeftClick((control, argObj) -> {
             login();
         });
+        System.out.println("OKButton ID: "+OKButton.getID());
 
         this.onShown=(control, argObj) -> {
             if (accountIDTextBox!=null) {
@@ -63,7 +58,8 @@ public class LoginDialog extends MirControlWithStaticImage {
 
     private void login()
     {
-        OKButton.setIsEnabled(false);
+        System.out.println("----login----");
+        //OKButton.setIsEnabled(false);
         //Network.Enqueue(new C.Login {AccountID = AccountIDTextBox.Text, Password = PasswordTextBox.Text});
     }
 
@@ -86,12 +82,6 @@ public class LoginDialog extends MirControlWithStaticImage {
     {
         if (disposing)
         {
-//            titleLabel.dispose();
-//            titleLabel=null;
-//            accountIDLabel.dispose();
-//            accountIDLabel = null;
-//            passLabel.dispose();
-//            passLabel = null;
             accountButton.dispose();
             accountButton = null;
             closeButton.dispose();

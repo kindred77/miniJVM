@@ -12,7 +12,9 @@ import com.kindred.mir.engine.SoundManager;
 import com.kindred.mir.util.*;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /*
@@ -43,7 +45,7 @@ public class MirControl {
 //    protected boolean isDrawControlTexture=true;
     //protected Size textureSize;
 
-    private ArrayList<MirControl> children;
+    private LinkedList<MirControl> children;
     private ControlCommonListener onChildAdded;
     private ControlCommonListener onChildRemoved;
 
@@ -87,8 +89,8 @@ public class MirControl {
     protected int sound;
     private ControlCommonListener onSoundChanged;
 
-    private boolean isSort;
-    private ControlCommonListener onSortChanged;
+    //private boolean isSort;
+    //private ControlCommonListener onSortChanged;
 
     //是否可见
     protected boolean isVisible=true;
@@ -98,7 +100,7 @@ public class MirControl {
 
     public MirControl(MirControl parent)
     {
-        children = new ArrayList();
+        children = new LinkedList<>();
         opacity = 1F;
         isEnabled = true;
         isVisible = true;
@@ -198,32 +200,39 @@ public class MirControl {
         return children;
     }
 
+    /*
+    插入尾部
+     */
     private void addChild(MirControl control)
     {
-        children.add(control);
+        synchronized (children) {
+            children.add(control);
+        }
         onChildAdded();
     }
 
-    private void insertChild(int index, MirControl control)
-    {
-        if (control.parent != this)
-        {
-            control.setParent(null);
-            control.parent = this;
-        }
-
-        if (index >= children.size()) {
-            children.add(control);
-        }
-        else {
-            children.add(index, control);
-            onChildAdded();
-        }
-    }
+//    private void insertChild(int index, MirControl control)
+//    {
+//        if (control.parent != this)
+//        {
+//            control.setParent(null);
+//            control.parent = this;
+//        }
+//
+//        if (index >= children.size()) {
+//            children.add(control);
+//        }
+//        else {
+//            children.add(index, control);
+//            onChildAdded();
+//        }
+//    }
 
     private void removeChild(MirControl control)
     {
-        children.remove(control);
+        synchronized (children) {
+            children.remove(control);
+        }
         onChildRemoved();
     }
     protected final void onChildAdded()
@@ -407,47 +416,48 @@ public class MirControl {
         }
     }
 
-    public final boolean getIsSort()
-    {
-        return isSort;
-    }
-    public final void setIsSort(boolean isSort)
-    {
-        if (this.isSort == isSort) {
-            return;
-        }
-        this.isSort = isSort;
-        onSortChanged();
-    }
+//    public final boolean getIsSort()
+//    {
+//        return isSort;
+//    }
+//    public final void setIsSort(boolean isSort)
+//    {
+//        if (this.isSort == isSort) {
+//            return;
+//        }
+//        this.isSort = isSort;
+//        onSortChanged();
+//    }
+//
+//    protected final void onSortChanged()
+//    {
+//        //redraw();
+//        if (onSortChanged != null) {
+//            onSortChanged.doAction(this, null);
+//        }
+//    }
 
-    protected final void onSortChanged()
-    {
-        //redraw();
-        if (onSortChanged != null) {
-            onSortChanged.doAction(this, null);
-        }
-    }
-    public final void trySort()
-    {
-        if (parent == null) {
-            return;
-        }
-
-        parent.trySort();
-
-        if (parent.children.get(parent.children.size() - 1) == this) {
-            return;
-        }
-
-        if (!isSort) {
-            return;
-        }
-
-        parent.children.remove(this);
-        parent.children.add(this);
-
-        //redraw();
-    }
+//    public final void trySort()
+//    {
+//        if (parent == null) {
+//            return;
+//        }
+//
+//        parent.trySort();
+//
+//        if (parent.children.get(parent.children.size() - 1) == this) {
+//            return;
+//        }
+//
+//        if (!isSort) {
+//            return;
+//        }
+//
+//        parent.children.remove(this);
+//        parent.children.add(this);
+//
+//        //redraw();
+//    }
 
     public final boolean getIsVisible()
     {
@@ -472,9 +482,9 @@ public class MirControl {
         isStartToMove = false;
         startToMovePos = Point.Empty;
 
-        if (isSort && parent != null) {
-            parent.children.remove(this);
-            parent.children.add(this);
+        if (/*isSort &&*/ parent != null) {
+            parent.removeChild(this);
+            parent.addChild(this);
         }
 
         if (MouseControl == this && !isVisible) {
@@ -609,14 +619,18 @@ public class MirControl {
         if (parent == null) {
             return;
         }
-        int index = parent.children.indexOf(this);
-        if (index == parent.children.size() - 1) {
-            return;
-        }
 
-        parent.children.remove(index);
-        parent.children.add(this);
-        //redraw();
+        synchronized (parent.children) {
+            if (parent.children.remove(this)) {
+                parent.children.add(this);
+            }
+        }
+//        int index = parent.children.indexOf(this);
+//        if (index == parent.children.size() - 1) {
+//            return;
+//        }
+        //parent.children.remove(index);
+        //parent.children.add(this);
     }
 
     protected boolean drawControl()
@@ -694,12 +708,18 @@ public class MirControl {
 
     protected final void showChildren()
     {
+        //从头到尾遍历
         if (children != null) {
-            for (int i = 0; i < children.size(); i++) {
-                if (children.get(i) != null) {
-                    children.get(i).show();
+            for (MirControl child : children) {
+                if (child != null) {
+                    child.show();
                 }
             }
+//            for (int i = 0; i < children.size(); i++) {
+//                if (children.get(i) != null) {
+//                    children.get(i).show();
+//                }
+//            }
         }
     }
 
@@ -792,16 +812,24 @@ public class MirControl {
         this.onMouseLeftClick = onMouseLeftClick;
     }
 
-    private void onMouseLeftClick(Point posInParent)
+    /*
+    如果是原始事件子控件处理,否则是派生出来的子控件不处理
+     */
+    private boolean onMouseLeftClick(Point posInParent, boolean isOriginal)
     {
+        System.out.println("--------onMouseLeftClick--------"+getID());
         //在本控件的座标
         Point posInMe = Point.subtract(posInParent, getLocation());
-        //优先处理子控件
-        if (children != null) {
-            for (int i = children.size() - 1; i >= 0; i--) {
-                if (children.get(i).isMouseOver(posInMe)) {
-                    children.get(i).onMouseLeftClick(posInMe);
-                    return;
+        if (isOriginal && children != null) {
+            //优先处理子控件
+            //从尾往头遍历
+            synchronized (children) {
+                ListIterator<MirControl> iterator = children.listIterator(children.size());
+                while (iterator.hasPrevious()) {
+                    MirControl child = iterator.previous();
+                    if (child.onMouseLeftClick(posInMe, isOriginal)) {
+                        return true;
+                    }
                 }
             }
         }
@@ -809,8 +837,8 @@ public class MirControl {
         if (lastClickTime + Settings.DoubleClickIntervalTime >= Settings.getTime()) {
             lastClickTime=Settings.getTime();
             //派生双击事件
-            onMouseLeftDoubleClick(posInParent);
-            return;
+            onMouseLeftDoubleClick(posInParent, false);
+            return false;
         }
         lastClickTime=Settings.getTime();
 
@@ -821,23 +849,39 @@ public class MirControl {
         if (onMouseLeftClick != null) {
             onMouseLeftClick.doAction(this, posInMe);
         }
+
+        return true;
     }
 
-    private void onMouseRightClick(Point pos)
+    /*
+    如果是原始事件子控件处理,否则是派生出来的子控件不处理
+     */
+    private boolean onMouseRightClick(Point posInParent, boolean isOriginal)
     {
+        Point posInMe = Point.subtract(posInParent, getLocation());
+        if (isOriginal && children != null) {
 
+        }
+        return false;
     }
 
-    private void onMouseLeftDoubleClick(Point posInParent)
+    /*
+    如果是原始事件子控件处理,否则是派生出来的子控件不处理
+     */
+    private boolean onMouseLeftDoubleClick(Point posInParent, boolean isOriginal)
     {
         //在本控件的座标
         Point posInMe = Point.subtract(posInParent, getLocation());
         //优先处理子控件
-        if (children != null) {
-            for (int i = children.size() - 1; i >= 0; i--) {
-                if (children.get(i).isMouseOver(posInMe)) {
-                    children.get(i).onMouseLeftDoubleClick(posInMe);
-                    return;
+        if (isOriginal && children != null) {
+
+            synchronized (children) {
+                ListIterator<MirControl> iterator = children.listIterator(children.size());
+                while (iterator.hasPrevious()) {
+                    MirControl child = iterator.previous();
+                    if (child.onMouseLeftDoubleClick(posInMe, isOriginal)) {
+                        return true;
+                    }
                 }
             }
         }
@@ -848,8 +892,13 @@ public class MirControl {
             }
             onMouseLeftDoubleClick.doAction(this, posInMe);
         } else {
-            onMouseLeftClick(posInMe);
+            //派生单击事件
+            if(!onMouseLeftClick(posInMe, false)) {
+                return false;
+            }
         }
+
+        return true;
     }
 
     private boolean isMouseIn = false;
@@ -921,7 +970,7 @@ public class MirControl {
     {
         activate();
 
-        trySort();
+        //trySort();
 
         if (isMovable) {
             isStartToMove = true;
@@ -949,7 +998,9 @@ public class MirControl {
 
         if (isMouseLeftDown) {
             isMouseLeftDown=false;
-            onMouseLeftClick(posInParent);
+            System.out.println(getLocationRectangle()+"---------"+posInParent);
+            //派生单击事件
+            onMouseLeftClick(posInParent, false);
         }
 
         if (onMouseLeftUp != null) {
@@ -961,7 +1012,7 @@ public class MirControl {
     {
         if (isMouseRightDown) {
             isMouseRightDown=false;
-            onMouseRightClick(posInParent);
+            onMouseRightClick(posInParent, false);
         }
 
         if (onMouseRightUp != null) {
@@ -973,13 +1024,23 @@ public class MirControl {
     在父控件中的坐标
      */
     private boolean onOriginalMouseEvent(CommonEvent.EventEnum eventEnum, Point posInParent) {
+        //不在我的区域不处理, MouseMove事件比较特殊需要放行
+        if (!isMouseOver(posInParent) && eventEnum!=CommonEvent.EventEnum.MouseMove) {
+            return false;
+        }
         //在本控件的座标
         Point posInMe = Point.subtract(posInParent, getLocation());
         //优先处理子控件
         if (children != null) {
-            for (int i = children.size() - 1; i >= 0; i--) {
-                if (children.get(i).onOriginalMouseEvent(eventEnum, posInMe)) {
-                    return true;
+
+            synchronized (children) {
+                ListIterator<MirControl> iterator = children.listIterator(children.size());
+                while (iterator.hasPrevious()) {
+                    MirControl child = iterator.previous();
+                    //子控件处理了就不再处理
+                    if (child.onOriginalMouseEvent(eventEnum, posInMe)) {
+                        return true;
+                    }
                 }
             }
         }

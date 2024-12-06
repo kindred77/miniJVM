@@ -6,6 +6,7 @@ import com.kindred.mir.libs.MirImage;
 import com.kindred.mir.libs.MirLib;
 import com.kindred.mir.util.Point;
 
+import com.kindred.mir.util.Size;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,9 +45,11 @@ public class MirAnimatedButton extends MirButton {
 
     private MirImage[] images;
 
-    public MirAnimatedButton(MirControl parent, long renderer_id, MirImage[] animImages, MirImage normalImage, MirImage hoverImage, MirImage pressedImage) throws Exception
+    public MirAnimatedButton(MirControl parent, long renderer_id, MirImage[] animImages, MirImage normalImage,
+        MirImage hoverImage, MirImage pressedImage,
+        Size size, Point pos) throws Exception
     {
-        super(parent,renderer_id,normalImage,hoverImage,pressedImage);
+        super(parent,renderer_id,normalImage,hoverImage,pressedImage,size,pos);
         this.images=animImages;
         this.animationCount=this.images.length;
         isLoop = true;

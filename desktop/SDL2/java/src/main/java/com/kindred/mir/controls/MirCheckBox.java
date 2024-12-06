@@ -2,6 +2,7 @@ package com.kindred.mir.controls;
 
 import com.kindred.mir.libs.MirImage;
 import com.kindred.mir.util.Point;
+import com.kindred.mir.util.Size;
 
 public class MirCheckBox extends MirButton {
 
@@ -38,9 +39,10 @@ public class MirCheckBox extends MirButton {
         //redraw();
     }
 
-    public MirCheckBox(MirControl parent, long renderer_id, MirImage unTickedImage) throws Exception
+    public MirCheckBox(MirControl parent, long renderer_id, MirImage unTickedImage,
+        Size size, Point pos) throws Exception
     {
-        super(parent, renderer_id, unTickedImage, null, null);
+        super(parent, renderer_id, unTickedImage, null, null,size,pos);
         this.tickedImage = null;
         this.unTickedImage = unTickedImage;
         this.onMouseLeftClick = (control, argObj) -> {
