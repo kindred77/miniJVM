@@ -40,19 +40,6 @@ public class MirControlCanBeDrawn extends MirControl {
     isDrawControlTexture=true;
   }
 
-  public Point getDisplayLocation() {
-    if (parent!=null && parent instanceof MirControlCanBeDrawn) {
-      MirControlCanBeDrawn controlCanBeDrawn = (MirControlCanBeDrawn)parent;
-      return Point.add(controlCanBeDrawn.getDisplayLocation(), getLocation());
-    }
-    return getLocation();
-  }
-
-  public final Rectangle getDisplayRectangle()
-  {
-    return new Rectangle(getDisplayLocation(), getSize());
-  }
-
 //  protected final void beforeDrawControl()
 //  {
 //    if (onBeforeDraw != null) {
@@ -84,6 +71,38 @@ public class MirControlCanBeDrawn extends MirControl {
 //      onAfterDraw.doAction(this, null);
 //    }
 //  }
+
+  protected boolean drawControl() {
+    return true;
+  }
+
+  @Override
+  protected boolean _drawControl()
+  {
+    return drawControl();
+  }
+
+  protected boolean beginDraw() {
+    return true;
+  }
+
+  @Override
+  protected boolean _beginDraw() {
+    return beginDraw();
+  }
+
+  protected boolean endDraw() {
+    return true;
+  }
+
+  @Override
+  protected final boolean _endDraw() {
+    boolean result = endDraw();
+    if (getIsBorder()) {
+      drawBorder();
+    }
+    return result;
+  }
 
   protected final void updateBorderInfo()
   {

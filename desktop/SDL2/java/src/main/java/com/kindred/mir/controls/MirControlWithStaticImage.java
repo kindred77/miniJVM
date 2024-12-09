@@ -58,20 +58,11 @@ public class MirControlWithStaticImage extends MirControlWithTexture{
     @Override
     public Point getDisplayLocation()
     {
-        if (isUseOffSet)
-        {
-            //没有默认图片的话，就没有offset
-            return Point.add(super.getDisplayLocation(), image == null? new Point(0,0):image.getOffset());
-        }
-        else
-        {
+        if (isUseOffSet && image != null) {
+            return Point.add(super.getDisplayLocation(), image.getOffset());
+        } else {
             return super.getDisplayLocation();
         }
-    }
-
-    public Point getDisplayLocationWithoutOffSet()
-    {
-        return super.getDisplayLocation();
     }
 
 //    public boolean getIsDrawImage()

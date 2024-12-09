@@ -4,6 +4,7 @@ import com.kindred.mir.MirMain;
 import com.kindred.mir.Settings;
 import com.kindred.mir.constcode.MirBlendMode;
 import com.kindred.mir.controls.events.CommonEvent;
+import com.kindred.mir.controls.events.CommonEvent.EventEnum;
 import com.kindred.mir.controls.listener.ControlCommonListener;
 import com.kindred.mir.engine.MirJNI;
 import com.kindred.mir.engine.MirTexture;
@@ -169,6 +170,22 @@ public class MirControl {
         if (onLocationChanged != null) {
             onLocationChanged.doAction(this, null);
         }
+    }
+
+    public Point getDisplayLocation() {
+//        if (parent!=null && parent instanceof MirControlCanBeDrawn) {
+//            MirControlCanBeDrawn controlCanBeDrawn = (MirControlCanBeDrawn)parent;
+//            return Point.add(controlCanBeDrawn.getDisplayLocation(), getLocation());
+//        }
+        if (parent!=null) {
+            return Point.add(parent.getDisplayLocation(), getLocation());
+        }
+        return getLocation();
+    }
+
+    public final Rectangle getDisplayRectangle()
+    {
+        return new Rectangle(getDisplayLocation(), getSize());
     }
 
     public final Size getSize()
@@ -633,7 +650,7 @@ public class MirControl {
         //parent.children.add(this);
     }
 
-    protected boolean drawControl()
+    protected boolean _drawControl()
     {
         return true;
     }
@@ -641,14 +658,14 @@ public class MirControl {
     /*
     用于imgui
      */
-    protected boolean beginDraw() {
+    protected boolean _beginDraw() {
         return true;
     }
 
     /*
     用于imgui
      */
-    protected boolean endDraw() {
+    protected boolean _endDraw() {
         return true;
     }
 
@@ -658,17 +675,17 @@ public class MirControl {
       另一种是父控件begin，然后再子控件begin，子控件end，父控件end，imgui式的画法
     */
     protected final boolean showImpl() {
-        if (!beginDraw()) {
+        if (!_beginDraw()) {
             return false;
         }
 
-        drawControl();
+        _drawControl();
 
         if (isShowChildren) {
             showChildren();
         }
 
-        endDraw();
+        _endDraw();
         return true;
     }
 
@@ -819,7 +836,8 @@ public class MirControl {
     {
         System.out.println("--------onMouseLeftClick--------"+getID());
         //在本控件的座标
-        Point posInMe = Point.subtract(posInParent, getLocation());
+        Point posInMe = Point.subtract(posInParent, getDisplayLocation());
+        //派生出来的事件不再过子控件，因为派生前已经过了子控件
         if (isOriginal && children != null) {
             //优先处理子控件
             //从尾往头遍历
@@ -858,7 +876,8 @@ public class MirControl {
      */
     private boolean onMouseRightClick(Point posInParent, boolean isOriginal)
     {
-        Point posInMe = Point.subtract(posInParent, getLocation());
+        Point posInMe = Point.subtract(posInParent, getDisplayLocation());
+        //派生出来的事件不再过子控件，因为派生前已经过了子控件
         if (isOriginal && children != null) {
 
         }
@@ -871,10 +890,10 @@ public class MirControl {
     private boolean onMouseLeftDoubleClick(Point posInParent, boolean isOriginal)
     {
         //在本控件的座标
-        Point posInMe = Point.subtract(posInParent, getLocation());
+        Point posInMe = Point.subtract(posInParent, getDisplayLocation());
         //优先处理子控件
+        //派生出来的事件不再过子控件，因为派生前已经过了子控件
         if (isOriginal && children != null) {
-
             synchronized (children) {
                 ListIterator<MirControl> iterator = children.listIterator(children.size());
                 while (iterator.hasPrevious()) {
@@ -998,7 +1017,6 @@ public class MirControl {
 
         if (isMouseLeftDown) {
             isMouseLeftDown=false;
-            System.out.println(getLocationRectangle()+"---------"+posInParent);
             //派生单击事件
             onMouseLeftClick(posInParent, false);
         }
@@ -1028,10 +1046,11 @@ public class MirControl {
         if (!isMouseOver(posInParent) && eventEnum!=CommonEvent.EventEnum.MouseMove) {
             return false;
         }
-        //在本控件的座标
-        Point posInMe = Point.subtract(posInParent, getLocation());
+
         //优先处理子控件
         if (children != null) {
+            //在本控件的座标
+            Point posInMe = Point.subtract(posInParent, getDisplayLocation());
 
             synchronized (children) {
                 ListIterator<MirControl> iterator = children.listIterator(children.size());

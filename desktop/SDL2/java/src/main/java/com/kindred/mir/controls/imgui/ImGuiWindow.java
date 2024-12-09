@@ -2,6 +2,7 @@ package com.kindred.mir.controls.imgui;
 
 import com.kindred.mir.engine.MirJNI;
 import com.kindred.mir.util.Point;
+import com.kindred.mir.util.Rectangle;
 import com.kindred.mir.util.Size;
 import com.kindred.mir.util.Util;
 
@@ -30,8 +31,9 @@ public class ImGuiWindow extends ImGuiControl {
 
   @Override
   public boolean beginDraw() {
-    Point pos = getDisplayLocation();
-    if (!MirJNI.ImGui_Begin(Util.toCstyleBytes(this.getLabel()), pos.getX(), pos.getY(), size.getWidth(), size.getHeight(),
+    //Point pos = getDisplayLocation();
+    Rectangle displayRectangle=getDisplayRectangle();
+    if (!MirJNI.ImGui_Begin(Util.toCstyleBytes(this.getLabel()), displayRectangle.getX(), displayRectangle.getY(), displayRectangle.getWidth(), displayRectangle.getHeight(),
         !this.isHasTitlebar,true,true,!this.isMovable,!this.isResizable,
         true,true, true, !this.isHasBackground, !this.isCanBringToFront, true, true))
     {

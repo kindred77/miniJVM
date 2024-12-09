@@ -75,9 +75,9 @@ public class MirControlWithTexture extends MirControlCanBeDrawn {
             MirJNI.SDL_RenderCopy(getRenderer(), controlTexture.getTexture(), null, rct);
         }
 
-        if (getIsBorder()) {
-            drawBorder();
-        }
+//        if (getIsBorder()) {
+//            drawBorder();
+//        }
 
         //afterDrawControl();
 

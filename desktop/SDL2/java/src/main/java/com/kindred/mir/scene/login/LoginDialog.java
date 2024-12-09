@@ -28,7 +28,9 @@ public class LoginDialog extends MirControlWithStaticImage {
         imGuiLayout = new ImGuiLayout(this, window_id, renderer_id);
         System.out.println("imGuiLayout ID: "+imGuiLayout.getID());
         imGuiWindow=new ImGuiWindow(imGuiLayout, window_id, renderer_id, "##login_dialog",new Point(93,80),new Size(150, 60),
-            false,false,false,false,false);
+            false,false,false,true,false);
+        imGuiWindow.setIsBorder(true);
+        imGuiWindow.setBorderColor(Color.Green);
         System.out.println("imGuiWindow ID: "+imGuiWindow.getID());
         accountIDTextBox = new ImGuiTextBox(imGuiWindow, window_id, renderer_id,"##log_account",
             new Point(5,5),140,64,
