@@ -34,6 +34,8 @@ public class MirJNI extends SDL {
     //return surface
     public static native long Mir_FillRect(int width, int height, int[] color);
 
+    public static native boolean Mir_IsVisiblePixelInSurface(long surface_id, int x, int y);
+
     public static native long ImGui_SDL2_InitImGuiContext();
     public static native void ImGui_SetCurrentContext(long context_ptr);
     public static native boolean ImGui_ImplSDL2_InitForSDLRenderer(long window_id,long renderer_id);

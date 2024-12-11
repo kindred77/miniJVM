@@ -69,7 +69,7 @@ public class MirControlWithTexture extends MirControlCanBeDrawn {
                 MirJNI.SDL_SetTextureBlendMode(controlTexture.getTexture(), SDLBlendMode.SDL_BLENDMODE_BLEND);
             }
 
-            Rectangle dstRect = getDisplayRectangle();
+            Rectangle dstRect = getAbsoluteRectangle();
 
             int[] rct = {dstRect.getX(), dstRect.getY(), dstRect.getWidth(), dstRect.getHeight()};
             MirJNI.SDL_RenderCopy(getRenderer(), controlTexture.getTexture(), null, rct);

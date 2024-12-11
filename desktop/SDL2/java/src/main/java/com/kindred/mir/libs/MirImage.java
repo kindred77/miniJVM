@@ -78,9 +78,12 @@ public class MirImage {
         return new Size(getWidth(), getHeight());
     }
 
-    public boolean isVisiblePixel(Point pt, boolean accuate)
+    public boolean isVisiblePixel(Point pt)
     {
-        return false;
+        if (pt.getX() < 0 || pt.getY() < 0 || pt.getX() >= this.getWidth() || pt.getY() >= this.getHeight()) {
+            return false;
+        }
+        return MirJNI.Mir_IsVisiblePixelInSurface(surface_id, pt.getX(), pt.getY());
     }
 
     private boolean initHeader(MyRandomAccessFile myRAF) throws Exception

@@ -1,17 +1,12 @@
 package com.kindred.mir.controls;
 
-import static com.kindred.sdl.constcode.SDLTTFStyle.*;
-
 import com.kindred.mir.controls.listener.ControlCommonListener;
 import com.kindred.mir.engine.Font;
-import com.kindred.mir.engine.MirJNI;
 import com.kindred.mir.engine.TextFormatFlags;
 import com.kindred.mir.util.Color;
 import com.kindred.mir.util.Point;
-import com.kindred.mir.util.Rectangle;
 import com.kindred.mir.util.Size;
 
-import com.kindred.mir.util.Util;
 import java.util.Optional;
 
 public class MirLabel extends MirControlWithTexture{
@@ -53,11 +48,7 @@ public class MirLabel extends MirControlWithTexture{
         //int[] back_color_arr = new int[]{backColor.getRed(), backColor.getGreen(), backColor.getBlue(), backColor.getAlpha()};
         //long main_surface = MirJNI.Mir_FillRect(size.getWidth(), size.getHeight(), back_color_arr);
 
-        MirJNI.SDL_TTF_SetFontStyle(this.font.getSDLFontID(), this.font.getStyleFlags());
-        long font_surface=MirJNI.SDL_TTF_RenderUTF8_LCD_Wrapped(this.font.getSDLFontID(), Util.toCstyleBytes(text),
-            new int[]{foreColor.getRed(),foreColor.getGreen(),foreColor.getBlue(),foreColor.getAlpha()},
-            new int[]{backColor.getRed(),backColor.getGreen(),backColor.getBlue(),backColor.getAlpha()},
-            this.wraplength);
+        long font_surface =Font.generateTextSurface(this.font,text,foreColor,backColor,this.wraplength);
         //MirJNI.Mir_SurfaceBlendNormal(main_surface,font_surface,0,0,1f);
         //MirJNI.SDL_FreeSurface(font_surface);
         updateTexture(font_surface);
@@ -198,6 +189,10 @@ public class MirLabel extends MirControlWithTexture{
         }
 
         this.text = text;
+
+        long font_surface =Font.generateTextSurface(this.font,text,foreColor,backColor,this.wraplength);
+        updateTexture(font_surface);
+
         onTextChanged();
     }
 

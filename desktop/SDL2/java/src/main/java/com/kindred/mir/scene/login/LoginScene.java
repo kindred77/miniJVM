@@ -1,5 +1,6 @@
 package com.kindred.mir.scene.login;
 
+import com.kindred.mir.MirMain;
 import com.kindred.mir.Settings;
 import com.kindred.mir.controls.*;
 import com.kindred.mir.controls.listener.ControlCommonListener;
@@ -29,13 +30,15 @@ public class LoginScene extends MirScene {
 //
 //    private InputKeyDialog _ViewKey;
 
+    private String serverName="";
+
     public MirLabel TestLabel, ViolenceLabel, MinorLabel, YouthLabel;
 
     public LoginScene(MirControl parent, long window_id,long renderer_id) throws Exception
     {
         super(parent,window_id,renderer_id);
         SoundManager.playSound(SoundList.IntroMusic, true);
-
+        System.out.println("LoginScene-----ID: "+this.getID());
         onDisposing = (control, argObj) -> {
             SoundManager.stopSound(SoundList.IntroMusic);
         };
@@ -45,20 +48,27 @@ public class LoginScene extends MirScene {
         background.setIsAnimated(false);
         background.setAnimationCount(19);
         background.setAnimationDelay(100);
-
+        System.out.println("background-----ID: "+background.getID());
         setSize(background.getSize());
 
         //title label
         titleLabel = new MirLabel(this, renderer_id, new Size(100, 25),
-            new Point(0,0), Settings.FONT_SIZE20, "服务器名称", Color.Yellow, Color.Empty,100);
+            new Point(0,0), Settings.FONT_SIZE20, "", Color.Yellow, Color.Empty,100);
         titleLabel.setLocation(titleLabel.Top());
-
+        System.out.println("titleLabel-----ID: "+titleLabel.getID());
         MirImage loginDialogImg = MirLibFactory.getMirLib(MirLibFactory.Prguse).GetMirImage(60);
         loginDialog = new LoginDialog(background,window_id,renderer_id,loginDialogImg);
         loginDialog.setIsVisible(false);
 
+        System.out.println("loginDialog-----ID: "+loginDialog.getID());
         MirImage selectServerDialogImg = MirLibFactory.getMirLib(MirLibFactory.Prguse).GetMirImage(256);
-        selectServerDialog = new SelectServerDialog(background,renderer_id,selectServerDialogImg);
+        selectServerDialog = new SelectServerDialog(background,renderer_id,selectServerDialogImg,"服务器1");
+        selectServerDialog.setOnSelected((control, argObj) -> {
+            this.serverName=(String)argObj;
+            titleLabel.setText(this.serverName);
+            loginDialog.setIsVisible(true);
+        });
+        System.out.println("selectServerDialog-----ID: "+selectServerDialog.getID());
 
 //        login.accountButton.click += (o, e) =>
 //        {

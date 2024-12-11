@@ -48,11 +48,11 @@ public class ImGuiControl extends MirControlCanBeDrawn {
   但是在ImGuiWindow中的子控件需要使用相对父控件的坐标。
    */
   @Override
-  public final Point getDisplayLocation() {
+  public final Point getAbsoluteLocation() {
     if (parent instanceof ImGuiWindow) {
       return super.getLocation();
     } else {
-      return super.getDisplayLocation();
+      return super.getAbsoluteLocation();
     }
   }
 }

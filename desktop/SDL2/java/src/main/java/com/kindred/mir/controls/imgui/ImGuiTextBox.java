@@ -45,7 +45,7 @@ public class ImGuiTextBox extends ImGuiControl{
   @Override
   public boolean beginDraw() {
     MirJNI.ImGui_PushFont(font.getImGuiFontID());
-    Point pos = getDisplayLocation();
+    Point pos = getAbsoluteLocation();
     if (this.multiLines <= 1) {
       if(MirJNI.ImGui_InputText(pos.getX(), pos.getY(), this.getSize().getWidth(), Util.toCstyleBytes(getLabel()), Util.toCstyleBytes("请输入内容..."), text_buf, this.isPassword)) {
         if (onInputFinished != null) {

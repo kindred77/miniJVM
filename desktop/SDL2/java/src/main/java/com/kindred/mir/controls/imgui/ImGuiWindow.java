@@ -32,8 +32,8 @@ public class ImGuiWindow extends ImGuiControl {
   @Override
   public boolean beginDraw() {
     //Point pos = getDisplayLocation();
-    Rectangle displayRectangle=getDisplayRectangle();
-    if (!MirJNI.ImGui_Begin(Util.toCstyleBytes(this.getLabel()), displayRectangle.getX(), displayRectangle.getY(), displayRectangle.getWidth(), displayRectangle.getHeight(),
+    Rectangle absoluteRectangle=getAbsoluteRectangle();
+    if (!MirJNI.ImGui_Begin(Util.toCstyleBytes(this.getLabel()), absoluteRectangle.getX(), absoluteRectangle.getY(), absoluteRectangle.getWidth(), absoluteRectangle.getHeight(),
         !this.isHasTitlebar,true,true,!this.isMovable,!this.isResizable,
         true,true, true, !this.isHasBackground, !this.isCanBringToFront, true, true))
     {

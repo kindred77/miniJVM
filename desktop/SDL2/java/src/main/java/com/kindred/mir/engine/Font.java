@@ -2,6 +2,7 @@ package com.kindred.mir.engine;
 
 import static com.kindred.sdl.constcode.SDLTTFStyle.*;
 
+import com.kindred.mir.util.Color;
 import com.kindred.mir.util.Util;
 
 public final class Font {
@@ -107,5 +108,13 @@ public final class Font {
 
   public final int getStyleFlags() {
       return this.styleFlags;
+  }
+
+  public static synchronized long generateTextSurface(Font font,String text, Color foreColor, Color backColor,int wraplength) {
+    MirJNI.SDL_TTF_SetFontStyle(font.getSDLFontID(), font.getStyleFlags());
+    return MirJNI.SDL_TTF_RenderUTF8_LCD_Wrapped(font.getSDLFontID(), Util.toCstyleBytes(text),
+        new int[]{foreColor.getRed(),foreColor.getGreen(),foreColor.getBlue(),foreColor.getAlpha()},
+        new int[]{backColor.getRed(),backColor.getGreen(),backColor.getBlue(),backColor.getAlpha()},
+        wraplength);
   }
 }

@@ -1595,8 +1595,8 @@ int com_kindred_sdl_SDL_Mir_FillRect(Runtime *runtime, JClass *clazz) {
     
     int ret = SDL_LockSurface(surface);
     if (ret) {
-        fprintf(stderr, "Unable to lock surface! SDL Error: %s\n", SDL_GetError() );
-        env->push_int(runtime->stack, 0L);
+        fprintf(stderr, "Unable to lock surface! SDL Error: %s\n", SDL_GetError());
+        env->push_int(runtime->stack, 0);
         return 0;
     }
     
@@ -1615,6 +1615,40 @@ int com_kindred_sdl_SDL_Mir_FillRect(Runtime *runtime, JClass *clazz) {
     
     SDL_UnlockSurface(surface);
     env->push_long(runtime->stack, (intptr_t) surface);
+    return 0;
+}
+
+int com_kindred_sdl_SDL_Mir_IsVisiblePixelInSurface(Runtime *runtime, JClass *clazz) {
+    JniEnv *env = runtime->jnienv;
+    s32 pos = 0;
+
+    SDL_Surface *surface = (__refer) (intptr_t) env->localvar_getLong_2slot(runtime->localvar, pos);
+    pos += 2;
+
+    s32 x = env->localvar_getInt(runtime->localvar, pos++);
+    s32 y = env->localvar_getInt(runtime->localvar, pos++);
+
+    if (x < 0 || y < 0 || x >= surface->w || y >= surface->h) {
+        env->push_int(runtime->stack, 0);
+        return 0;
+    }
+
+    int ret = SDL_LockSurface(surface);
+    if (ret) {
+        fprintf(stderr, "Unable to lock surface! SDL Error: %s\n", SDL_GetError());
+        env->push_int(runtime->stack, 0);
+        return 0;
+    }
+    Uint32 * pixels = ((Uint32*)surface->pixels);
+    int index = y * surface->w + x;
+    //完全为0,或者alpha为0
+    if (pixels[index] == 0 || ((pixels[index] >> 24) & 0xFF) == 0) {
+        ret=0;
+    } else {
+        ret=1;
+    }
+    SDL_UnlockSurface(surface);
+    env->push_int(runtime->stack, ret);
     return 0;
 }
 
@@ -2033,6 +2067,7 @@ static java_native_method method_mir_table[] = {
     {"com/kindred/mir/engine/MirJNI", "Mir_SurfaceBlendAdd",            "(JJIIF)I",                   com_kindred_sdl_SDL_Mir_SurfaceBlendAdd},
     {"com/kindred/mir/engine/MirJNI", "Mir_SurfaceBlendAddTransparent", "(JJIIFIII)I",                com_kindred_sdl_SDL_Mir_SurfaceBlendAddTransparent},
     {"com/kindred/mir/engine/MirJNI", "Mir_FillRect",                   "(II[I)J",                    com_kindred_sdl_SDL_Mir_FillRect},
+    {"com/kindred/mir/engine/MirJNI", "Mir_IsVisiblePixelInSurface",    "(JII)Z",                     com_kindred_sdl_SDL_Mir_IsVisiblePixelInSurface},
 
     //test imgui
     {"com/kindred/mir/engine/MirJNI", "ImGui_SDL2_InitImGuiContext", "()J",                com_kindred_sdl_SDL_ImGui_SDL2_InitImGuiContext},

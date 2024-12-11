@@ -104,6 +104,9 @@ public class MirControlCanBeDrawn extends MirControl {
     return result;
   }
 
+  /**
+   * TODO 先setIsBorder，然后再setLocation会有问题
+   */
   protected final void updateBorderInfo()
   {
     if (size.equals(Size.Empty)) {
@@ -112,7 +115,11 @@ public class MirControlCanBeDrawn extends MirControl {
       return;
     }
 
-    Rectangle displayRectangle=getDisplayRectangle();
+    Rectangle displayRectangle=getAbsoluteRectangle();
+    if ("13".equals(getID())) {
+      System.out.println("getAbsoluteRectangle: "+getAbsoluteRectangle());
+    }
+
     if (!borderRectangle.equals(displayRectangle)) {
       borderInfo = new Vector2[]{
           new Vector2(displayRectangle.getLeft() - 1, displayRectangle.getTop() - 1),

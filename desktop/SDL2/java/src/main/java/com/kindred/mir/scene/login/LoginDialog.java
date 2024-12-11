@@ -23,8 +23,6 @@ public class LoginDialog extends MirControlWithStaticImage {
     {
         super(parent, renderer_id, img);
 
-        setIsPixelDetect(false);
-
         imGuiLayout = new ImGuiLayout(this, window_id, renderer_id);
         System.out.println("imGuiLayout ID: "+imGuiLayout.getID());
         imGuiWindow=new ImGuiWindow(imGuiLayout, window_id, renderer_id, "##login_dialog",new Point(93,80),new Size(150, 60),

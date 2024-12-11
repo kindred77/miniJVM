@@ -27,6 +27,8 @@ public class MirMain {
     //public static Point MPoint;
     public static long Time = 0L;
 
+    static boolean shouldRun = true;
+
     private static void updateEnviroment()
     {
         if (MirScene.ActiveScene != null) {
@@ -112,6 +114,10 @@ public class MirMain {
         }
     }
 
+    public static void exit() {
+        shouldRun=false;
+    }
+
     public static void main(String args[]) throws Exception{
         try {
             int result = MirJNI.SDL_Init(SdlSubSystemConst.SDL_INIT_EVERYTHING);
@@ -146,7 +152,6 @@ public class MirMain {
 
             Settings.makeSureSDLFontsInited();
 
-            boolean shouldRun = true;
             long event_id = MirJNI.SDL_CreateEvent();
 
             //for test

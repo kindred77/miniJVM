@@ -51,17 +51,16 @@ public class MirControlWithStaticImage extends MirControlWithTexture{
             //默认在正中
             setLocation(this.Center());
             updateTexture(this.image.getSurface(MirImage.ImageEffect.None));
-            isPixelDetect=true;
         }
     }
 
     @Override
-    public Point getDisplayLocation()
+    public final Point getLocation()
     {
         if (isUseOffSet && image != null) {
-            return Point.add(super.getDisplayLocation(), image.getOffset());
+            return Point.add(super.getLocation(), image.getOffset());
         } else {
-            return super.getDisplayLocation();
+            return super.getLocation();
         }
     }
 
@@ -157,15 +156,15 @@ public class MirControlWithStaticImage extends MirControlWithTexture{
 //    }
 
     @Override
-    public boolean isMouseOver(Point p)
+    public final boolean isMouseOver(Point posInParent)
     {
         if (image == null)
         {
-            return super.isMouseOver(p) && !isPixelDetect;
+            return super.isMouseOver(posInParent) && !isPixelDetect;
         }
         else
         {
-            return super.isMouseOver(p) && (!isPixelDetect || image.isVisiblePixel(Point.subtract(p, getDisplayLocation()),true));
+            return super.isMouseOver(posInParent) && (!isPixelDetect || image.isVisiblePixel(Point.subtract(posInParent, getLocation())));
         }
     }
 
