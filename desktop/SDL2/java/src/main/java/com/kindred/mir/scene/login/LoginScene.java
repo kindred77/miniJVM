@@ -30,7 +30,7 @@ public class LoginScene extends MirScene {
 //
 //    private InputKeyDialog _ViewKey;
 
-    private String serverName="";
+    private String selectedServerName="";
 
     public MirLabel TestLabel, ViolenceLabel, MinorLabel, YouthLabel;
 
@@ -62,10 +62,11 @@ public class LoginScene extends MirScene {
 
         System.out.println("loginDialog-----ID: "+loginDialog.getID());
         MirImage selectServerDialogImg = MirLibFactory.getMirLib(MirLibFactory.Prguse).GetMirImage(256);
-        selectServerDialog = new SelectServerDialog(background,renderer_id,selectServerDialogImg,"服务器1");
+        String[] servers={"逐鹿中原","九天烈焰"};
+        selectServerDialog = new SelectServerDialog(background,renderer_id,selectServerDialogImg,servers);
         selectServerDialog.setOnSelected((control, argObj) -> {
-            this.serverName=(String)argObj;
-            titleLabel.setText(this.serverName);
+            this.selectedServerName=(String)argObj;
+            titleLabel.setText(this.selectedServerName);
             loginDialog.setIsVisible(true);
         });
         System.out.println("selectServerDialog-----ID: "+selectServerDialog.getID());
