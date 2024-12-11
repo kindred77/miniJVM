@@ -499,9 +499,12 @@ public class MirControl {
         isStartToMove = false;
         startToMovePos = Point.Empty;
 
-        if (/*isSort &&*/ parent != null) {
-            parent.removeChild(this);
-            parent.addChild(this);
+//        if (/*isSort &&*/ parent != null) {
+//            parent.removeChild(this);
+//            parent.addChild(this);
+//        }
+        if (isVisible) {
+            bringToFront();
         }
 
         if (MouseControl == this && !isVisible) {
@@ -912,9 +915,9 @@ public class MirControl {
             onMouseLeftDoubleClick.doAction(this, posInMe);
         } else {
             //派生单击事件
-            if(!onMouseLeftClick(posInMe, false)) {
-                return false;
-            }
+//            if(!onMouseLeftClick(posInMe, false)) {
+//                return false;
+//            }
         }
 
         return true;

@@ -50,6 +50,11 @@ public class MirTexture {
 //        this.color = color;
 //    }
 
+    /**
+     * 可以支持surface为0
+     * @param renderer_id
+     * @param surface_id
+     */
     //this is a heavy operation
     public void update(long renderer_id,long surface_id)
     {
@@ -60,8 +65,10 @@ public class MirTexture {
         if (surface_id != 0) {
             this.texture_id=MirJNI.SDL_CreateTextureFromSurface(renderer_id,surface_id);
             isValid=true;
+        } else {
+            this.texture_id=0L;
+            isValid=false;
         }
-
     }
 
     public Size getSize()

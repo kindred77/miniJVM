@@ -40,13 +40,13 @@ set(SOURCE_FILES
         )
 #add_executable(test_sdl2 ${SOURCE_FILES})
 
-add_executable(test_kiss 
-    kiss/kiss_draw.c
-    kiss/kiss_general.c
-    kiss/kiss_posix.c
-    kiss/kiss_widgets.c
-    kiss/kiss_example1.c
-)
+# add_executable(test_kiss 
+#     kiss/kiss_draw.c
+#     kiss/kiss_general.c
+#     kiss/kiss_posix.c
+#     kiss/kiss_widgets.c
+#     kiss/kiss_example1.c
+# )
 
 add_library(jni_mir SHARED ${SOURCE_FILES})
 
@@ -100,18 +100,36 @@ ELSEIF (MINGW)
                 PRIVATE version
                 PRIVATE opengl32)
     
-    TARGET_LINK_LIBRARIES(test_kiss PUBLIC ${SDL2_LIB} PUBLIC ${SDL2_IMG_LIB} PUBLIC ${SDL2_TTF_LIB}
-                PRIVATE winmm
-                PRIVATE imm32
-                PRIVATE setupapi
-                PRIVATE version
-                PRIVATE opengl32)    
+    # TARGET_LINK_LIBRARIES(test_kiss PUBLIC ${SDL2_LIB} PUBLIC ${SDL2_IMG_LIB} PUBLIC ${SDL2_TTF_LIB}
+    #             PRIVATE winmm
+    #             PRIVATE imm32
+    #             PRIVATE setupapi
+    #             PRIVATE version
+    #             PRIVATE opengl32)    
 
     #all: TARGET_LINK_LIBRARIES(jni_mir kernel32 user32 gdi32 winmm imm32 ole32 oleaut32 version uuid advapi32 setupapi shell32)
 
     #TARGET_LINK_LIBRARIES(test_sdl2 winmm imm32)
     #TARGET_LINK_LIBRARIES(test_sdl2 ${SDL2_LIB})
     set(CMAKE_EXE_LINKER_FLAGS "-mwindows")
+
+    # 启用 AddressSanitizer
+    # set (SAN_FLAGS "${SAN_FLAGS} -g -fno-omit-frame-pointer -DSANITIZER")
+    # set (ASAN_FLAGS "-fsanitize=address -fsanitize-address-use-after-scope")
+    # set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SAN_FLAGS} ${ASAN_FLAGS}")
+    # set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${SAN_FLAGS} ${ASAN_FLAGS}")
+    # if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    #     message("Enable Address Sanitize.")
+    #     set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${ASAN_FLAGS}")
+    # endif()
+    # if (MAKE_STATIC_LIBRARIES AND CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    #     message("Using static.")
+    #     set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static-libasan")
+    # endif ()
+    # if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    #     message("Link asan staticly.")
+    #     target_link_libraries(jni_mir INTERFACE "-Wl,-static -lasan -Wl,-Bdynamic")
+    # endif()
 
     #copy SDL2 and SDL2_image dll to target
     set(OUTPUT_DIR ${PROJECT_SOURCE_DIR}/../../../binary/win_x64)

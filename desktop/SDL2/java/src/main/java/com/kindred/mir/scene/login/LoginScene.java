@@ -20,6 +20,8 @@ public class LoginScene extends MirScene {
 
     private LoginDialog loginDialog;
 
+    private SelectServerDialog selectServerDialog;
+
     private NewAccountDialog account;
 //    private ChangePasswordDialog _password;
 //
@@ -52,8 +54,12 @@ public class LoginScene extends MirScene {
         titleLabel.setLocation(titleLabel.Top());
 
         MirImage loginDialogImg = MirLibFactory.getMirLib(MirLibFactory.Prguse).GetMirImage(60);
-        //Point loginDialogPos = new Point((Settings.ScreenWidth - loginDialogImg.getWidth())/2, (Settings.ScreenHeight - loginDialogImg.getHeight())/2);
         loginDialog = new LoginDialog(background,window_id,renderer_id,loginDialogImg);
+        loginDialog.setIsVisible(false);
+
+        MirImage selectServerDialogImg = MirLibFactory.getMirLib(MirLibFactory.Prguse).GetMirImage(256);
+        selectServerDialog = new SelectServerDialog(background,renderer_id,selectServerDialogImg);
+
 //        login.accountButton.click += (o, e) =>
 //        {
 //            _login.Hide();

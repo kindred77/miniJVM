@@ -41,7 +41,7 @@ public class LoginDialog extends MirControlWithStaticImage {
             Settings.FONT_SIZE15, Color.Black,Color.White,true, 1);
         System.out.println("passwordTextBox ID: "+passwordTextBox.getID());
 
-        MirImage okBtnPressedImg = MirLibFactory.getMirLib(MirLibFactory.Prguse).GetMirImage(63);
+        MirImage okBtnPressedImg = MirLibFactory.getMirLib(MirLibFactory.Prguse).GetMirImage(62);
         OKButton = new MirButton(this, renderer_id, null, null, okBtnPressedImg,
             new Size(76,33), new Point(170,163));
         OKButton.setIsBorder(true);
