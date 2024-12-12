@@ -52,8 +52,8 @@ public class LoginScene extends MirScene {
         setSize(background.getSize());
 
         //title label
-        titleLabel = new MirLabel(this, renderer_id, new Size(100, 25),
-            new Point(0,0), Settings.FONT_SIZE20, "", Color.Yellow, Color.Empty,100);
+        titleLabel = new MirLabel(this, renderer_id, new Size(70, 20),
+            new Point(0,0), Settings.FONT_SIZE20, "", Color.Yellow, Color.Empty,0);
         titleLabel.setLocation(titleLabel.Top());
         System.out.println("titleLabel-----ID: "+titleLabel.getID());
         MirImage loginDialogImg = MirLibFactory.getMirLib(MirLibFactory.Prguse).GetMirImage(60);
@@ -69,6 +69,7 @@ public class LoginScene extends MirScene {
             titleLabel.setText(this.selectedServerName);
             loginDialog.setIsVisible(true);
         });
+        selectServerDialog.setIsMovable(true);
         System.out.println("selectServerDialog-----ID: "+selectServerDialog.getID());
 
 //        login.accountButton.click += (o, e) =>

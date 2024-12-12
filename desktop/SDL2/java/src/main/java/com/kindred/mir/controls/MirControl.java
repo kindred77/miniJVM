@@ -936,27 +936,43 @@ public class MirControl {
     /*
     pos是在父控件中的座标
      */
-    private void onMouseMove(Point posInParent)
+    private void onMouseMove(Point posInParent, boolean isMouseLeave)
     {
-        //在本控件中
-        if(isMouseOver(posInParent)) {
-            //第一次在本控件中
-            if(!isMouseIn) {
-                isMouseIn=true;
-                this.onMouseEnter();
-            }
-        } else {
-            //第一次在本控件中
-            if(isMouseIn) {
-                isMouseIn=false;
-                this.onMouseLeave();
-            }
+        if (isMouseLeave) {
+            System.out.println("--------MouseLeave: "+getID()+"---------"+posInParent);
+            isMouseIn=false;
+            this.onMouseLeave();
+            return;
         }
+        if(!isMouseIn) {
+            System.out.println("--------MouseEnter: "+getID()+"---------"+posInParent);
+            isMouseIn=true;
+            this.onMouseEnter();
+        }
+
+//        if(isMouseOver(posInParent)) {
+//            System.out.println("--------onMouseMove------isMouseOver: "+getID()+"---------"+posInParent);
+//            //进入本控件
+//            if(!isMouseIn) {
+//                System.out.println("--------MouseEnter: "+getID()+"---------"+posInParent);
+//                isMouseIn=true;
+//                this.onMouseEnter();
+//            }
+//        } else {
+//            System.out.println("--------onMouseMove------isMouseOver-false: "+getID()+"---------"+posInParent);
+//            //离开本控件
+//            if(isMouseIn) {
+//                System.out.println("--------MouseLeave: "+getID()+"---------"+posInParent);
+//                isMouseIn=false;
+//                this.onMouseLeave();
+//            }
+//        }
 
         //moving
         if (isStartToMove) {
             Point tempPoint = Point.subtract(posInParent, startToMovePos);
 
+            //不能移动超过父控件的边界
             Size parentSize = parent == null ? new Size(Settings.ScreenWidth, Settings.ScreenHeight)
                     : parent.getSize();
             if (tempPoint.getY() + size.getHeight() > parentSize.getHeight()) {
@@ -1005,8 +1021,7 @@ public class MirControl {
 
         if (isMovable) {
             isStartToMove = true;
-            //startToMovePos = Point.subtract(posInParent, location);
-            startToMovePos = posInParent;
+            startToMovePos = Point.subtract(posInParent, location);
         }
 
         isMouseLeftDown=true;
@@ -1054,8 +1069,8 @@ public class MirControl {
     在父控件中的坐标
      */
     private boolean onOriginalMouseEvent(CommonEvent.EventEnum eventEnum, Point posInParent) {
-        //不在我的区域不处理, MouseMove事件比较特殊需要放行
-        if (!isMouseOver(posInParent) && eventEnum!=CommonEvent.EventEnum.MouseMove) {
+        //不在我的区域不处理
+        if (!isMouseOver(posInParent) /*&& eventEnum!=CommonEvent.EventEnum.MouseMove*/) {
             return false;
         }
         //优先处理子控件
@@ -1066,6 +1081,10 @@ public class MirControl {
             MirControl child = children.get(i);
             if (child.onOriginalMouseEvent(eventEnum, posInMe) && !child.IsByPassEvent()) {
                 return true;
+            }
+            //传递一下MouseLeave
+            if (!child.isMouseOver(posInMe) && child.isMouseIn) {
+                child.onMouseMove(posInParent,true);
             }
         }
 //        synchronized (children) {
@@ -1088,7 +1107,7 @@ public class MirControl {
         } else if(eventEnum==CommonEvent.EventEnum.MouseRightUp) {
             onMouseRightUp(posInParent);
         } else if (eventEnum==CommonEvent.EventEnum.MouseMove) {
-            onMouseMove(posInParent);
+            onMouseMove(posInParent,false);
         } else {
             return false;
         }

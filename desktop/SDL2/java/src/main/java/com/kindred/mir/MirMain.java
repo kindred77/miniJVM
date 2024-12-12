@@ -172,7 +172,14 @@ public class MirMain {
                             }
                             break;
                         case SDLEventType.SDL_WINDOWEVENT:
-                            System.out.println("Window event " + MirJNI.SDL_GetEventWindowEvent(event_id));
+                            int win_event=MirJNI.SDL_GetEventWindowEvent(event_id);
+                            if (win_event==SDL_WindowEventID.SDL_WINDOWEVENT_ENTER) {
+                                System.out.println("Mouse enter.");
+                            } else if (win_event==SDL_WindowEventID.SDL_WINDOWEVENT_LEAVE) {
+                                System.out.println("Mouse leave.");
+                            } else {
+                                System.out.println("Window event " + MirJNI.SDL_GetEventWindowEvent(event_id));
+                            }
                             break;
                         case SDLEventType.SDL_MOUSEBUTTONDOWN:
                             int[] pos_down = MirJNI.SDL_GetEventMouseButtonPos(event_id);
