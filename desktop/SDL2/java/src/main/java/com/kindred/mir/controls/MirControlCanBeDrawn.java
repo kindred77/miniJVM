@@ -49,6 +49,7 @@ public class MirControlCanBeDrawn extends MirControl {
 
   protected final void drawBorder()
   {
+    updateBorderInfo();
     if (borderInfo == null || borderInfo.length == 0 || borderInfo.length % 2 != 0) {
       return;
     }
@@ -116,9 +117,6 @@ public class MirControlCanBeDrawn extends MirControl {
     }
 
     Rectangle displayRectangle=getAbsoluteRectangle();
-    if ("13".equals(getID())) {
-      System.out.println("getAbsoluteRectangle: "+getAbsoluteRectangle());
-    }
 
     if (!borderRectangle.equals(displayRectangle)) {
       borderInfo = new Vector2[]{
