@@ -20,12 +20,12 @@ public class MirControlWithDynamicImagesEventDriven extends MirControlWithDynami
         this.eventActionMap=new HashMap();
     }
 
-    protected void register(CommonEvent.EventEnum event, ControlEventChooseImageAction action)
+    protected final void register(CommonEvent.EventEnum event, ControlEventChooseImageAction action)
     {
         eventActionMap.put(event, action);
     }
 
-    protected MirImage getEventImage(CommonEvent.EventEnum event)
+    protected final MirImage getEventImage(CommonEvent.EventEnum event)
     {
         ControlEventChooseImageAction action = eventActionMap.get(event);
         if(action!=null)

@@ -10,9 +10,6 @@ import java.util.List;
 public class MirAnimatedControl extends MirControlWithDynamicImagesTimeDriven {
     public static List<MirAnimatedControl> animations = new ArrayList();
 
-    private boolean isAnimated;
-    public ControlCommonListener animatedChanged;
-
     private int animationCount;
     public ControlCommonListener animationCountChanged;
 
@@ -48,28 +45,6 @@ public class MirAnimatedControl extends MirControlWithDynamicImagesTimeDriven {
         nextOffSet = Settings.getTime();
         animationCount=images.length;
         animations.add(this);
-    }
-
-    public boolean getIsAnimated()
-    {
-        return isAnimated;
-    }
-    public void setIsAnimated(boolean isAnimated)
-    {
-        if (this.isAnimated == isAnimated) {
-            return;
-        }
-        this.isAnimated = isAnimated;
-        nextOffSet = Settings.getTime() + fadeInDelay;
-        onAnimatedChanged();
-    }
-
-    protected void onAnimatedChanged()
-    {
-        //redraw();
-        if (animatedChanged != null) {
-            animatedChanged.doAction(this, null);
-        }
     }
 
     public int getAnimationCount()
@@ -214,48 +189,47 @@ public class MirAnimatedControl extends MirControlWithDynamicImagesTimeDriven {
         }
     }
 
-    public void updateOffSet()
-    {
-        if (isFadeIn && Settings.getTime() > nextFadeTime) {
-            if ((opacity += fadeInRate) > 1F) {
-                opacity = 1F;
-                isFadeIn = false;
-            }
-
-            nextFadeTime = Settings.getTime() + fadeInDelay;
-        }
-
-        if (!getIsVisible() || !isAnimated || animationDelay == 0 || animationCount == 0) {
-            return;
-        }
-
-        if (Settings.getTime() < nextOffSet) {
-            return;
-        }
-
-        //redraw();
-
-        nextOffSet = Settings.getTime() + animationDelay;
-
-        setOffSet(this.offSet+1);
-        if (this.offSet < animationCount) {
-            return;
-        }
-
-        ControlCommonListener temp = afterAnimation;
-        afterAnimation = null;
-
-        if (!isLoop) {
-            isAnimated = false;
-        }
-        else {
-            setOffSet(0);
-        }
-
-        if (temp != null) {
-            temp.doAction(this, null);
-        }
-    }
+//    public void updateOffSet()
+//    {
+//        if (isFadeIn && Settings.getTime() > nextFadeTime) {
+//            if ((opacity += fadeInRate) > 1F) {
+//                opacity = 1F;
+//                isFadeIn = false;
+//            }
+//
+//            nextFadeTime = Settings.getTime() + fadeInDelay;
+//        }
+//
+//        if (!getIsVisible() || !isAnimated || animationDelay == 0 || animationCount == 0) {
+//            return;
+//        }
+//
+//        if (Settings.getTime() < nextOffSet) {
+//            return;
+//        }
+//
+//        //redraw();
+//
+//        nextOffSet = Settings.getTime() + animationDelay;
+//
+//        setOffSet(this.offSet+1);
+//        if (this.offSet < animationCount) {
+//            return;
+//        }
+//
+//        ControlCommonListener temp = afterAnimation;
+//        afterAnimation = null;
+//
+//        if (!isLoop) {
+//            isAnimated = false;
+//        } else {
+//            setOffSet(0);
+//        }
+//
+//        if (temp != null) {
+//            temp.doAction(this, null);
+//        }
+//    }
 
     @Override
     protected void dispose(boolean disposing)
@@ -265,9 +239,6 @@ public class MirAnimatedControl extends MirControlWithDynamicImagesTimeDriven {
         if (!disposing) {
             return;
         }
-
-        animatedChanged = null;
-        isAnimated = false;
 
         animationCountChanged = null;
         animationCount = 0;

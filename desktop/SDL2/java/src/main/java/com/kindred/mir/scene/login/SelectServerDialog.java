@@ -19,7 +19,7 @@ public class SelectServerDialog extends MirControlWithStaticImage {
   private MirButton closeButton;
   private List<ServerButton> serverButtons=new ArrayList<>();
   private String serverNames[];
-  public ControlCommonListener onSelected;
+  public ControlCommonListener onSuccessClose;
 
   class ServerButton extends MirButton{
 
@@ -48,7 +48,9 @@ public class SelectServerDialog extends MirControlWithStaticImage {
       ServerButton serverButton = new ServerButton(this, renderer_id, imgs[0], imgs[0], imgs[1],serverName,i);
       serverButton.setOnMouseLeftClick((control, argObj) -> {
         this.setIsVisible(false);
-        onSelected.doAction(this, serverName);
+        if (onSuccessClose != null) {
+          onSuccessClose.doAction(this, serverName);
+        }
       });
       serverButtons.add(serverButton);
     }
@@ -64,8 +66,8 @@ public class SelectServerDialog extends MirControlWithStaticImage {
 
   }
 
-  public void setOnSelected(ControlCommonListener onSelected)
+  public void setOnSuccessClose(ControlCommonListener onSuccessClose)
   {
-    this.onSelected = onSelected;
+    this.onSuccessClose = onSuccessClose;
   }
 }

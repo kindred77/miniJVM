@@ -20,6 +20,9 @@ public class CommonEvent {
         MouseRightDoubleClick,
         MouseEnter,
         MouseLeave,
+
+        //时间interval到点事件
+        TimeInterval,
     }
 
     private EventEnum eventType;

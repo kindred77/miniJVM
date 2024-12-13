@@ -58,18 +58,21 @@ public class LoginScene extends MirScene {
         System.out.println("titleLabel-----ID: "+titleLabel.getID());
         MirImage loginDialogImg = MirLibFactory.getMirLib(MirLibFactory.Prguse).GetMirImage(60);
         loginDialog = new LoginDialog(background,window_id,renderer_id,loginDialogImg);
+        loginDialog.setOnSuccessClose((control, argObj) -> {
+            loginDialog.setIsVisible(false);
+            background.setIsAnimated(true);
+        });
         loginDialog.setIsVisible(false);
 
         System.out.println("loginDialog-----ID: "+loginDialog.getID());
         MirImage selectServerDialogImg = MirLibFactory.getMirLib(MirLibFactory.Prguse).GetMirImage(256);
         String[] servers={"逐鹿中原","九天烈焰"};
         selectServerDialog = new SelectServerDialog(background,renderer_id,selectServerDialogImg,servers);
-        selectServerDialog.setOnSelected((control, argObj) -> {
+        selectServerDialog.setOnSuccessClose((control, argObj) -> {
             this.selectedServerName=(String)argObj;
             titleLabel.setText(this.selectedServerName);
             loginDialog.setIsVisible(true);
         });
-        selectServerDialog.setIsMovable(true);
         System.out.println("selectServerDialog-----ID: "+selectServerDialog.getID());
 
 //        login.accountButton.click += (o, e) =>

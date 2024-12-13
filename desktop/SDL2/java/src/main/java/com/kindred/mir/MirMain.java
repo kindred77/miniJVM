@@ -35,13 +35,13 @@ public class MirMain {
             MirScene.ActiveScene.process();
         }
 
-        for (int i = 0; i < MirAnimatedControl.animations.size(); i++) {
-            MirAnimatedControl.animations.get(i).updateOffSet();
-        }
+//        for (int i = 0; i < MirAnimatedControl.animations.size(); i++) {
+//            MirAnimatedControl.animations.get(i).updateOffSet();
+//        }
 
-        for (int i = 0; i < MirAnimatedButton.animations.size(); i++) {
-            MirAnimatedButton.animations.get(i).updateOffSet();
-        }
+//        for (int i = 0; i < MirAnimatedButton.animations.size(); i++) {
+//            MirAnimatedButton.animations.get(i).updateOffSet();
+//        }
     }
 
     private static void updateTime()

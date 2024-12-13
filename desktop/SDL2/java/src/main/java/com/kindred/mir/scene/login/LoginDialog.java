@@ -1,10 +1,12 @@
 package com.kindred.mir.scene.login;
 
+import com.kindred.mir.MirMain;
 import com.kindred.mir.Settings;
 import com.kindred.mir.controls.*;
 import com.kindred.mir.controls.imgui.ImGuiLayout;
 import com.kindred.mir.controls.imgui.ImGuiTextBox;
 import com.kindred.mir.controls.imgui.ImGuiWindow;
+import com.kindred.mir.controls.listener.ControlCommonListener;
 import com.kindred.mir.libs.MirImage;
 import com.kindred.mir.libs.MirLibFactory;
 import com.kindred.mir.util.Color;
@@ -18,6 +20,7 @@ public class LoginDialog extends MirControlWithStaticImage {
     private ImGuiWindow imGuiWindow;
     private ImGuiTextBox accountIDTextBox, passwordTextBox;
     private boolean isAccountIDValid, isPasswordValid;
+    public ControlCommonListener onSuccessClose;
 
     public LoginDialog(MirControl parent, long window_id, long renderer_id, MirImage img) throws Exception
     {
@@ -38,6 +41,14 @@ public class LoginDialog extends MirControlWithStaticImage {
             new Point(5,36),140,64,
             Settings.FONT_SIZE15, Color.Black,Color.White,true, 1);
         System.out.println("passwordTextBox ID: "+passwordTextBox.getID());
+
+        MirImage closePressedImg = MirLibFactory.getMirLib(MirLibFactory.Prguse).GetMirImage(64);
+        closeButton = new MirButton(this, renderer_id, null, null, closePressedImg,
+            closePressedImg.getTrueSize(), new Point(252,28));
+        closeButton.setIsBorder(true);
+        closeButton.setOnMouseLeftClick((control, argObj) -> {
+            MirMain.exit();
+        });
 
         MirImage okBtnPressedImg = MirLibFactory.getMirLib(MirLibFactory.Prguse).GetMirImage(62);
         OKButton = new MirButton(this, renderer_id, null, null, okBtnPressedImg,
@@ -61,6 +72,10 @@ public class LoginDialog extends MirControlWithStaticImage {
         System.out.println("----login----");
         //OKButton.setIsEnabled(false);
         //Network.Enqueue(new C.Login {AccountID = AccountIDTextBox.Text, Password = PasswordTextBox.Text});
+
+        if (onSuccessClose != null) {
+            onSuccessClose.doAction(this, null);
+        }
     }
 
     public void hide()
@@ -75,6 +90,11 @@ public class LoginDialog extends MirControlWithStaticImage {
     {
         //accountIDTextBox.setText("");
         //passwordTextBox.setText("");
+    }
+
+    public void setOnSuccessClose(ControlCommonListener onSuccessClose)
+    {
+        this.onSuccessClose = onSuccessClose;
     }
 
     @Override
