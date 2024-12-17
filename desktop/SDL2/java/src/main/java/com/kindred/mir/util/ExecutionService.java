@@ -1,5 +1,6 @@
 package com.kindred.mir.util;
 
+import com.kindred.mir.Settings;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class ExecutionService {
@@ -12,7 +13,7 @@ public class ExecutionService {
     }
 
     //Lock lock;
-    boolean isDone=false;
+    volatile boolean isDone=false;
     T obj;
     Callable action;
 
@@ -29,7 +30,7 @@ public class ExecutionService {
 
     public T get() {
       while(!isDone) {
-        try{Thread.sleep(1000);}catch(Exception e){}
+        try{Thread.sleep(Settings.BACKGROUND_FUTURE_GET_INTERVAL);}catch(Exception e){}
       }
       return obj;
     }
@@ -45,7 +46,7 @@ public class ExecutionService {
           future=queue.poll();
         //}
         if (future==null) {
-          try{Thread.sleep(500);}catch(Exception e){}
+          try{Thread.sleep(Settings.BACKGROUND_WORKER_POLL_INTERVAL);}catch(Exception e){}
           continue;
         }
 

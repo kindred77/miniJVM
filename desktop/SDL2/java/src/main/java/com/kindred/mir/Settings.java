@@ -9,6 +9,10 @@ public class Settings {
     public static boolean IsFullScreen = false;
     public static long DoubleClickIntervalTime=200L;
 
+    public static int BACKGROUND_WORKER_THREADS_CNT=2;
+    public static int BACKGROUND_FUTURE_GET_INTERVAL=200;
+    public static int BACKGROUND_WORKER_POLL_INTERVAL=200;
+
     public static boolean isImguiUsed=false;
 
     //fonts

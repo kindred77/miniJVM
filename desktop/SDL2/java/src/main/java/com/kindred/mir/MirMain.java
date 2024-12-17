@@ -113,7 +113,7 @@ public class MirMain {
 
     public static void main(String args[]) throws Exception{
         try {
-            Env.BackGroundExeService=new ExecutionService(2);
+            Env.BackGroundExeService=new ExecutionService(Settings.BACKGROUND_WORKER_THREADS_CNT);
             int result = MirJNI.SDL_Init(SdlSubSystemConst.SDL_INIT_EVERYTHING);
             if (result != 0) {
                 throw new IllegalStateException("Unable to initialize SDL library (Error code " + result + "): " + MirJNI.SDL_GetError());
