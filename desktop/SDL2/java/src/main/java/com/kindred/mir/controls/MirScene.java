@@ -1,13 +1,23 @@
 package com.kindred.mir.controls;
 
 import com.kindred.mir.Settings;
+import com.kindred.mir.scene.charsel.CharSelScene;
+import com.kindred.mir.scene.login.LoginScene;
 import com.kindred.mir.util.Size;
 
 public abstract class MirScene extends MirControlCanBeDrawn {
 
+    public static class SceneEnumType {
+        public static int None = 0;
+        public static int Login=1;
+        public static int CharSel=2;
+        public static int Game=3;
+    }
+
     public static MirScene ActiveScene = null;
 
     //private static MouseButtons mouseButtons;
+    protected int SceneType=SceneEnumType.None;
     private static long lastClickTime;
     private static MirControl clickedControl;
     private long window_id;
@@ -23,8 +33,25 @@ public abstract class MirScene extends MirControlCanBeDrawn {
         this.renderer_id=renderer_id;
     }
 
-    public final long getWindow() {
-        return this.window_id;
+    public final static void SwitchToScene(MirScene scene) {
+        if (ActiveScene==scene) {
+            return;
+        }
+        if (ActiveScene!=null) {
+            ActiveScene.setIsVisible(false);
+        }
+        ActiveScene=scene;
+        ActiveScene.setIsVisible(true);
+    }
+
+    public final static MirScene PrepareNextScene(long window_id, long renderer_id) throws Exception{
+        //TODO 模拟加载时间
+        Thread.sleep(1000);
+        if (null==ActiveScene) {
+            LoginScene loginScene=new LoginScene(null,window_id,renderer_id);
+            return loginScene;
+        }
+        return new CharSelScene(null,window_id,renderer_id);
     }
 
 //

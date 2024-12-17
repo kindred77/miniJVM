@@ -5,18 +5,11 @@ import static com.kindred.sdl.constcode.SDLWindowFlags.SDL_WINDOW_MINIMIZED;
 
 import com.kindred.mir.controls.events.CommonEvent;
 import com.kindred.mir.controls.events.CommonEvent.EventEnum;
-import com.kindred.mir.engine.Font;
-import java.io.UnsupportedEncodingException;
-
-import com.kindred.mir.controls.MirAnimatedButton;
-import com.kindred.mir.controls.MirAnimatedControl;
+import com.kindred.mir.util.ExecutionService;
 import com.kindred.mir.controls.MirScene;
 import com.kindred.mir.engine.MirJNI;
-import com.kindred.mir.libs.MirImage;
-import com.kindred.mir.libs.MirLib;
 
 import com.kindred.mir.scene.GameScene;
-import com.kindred.mir.scene.login.LoginScene;
 import com.kindred.mir.util.Point;
 import com.kindred.mir.util.Util;
 import com.kindred.sdl.constcode.*;
@@ -120,6 +113,7 @@ public class MirMain {
 
     public static void main(String args[]) throws Exception{
         try {
+            Env.BackGroundExeService=new ExecutionService(2);
             int result = MirJNI.SDL_Init(SdlSubSystemConst.SDL_INIT_EVERYTHING);
             if (result != 0) {
                 throw new IllegalStateException("Unable to initialize SDL library (Error code " + result + "): " + MirJNI.SDL_GetError());
@@ -154,8 +148,7 @@ public class MirMain {
 
             long event_id = MirJNI.SDL_CreateEvent();
 
-            //for test
-            MirScene.ActiveScene = new LoginScene(null, win_id, renderer_id);
+            MirScene.SwitchToScene(MirScene.PrepareNextScene(win_id, renderer_id));
 
             while (shouldRun) {
                 updateTime();
@@ -223,6 +216,7 @@ public class MirMain {
             MirJNI.SDL_DestroyWindow(win_id);
             MirJNI.SDL_TTF_Quit();
             MirJNI.SDL_Quit();
+            Env.BackGroundExeService.shutdown();
         } catch(Exception e) {
             e.printStackTrace();
         }

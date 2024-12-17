@@ -1,6 +1,5 @@
 package com.kindred.mir.controls;
 
-import com.kindred.mir.Settings;
 import com.kindred.mir.controls.events.CommonEvent;
 import com.kindred.mir.controls.listener.ControlCommonListener;
 import com.kindred.mir.engine.MirJNI;
@@ -12,16 +11,18 @@ import com.kindred.mir.libs.MirImage;
 public class MirControlWithDynamicImagesTimeDriven extends MirControlWithDynamicImagesEventDriven {
 
     protected boolean isLoop=false;
-    private long animationDelay=500;
-    private long nextOffSet;
-    private boolean isAnimated;
+    private long animationDelay=200;
+    private long nextIndexTims;
+    private boolean isAnimated=false;
 
     protected ControlCommonListener afterAnimation;
 
     private int index=0;
 
-    public MirControlWithDynamicImagesTimeDriven(MirControl parent, long renderer_id, MirImage[] images) throws Exception{
+    public MirControlWithDynamicImagesTimeDriven(MirControl parent, long renderer_id, MirImage[] images, boolean isLoop, long animationDelay) throws Exception{
         super(parent, renderer_id, images);
+        this.isLoop=isLoop;
+        this.animationDelay=animationDelay;
         register(CommonEvent.EventEnum.TimeInterval,() -> images[index]);
     }
 
@@ -64,11 +65,11 @@ public class MirControlWithDynamicImagesTimeDriven extends MirControlWithDynamic
 
         long time = MirJNI.SDL_GetTicks();
 
-        if (time < nextOffSet) {
+        if (time < nextIndexTims) {
             return;
         }
 
-        nextOffSet = time + animationDelay;
+        nextIndexTims = time + animationDelay;
         fireOffsetEvent();
     }
 
@@ -78,11 +79,15 @@ public class MirControlWithDynamicImagesTimeDriven extends MirControlWithDynamic
             return;
         }
         this.isAnimated = isAnimated;
-        nextOffSet = MirJNI.SDL_GetTicks() + animationDelay;
+        nextIndexTims = MirJNI.SDL_GetTicks() + animationDelay;
+    }
+
+    public final void setAfterAnimation(ControlCommonListener afterAnimation) {
+        this.afterAnimation=afterAnimation;
     }
 
     @Override
-    protected boolean drawControl() {
+    protected final boolean drawControl() {
         update();
         return super.drawControl();
     }

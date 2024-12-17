@@ -1,21 +1,22 @@
 package com.kindred.mir.scene.login;
 
-import com.kindred.mir.MirMain;
+import com.kindred.mir.Env;
 import com.kindred.mir.Settings;
 import com.kindred.mir.controls.*;
-import com.kindred.mir.controls.listener.ControlCommonListener;
 import com.kindred.mir.engine.SoundList;
 import com.kindred.mir.engine.SoundManager;
 import com.kindred.mir.libs.MirImage;
 import com.kindred.mir.libs.MirLibFactory;
 import com.kindred.mir.util.Color;
+import com.kindred.mir.util.ExecutionService.Future;
 import com.kindred.mir.util.Point;
 import com.kindred.mir.util.Size;
 import com.kindred.mir.util.Util;
 
 public class LoginScene extends MirScene {
 
-    private MirAnimatedControl background;
+    private MirControlWithStaticImage background;
+    private MirAnimatedControl openDoorAnimation;
     public MirLabel Version;
     private MirLabel titleLabel;
 
@@ -34,22 +35,33 @@ public class LoginScene extends MirScene {
 
     public MirLabel TestLabel, ViolenceLabel, MinorLabel, YouthLabel;
 
+    private Future<MirScene> charSelScene;
+
     public LoginScene(MirControl parent, long window_id,long renderer_id) throws Exception
     {
         super(parent,window_id,renderer_id);
+        SceneType=MirScene.SceneEnumType.Login;
         SoundManager.playSound(SoundList.IntroMusic, true);
         System.out.println("LoginScene-----ID: "+this.getID());
         onDisposing = (control, argObj) -> {
             SoundManager.stopSound(SoundList.IntroMusic);
         };
 
-        MirImage[] animImgs = MirLibFactory.getMirLib(MirLibFactory.ChrSel).GetMirImages(Util.genSeq(22, 32));
-        background = new MirAnimatedControl(this,renderer_id, animImgs);
-        background.setIsAnimated(false);
-        background.setAnimationCount(19);
-        background.setAnimationDelay(100);
-        System.out.println("background-----ID: "+background.getID());
-        setSize(background.getSize());
+        MirImage backgroundImg = MirLibFactory.getMirLib(MirLibFactory.ChrSel).GetMirImage(22);
+        background=new MirControlWithStaticImage(this,renderer_id,backgroundImg);
+        background.setIsUseOffSet(false);
+        System.out.println("background-----ID: "+background.getID()+"----Size: "+background.getSize());
+        //setSize(background.getSize());
+        //setLocation(backgroundImg.getOffset());
+
+        MirImage[] animImgs = MirLibFactory.getMirLib(MirLibFactory.ChrSel).GetMirImages(Util.genSeq(23, 32));
+        openDoorAnimation = new MirAnimatedControl(background,renderer_id, animImgs,false,200);
+        openDoorAnimation.setIsAnimated(false);
+        openDoorAnimation.setAfterAnimation((mirControl, obj) -> {
+            if (this.charSelScene != null) {
+                SwitchToScene(this.charSelScene.get());
+            }
+        });
 
         //title label
         titleLabel = new MirLabel(this, renderer_id, new Size(70, 20),
@@ -57,17 +69,21 @@ public class LoginScene extends MirScene {
         titleLabel.setLocation(titleLabel.Top());
         System.out.println("titleLabel-----ID: "+titleLabel.getID());
         MirImage loginDialogImg = MirLibFactory.getMirLib(MirLibFactory.Prguse).GetMirImage(60);
-        loginDialog = new LoginDialog(background,window_id,renderer_id,loginDialogImg);
+        loginDialog = new LoginDialog(this,window_id,renderer_id,loginDialogImg);
         loginDialog.setOnSuccessClose((control, argObj) -> {
             loginDialog.setIsVisible(false);
-            background.setIsAnimated(true);
+            openDoorAnimation.setIsAnimated(true);
+            this.charSelScene= Env.BackGroundExeService.submit(() -> PrepareNextScene(window_id,renderer_id));
+            if (this.charSelScene==null) {
+                System.out.println("Can not prepare next scene!");
+            }
         });
         loginDialog.setIsVisible(false);
 
         System.out.println("loginDialog-----ID: "+loginDialog.getID());
         MirImage selectServerDialogImg = MirLibFactory.getMirLib(MirLibFactory.Prguse).GetMirImage(256);
         String[] servers={"逐鹿中原","九天烈焰"};
-        selectServerDialog = new SelectServerDialog(background,renderer_id,selectServerDialogImg,servers);
+        selectServerDialog = new SelectServerDialog(this,renderer_id,selectServerDialogImg,servers);
         selectServerDialog.setOnSuccessClose((control, argObj) -> {
             this.selectedServerName=(String)argObj;
             titleLabel.setText(this.selectedServerName);

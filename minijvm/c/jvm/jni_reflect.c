@@ -1497,7 +1497,7 @@ s32 com_misc_Unsafe_objectFieldBase(Runtime *runtime, JClass *clazz) {
     Instance *unsafe = localvar_getRefer(runtime->localvar, pos);
     pos++;
     Instance *ins = localvar_getRefer(runtime->localvar, pos);
-    push_long(runtime->stack, ins ? -1 : (s64) (intptr_t) ins->obj_fields);
+    push_long(runtime->stack, !ins ? -1 : (s64) (intptr_t) ins->obj_fields);
     return 0;
 }
 
