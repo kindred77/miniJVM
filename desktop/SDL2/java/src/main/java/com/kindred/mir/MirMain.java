@@ -148,13 +148,18 @@ public class MirMain {
 
             long event_id = MirJNI.SDL_CreateEvent();
 
-            MirScene.SwitchToScene(MirScene.PrepareNextScene(win_id, renderer_id));
+            //MirScene.SwitchToScene(MirScene.PrepareNextScene(win_id, renderer_id));
+            MirScene.SwitchToScene(MirScene.PrepareNextScene(win_id, renderer_id,null));
+            //TODO for test
+            //MirScene.SwitchToScene(new CharSelScene(null,win_id,renderer_id,new CharSelScene.CharSelSceneData("")));
 
             while (shouldRun) {
                 updateTime();
                 updateEnviroment();
                 while (MirJNI.SDL_PollEvent(event_id) != 0) {
-                    MirJNI.ImGui_SDL2_ProcessEvent(event_id);
+                    if (Settings.IsImguiUsed.get()) {
+                        MirJNI.ImGui_SDL2_ProcessEvent(event_id);
+                    }
                     switch (MirJNI.SDL_GetEventType(event_id)) {
                         case SDLEventType.SDL_QUIT:
                             shouldRun = false;
@@ -208,7 +213,7 @@ public class MirMain {
 
             }
 
-            if (Settings.isImguiUsed) {
+            if (Settings.IsImguiUsed.get()) {
                 MirJNI.ImGui_Destroy();
             }
 

@@ -7,6 +7,7 @@ import com.kindred.mir.engine.SoundList;
 import com.kindred.mir.engine.SoundManager;
 import com.kindred.mir.libs.MirImage;
 import com.kindred.mir.libs.MirLibFactory;
+import com.kindred.mir.scene.charsel.CharSelScene.CharSelSceneData;
 import com.kindred.mir.util.Color;
 import com.kindred.mir.util.ExecutionService.Future;
 import com.kindred.mir.util.Point;
@@ -14,6 +15,10 @@ import com.kindred.mir.util.Size;
 import com.kindred.mir.util.Util;
 
 public class LoginScene extends MirScene {
+
+    public static class LoginSceneData extends MirSceneData {
+
+    }
 
     private MirControlWithStaticImage background;
     private MirAnimatedControl openDoorAnimation;
@@ -37,9 +42,9 @@ public class LoginScene extends MirScene {
 
     private Future<MirScene> charSelScene;
 
-    public LoginScene(MirControl parent, long window_id,long renderer_id) throws Exception
+    public LoginScene(MirControl parent, long window_id,long renderer_id,MirSceneData sceneData) throws Exception
     {
-        super(parent,window_id,renderer_id);
+        super(parent,window_id,renderer_id,sceneData);
         SceneType=MirScene.SceneEnumType.Login;
         SoundManager.playSound(SoundList.IntroMusic, true);
         System.out.println("LoginScene-----ID: "+this.getID());
@@ -73,7 +78,7 @@ public class LoginScene extends MirScene {
         loginDialog.setOnSuccessClose((control, argObj) -> {
             loginDialog.setIsVisible(false);
             openDoorAnimation.setIsAnimated(true);
-            this.charSelScene= Env.BackGroundExeService.submit(() -> PrepareNextScene(window_id,renderer_id));
+            this.charSelScene= Env.BackGroundExeService.submit(() -> PrepareNextScene(window_id,renderer_id,new CharSelSceneData(selectedServerName)));
             if (this.charSelScene==null) {
                 System.out.println("Can not prepare next scene!");
             }

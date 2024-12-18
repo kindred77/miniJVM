@@ -1,11 +1,16 @@
 package com.kindred.mir.controls;
 
 import com.kindred.mir.Settings;
+import com.kindred.mir.scene.GameScene;
 import com.kindred.mir.scene.charsel.CharSelScene;
 import com.kindred.mir.scene.login.LoginScene;
 import com.kindred.mir.util.Size;
 
 public abstract class MirScene extends MirControlCanBeDrawn {
+
+    public static class MirSceneData {
+
+    }
 
     public static class SceneEnumType {
         public static int None = 0;
@@ -22,8 +27,9 @@ public abstract class MirScene extends MirControlCanBeDrawn {
     private static MirControl clickedControl;
     private long window_id;
     private long renderer_id;
+    protected MirSceneData sceneData;
 
-    protected MirScene(MirControl parent, long window_id, long renderer_id)
+    protected MirScene(MirControl parent, long window_id, long renderer_id, MirSceneData sceneData)
     {
         super(parent,renderer_id);
         //isDrawControlTexture = true;
@@ -31,6 +37,7 @@ public abstract class MirScene extends MirControlCanBeDrawn {
         size = new Size(Settings.ScreenWidth, Settings.ScreenHeight);
         this.window_id=window_id;
         this.renderer_id=renderer_id;
+        this.sceneData=sceneData;
     }
 
     public final static void SwitchToScene(MirScene scene) {
@@ -44,14 +51,19 @@ public abstract class MirScene extends MirControlCanBeDrawn {
         ActiveScene.setIsVisible(true);
     }
 
-    public final static MirScene PrepareNextScene(long window_id, long renderer_id) throws Exception{
-        //TODO 模拟加载时间
-        Thread.sleep(1000);
+    public final static MirScene PrepareNextScene(long window_id, long renderer_id,MirSceneData sceneData) throws Exception{
         if (null==ActiveScene) {
-            LoginScene loginScene=new LoginScene(null,window_id,renderer_id);
+            LoginScene loginScene=new LoginScene(null,window_id,renderer_id,sceneData);
             return loginScene;
+        } else if (ActiveScene.SceneType == SceneEnumType.Login) {
+            CharSelScene charSelScene=new CharSelScene(null,window_id,renderer_id, sceneData);
+            return charSelScene;
+        } else if (ActiveScene.SceneType == SceneEnumType.CharSel) {
+            GameScene gameScene=new GameScene(null,window_id,renderer_id, sceneData);
+            return gameScene;
+        } else {
+            throw new Exception("No scene after scene "+ActiveScene.SceneType);
         }
-        return new CharSelScene(null,window_id,renderer_id);
     }
 
 //

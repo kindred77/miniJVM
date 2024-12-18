@@ -1,6 +1,7 @@
 package com.kindred.mir;
 
 import com.kindred.mir.engine.Font;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Settings {
 
@@ -13,7 +14,8 @@ public class Settings {
     public static int BACKGROUND_FUTURE_GET_INTERVAL=200;
     public static int BACKGROUND_WORKER_POLL_INTERVAL=200;
 
-    public static boolean isImguiUsed=false;
+    //public static boolean isImguiUsed=false;
+    public static volatile AtomicBoolean IsImguiUsed=new AtomicBoolean(false);
 
     //fonts
     public static final String MIRFONT="FZSSJW.TTF";
