@@ -1,6 +1,6 @@
 package com.kindred.mir.constcode;
 
-public class MirBlendMode {
+public class MirEnums {
 
     public enum BlendMode
     {
@@ -13,6 +13,12 @@ public class MirBlendMode {
         INVLIGHTINV,
         INVCOLOR,
         INVBACKGROUND
+    }
+
+    public enum MirJob {
+        Warrior,
+        Taost,
+        Wilzard
     }
 
 }

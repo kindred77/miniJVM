@@ -5,11 +5,12 @@ import static com.kindred.sdl.constcode.SDLWindowFlags.SDL_WINDOW_MINIMIZED;
 
 import com.kindred.mir.controls.events.CommonEvent;
 import com.kindred.mir.controls.events.CommonEvent.EventEnum;
+import com.kindred.mir.scene.charsel.CharSelScene;
 import com.kindred.mir.util.ExecutionService;
-import com.kindred.mir.controls.MirScene;
+import com.kindred.mir.scene.MirScene;
 import com.kindred.mir.engine.MirJNI;
 
-import com.kindred.mir.scene.GameScene;
+import com.kindred.mir.scene.game.GameScene;
 import com.kindred.mir.util.Point;
 import com.kindred.mir.util.Util;
 import com.kindred.sdl.constcode.*;
@@ -129,7 +130,7 @@ public class MirMain {
             long win_id = MirJNI.SDL_CreateWindow(Util.toCstyleBytes("窗口-kindred"),
                     SdlVideoConst.SDL_WINDOWPOS_CENTERED,
                     SdlVideoConst.SDL_WINDOWPOS_CENTERED,
-                    800, 600,
+                    Settings.ScreenWidth, Settings.ScreenHeight,
                     //SDLWindowFlags.SDL_WINDOW_SHOWN | SDLWindowFlags.SDL_WINDOW_RESIZABLE);
                     SDLWindowFlags.SDL_WINDOW_OPENGL | SDLWindowFlags.SDL_WINDOW_RESIZABLE | SDLWindowFlags.SDL_WINDOW_ALLOW_HIGHDPI);
             if (win_id == 0) {
@@ -148,7 +149,6 @@ public class MirMain {
 
             long event_id = MirJNI.SDL_CreateEvent();
 
-            //MirScene.SwitchToScene(MirScene.PrepareNextScene(win_id, renderer_id));
             MirScene.SwitchToScene(MirScene.PrepareNextScene(win_id, renderer_id,null));
             //TODO for test
             //MirScene.SwitchToScene(new CharSelScene(null,win_id,renderer_id,new CharSelScene.CharSelSceneData("")));
@@ -224,6 +224,8 @@ public class MirMain {
             Env.BackGroundExeService.shutdown();
         } catch(Exception e) {
             e.printStackTrace();
+        } finally {
+            System.exit(0);
         }
     }
 }

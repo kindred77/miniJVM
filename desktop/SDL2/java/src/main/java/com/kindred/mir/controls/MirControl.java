@@ -1,21 +1,13 @@
 package com.kindred.mir.controls;
 
-import com.kindred.mir.MirMain;
 import com.kindred.mir.Settings;
-import com.kindred.mir.constcode.MirBlendMode;
 import com.kindred.mir.controls.events.CommonEvent;
-import com.kindred.mir.controls.events.CommonEvent.EventEnum;
 import com.kindred.mir.controls.listener.ControlCommonListener;
-import com.kindred.mir.engine.MirJNI;
-import com.kindred.mir.engine.MirTexture;
 import com.kindred.mir.engine.SoundList;
 import com.kindred.mir.engine.SoundManager;
 import com.kindred.mir.util.*;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 

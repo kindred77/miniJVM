@@ -1,7 +1,9 @@
-package com.kindred.mir.controls;
+package com.kindred.mir.scene;
 
 import com.kindred.mir.Settings;
-import com.kindred.mir.scene.GameScene;
+import com.kindred.mir.controls.MirControl;
+import com.kindred.mir.controls.MirControlCanBeDrawn;
+import com.kindred.mir.scene.game.GameScene;
 import com.kindred.mir.scene.charsel.CharSelScene;
 import com.kindred.mir.scene.login.LoginScene;
 import com.kindred.mir.util.Size;
@@ -26,7 +28,7 @@ public abstract class MirScene extends MirControlCanBeDrawn {
     private static long lastClickTime;
     private static MirControl clickedControl;
     private long window_id;
-    private long renderer_id;
+    //private long renderer_id;
     protected MirSceneData sceneData;
 
     protected MirScene(MirControl parent, long window_id, long renderer_id, MirSceneData sceneData)
@@ -36,7 +38,7 @@ public abstract class MirScene extends MirControlCanBeDrawn {
         //backColor = Color.Black;
         size = new Size(Settings.ScreenWidth, Settings.ScreenHeight);
         this.window_id=window_id;
-        this.renderer_id=renderer_id;
+        //this.renderer_id=renderer_id;
         this.sceneData=sceneData;
     }
 

@@ -1,8 +1,8 @@
-package com.kindred.mir.scene;
+package com.kindred.mir.scene.game;
 
 import com.kindred.mir.controls.MirControl;
 import com.kindred.mir.controls.MirItemCell;
-import com.kindred.mir.controls.MirScene;
+import com.kindred.mir.scene.MirScene;
 
 public class GameScene extends MirScene {
 

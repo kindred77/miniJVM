@@ -7,6 +7,7 @@ import com.kindred.mir.engine.SoundList;
 import com.kindred.mir.engine.SoundManager;
 import com.kindred.mir.libs.MirImage;
 import com.kindred.mir.libs.MirLibFactory;
+import com.kindred.mir.scene.MirScene;
 import com.kindred.mir.scene.charsel.CharSelScene.CharSelSceneData;
 import com.kindred.mir.util.Color;
 import com.kindred.mir.util.ExecutionService.Future;

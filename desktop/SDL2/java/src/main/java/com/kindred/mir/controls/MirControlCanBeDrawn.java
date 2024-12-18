@@ -1,10 +1,9 @@
 package com.kindred.mir.controls;
 
-import com.kindred.mir.constcode.MirBlendMode;
+import com.kindred.mir.constcode.MirEnums;
 import com.kindred.mir.controls.listener.ControlCommonListener;
 import com.kindred.mir.engine.MirJNI;
 import com.kindred.mir.util.Color;
-import com.kindred.mir.util.Point;
 import com.kindred.mir.util.Rectangle;
 import com.kindred.mir.util.Size;
 import com.kindred.mir.util.Vector2;
@@ -24,7 +23,7 @@ public class MirControlCanBeDrawn extends MirControl {
   protected boolean isGrayScale;
   protected boolean isBlending;
   protected float blendingRate;
-  private MirBlendMode.BlendMode blendMode;
+  private MirEnums.BlendMode blendMode;
 
   protected Color backColor = Color.Black;
   private ControlCommonListener onBackColorChanged;
@@ -207,12 +206,12 @@ public class MirControlCanBeDrawn extends MirControl {
   {
     this.blendingRate=blendingRate;
   }
-  public final MirBlendMode.BlendMode getBlendMode()
+  public final MirEnums.BlendMode getBlendMode()
   {
     return blendMode;
   }
 
-  public final void setBlendMode(MirBlendMode.BlendMode blendMode)
+  public final void setBlendMode(MirEnums.BlendMode blendMode)
   {
     this.blendMode=blendMode;
   }
