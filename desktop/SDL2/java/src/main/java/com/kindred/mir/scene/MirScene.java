@@ -1,5 +1,6 @@
 package com.kindred.mir.scene;
 
+import com.kindred.mir.Env;
 import com.kindred.mir.Settings;
 import com.kindred.mir.controls.MirControl;
 import com.kindred.mir.controls.MirControlCanBeDrawn;
@@ -21,17 +22,15 @@ public abstract class MirScene extends MirControlCanBeDrawn {
         public static int Game=3;
     }
 
-    public static MirScene ActiveScene = null;
-
     //private static MouseButtons mouseButtons;
-    protected int SceneType=SceneEnumType.None;
+    protected int sceneType=SceneEnumType.None;
     private static long lastClickTime;
     private static MirControl clickedControl;
     private long window_id;
     //private long renderer_id;
     protected MirSceneData sceneData;
 
-    protected MirScene(MirControl parent, long window_id, long renderer_id, MirSceneData sceneData)
+    protected MirScene(MirControl parent, long window_id, long renderer_id, int sceneType,MirSceneData sceneData)
     {
         super(parent,renderer_id);
         //isDrawControlTexture = true;
@@ -39,32 +38,37 @@ public abstract class MirScene extends MirControlCanBeDrawn {
         size = new Size(Settings.ScreenWidth, Settings.ScreenHeight);
         this.window_id=window_id;
         //this.renderer_id=renderer_id;
+        this.sceneType=sceneType;
         this.sceneData=sceneData;
     }
 
+    public final int getSceneType() {
+        return this.sceneType;
+    }
+
     public final static void SwitchToScene(MirScene scene) {
-        if (ActiveScene==scene) {
+        if (Env.ActiveScene==scene) {
             return;
         }
-        if (ActiveScene!=null) {
-            ActiveScene.setIsVisible(false);
+        if (Env.ActiveScene!=null) {
+            Env.ActiveScene.setIsVisible(false);
         }
-        ActiveScene=scene;
-        ActiveScene.setIsVisible(true);
+        Env.ActiveScene=scene;
+        Env.ActiveScene.setIsVisible(true);
     }
 
     public final static MirScene PrepareNextScene(long window_id, long renderer_id,MirSceneData sceneData) throws Exception{
-        if (null==ActiveScene) {
+        if (null==Env.ActiveScene) {
             LoginScene loginScene=new LoginScene(null,window_id,renderer_id,sceneData);
             return loginScene;
-        } else if (ActiveScene.SceneType == SceneEnumType.Login) {
+        } else if (Env.ActiveScene.sceneType == SceneEnumType.Login) {
             CharSelScene charSelScene=new CharSelScene(null,window_id,renderer_id, sceneData);
             return charSelScene;
-        } else if (ActiveScene.SceneType == SceneEnumType.CharSel) {
+        } else if (Env.ActiveScene.sceneType == SceneEnumType.CharSel) {
             GameScene gameScene=new GameScene(null,window_id,renderer_id, sceneData);
             return gameScene;
         } else {
-            throw new Exception("No scene after scene "+ActiveScene.SceneType);
+            throw new Exception("No scene after scene "+Env.ActiveScene.sceneType);
         }
     }
 
@@ -143,10 +147,6 @@ public abstract class MirScene extends MirControlCanBeDrawn {
 
         if (!disposing) {
             return;
-        }
-
-        if (ActiveScene == this) {
-            ActiveScene = null;
         }
 
         //mouseButtons = 0;

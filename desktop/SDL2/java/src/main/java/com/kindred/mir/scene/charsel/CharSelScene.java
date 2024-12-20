@@ -1,14 +1,21 @@
 package com.kindred.mir.scene.charsel;
 
+import com.kindred.mir.Env;
 import com.kindred.mir.Settings;
+import com.kindred.mir.constcode.MirEnums;
+import com.kindred.mir.constcode.MirEnums.MirGender;
+import com.kindred.mir.constcode.MirEnums.MirJob;
 import com.kindred.mir.controls.MirAnimatedControl;
+import com.kindred.mir.controls.MirButton;
 import com.kindred.mir.controls.MirControl;
 import com.kindred.mir.controls.MirControlWithStaticImage;
 import com.kindred.mir.controls.MirLabel;
 import com.kindred.mir.scene.MirScene;
 import com.kindred.mir.libs.MirImage;
 import com.kindred.mir.libs.MirLibFactory;
+import com.kindred.mir.scene.game.GameScene.GameSceneData;
 import com.kindred.mir.util.Color;
+import com.kindred.mir.util.ExecutionService.Future;
 import com.kindred.mir.util.Point;
 import com.kindred.mir.util.Size;
 import com.kindred.mir.util.Util;
@@ -27,12 +34,13 @@ public class CharSelScene extends MirScene {
 
   private MirControlWithStaticImage background;
   private MirLabel titleLabel;
-  private MirAnimatedControl charLeft;
-  private MirAnimatedControl charRight;
+  private MirAnimatedControl myChars[];
+  private MirButton startButton;
+
+  private Future<MirScene> gameScene;
 
   public CharSelScene(MirControl parent, long window_id, long renderer_id, MirSceneData sceneData) throws Exception{
-    super(parent, window_id, renderer_id,sceneData);
-    SceneType= SceneEnumType.CharSel;
+    super(parent, window_id, renderer_id,SceneEnumType.CharSel,sceneData);
     MirImage backgroundImg = MirLibFactory.getMirLib(MirLibFactory.Prguse).GetMirImage(BACKGROUND_IMG_INDEX);
     background=new MirControlWithStaticImage(this,renderer_id,backgroundImg);
     background.setIsUseOffSet(false);
@@ -42,19 +50,50 @@ public class CharSelScene extends MirScene {
     Point pos = titleLabel.Top();
     titleLabel.setLocation(new Point(pos.getX(),pos.getY()+4));
 
-    MirImage[] warriorMan = MirLibFactory.getMirLib(MirLibFactory.ChrSel).GetMirImages(Util.genSeq(40,55));
-    charLeft=new MirAnimatedControl(background,renderer_id,warriorMan,true,200);
-    charLeft.setIsAnimated(true);
-    charLeft.setLocation(charLeft.Left());
-
-    MirImage[] toaWoman = MirLibFactory.getMirLib(MirLibFactory.ChrSel).GetMirImages(Util.genSeq(240,255));
-    charRight=new MirAnimatedControl(background,renderer_id,toaWoman,true,200);
-    charRight.setIsAnimated(true);
-    charRight.setLocation(charRight.Right());
+    MirImage startBtnPressedImg = MirLibFactory.getMirLib(MirLibFactory.Prguse).GetMirImage(68);
+    startButton=new MirButton(background,renderer_id,null,null,
+        startBtnPressedImg,startBtnPressedImg.getTrueSize(),new Point(385,457));
+    startButton.setOnMouseLeftClick((mirControl,arg) -> {
+      this.gameScene= Env.BackGroundExeService.submit(() -> PrepareNextScene(window_id,renderer_id,new GameSceneData()));
+      if (this.gameScene==null) {
+        System.out.println("Can not prepare next scene!");
+      }
+      if (this.gameScene != null) {
+        SwitchToScene(this.gameScene.get());
+      }
+    });
   }
 
-  private void initMyChars(MyCharInfo[] myCharInfos) {
+  private int[] getImgIndexes(MirEnums.MirJob job, MirEnums.MirGender gender) {
+    int begin;
+    if (gender== MirGender.Man) {
+      begin=40;
+    } else {
+      begin=160;
+    }
 
+    int jobOffset;
+    if (job== MirJob.Warrior) {
+      jobOffset=0;
+    } else if (job== MirJob.Wilzard) {
+      jobOffset=40;
+    } else {
+      jobOffset=80;
+    }
+
+    int cnt = 15;
+
+    return Util.genSeq(begin+jobOffset,begin+jobOffset+cnt);
+  }
+
+  private void initMyChars(long renderer_id, MyCharInfo[] myCharInfos) throws Exception{
+    myChars=new MirAnimatedControl[myCharInfos.length];
+    for (int i=0; i<myCharInfos.length; ++i) {
+      MirImage[] imgs =MirLibFactory.getMirLib(MirLibFactory.ChrSel).GetMirImages(
+          getImgIndexes(myCharInfos[i].getJob(),myCharInfos[i].getGender()));
+      myChars[i]=new MirAnimatedControl(background,renderer_id,imgs,true,200);
+      myChars[i].setIsAnimated(true);
+    }
   }
 
   @Override

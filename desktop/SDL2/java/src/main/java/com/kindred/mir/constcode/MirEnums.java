@@ -21,4 +21,9 @@ public class MirEnums {
         Wilzard
     }
 
+    public enum MirGender {
+        Man,
+        Woman
+    }
+
 }

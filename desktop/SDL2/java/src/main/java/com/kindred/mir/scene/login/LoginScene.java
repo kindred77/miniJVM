@@ -45,8 +45,7 @@ public class LoginScene extends MirScene {
 
     public LoginScene(MirControl parent, long window_id,long renderer_id,MirSceneData sceneData) throws Exception
     {
-        super(parent,window_id,renderer_id,sceneData);
-        SceneType=MirScene.SceneEnumType.Login;
+        super(parent,window_id,renderer_id,SceneEnumType.Login,sceneData);
         SoundManager.playSound(SoundList.IntroMusic, true);
         System.out.println("LoginScene-----ID: "+this.getID());
         onDisposing = (control, argObj) -> {

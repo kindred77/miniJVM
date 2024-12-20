@@ -1,6 +1,8 @@
 package com.kindred.mir.util;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,5 +52,23 @@ public class Util {
         }
 
         return res;
+    }
+
+    public static short ToInt16(byte[] bytes, int index) {
+        ByteBuffer buffer = ByteBuffer.wrap(bytes, index, 2);
+        buffer.order(ByteOrder.BIG_ENDIAN);
+        return buffer.getShort();
+    }
+
+    public static int ToInt32(byte[] bytes, int index) {
+        ByteBuffer buffer = ByteBuffer.wrap(bytes, index, 4);
+        buffer.order(ByteOrder.BIG_ENDIAN);
+        return buffer.getInt();
+    }
+
+    public static int ToUInt16(byte[] bytes, int index) {
+        ByteBuffer buffer = ByteBuffer.wrap(bytes, index, 2);
+        buffer.order(ByteOrder.BIG_ENDIAN);
+        return buffer.getShort() & 0xFFFF;
     }
 }

@@ -25,8 +25,8 @@ public class MirMain {
 
     private static void updateEnviroment()
     {
-        if (MirScene.ActiveScene != null) {
-            MirScene.ActiveScene.process();
+        if (Env.ActiveScene != null) {
+            Env.ActiveScene.process();
         }
 
 //        for (int i = 0; i < MirAnimatedControl.animations.size(); i++) {
@@ -51,8 +51,8 @@ public class MirMain {
         //MPoint = pos;
 
         try {
-            if (MirScene.ActiveScene != null) {
-                MirScene.ActiveScene.onCommonEvent(new CommonEvent(EventEnum.MouseMove,pos));
+            if (Env.ActiveScene != null) {
+                Env.ActiveScene.onCommonEvent(new CommonEvent(EventEnum.MouseMove,pos));
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -68,11 +68,11 @@ public class MirMain {
         }
 
         try {
-            if (MirScene.ActiveScene != null) {
+            if (Env.ActiveScene != null) {
                 if (type == SDL_Button.SDL_BUTTON_LEFT) {
-                    MirScene.ActiveScene.onCommonEvent(new CommonEvent(EventEnum.MouseLeftDown,pos));
+                    Env.ActiveScene.onCommonEvent(new CommonEvent(EventEnum.MouseLeftDown,pos));
                 } else if(type == SDL_Button.SDL_BUTTON_RIGHT) {
-                    MirScene.ActiveScene.onCommonEvent(new CommonEvent(EventEnum.MouseRightDown,pos));
+                    Env.ActiveScene.onCommonEvent(new CommonEvent(EventEnum.MouseRightDown,pos));
                 }
             }
 
@@ -89,11 +89,11 @@ public class MirMain {
 //            GameScene.CanRun = false;
 
         try {
-            if (MirScene.ActiveScene != null) {
+            if (Env.ActiveScene != null) {
                 if (type == SDL_Button.SDL_BUTTON_LEFT) {
-                    MirScene.ActiveScene.onCommonEvent(new CommonEvent(EventEnum.MouseLeftUp,pos));
+                    Env.ActiveScene.onCommonEvent(new CommonEvent(EventEnum.MouseLeftUp,pos));
                 } else if(type == SDL_Button.SDL_BUTTON_RIGHT) {
-                    MirScene.ActiveScene.onCommonEvent(new CommonEvent(EventEnum.MouseRightUp,pos));
+                    Env.ActiveScene.onCommonEvent(new CommonEvent(EventEnum.MouseRightUp,pos));
                 }
             }
         } catch (Exception ex) {
@@ -102,8 +102,8 @@ public class MirMain {
     }
 
     private static void renderEnvironment(long renderer_id) {
-        if (MirScene.ActiveScene != null) {
-            MirScene.ActiveScene.show();
+        if (Env.ActiveScene != null) {
+            Env.ActiveScene.show();
             MirJNI.SDL_RenderPresent(renderer_id);
         }
     }
@@ -149,9 +149,9 @@ public class MirMain {
 
             long event_id = MirJNI.SDL_CreateEvent();
 
-            MirScene.SwitchToScene(MirScene.PrepareNextScene(win_id, renderer_id,null));
+            //MirScene.SwitchToScene(MirScene.PrepareNextScene(win_id, renderer_id,null));
             //TODO for test
-            //MirScene.SwitchToScene(new CharSelScene(null,win_id,renderer_id,new CharSelScene.CharSelSceneData("")));
+            MirScene.SwitchToScene(new CharSelScene(null,win_id,renderer_id,new CharSelScene.CharSelSceneData("")));
 
             while (shouldRun) {
                 updateTime();
