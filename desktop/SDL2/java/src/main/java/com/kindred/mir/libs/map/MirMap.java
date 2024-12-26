@@ -19,8 +19,8 @@ public class MirMap {
   private void initiate() throws Exception {
     File file=new File(this.fileName);
     if (file.exists()) {
-      Bytes = File.ReadAllBytes(FileName);
-      data=new byte[file.length()];
+      //Bytes = File.ReadAllBytes(FileName);
+      //data=new byte[file.length()];
       FileInputStream fis = new FileInputStream(file);
       fis.read(data);
     } else {
@@ -556,4 +556,15 @@ public class MirMap {
     }
   }
 
+  public MapCellInfo[][] getMapCells() {
+    return mapCells;
+  }
+
+  public int getWidth() {
+    return width;
+  }
+
+  public int getHeight() {
+    return height;
+  }
 }

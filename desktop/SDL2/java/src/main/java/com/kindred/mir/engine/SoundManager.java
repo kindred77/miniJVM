@@ -11,4 +11,9 @@ public class SoundManager {
     {
 
     }
+
+    public static void playMusic(int music, boolean loop)
+    {
+
+    }
 }

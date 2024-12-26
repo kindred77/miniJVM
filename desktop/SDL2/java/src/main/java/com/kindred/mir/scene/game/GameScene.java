@@ -4,6 +4,7 @@ import com.kindred.mir.GameCommon.ChatType;
 import com.kindred.mir.controls.MirControl;
 import com.kindred.mir.controls.MirItemCell;
 import com.kindred.mir.scene.MirScene;
+import com.kindred.mir.scene.game.dialogs.NPCDialog;
 import com.kindred.mir.scene.game.objects.UserObject;
 
 public class GameScene extends MirScene {
@@ -15,6 +16,7 @@ public class GameScene extends MirScene {
     public static MirItemCell SelectedCell;
     public static boolean PickedUpGold;
     public static UserObject User;
+    public NPCDialog NPCDialog;
 
     public static boolean CanMove, CanRun;
 

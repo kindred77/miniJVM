@@ -150,6 +150,13 @@
         </dependency> -->
 
         <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.36</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
             <groupId>io.github.digitalgust</groupId>
             <artifactId>xgui</artifactId>
             <version>1.1.14</version>
@@ -161,7 +168,49 @@
     <build>
         <finalName>${project.artifactId}</finalName>
         <plugins>
-            <plugin>   
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.2.0</version>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${basedir}/../../../binary/libex</outputDirectory>
+                            <overWriteReleases>false</overWriteReleases>
+                            <overWriteSnapshots>false</overWriteSnapshots>
+                            <overWriteIfNewer>true</overWriteIfNewer>
+                            <excludeArtifactIds>minijvm_rt</excludeArtifactIds>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>3.0.0</version>
+                <executions>
+                    <execution>
+                        <id>copy-project-jar</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <copy file="${project.build.directory}/${project.build.finalName}.jar"
+                                  todir="${basedir}/../../../binary/libex"/>
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!--<plugin>
                 <artifactId>maven-antrun-plugin</artifactId>
                 <version>1.8</version>
                 <executions>       
@@ -172,7 +221,7 @@
                         </goals>             
                         <configuration>       
                             <tasks>
-                                <!--  copy to binary lib dir -->
+                                &lt;!&ndash;  copy to binary lib dir &ndash;&gt;
                                 <mkdir dir="../../../binary/libex"/>        
                                 <copy todir="../../../binary/libex/" overwrite="true" > 
                                     <fileset dir="${project.build.directory}" erroronmissingdir="false">
@@ -183,7 +232,7 @@
                         </configuration>        
                     </execution>    
                 </executions>  
-            </plugin>   
+            </plugin>   -->
         </plugins>
         
             
