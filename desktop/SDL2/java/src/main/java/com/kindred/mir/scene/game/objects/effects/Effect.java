@@ -1,8 +1,11 @@
 package com.kindred.mir.scene.game.objects.effects;
 
+import com.kindred.mir.Env;
 import com.kindred.mir.Settings;
 import com.kindred.mir.controls.listener.ControlCommonListener;
 import com.kindred.mir.libs.MirLib;
+import com.kindred.mir.scene.MirScene.SceneEnumType;
+import com.kindred.mir.scene.game.GameScene;
 import com.kindred.mir.scene.game.objects.MapObject;
 import com.kindred.mir.util.Color;
 import com.kindred.mir.util.Point;
@@ -75,49 +78,54 @@ public class Effect {
     NextFrame = Start + (Duration / Count) * (CurrentFrame + 1);
   }
 
-//  public void Process()
-//  {
-//    if (CurrentFrame == 1) {
-//      if (onPlayed != null) {
-//        onPlayed.doAction(this, null);
-//      }
-//    }
-//    if (Settings.getTime() <= NextFrame) {
-//      return;
-//    }
-//
-//    if (Owner != null && Owner.SkipFrames) {
-//      CurrentFrame++;
-//    }
-//
-//    if (++CurrentFrame >= Count) {
-//      if (Repeat && (RepeatUntil == 0 || Settings.getTime() < RepeatUntil)) {
-//        CurrentFrame = 0;
-//        Start = Settings.getTime() + Delay;
-//        NextFrame = Start + (Duration / Count) * (CurrentFrame + 1);
-//      }
-//      else {
-//        Remove();
-//      }
-//    } else {
-//      NextFrame = Start + (Duration / Count) * (CurrentFrame + 1);
-//    }
-//
-//    GameScene.Scene.MapControl.TextureValid = false;
-//  }
+  public void Process()
+  {
+    if (CurrentFrame == 1) {
+      if (onPlayed != null) {
+        onPlayed.doAction(null, null);
+      }
+    }
+    if (Settings.getTime() <= NextFrame) {
+      return;
+    }
 
-//  public void Remove()
-//  {
-//    if (Owner != null) {
-//      Owner.Effects.Remove(this);
-//    } else {
-//      MapControl.Effects.Remove(this);
-//    }
-//
-//    if (Complete != null) {
-//      Complete(this, EventArgs.Empty);
-//    }
-//  }
+    if (Owner != null && Owner.SkipFrames) {
+      CurrentFrame++;
+    }
+
+    if (++CurrentFrame >= Count) {
+      if (Repeat && (RepeatUntil == 0 || Settings.getTime() < RepeatUntil)) {
+        CurrentFrame = 0;
+        Start = Settings.getTime() + Delay;
+        NextFrame = Start + (Duration / Count) * (CurrentFrame + 1);
+      }
+      else {
+        Remove();
+      }
+    } else {
+      NextFrame = Start + (Duration / Count) * (CurrentFrame + 1);
+    }
+
+    if (Env.ActiveScene!=null && Env.ActiveScene.getSceneType() == SceneEnumType.Game) {
+      //((GameScene)Env.ActiveScene).MapControl.TextureValid = false;
+    }
+
+  }
+
+  public void Remove()
+  {
+    if (Owner != null) {
+      Owner.Effects.remove(this);
+    } else {
+      if (Env.ActiveScene!=null && Env.ActiveScene.getSceneType() == SceneEnumType.Game) {
+        ((GameScene)Env.ActiveScene).MapControl.Effects.remove(this);
+      }
+    }
+
+    if (onComplete != null) {
+      onComplete.doAction(null, null);
+    }
+  }
 
   public void Draw()
   {

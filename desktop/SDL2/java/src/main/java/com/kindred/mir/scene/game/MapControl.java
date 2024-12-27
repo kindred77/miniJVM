@@ -13,6 +13,7 @@ import com.kindred.mir.libs.map.MapCellInfo;
 import com.kindred.mir.libs.map.MirMap;
 import com.kindred.mir.scene.MirScene.SceneEnumType;
 import com.kindred.mir.scene.game.objects.MapObject;
+import com.kindred.mir.scene.game.objects.MonsterObject;
 import com.kindred.mir.scene.game.objects.UserObject;
 import com.kindred.mir.scene.game.objects.effects.Effect;
 import com.kindred.mir.util.Color;
@@ -62,11 +63,11 @@ public class MapControl extends MirControlWithTexture {
 
   private boolean isAutoRun;
 
-  public static boolean AutoHit;
+  public boolean AutoHit;
 
   public int AnimationCount;
 
-  public static List<Effect> Effects = new ArrayList<Effect>();
+  public List<Effect> Effects = new ArrayList<>();
 
   public MapControl(MirControl parent, long renderer_id) {
     super(parent, renderer_id);
@@ -90,14 +91,7 @@ public class MapControl extends MirControlWithTexture {
 //    Click += OnMouseClick;
   }
 
-//  public static UserObject getUser() {
-//    return MapObject.User;
-//  }
-//  public static void setUser(UserObject user) {
-//    MapObject.User = user;
-//  }
-
-  public static Point getMapLocation() {
+  public Point getMapLocation() {
     if (GameScene.User == null) {
       return Point.Empty;
     } else {
@@ -167,55 +161,88 @@ public class MapControl extends MirControlWithTexture {
     SoundList.Music = Music;
   }
 
-//  public void Process()
-//  {
-//    Processdoors();
-//    User.Process();
-//
-//    for (int i = Objects.size() - 1; i >= 0; i--) {
-//      MapObject ob = Objects.get(i);
-//      if (ob == User) {
-//        continue;
-//      }
-//      //  if (ob.ActionFeed.Count > 0 || ob.Effects.Count > 0 || GameScene.CanMove || CMain.Time >= ob.NextMotion)
-//      ob.Process();
-//    }
-//
-//    for (int i = Effects.Count - 1; i >= 0; i--) {
-//      Effects[i].Process();
-//    }
-//
-//    if (MapObject.TargetObject != null && MapObject.TargetObject is MonsterObject && MapObject.TargetObject.AI == 64)
-//    MapObject.TargetObject = null;
-//    if (MapObject.MagicObject != null && MapObject.MagicObject is MonsterObject && MapObject.MagicObject.AI == 64)
-//    MapObject.MagicObject = null;
-//
-//    CheckInput();
-//
-//
-//    MapObject bestmouseobject = null;
-//    for (int y = MapLocation.Y + 2; y >= MapLocation.Y - 2; y--)
-//    {
-//      if (y >= Height) {
-//        continue;
-//      }
-//      if (y < 0) {
-//        break;
-//      }
-//      for (int x = MapLocation.X + 2; x >= MapLocation.X - 2; x--) {
-//        if (x >= Width) {
-//          continue;
-//        }
-//        if (x < 0) {
-//          break;
-//        }
-//        CellInfo cell = M2CellInfo[x, y];
-//        if (cell.CellObjects == null) {
-//          continue;
-//        }
-//
-//        for (int i = cell.CellObjects.Count - 1; i >= 0; i--) {
-//          MapObject ob = cell.CellObjects[i];
+  public void Processdoors()
+  {
+    for (int i = 0; i < Doors.size(); i++)
+    {
+      if ((Doors.get(i).DoorState == 1) || (Doors.get(i).DoorState == 3))
+      {
+        if (Doors.get(i).LastTick + 50 < Settings.getTime())
+        {
+          Doors.get(i).LastTick = Settings.getTime();
+          Doors.get(i).ImageIndex++;
+          if (Doors.get(i).ImageIndex == 1)//change the 1 if you want to actualy animate doors opening/closing
+          {
+            Doors.get(i).ImageIndex = 0;
+            Doors.get(i).DoorState = (byte)(++Doors.get(i).DoorState % 4);
+          }
+          isFloorValid = false;
+        }
+      }
+      if (Doors.get(i).DoorState == 2)
+      {
+        if (Doors.get(i).LastTick + 5000 < Settings.getTime())
+        {
+          Doors.get(i).LastTick = Settings.getTime();
+          Doors.get(i).DoorState = 3;
+          isFloorValid = false;
+        }
+      }
+    }
+  }
+
+  public void Process()
+  {
+    Processdoors();
+    MapObject.User.Process();
+
+    for (int i = Objects.size() - 1; i >= 0; i--) {
+      MapObject ob = Objects.get(i);
+      if (ob == MapObject.User) {
+        continue;
+      }
+      //  if (ob.ActionFeed.Count > 0 || ob.Effects.Count > 0 || GameScene.CanMove || CMain.Time >= ob.NextMotion)
+      ob.Process();
+    }
+
+    for (int i = Effects.size() - 1; i >= 0; i--) {
+      Effects.get(i).Process();
+    }
+
+    if (MapObject.TargetObject != null && MapObject.TargetObject instanceof MonsterObject
+        && MapObject.TargetObject.AI == 64) {
+      MapObject.TargetObject = null;
+    }
+    if (MapObject.MagicObject != null && MapObject.MagicObject instanceof MonsterObject
+        && MapObject.MagicObject.AI == 64) {
+      MapObject.MagicObject = null;
+    }
+
+    //CheckInput();
+
+    MapObject bestmouseobject = null;
+    for (int y = getMapLocation().getY() + 2; y >= getMapLocation().getY() - 2; y--)
+    {
+      if (y >= Height) {
+        continue;
+      }
+      if (y < 0) {
+        break;
+      }
+      for (int x = getMapLocation().getX() + 2; x >= getMapLocation().getX() - 2; x--) {
+        if (x >= Width) {
+          continue;
+        }
+        if (x < 0) {
+          break;
+        }
+        MapCellInfo cell = M2CellInfo[x][y];
+        if (cell.CellObjects == null) {
+          continue;
+        }
+
+//        for (int i = cell.CellObjects.size() - 1; i >= 0; i--) {
+//          MapObject ob = cell.CellObjects.get(i);
 //          if (ob == MapObject.User || !ob.MouseOver(CMain.MPoint)) {
 //            continue;
 //          }
@@ -230,23 +257,20 @@ public class MapControl extends MirControlWithTexture {
 //              //continue;
 //            }
 //            MapObject.MouseObject = ob;
-//            Redraw();
 //          }
 //          if (bestmouseobject != null && MapObject.MouseObject == null) {
 //            MapObject.MouseObject = bestmouseobject;
-//            Redraw();
 //          }
 //          return;
 //        }
-//      }
-//    }
-//
-//
-//    if (MapObject.MouseObject != null) {
-//      MapObject.MouseObject = null;
-//      Redraw();
-//    }
-//  }
+      }
+    }
+
+
+    if (MapObject.MouseObject != null) {
+      MapObject.MouseObject = null;
+    }
+  }
 
   public static MapObject GetObject(long targetID)
   {

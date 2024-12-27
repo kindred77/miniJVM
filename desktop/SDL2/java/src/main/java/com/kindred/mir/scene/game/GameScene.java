@@ -16,6 +16,7 @@ public class GameScene extends MirScene {
     public static MirItemCell SelectedCell;
     public static boolean PickedUpGold;
     public static UserObject User;
+    public MapControl MapControl;
     public NPCDialog NPCDialog;
 
     public static boolean CanMove, CanRun;

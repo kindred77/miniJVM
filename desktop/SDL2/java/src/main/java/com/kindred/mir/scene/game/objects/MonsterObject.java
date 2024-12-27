@@ -2,7 +2,7 @@ package com.kindred.mir.scene.game.objects;
 
 import com.kindred.mir.GameCommon.ObjectType;
 
-public class PlayerObject extends MapObject {
+public class MonsterObject extends MapObject {
 
   @Override
   public ObjectType getRace() {
