@@ -1,10 +1,13 @@
 package com.kindred.mir.test;
 
+import com.kindred.mir.util.aspect.MirSetWithAutoRefresh;
 import java.util.Arrays;
 import java.util.List;
 import lombok.Builder;
 import lombok.Data;
+import org.aspectj.lang.annotation.Aspect;
 
+@Aspect
 public class TestLombok {
 
   @FunctionalInterface
@@ -29,6 +32,18 @@ public class TestLombok {
     private String name;
     private Long id;
     private SubBean subBean;
+
+    @MirSetWithAutoRefresh
+    public void setTest(String test){
+      System.out.println("---------test----------");
+      //throw new Exception("error");
+    }
+
+    @MirSetWithAutoRefresh
+    public String setTest2(String test){
+      System.out.println("---------test2----------");
+      return test;
+    }
   }
 
   public static void main(String args[]) throws Exception {
