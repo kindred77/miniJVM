@@ -71,4 +71,16 @@ public class Util {
         buffer.order(ByteOrder.BIG_ENDIAN);
         return buffer.getShort() & 0xFFFF;
     }
+
+    public static boolean EnumHasFlag(int srcVal, int tgtVal)
+    {
+        if ((srcVal & tgtVal) == tgtVal)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
 }

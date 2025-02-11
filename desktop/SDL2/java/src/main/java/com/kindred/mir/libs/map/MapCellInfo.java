@@ -1,10 +1,16 @@
 package com.kindred.mir.libs.map;
 
+import static com.kindred.mir.GameCommon.Monster.*;
+import static com.kindred.mir.GameCommon.ObjectType.Monster;
+
 import com.kindred.mir.GameCommon.ObjectType;
+import com.kindred.mir.engine.MirJNI;
+import com.kindred.mir.libs.MirImage;
+import com.kindred.mir.libs.MirImage.ImageEffect;
+import com.kindred.mir.libs.MirLibFactory;
 import com.kindred.mir.scene.game.objects.MapObject;
+import com.kindred.mir.scene.game.objects.MonsterObject;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,16 +40,16 @@ public class MapCellInfo {
   public boolean FishingCell;
   public List<MapObject> CellObjects;
 
-  public void AddObject(MapObject ob)
+  public void addObject(MapObject ob)
   {
     if (CellObjects == null) {
       CellObjects = new ArrayList<>();
     }
 
     CellObjects.add(0, ob);
-    Sort();
+    sort();
   }
-  public void RemoveObject(MapObject ob)
+  public void removeObject(MapObject ob)
   {
     if (CellObjects == null) {
       return;
@@ -54,10 +60,10 @@ public class MapCellInfo {
     if (CellObjects.size() == 0) {
       CellObjects = null;
     } else {
-      Sort();
+      sort();
     }
   }
-  public MapObject FindObject(long ObjectID)
+  public MapObject findObject(long ObjectID)
   {
     List<MapObject> longWords = CellObjects.stream()
         .filter(mapObj -> mapObj.ObjectID > ObjectID)
@@ -68,65 +74,70 @@ public class MapCellInfo {
     return null;
   }
 
-//  public void DrawObjects()
-//  {
-//    if (CellObjects == null) return;
+  public void drawObjects(long surface) {
+    if (CellObjects == null) {
+      return;
+    }
+
+    for (int i = 0; i < CellObjects.size(); i++)
+    {
+      if (!CellObjects.get(i).Dead)
+      {
+        CellObjects.get(i).draw(surface);
+        continue;
+      }
+
+      if(CellObjects.get(i).getRace() == ObjectType.Monster)
+      {
+        switch(((MonsterObject)CellObjects.get(i)).BaseImage)
+        {
+          case PalaceWallLeft:
+          case PalaceWall1:
+          case PalaceWall2:
+          case SSabukWall1:
+          case SSabukWall2:
+          case SSabukWall3:
+          case HellLord:
+            CellObjects.get(i).draw(surface);
+            break;
+          default:
+            continue;
+        }
+      }
+    }
+  }
 //
-//    for (int i = 0; i < CellObjects.Count; i++)
-//    {
-//      if (!CellObjects[i].Dead)
-//      {
-//        CellObjects[i].Draw();
-//        continue;
-//      }
-//
-//      if(CellObjects[i].Race == ObjectType.Monster)
-//      {
-//        switch(((MonsterObject)CellObjects[i]).BaseImage)
-//        {
-//          case Monster.PalaceWallLeft:
-//          case Monster.PalaceWall1:
-//          case Monster.PalaceWall2:
-//          case Monster.SSabukWall1:
-//          case Monster.SSabukWall2:
-//          case Monster.SSabukWall3:
-//          case Monster.HellLord:
-//            CellObjects[i].Draw();
-//            break;
-//          default:
-//            continue;
-//        }
-//      }
-//    }
-//  }
-//
-//  public void DrawDeadObjects()
-//  {
-//    if (CellObjects == null) return;
-//    for (int i = 0; i < CellObjects.Count; i++)
-//    {
-//      if (!CellObjects[i].Dead) continue;
-//
-//      if (CellObjects[i].Race == ObjectType.Monster)
-//      {
-//        switch (((MonsterObject)CellObjects[i]).BaseImage)
-//        {
-//          case Monster.PalaceWallLeft:
-//          case Monster.PalaceWall1:
-//          case Monster.PalaceWall2:
-//          case Monster.SSabukWall1:
-//          case Monster.SSabukWall2:
-//          case Monster.SSabukWall3:
-//          case Monster.HellLord:
-//            continue;
-//        }
-//      }
-//
-//      CellObjects[i].Draw();
-//    }
-//  }
-//
-  public void Sort()
+  public void drawDeadObjects(long surface)
+  {
+    if (CellObjects == null) {
+      return;
+    }
+    for (int i = 0; i < CellObjects.size(); i++)
+    {
+      if (!CellObjects.get(i).Dead) {
+        continue;
+      }
+
+      if (CellObjects.get(i).getRace() == Monster)
+      {
+        switch (((MonsterObject)CellObjects.get(i)).BaseImage)
+        {
+          case PalaceWallLeft:
+          case PalaceWall1:
+          case PalaceWall2:
+          case SSabukWall1:
+          case SSabukWall2:
+          case SSabukWall3:
+          case HellLord:
+            continue;
+        }
+      }
+
+      CellObjects.get(i).draw(surface);
+    }
+  }
+
+  public void sort()
   {
     CellObjects.sort((ob1, ob2) -> {
       if (ob1.getRace() == ObjectType.Item && ob2.getRace() != ObjectType.Item) {
@@ -142,7 +153,7 @@ public class MapCellInfo {
         return 1;
       }
 
-      int i = Boolean.compare(ob2.isDead,ob1.isDead);
+      int i = Boolean.compare(ob2.Dead,ob1.Dead);
       return i == 0 ? Long.compare(ob1.ObjectID,ob2.ObjectID) : i;
     });
 

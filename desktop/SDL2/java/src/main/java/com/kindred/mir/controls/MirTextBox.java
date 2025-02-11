@@ -5,6 +5,9 @@ import com.kindred.mir.engine.MirJNI;
 import com.kindred.mir.util.Color;
 import com.kindred.mir.util.Util;
 
+/**
+ * Do not use!!
+ */
 public class MirTextBox extends MirControlWithTexture {
 
     private boolean canLoseFocus;

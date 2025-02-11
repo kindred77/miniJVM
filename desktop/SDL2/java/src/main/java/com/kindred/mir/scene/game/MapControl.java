@@ -4,11 +4,16 @@ import com.kindred.mir.Env;
 import com.kindred.mir.GameCommon.ChatType;
 import com.kindred.mir.GameCommon.Door;
 import com.kindred.mir.GameCommon.LightSetting;
+import com.kindred.mir.GameCommon.MirDirection;
 import com.kindred.mir.Settings;
 import com.kindred.mir.controls.MirControl;
 import com.kindred.mir.controls.MirControlWithTexture;
+import com.kindred.mir.engine.MirJNI;
 import com.kindred.mir.engine.SoundList;
 import com.kindred.mir.engine.SoundManager;
+import com.kindred.mir.libs.MirImage;
+import com.kindred.mir.libs.MirImage.ImageEffect;
+import com.kindred.mir.libs.MirLibFactory;
 import com.kindred.mir.libs.map.MapCellInfo;
 import com.kindred.mir.libs.map.MirMap;
 import com.kindred.mir.scene.MirScene.SceneEnumType;
@@ -91,13 +96,17 @@ public class MapControl extends MirControlWithTexture {
 //    Click += OnMouseClick;
   }
 
+  public UserObject getUser() {
+    return MapObject.User;
+  }
+
   public Point getMapLocation() {
-    if (GameScene.User == null) {
+    if (GameScene.getUser() == null) {
       return Point.Empty;
     } else {
       return Point.add(
           new Point(MouseLocation.getX() / CellWidth - OffSetX, MouseLocation.getY() / CellHeight - OffSetY),
-          GameScene.User.CurrentLocation
+          GameScene.getUser().CurrentLocation
       );
     }
   }
@@ -126,10 +135,10 @@ public class MapControl extends MirControlWithTexture {
     }
   }
 
-  public void LoadMap() throws Exception
+  public void loadMap() throws Exception
   {
     if (Env.ActiveScene!=null && Env.ActiveScene.getSceneType() == SceneEnumType.Game) {
-      ((GameScene)Env.ActiveScene).NPCDialog.setIsVisible(false);
+      ((GameScene)Env.ActiveScene).npcDialog.setIsVisible(false);
     }
     Objects.clear();
     Effects.clear();
@@ -161,40 +170,68 @@ public class MapControl extends MirControlWithTexture {
     SoundList.Music = Music;
   }
 
-  public void Processdoors()
+  public void removeObject(MapObject ob)
+  {
+    M2CellInfo[ob.MapLocation.getX()][ob.MapLocation.getY()].removeObject(ob);
+  }
+  public void addObject(MapObject ob)
+  {
+    M2CellInfo[ob.MapLocation.getX()][ob.MapLocation.getY()].addObject(ob);
+  }
+  public MapObject findObject(long ObjectID, int x, int y)
+  {
+    return M2CellInfo[x][y].findObject(ObjectID);
+  }
+  public void sortObject(MapObject ob)
+  {
+    M2CellInfo[ob.MapLocation.getX()][ob.MapLocation.getY()].sort();
+  }
+
+  public Door getDoor(byte Index)
   {
     for (int i = 0; i < Doors.size(); i++)
     {
-      if ((Doors.get(i).DoorState == 1) || (Doors.get(i).DoorState == 3))
+      if (Doors.get(i).getIndex() == Index) {
+        return Doors.get(i);
+      }
+    }
+    return null;
+  }
+
+  public void processdoors()
+  {
+    for (int i = 0; i < Doors.size(); i++)
+    {
+      if ((Doors.get(i).getDoorState() == 1) || (Doors.get(i).getDoorState() == 3))
       {
-        if (Doors.get(i).LastTick + 50 < Settings.getTime())
+        if (Doors.get(i).getLastTick() + 50 < Settings.getTime())
         {
-          Doors.get(i).LastTick = Settings.getTime();
-          Doors.get(i).ImageIndex++;
-          if (Doors.get(i).ImageIndex == 1)//change the 1 if you want to actualy animate doors opening/closing
+          Doors.get(i).setLastTick(Settings.getTime());
+          Doors.get(i).setImageIndex((byte)(Doors.get(i).getImageIndex()+1));
+          if (Doors.get(i).getImageIndex() == 1)//change the 1 if you want to actualy animate doors opening/closing
           {
-            Doors.get(i).ImageIndex = 0;
-            Doors.get(i).DoorState = (byte)(++Doors.get(i).DoorState % 4);
+            Doors.get(i).setImageIndex((byte)0);
+            Doors.get(i).setDoorState((byte)(Doors.get(i).getDoorState()+1 % 4));
           }
           isFloorValid = false;
         }
       }
-      if (Doors.get(i).DoorState == 2)
+      if (Doors.get(i).getDoorState() == 2)
       {
-        if (Doors.get(i).LastTick + 5000 < Settings.getTime())
+        if (Doors.get(i).getLastTick() + 5000 < Settings.getTime())
         {
-          Doors.get(i).LastTick = Settings.getTime();
-          Doors.get(i).DoorState = 3;
+          Doors.get(i).setLastTick(Settings.getTime());
+          Doors.get(i).setDoorState((byte)3);
           isFloorValid = false;
         }
       }
     }
   }
 
-  public void Process()
+  public void process()
   {
-    Processdoors();
-    MapObject.User.Process();
+    processdoors();
+    MapObject.User.process();
 
     for (int i = Objects.size() - 1; i >= 0; i--) {
       MapObject ob = Objects.get(i);
@@ -202,7 +239,7 @@ public class MapControl extends MirControlWithTexture {
         continue;
       }
       //  if (ob.ActionFeed.Count > 0 || ob.Effects.Count > 0 || GameScene.CanMove || CMain.Time >= ob.NextMotion)
-      ob.Process();
+      ob.process();
     }
 
     for (int i = Effects.size() - 1; i >= 0; i--) {
@@ -272,7 +309,7 @@ public class MapControl extends MirControlWithTexture {
     }
   }
 
-  public static MapObject GetObject(long targetID)
+  public static MapObject getObject(long targetID)
   {
     for (int i = 0; i < Objects.size(); i++) {
       MapObject ob = Objects.get(i);
@@ -282,6 +319,373 @@ public class MapControl extends MirControlWithTexture {
       return ob;
     }
     return null;
+  }
+
+  private void drawFloor(long surface) throws Exception{
+    int index;
+    int drawY, drawX;
+
+    long surface = MirJNI.Mir_FillRect(Settings.ScreenWidth,Settings.ScreenHeight,new int[]{0,0,0,0});
+
+    for (int y = getUser().Movement.getY() - ViewRangeY; y <= getUser().Movement.getY() + ViewRangeY; y++) {
+      if (y <= 0 || y % 2 == 1) {
+        continue;
+      }
+      if (y >= Height) {
+        break;
+      }
+      drawY = (y - getUser().Movement.getY() + OffSetY) * CellHeight + getUser().OffSetMove.getY(); //Moving OffSet
+
+      for (int x = getUser().Movement.getX() - ViewRangeX; x <= getUser().Movement.getX() + ViewRangeX; x++) {
+        if (x <= 0 || x % 2 == 1) {
+          continue;
+        }
+        if (x >= Width) {
+          break;
+        }
+        drawX = (x - getUser().Movement.getX() + OffSetX) * CellWidth - OffSetX + getUser().OffSetMove.getX(); //Moving OffSet
+        if ((M2CellInfo[x][y].BackImage == 0) || (M2CellInfo[x][y].BackIndex == -1)) {
+          continue;
+        }
+        index = (M2CellInfo[x][y].BackImage & 0x1FFFF) - 1;
+        MirImage img = MirLibFactory.getMapLib(M2CellInfo[x][y].BackIndex).GetMirImage(index);
+        MirJNI.Mir_SurfaceBlendAdd(surface,img.getSurface(ImageEffect.None),drawX, drawY,1);
+      }
+    }
+
+    for (int y = getUser().Movement.getY() - ViewRangeY; y <= getUser().Movement.getY() + ViewRangeY + 5; y++) {
+      if (y <= 0) {
+        continue;
+      }
+      if (y >= Height) {
+        break;
+      }
+      drawY = (y - getUser().Movement.getY() + OffSetY) * CellHeight + getUser().OffSetMove.getY(); //Moving OffSet
+
+      for (int x = getUser().Movement.getX() - ViewRangeX; x <= getUser().Movement.getX() + ViewRangeX; x++) {
+        if (x < 0) {
+          continue;
+        }
+        if (x >= Width) {
+          break;
+        }
+        drawX = (x - getUser().Movement.getX() + OffSetX) * CellWidth - OffSetX + getUser().OffSetMove.getX(); //Moving OffSet
+
+        index = M2CellInfo[x][y].MiddleImage - 1;
+
+        if ((index < 0) || (M2CellInfo[x][y].MiddleIndex == -1)) {
+          continue;
+        }
+        MirImage img = MirLibFactory.getMapLib(M2CellInfo[x][y].MiddleIndex).GetMirImage(index);
+        if (M2CellInfo[x][y].MiddleIndex > 199){//mir3 mid layer is same level as front layer not real middle + it cant draw index -1 so 2 birds in one stone :p
+          Size s = img.getTrueSize();
+
+          if (s.getWidth() != CellWidth || s.getHeight() != CellHeight) {
+            continue;
+          }
+        }
+        MirJNI.Mir_SurfaceBlendAdd(surface,img.getSurface(ImageEffect.None),drawX, drawY,1);
+      }
+    }
+    for (int y = getUser().Movement.getY() - ViewRangeY; y <= getUser().Movement.getY() + ViewRangeY + 5; y++) {
+      if (y <= 0) {
+        continue;
+      }
+      if (y >= Height) {
+        break;
+      }
+      drawY = (y - getUser().Movement.getY() + OffSetY) * CellHeight + getUser().OffSetMove.getY(); //Moving OffSet
+
+      for (int x = getUser().Movement.getX() - ViewRangeX; x <= getUser().Movement.getX() + ViewRangeX; x++)
+      {
+        if (x < 0) {
+          continue;
+        }
+        if (x >= Width) {
+          break;
+        }
+        drawX = (x - getUser().Movement.getX() + OffSetX) * CellWidth - OffSetX + getUser().OffSetMove.getX(); //Moving OffSet
+
+        index = (M2CellInfo[x][y].FrontImage & 0x7FFF) - 1;
+        if (index == -1) {
+          continue;
+        }
+        int fileIndex = M2CellInfo[x][y].FrontIndex;
+        if (fileIndex == -1) {
+          continue;
+        }
+        if (fileIndex == 200) {
+          continue; //fixes random bad spots on old school 4.map
+        }
+        //Size s = Libraries.MapLibs[fileIndex].GetSize(index);
+        MirImage img = MirLibFactory.getMapLib(fileIndex).GetMirImage(index);
+        if (M2CellInfo[x][y].DoorIndex > 0){
+          Door DoorInfo = getDoor(M2CellInfo[x][y].DoorIndex);
+          if (DoorInfo == null) {
+            DoorInfo = Door.builder().index(M2CellInfo[x][y].DoorIndex)
+                .doorState((byte)0).imageIndex((byte)0).lastTick(Settings.getTime())
+                .build();
+            Doors.add(DoorInfo);
+          } else {
+            if (DoorInfo.getDoorState() != 0) {
+              index += (DoorInfo.getImageIndex() + 1) * M2CellInfo[x][y].DoorOffset;//'bad' code if you want to use animation but it's gonna depend on the animation > has to be custom designed for the animtion
+            }
+          }
+        }
+
+        if (index < 0
+            || ((img.getTrueSize().getWidth() != CellWidth || img.getTrueSize().getHeight() != CellHeight)
+            && ((img.getTrueSize().getWidth() != CellWidth * 2)
+            || (img.getTrueSize().getHeight() != CellHeight * 2)))) {
+          continue;
+        }
+        img = MirLibFactory.getMapLib(fileIndex).GetMirImage(index);
+        MirJNI.Mir_SurfaceBlendAdd(surface,img.getSurface(ImageEffect.None),drawX, drawY,1);
+      }
+    }
+  }
+
+  private void drawBackground(long surface) throws Exception {
+    String cleanFilename = FileName.replace(Settings.MapPath, "");
+    //long surface = MirJNI.Mir_FillRect(Settings.ScreenWidth,Settings.ScreenHeight,new int[]{0,0,0,0});
+    if(cleanFilename.startsWith("ID1") || cleanFilename.startsWith("ID2")) {
+      MirImage img = MirLibFactory.getMirLib(MirLibFactory.Background).GetMirImage(10);
+      MirJNI.Mir_SurfaceBlendAdd(surface,img.getSurface(ImageEffect.None),0,0,1);
+    } else if(cleanFilename.startsWith("ID3_013")) {
+      MirImage img = MirLibFactory.getMirLib(MirLibFactory.Background).GetMirImage(22);
+      MirJNI.Mir_SurfaceBlendAdd(surface,img.getSurface(ImageEffect.None),0,0,1);
+    } else if (cleanFilename.startsWith("ID3_015")) {
+      MirImage img = MirLibFactory.getMirLib(MirLibFactory.Background).GetMirImage(23);
+      MirJNI.Mir_SurfaceBlendAdd(surface,img.getSurface(ImageEffect.None),0,0,1);
+    } else if (cleanFilename.startsWith("ID3_023") || cleanFilename.startsWith("ID3_025")) {
+      MirImage img = MirLibFactory.getMirLib(MirLibFactory.Background).GetMirImage(21);
+      MirJNI.Mir_SurfaceBlendAdd(surface,img.getSurface(ImageEffect.None),0,0,1);
+    }
+  }
+
+  private void drawObjects(long surface) throws Exception
+  {
+    UserObject userObject=getUser();
+    for (int y = userObject.Movement.getY() - ViewRangeY; y <= userObject.Movement.getY() + ViewRangeY + 25; y++) {
+      if (y <= 0) {
+        continue;
+      }
+      if (y >= Height) {
+        break;
+      }
+      for (int x = userObject.Movement.getX() - ViewRangeX; x <= userObject.Movement.getX() + ViewRangeX; x++) {
+        if (x < 0) {
+          continue;
+        }
+        if (x >= Width) {
+          break;
+        }
+        M2CellInfo[x][y].drawDeadObjects(surface);
+      }
+    }
+
+    for (int y = userObject.Movement.getY() - ViewRangeY; y <= userObject.Movement.getY() + ViewRangeY + 25; y++) {
+      if (y <= 0) {
+        continue;
+      }
+      if (y >= Height) {
+        break;
+      }
+      int drawY = (y - userObject.Movement.getY() + OffSetY + 1) * CellHeight + userObject.OffSetMove.getY();
+
+      for (int x = userObject.Movement.getX() - ViewRangeX; x <= userObject.Movement.getX() + ViewRangeX; x++) {
+        if (x < 0) {
+          continue;
+        }
+        if (x >= Width) {
+          break;
+        }
+        int drawX = (x - userObject.Movement.getX() + OffSetX) * CellWidth - OffSetX + userObject.OffSetMove.getX();
+        int index;
+        byte animation;
+        boolean blend;
+        Size s;
+
+        index = M2CellInfo[x][y].TileAnimationImage;
+        animation = M2CellInfo[x][y].TileAnimationFrames;
+        if ((index > 0) & (animation > 0)) {
+          index--;
+          int animationoffset = M2CellInfo[x][y].TileAnimationOffset ^ 0x2000;
+          index += animationoffset * (AnimationCount % animation);
+          MirImage img = MirLibFactory.getMapLib(190).GetMirImage(index);
+          MirJNI.Mir_SurfaceBlendAdd(surface,img.getSurface(ImageEffect.None),drawX,drawY,1);
+        }
+
+        if ((M2CellInfo[x][y].MiddleIndex > 199) && (M2CellInfo[x][y].MiddleIndex != -1)) {
+          index = M2CellInfo[x][y].MiddleImage - 1;
+          if (index > 0)
+          {
+            animation = M2CellInfo[x][y].MiddleAnimationFrame;
+            blend = false;
+            if ((animation > 0) && (animation < 255))
+            {
+              if ((animation & 0x0f) > 0)
+              {
+                blend = true;
+                animation &= 0x0f;
+              }
+              if (animation > 0)
+              {
+                byte animationTick = M2CellInfo[x][y].MiddleAnimationTick;
+                index += (AnimationCount % (animation + (animation * animationTick))) / (1 + animationTick);
+
+                if (blend && (animation == 10 || animation == 8)) //diamond mines, abyss blends
+                {
+                  MirImage img = MirLibFactory.getMapLib(M2CellInfo[x][y].MiddleIndex).GetMirImage(index);
+                  MirJNI.Mir_SurfaceBlendAdd(surface,img.getSurface(ImageEffect.None),drawX,drawY,1);
+                  //Libraries.MapLibs[M2CellInfo[x][y].MiddleIndex].DrawUpBlend(index, new Point(drawX, drawY));
+                }
+                else
+                {
+                  MirImage img = MirLibFactory.getMapLib(M2CellInfo[x][y].MiddleIndex).GetMirImage(index);
+                  MirJNI.Mir_SurfaceBlendAdd(surface,img.getSurface(ImageEffect.None),drawX,drawY,1);
+                  //Libraries.MapLibs[M2CellInfo[x][y].MiddleIndex].DrawUp(index, drawX, drawY);
+                }
+              }
+            }
+            MirImage img = MirLibFactory.getMapLib(M2CellInfo[x][y].MiddleIndex).GetMirImage(index);
+            s = img.getTrueSize();
+            if ((s.getWidth() != CellWidth || s.getHeight() != CellHeight) && (s.getWidth() != (CellWidth * 2) || s.getHeight() != (CellHeight * 2)) && !blend)
+            {
+              MirJNI.Mir_SurfaceBlendAdd(surface,img.getSurface(ImageEffect.None),drawX,drawY,1);
+              //Libraries.MapLibs[M2CellInfo[x][y].MiddleIndex].DrawUp(index, drawX, drawY);
+            }
+          }
+        }
+
+        index = (M2CellInfo[x][y].FrontImage & 0x7FFF) - 1;
+
+        if (index < 0) {
+          continue;
+        }
+
+        int fileIndex = M2CellInfo[x][y].FrontIndex;
+        if (fileIndex == -1) {
+          continue;
+        }
+        animation = M2CellInfo[x][y].FrontAnimationFrame;
+
+        if ((animation & 0x80) > 0) {
+          blend = true;
+          animation &= 0x7F;
+        } else {
+          blend = false;
+        }
+
+        if (animation > 0) {
+          byte animationTick = M2CellInfo[x][y].FrontAnimationTick;
+          index += (AnimationCount % (animation + (animation * animationTick))) / (1 + animationTick);
+        }
+
+
+        if (M2CellInfo[x][y].DoorIndex > 0){
+          Door DoorInfo = getDoor(M2CellInfo[x][y].DoorIndex);
+          if (DoorInfo == null) {
+            DoorInfo = Door.builder().index(M2CellInfo[x][y].DoorIndex)
+                .doorState((byte)0).imageIndex((byte)0).lastTick(Settings.getTime())
+                .build();
+            Doors.add(DoorInfo);
+          } else {
+            if (DoorInfo.getDoorState() != 0) {
+              index += (DoorInfo.getImageIndex() + 1) * M2CellInfo[x][y].DoorOffset;//'bad' code if you want to use animation but it's gonna depend on the animation > has to be custom designed for the animtion
+            }
+          }
+        }
+        MirImage img = MirLibFactory.getMapLib(fileIndex).GetMirImage(index);
+        s = img.getTrueSize();
+        if (s.getWidth() == CellWidth && s.getHeight() == CellHeight && animation == 0) {
+          continue;
+        }
+        if ((s.getWidth() == CellWidth * 2) && (s.getHeight() == CellHeight * 2) && (animation == 0)) {
+          continue;
+        }
+
+        if (blend) {
+          if ((fileIndex > 99) & (fileIndex < 199)) {
+            //img = MirLibFactory.getMapLib(fileIndex).GetMirImage(index);
+            MirJNI.Mir_SurfaceBlendAdd(surface,img.getSurface(ImageEffect.None),drawX,drawY - (3 * CellHeight),1);
+            //Libraries.MapLibs[fileIndex]
+            //    .DrawBlend(index, new Point(drawX, drawY - (3 * CellHeight)), Color.White, true);
+          } else {
+            //img = MirLibFactory.getMapLib(fileIndex).GetMirImage(index);
+            MirJNI.Mir_SurfaceBlendAdd(surface,img.getSurface(ImageEffect.None),drawX,drawY - s.getHeight(),1);
+            //Libraries.MapLibs[fileIndex]
+            //    .DrawBlend(index, new Point(drawX, drawY - s.Height), Color.White, (index >= 2723 && index <= 2732));
+          }
+        } else {
+          MirJNI.Mir_SurfaceBlendAdd(surface,img.getSurface(ImageEffect.None),drawX,drawY - s.getHeight(),1);
+          //Libraries.MapLibs[fileIndex].Draw(index, drawX, drawY - s.Height);
+        }
+      }
+
+      for (int x = userObject.Movement.getX() - ViewRangeX; x <= userObject.Movement.getX() + ViewRangeX; x++) {
+        if (x < 0) {
+          continue;
+        }
+        if (x >= Width) {
+          break;
+        }
+        M2CellInfo[x][y].drawObjects(surface);
+      }
+    }
+
+//    DXManager.Sprite.Flush();
+//    float oldOpacity = DXManager.Opacity;
+//    DXManager.SetOpacity(0.4F);
+//
+//    //MapObject.User.DrawMount();
+//
+//    MapObject.User.drawBody();
+//
+//    if ((MapObject.User.Direction == MirDirection.Up) ||
+//        (MapObject.User.Direction == MirDirection.UpLeft) ||
+//        (MapObject.User.Direction == MirDirection.UpRight) ||
+//        (MapObject.User.Direction == MirDirection.Right) ||
+//        (MapObject.User.Direction == MirDirection.Left)) {
+//      MapObject.User.DrawHead();
+//      MapObject.User.DrawWings();
+//    } else {
+//      MapObject.User.DrawWings();
+//      MapObject.User.DrawHead();
+//    }
+//
+//    DXManager.SetOpacity(oldOpacity);
+//
+//    if (MapObject.MouseObject != null && !MapObject.MouseObject.Dead && MapObject.MouseObject != MapObject.TargetObject && MapObject.MouseObject.Blend) {//Far
+//      MapObject.MouseObject.DrawBlend();
+//    }
+//
+//    if (MapObject.TargetObject != null) {
+//      MapObject.TargetObject.DrawBlend();
+//    }
+//
+//    for (int i = 0; i < Objects.size(); i++) {
+//      Objects[i].DrawEffects(Settings.Effect);
+//
+//      if (Settings.NameView && !(Objects[i] is ItemObject) && !Objects[i].Dead){
+//        Objects[i].DrawName();
+//      }
+//
+//      Objects[i].DrawChat();
+//      Objects[i].DrawHealth();
+//      Objects[i].DrawPoison();
+//
+//      Objects[i].DrawDamages();
+//    }
+//
+//
+//    if (!Settings.Effect) {
+//      return;
+//    }
+//
+//    for (int i = Effects.size() - 1; i >= 0; i--) {
+//      Effects.get(i).Draw();
+//    }
   }
 
 }

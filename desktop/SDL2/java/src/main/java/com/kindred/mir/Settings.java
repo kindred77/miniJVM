@@ -14,6 +14,11 @@ public class Settings {
     public static int BACKGROUND_FUTURE_GET_INTERVAL=200;
     public static int BACKGROUND_WORKER_POLL_INTERVAL=200;
 
+    public final static int MIR_INIT_USERITEMSLOTS_SIZE = 5;
+
+    public static String DataPath = "Data/";
+    public static String MapPath = "Map/";
+
     //public static boolean isImguiUsed=false;
     public static volatile AtomicBoolean IsImguiUsed=new AtomicBoolean(false);
 

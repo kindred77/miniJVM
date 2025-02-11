@@ -24,8 +24,8 @@ public class Damage {
     Color = colour;
   }
 
-//  public void Draw(Point displayLocation)
-//  {
+  public void draw(long surface, Point displayLocation)
+  {
 //    long timeRemaining = ExpireTime - Settings.getTime();
 //
 //    if (DamageLabel == null)
@@ -48,9 +48,9 @@ public class Damage {
 //    displayLocation.Offset((int)(15 - (Text.Length * 3)), (int)(((int)((double)timeRemaining / Factor)) - Distance) - 75 - Offset);
 //
 //    DamageLabel.Location = displayLocation;
-//    DamageLabel.Draw();
-//  }
-//
+//    DamageLabel.draw(surface);
+  }
+
 //  private void label_Disposing(object sender, EventArgs e)
 //  {
 //    MapObject.DamageLabelList.Remove(DamageLabel);

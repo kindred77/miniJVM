@@ -10,6 +10,10 @@ public class Color {
     public static Color Green = new Color(0,255,0, 255);
     public static Color Blue = new Color(0,0,255, 255);
     public static Color Yellow = new Color(255,255,0, 255);
+    public static Color Gray = new Color(128,128,128, 255);
+    public static Color Purple = new Color(128,0,128, 255);
+    public static Color Orange = new Color(255,165,0, 255);
+    public static Color DarkRed = new Color(139,0,0, 255);
 
     private int r;
     private float rf;
