@@ -66,6 +66,7 @@ import com.kindred.mir.scene.game.dialogs.SkillBarDialog;
 import com.kindred.mir.scene.game.dialogs.StorageDialog;
 import com.kindred.mir.scene.game.dialogs.TradeDialog;
 import com.kindred.mir.scene.game.dialogs.TrustMerchantDialog;
+import com.kindred.mir.scene.game.map.MapCommonControl;
 import com.kindred.mir.scene.game.objects.MapObject;
 import com.kindred.mir.scene.game.objects.UserObject;
 import com.kindred.mir.scene.game.bean.Buff;
@@ -90,7 +91,7 @@ public class GameScene extends MirScene {
     public static long MoveTime, AttackTime, NextRunTime, LogTime, LastRunTime;
     public static boolean CanMove, CanRun;
 
-    public MapControl mapControl;
+    public MapCommonControl mapControl;
     public MainDialog mainDialog;
     public ChatDialog chatDialog;
     public ChatControlBar chatControl;
@@ -206,7 +207,7 @@ public class GameScene extends MirScene {
 
     public GameScene(MirControl parent, long window_id, long renderer_id,MirSceneData sceneData) {
         super(parent, window_id, renderer_id,SceneEnumType.Game,sceneData);
-        this.mapControl=new MapControl(this,renderer_id);
+        this.mapControl=new MapCommonControl(this,renderer_id);
     }
 
     public void receiveChat(String msg, ChatType chatType) {

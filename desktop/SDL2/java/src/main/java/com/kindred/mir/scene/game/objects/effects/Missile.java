@@ -1,9 +1,7 @@
 package com.kindred.mir.scene.game.objects.effects;
 
 import com.kindred.mir.libs.MirLib;
-import com.kindred.mir.scene.game.MapControl;
 import com.kindred.mir.scene.game.objects.MapObject;
-import com.kindred.mir.util.Color;
 import com.kindred.mir.util.Point;
 import java.util.ArrayList;
 import java.util.List;

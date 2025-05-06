@@ -14,7 +14,7 @@ import com.kindred.mir.engine.SoundManager;
 import com.kindred.mir.libs.MirLib;
 import com.kindred.mir.libs.MirLibFactory;
 import com.kindred.mir.scene.game.GameScene;
-import com.kindred.mir.scene.game.MapControl;
+import com.kindred.mir.scene.game.map.MapCommonControl;
 import com.kindred.mir.scene.game.objects.effects.BuffEffect;
 import com.kindred.mir.scene.game.objects.effects.Effect;
 import com.kindred.mir.util.Color;
@@ -103,15 +103,15 @@ public abstract class MapObject {
   protected MapObject(long objectID) {
     ObjectID = objectID;
 
-    for (int i = MapControl.Objects.size() - 1; i >= 0; i--) {
-      MapObject ob = MapControl.Objects.get(i);
+    for (int i = MapCommonControl.Objects.size() - 1; i >= 0; i--) {
+      MapObject ob = MapCommonControl.Objects.get(i);
       if (ob.ObjectID != ObjectID) {
         continue;
       }
       ob.remove();
     }
 
-    MapControl.Objects.add(this);
+    MapCommonControl.Objects.add(this);
   }
 
   public void remove() {
@@ -134,7 +134,7 @@ public abstract class MapObject {
       User.clearMagic();
     }
 
-    MapControl.Objects.remove(this);
+    MapCommonControl.Objects.remove(this);
     ((GameScene) Env.ActiveScene).mapControl.removeObject(this);
 
     if (ObjectID != GameScene.npcID) {
