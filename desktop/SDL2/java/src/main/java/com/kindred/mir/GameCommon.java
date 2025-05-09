@@ -21,7 +21,7 @@ public class GameCommon {
 
   @Builder
   @Data
-  public class Door {
+  public static class Door {
     private byte index;
     private byte doorState;//0: closed, 1: opening, 2: open, 3: closing
     private byte imageIndex;
@@ -1599,7 +1599,7 @@ public class GameCommon {
 
   @Data
   @Builder
-  public class RandomItemStat {
+  public static class RandomItemStat {
     private byte maxDuraChance, maxDuraStatChance, maxDuraMaxStat;
     private byte maxAcChance, maxAcStatChance, maxAcMaxStat, maxMacChance, maxMacStatChance, maxMacMaxStat, maxDcChance, maxDcStatChance, maxDcMaxStat, maxMcChance, maxMcStatChance, maxMcMaxStat, maxScChance, maxScStatChance, maxScMaxStat;
     private byte accuracyChance, accuracyStatChance, accuracyMaxStat, agilityChance, agilityStatChance, agilityMaxStat, hpChance, hpStatChance, hpMaxStat, mpChance, mpStatChance, mpMaxStat, strongChance, strongStatChance, strongMaxStat;
@@ -1613,35 +1613,43 @@ public class GameCommon {
 
   @Data
   @Builder
-  public class ChatItem {
+  public static class ChatItem {
+    @Builder.Default
     private long recievedTick = 0;
+    @Builder.Default
     private long id = 0;
     private UserItem itemStats;
   }
 
   @Data
   @Builder
-  public class ExpireInfo {
+  public static class ExpireInfo {
     private Date ExpiryDate;
   }
 
   @Data
   @Builder
-  public class UserId {
+  public static class UserId {
+    @Builder.Default
     private long id = 0;
+    @Builder.Default
     private String userName = "";
   }
 
   @Data
   @Builder
-  public class ItemInfo
+  public static class ItemInfo
   {
     private int Index;
+    @Builder.Default
     private String name = "";
     private ItemType type;
     private ItemGrade grade;
+    @Builder.Default
     private RequiredType requiredType = RequiredType.Level;
+    @Builder.Default
     private RequiredClass requiredClass = RequiredClass.None;
+    @Builder.Default
     private RequiredGender requiredGender = RequiredGender.None;
     private ItemSet set;
 
@@ -1649,8 +1657,9 @@ public class GameCommon {
     private byte weight, light, requiredAmount;
 
     private int image, durability;
-
-    private long price, stackSize = 1;
+    private long price;
+    @Builder.Default
+    private long stackSize = 1;
 
     private byte ac, mac, dc, mc, sc, accuracy, agility;
     private int hp, mp;
@@ -1670,40 +1679,49 @@ public class GameCommon {
     private boolean canFastRun;
     private boolean canAwakening;
     private byte maxAcRate, maxMacRate, holy, freezing, poisonAttack, HPDrainRate;
-
+    @Builder.Default
     private BindMode bind = BindMode.None;
     private byte reflect;
+    @Builder.Default
     private SpecialItemMode unique = SpecialItemMode.None;
     private byte randomStatsId;
     private RandomItemStat randomStats;
+    @Builder.Default
     private String toolTip = "";
 
   }
 
   @Data
   @Builder
-  public class UserItem {
+  public static class UserItem {
 
     private long uniqueID;
     private int itemIndex;
 
     private ItemInfo info;
     private int currentDura, maxDura;
+    @Builder.Default
     private long count = 1, gemCount = 0;
 
     private byte ac, mac, dc, mc, sc, accuracy, agility, HP, MP, strong, magicResist, poisonResist, healthRecovery, manaRecovery, poisonRecovery, criticalRate, criticalDamage, freezing, poisonAttack;
     private byte attackSpeed, luck;
     private byte upgradeLevel;
+    @Builder.Default
     private RefinedValue refinedValue = RefinedValue.None;
+    @Builder.Default
     private byte refineAdded = 0;
 
     private boolean duraChanged;
+    @Builder.Default
     private int soulBoundId = -1;
+    @Builder.Default
     private boolean identified = false;
+    @Builder.Default
     private boolean cursed = false;
-
+    @Builder.Default
     private int weddingRing = -1;
 
+    @Builder.Default
     private UserItem[] slots = new UserItem[Settings.MIR_INIT_USERITEMSLOTS_SIZE];
 
     private Date buybackExpiryDate;
@@ -1715,21 +1733,25 @@ public class GameCommon {
 
   @Data
   @Builder
-  public class QuestItemReward {
+  public static class QuestItemReward {
     private ItemInfo item;
+    @Builder.Default
     private long count = 1;
   }
 
   @Data
   @Builder
-  public class ClientQuestInfo {
+  public static class ClientQuestInfo {
 
     private int index;
     private long npcIndex;
 
     private String name, group;
+    @Builder.Default
     private List<String> description = new ArrayList<>();
+    @Builder.Default
     private List<String> taskDescription = new ArrayList<>();
+    @Builder.Default
     private List<String> completionDescription = new ArrayList<>();
 
     private int minLevelNeeded, maxLevelNeeded;
@@ -1741,7 +1763,9 @@ public class GameCommon {
     private long RewardGold;
     private long RewardExp;
     private long RewardCredit;
+    @Builder.Default
     private List<QuestItemReward> RewardsFixedItem = new ArrayList<>();
+    @Builder.Default
     private List<QuestItemReward> RewardsSelectItem = new ArrayList<>();
 
     private long finishNPCIndex;

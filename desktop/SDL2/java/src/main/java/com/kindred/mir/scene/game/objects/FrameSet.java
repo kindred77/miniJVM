@@ -17,7 +17,7 @@ public class FrameSet {
   private List<FrameSet> helperPets; //IntelligentCreature
   private List<FrameSet> gates;
   private List<FrameSet> walls;
-
+  @Builder.Default
   private Map<MirAction, Frame> frames = new HashMap<>();
 
 }

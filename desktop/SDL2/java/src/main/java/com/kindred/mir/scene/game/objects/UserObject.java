@@ -35,35 +35,38 @@ public class UserObject extends PlayerObject{
       HasMuscleRing, HasParalysisRing, HasFireRing, HasHealRing, HasProbeNecklace, HasSkillNecklace, NoDuraLoss;
 
   public byte MagicResist, PoisonResist, HealthRecovery, SpellRecovery, PoisonRecovery, CriticalRate, CriticalDamage, Holy, Freezing, PoisonAttack, HpDrainRate;
-  public BaseStats CoreStats = new BaseStats(0);
-
-
-  public UserItem[] Inventory = new UserItem[46], Equipment = new UserItem[14], Trade = new UserItem[10], QuestInventory = new UserItem[40];
-  public int BeltIdx = 6;
-  public List<ClientMagic> Magics = new ArrayList<>();
-  public List<ItemSets> ItemSets = new ArrayList<>();
-  public List<EquipmentSlot> MirSet = new ArrayList<>();
-
-  public List<ClientIntelligentCreature> IntelligentCreatures = new ArrayList<>();//IntelligentCreature
-  public IntelligentCreatureType SummonedCreatureType = IntelligentCreatureType.None;//IntelligentCreature
-  public boolean CreatureSummoned;//IntelligentCreature
-  public int PearlCount = 0;
-
-  public List<ClientQuestProgress> CurrentQuests = new ArrayList<>();
-  public List<int> CompletedQuests = new ArrayList<>();
-  public List<ClientMail> Mail = new ArrayList<>();
-
-  public ClientMagic NextMagic;
+//  public BaseStats CoreStats = new BaseStats(0);
+//
+//
+//  public UserItem[] Inventory = new UserItem[46], Equipment = new UserItem[14], Trade = new UserItem[10], QuestInventory = new UserItem[40];
+//  public int BeltIdx = 6;
+//  public List<ClientMagic> Magics = new ArrayList<>();
+//  public List<ItemSets> ItemSets = new ArrayList<>();
+//  public List<EquipmentSlot> MirSet = new ArrayList<>();
+//
+//  public List<ClientIntelligentCreature> IntelligentCreatures = new ArrayList<>();//IntelligentCreature
+//  public IntelligentCreatureType SummonedCreatureType = IntelligentCreatureType.None;//IntelligentCreature
+//  public boolean CreatureSummoned;//IntelligentCreature
+//  public int PearlCount = 0;
+//
+//  public List<ClientQuestProgress> CurrentQuests = new ArrayList<>();
+//  public List<int> CompletedQuests = new ArrayList<>();
+//  public List<ClientMail> Mail = new ArrayList<>();
+//
+//  public ClientMagic NextMagic;
   public Point NextMagicLocation;
   public MapObject NextMagicObject;
   public MirDirection NextMagicDirection;
   public QueuedAction QueuedAction;
 
+  protected UserObject(long objectID) {
+    super(objectID);
+  }
 
 
   public void clearMagic()
   {
-    NextMagic = null;
+    //NextMagic = null;
     NextMagicDirection = Up;
     NextMagicLocation = Point.Empty;
     NextMagicObject = null;

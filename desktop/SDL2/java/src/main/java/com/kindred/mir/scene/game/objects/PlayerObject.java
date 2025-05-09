@@ -29,6 +29,10 @@ public class PlayerObject extends MapObject {
   public int frameIndex, frameInterval, effectFrameIndex, effectFrameInterval, slowFrameIndex;
   public byte skipFrameUpdate = 0;
 
+  protected PlayerObject(long objectID) {
+    super(objectID);
+  }
+
   public boolean getHasClassWeapon() {
     switch (weapon / 100)
     {
@@ -96,6 +100,11 @@ public class PlayerObject extends MapObject {
   @Override
   public boolean getIsBlocking() {
     return false;
+  }
+
+  @Override
+  public void draw(long surface) {
+
   }
 
   @Override

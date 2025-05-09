@@ -14,7 +14,7 @@ import java.util.List;
 
 public class MapBackGroundControl extends MapCommonControl {
 
-  private long backGroundSurface=0L;
+  private String fileName = "";
 
   public MapBackGroundControl(MirControl parent, long renderer_id,
       int width, int height,
@@ -24,52 +24,53 @@ public class MapBackGroundControl extends MapCommonControl {
       int offSetX,
       int offSetY,
       MapCellInfo[][] M2CellInfo,
-      List<Door> doors
+      List<Door> doors,
+      String fileName
   ) {
-    super(parent, renderer_id);
-    setSize(new Size(width, height));
+    super(
+        parent,
+        renderer_id,
+        width,
+        height,
+        mapWidth,
+        mapHeight,
+        viewRangeX,
+        viewRangeY,
+        offSetX,
+        offSetY,
+        M2CellInfo,
+        doors
+    );
 
-    this.mapWidth=mapWidth;
-    this.mapHeight=mapHeight;
-
-    this.offSetX=offSetX;
-    this.offSetY=offSetY;
-    this.viewRangeX=viewRangeX;
-    this.viewRangeY=viewRangeY;
-
-    this.M2CellInfo=M2CellInfo;
-    this.doors=doors;
+    this.fileName=fileName;
   }
 
-  public void update(
-      int userMoveX,//getUser().Movement.getY()
-      int userMoveY,
-      int userOffsetMoveX,//getUser().OffSetMove.getY()
-      int userOffsetMoveY
-  ) throws Exception {
-    drawBackground(userMoveX, userMoveY, userOffsetMoveX, userOffsetMoveY);
-  }
-
-  private void drawBackground(
+  @Override
+  public final void updateSurface(
       int userMoveX,
       int userMoveY,
       int userOffsetMoveX,
       int userOffsetMoveY
   ) throws Exception {
-    String cleanFilename = FileName.replace(Settings.MapPath, "");
+
+    if(surface==0L){
+      surface = MirJNI.Mir_FillRect(getSize().getWidth(),getSize().getHeight(),new int[]{0,0,0,0});
+    }
+
+    String cleanFilename = fileName.replace(Settings.MapPath, "");
     //long surface = MirJNI.Mir_FillRect(Settings.ScreenWidth,Settings.ScreenHeight,new int[]{0,0,0,0});
     if(cleanFilename.startsWith("ID1") || cleanFilename.startsWith("ID2")) {
       MirImage img = MirLibFactory.getMirLib(MirLibFactory.Background).GetMirImage(10);
-      MirJNI.Mir_SurfaceBlendAdd(backGroundSurface,img.getSurface(ImageEffect.None),0,0,1);
+      MirJNI.Mir_SurfaceBlendAdd(surface,img.getSurface(ImageEffect.None),0,0,1);
     } else if(cleanFilename.startsWith("ID3_013")) {
       MirImage img = MirLibFactory.getMirLib(MirLibFactory.Background).GetMirImage(22);
-      MirJNI.Mir_SurfaceBlendAdd(backGroundSurface,img.getSurface(ImageEffect.None),0,0,1);
+      MirJNI.Mir_SurfaceBlendAdd(surface,img.getSurface(ImageEffect.None),0,0,1);
     } else if (cleanFilename.startsWith("ID3_015")) {
       MirImage img = MirLibFactory.getMirLib(MirLibFactory.Background).GetMirImage(23);
-      MirJNI.Mir_SurfaceBlendAdd(backGroundSurface,img.getSurface(ImageEffect.None),0,0,1);
+      MirJNI.Mir_SurfaceBlendAdd(surface,img.getSurface(ImageEffect.None),0,0,1);
     } else if (cleanFilename.startsWith("ID3_023") || cleanFilename.startsWith("ID3_025")) {
       MirImage img = MirLibFactory.getMirLib(MirLibFactory.Background).GetMirImage(21);
-      MirJNI.Mir_SurfaceBlendAdd(backGroundSurface,img.getSurface(ImageEffect.None),0,0,1);
+      MirJNI.Mir_SurfaceBlendAdd(surface,img.getSurface(ImageEffect.None),0,0,1);
     }
   }
 }

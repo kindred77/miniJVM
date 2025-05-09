@@ -8,17 +8,19 @@ import com.kindred.mir.util.Point;
 
 public class MonsterObject extends MapObject {
 
+  protected MonsterObject(long objectID) {
+    super(objectID);
+  }
+
   @Override
   public ObjectType getRace() {
     return ObjectType.Monster;
   }
 
-  @Override
   public void drawBehindEffects(boolean effectsEnabled) {
 
   }
 
-  @Override
   public void drawEffects(boolean effectsEnabled) {
 
   }

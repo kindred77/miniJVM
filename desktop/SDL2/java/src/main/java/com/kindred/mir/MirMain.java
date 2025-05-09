@@ -10,7 +10,6 @@ import com.kindred.mir.util.ExecutionService;
 import com.kindred.mir.scene.MirScene;
 import com.kindred.mir.engine.MirJNI;
 
-import com.kindred.mir.scene.game.GameScene;
 import com.kindred.mir.util.Point;
 import com.kindred.mir.util.Util;
 import com.kindred.sdl.constcode.*;
@@ -61,11 +60,11 @@ public class MirMain {
 
     public static void mainMouseDown(Point pos, int type)
     {
-        if (type == SDL_Button.SDL_BUTTON_RIGHT && (GameScene.SelectedCell != null || GameScene.PickedUpGold)) {
-            GameScene.SelectedCell = null;
-            GameScene.PickedUpGold = false;
-            return;
-        }
+//        if (type == SDL_Button.SDL_BUTTON_RIGHT && (GameScene.SelectedCell != null || GameScene.PickedUpGold)) {
+//            GameScene.SelectedCell = null;
+//            GameScene.PickedUpGold = false;
+//            return;
+//        }
 
         try {
             if (Env.ActiveScene != null) {

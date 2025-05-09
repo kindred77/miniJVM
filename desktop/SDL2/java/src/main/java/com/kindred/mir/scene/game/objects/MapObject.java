@@ -145,303 +145,303 @@ public abstract class MapObject {
     ((GameScene) Env.ActiveScene).npcDialog.setIsVisible(false);
   }
 
-  public void addBuffEffect(BuffType type) {
-    for (int i = 0; i < Effects.size(); i++) {
-      if (!(Effects.get(i) instanceof BuffEffect)) {
-        continue;
-      }
-      if (((BuffEffect)(Effects.get(i))).BuffType == type) {
-        return;
-      }
-    }
-
-    PlayerObject ob = null;
-
-    if (getRace() == ObjectType.Player) {
-      ob = (PlayerObject)this;
-    }
-
-    switch (type) {
-      case Fury:
-        Effects.add(new BuffEffect(MirLibFactory.getMirLib(MirLibFactory.Magic3), 190, 7, 1400, this, true, type) { Repeat = true });
-        break;
-      case ImmortalSkin:
-        Effects.add(new BuffEffect(MirLibFactory.getMirLib(MirLibFactory.Magic3), 570, 5, 1400, this, true, type) { Repeat = true });
-        break;
-      case SwiftFeet:
-        if (ob != null) {
-          ob.sprint = true;
-        }
-        break;
-      case MoonLight:
-      case DarkBody:
-        if (ob != null) {
-          ob.Sneaking = true;
-        }
-        break;
-      case VampireShot:
-        Effects.add(new BuffEffect(MirLibFactory.getMirLib(MirLibFactory.Magic3), 2110, 6, 1400, this, true, type) { Repeat = false });
-        break;
-      case PoisonShot:
-        Effects.add(new BuffEffect(MirLibFactory.getMirLib(MirLibFactory.Magic3), 2310, 7, 1400, this, true, type) { Repeat = false });
-        break;
-      case EnergyShield:
-        BuffEffect effect;
-
-        Effects.add(effect = new BuffEffect(MirLibFactory.getMirLib(MirLibFactory.Magic2), 1880, 9, 900, this, true, type) { Repeat = false });
-        SoundManager.playSound(20000 + (int) Spell.EnergyShield.code() * 10 + 0, false);
-
-        effect.Complete += (o, e) =>
-      {
-        Effects.add(new BuffEffect(MirLibFactory.getMirLib(MirLibFactory.Magic2), 1900, 2, 800, this, true, type) { Repeat = true });
-      };
-      break;
-      case MagicBooster:
-        Effects.add(new BuffEffect(MirLibFactory.getMirLib(MirLibFactory.Magic3), 90, 6, 1200, this, true, type) { Repeat = true });
-        break;
-      case PetEnhancer:
-        Effects.add(new BuffEffect(MirLibFactory.getMirLib(MirLibFactory.Magic3), 230, 6, 1200, this, true, type) { Repeat = true });
-        break;
-    }
-  }
-
-  public void removeBuffEffect(BuffType type) {
-    PlayerObject ob = null;
-
-    if (getRace() == ObjectType.Player) {
-      ob = (PlayerObject)this;
-    }
-
-    for (int i = 0; i < Effects.size(); i++) {
-      if (!(Effects.get(i) instanceof BuffEffect)) {
-        continue;
-      }
-      if (((BuffEffect)(Effects.get(i))).BuffType != type) {
-        continue;
-      }
-      Effects.get(i).Repeat = false;
-    }
-
-    switch (type) {
-      case SwiftFeet:
-        if (ob != null) {
-          ob.sprint = false;
-        }
-        break;
-      case MoonLight:
-      case DarkBody:
-        if (ob != null) {
-          ob.Sneaking = false;
-        }
-        break;
-    }
-  }
-
-  public void chat(String text) {
-    if (ChatLabel != null && !ChatLabel.getIsDisposed()) {
-      ChatLabel.dispose();
-      ChatLabel = null;
-    }
-
-    final int chatWidth = 200;
-    List<String> chat = new ArrayList<>();
-
-    int index = 0;
-    for (int i = 1; i < text.length(); i++) {
-      if (TextRenderer.MeasureText(CMain.Graphics, text.Substring(index, i - index), ChatFont).Width > chatWidth) {
-        chat.Add(text.Substring(index, i - index - 1));
-        index = i - 1;
-      }
-    }
-    chat.add(text.Substring(index, text.Length - index));
-
-    text = chat.get(0);
-    for (int i = 1; i < chat.size(); i++) {
-      text += String.format("\n{0}", chat.get(i));
-    }
-
-    ChatLabel = new MirLabel
-    {
-      AutoSize = true,
-          BackColour = Color.Transparent,
-          ForeColour = Color.White,
-          OutLine = true,
-          OutLineColour = Color.Black,
-          DrawFormat = TextFormatFlags.HorizontalCenter,
-          Text = text,
-    };
-    ChatTime = CMain.Time + 5000;
-  }
-
-  public void drawChat() {
-    if (ChatLabel == null || ChatLabel.getIsDisposed()) {
-      return;
-    }
-
-    if (CMain.Time > ChatTime) {
-      ChatLabel.dispose();
-      ChatLabel = null;
-      return;
-    }
-
-    ChatLabel.setForeColor(Dead ? Color.Gray : Color.White);
-    ChatLabel.Location = new Point(DisplayRectangle.X + (48 - ChatLabel.Size.Width) / 2, DisplayRectangle.Y - (60 + ChatLabel.Size.Height) - (Dead ? 35 : 0));
-    ChatLabel.Draw();
-  }
-
-  public void createLabel() {
-    NameLabel = null;
-
-    for (int i = 0; i < LabelList.size(); i++) {
-      if (LabelList.get(i).Text != Name || LabelList.get(i).ForeColour != NameColour) {
-        continue;
-      }
-      NameLabel = LabelList.get(i);
-      break;
-    }
-
-
-    if (NameLabel != null && !NameLabel.getIsDisposed()) {
-      return;
-    }
-
-    NameLabel = new MirLabel
-    {
-      AutoSize = true,
-          BackColour = Color.Transparent,
-          ForeColour = NameColour,
-          OutLine = true,
-          OutLineColour = Color.Black,
-          Text = Name,
-    };
-    NameLabel.Disposing += (o, e) => LabelList.remove(NameLabel);
-    LabelList.add(NameLabel);
-
-  }
-
-  public void drawName(long surface) {
-    createLabel();
-
-    if (NameLabel == null) {
-      return;
-    }
-
-    NameLabel.setText(Name);
-    NameLabel.Location = new Point(DisplayRectangle.getX() + (50 - NameLabel.getSize().getWidth()) / 2, DisplayRectangle.Y - (32 - NameLabel.Size.Height / 2) + (Dead ? 35 : 8)); //was 48 -
-    NameLabel.Draw();
-  }
-
-  public void drawBlend(long surface) {
-    DXManager.SetBlend(true, 0.3F); //0.8
-    draw(surface);
-    DXManager.SetBlend(false);
-  }
-
-  public void drawDamages(long surface) {
-    for (int i = Damages.size() - 1; i >= 0; i--) {
-      Damage info = Damages.get(i);
-      if (CMain.Time > info.ExpireTime) {
-        Damages.remove(i);
-      } else {
-        info.draw(surface, DisplayRectangle.getLocation());
-      }
-    }
-  }
-
-  public void drawHealth(long surface) {
-    String name = Name;
-
-    if (Name.contains("(")) {
-      name = Name.substring(Name.indexOf("(") + 1, Name.length() - Name.indexOf("(") - 2);
-    }
-
-    if (Dead) {
-      return;
-    }
-    if (getRace() != ObjectType.Player && getRace() != ObjectType.Monster) {
-      return;
-    }
-
-    if (CMain.Time >= HealthTime) {
-      //只能看到自己的宠物,组队成员的血条
-      if (getRace() == ObjectType.Monster && !Name.endsWith(String.format("({0})", User.Name)) && !GroupDialog.GroupList.Contains(name)) {
-        return;
-      }
-      if (getRace() == ObjectType.Player && this != User && !GroupDialog.GroupList.Contains(Name)) {
-        return;
-      }
-      if (this == User && GroupDialog.GroupList.Count == 0) {
-        return;
-      }
-    }
-
-    Libraries.Prguse2.Draw(0, DisplayRectangle.X + 8, DisplayRectangle.Y - 64);
-    int index = 1;
-
-    switch (getRace()) {
-      case Player:
-        if (GroupDialog.GroupList.Contains(name)) {
-          index = 10;
-        }
-        break;
-      case Monster:
-        if (GroupDialog.GroupList.Contains(name) || name == User.Name) {
-          index = 11;
-        }
-        break;
-    }
-
-    Libraries.Prguse2.Draw(index, new Rectangle(0, 0, (int)(32 * PercentHealth / 100F), 4), new Point(DisplayRectangle.X + 8, DisplayRectangle.Y - 64), Color.White, false);
-  }
-
-  public void drawPoison(long surface) {
-    byte poisoncount = 0;
-    if (Poison != PoisonType.None) {
-      if (Util.EnumHasFlag(Poison.code(), PoisonType.Green.code())) {
-        DXManager.Sprite.Draw2D(DXManager.PoisonDotBackground, Point.Empty, 0, new PointF((int)(DisplayRectangle.X + 7 + (poisoncount * 3)), (int)(DisplayRectangle.Y - 21)), Color.Black);
-        DXManager.Sprite.Draw2D(DXManager.RadarTexture, Point.Empty, 0, new PointF((int)(DisplayRectangle.X + 8 + (poisoncount * 3)), (int)(DisplayRectangle.Y - 20)), Color.Green);
-        poisoncount++;
-      }
-      if (Util.EnumHasFlag(Poison.code(), PoisonType.Red.code())) {
-        DXManager.Sprite.Draw2D(DXManager.PoisonDotBackground, Point.Empty, 0, new PointF((int)(DisplayRectangle.X + 7 + (poisoncount * 3)), (int)(DisplayRectangle.Y - 21)), Color.Black);
-        DXManager.Sprite.Draw2D(DXManager.RadarTexture, Point.Empty, 0, new PointF((int)(DisplayRectangle.X + 8 + (poisoncount * 3)), (int)(DisplayRectangle.Y - 20)), Color.Red);
-        poisoncount++;
-      }
-      if (Util.EnumHasFlag(Poison.code(), PoisonType.Bleeding.code())) {
-        DXManager.Sprite.Draw2D(DXManager.PoisonDotBackground, Point.Empty, 0, new PointF((int)(DisplayRectangle.X + 7 + (poisoncount * 3)), (int)(DisplayRectangle.Y - 21)), Color.Black);
-        DXManager.Sprite.Draw2D(DXManager.RadarTexture, Point.Empty, 0, new PointF((int)(DisplayRectangle.X + 8 + (poisoncount * 3)), (int)(DisplayRectangle.Y - 20)), Color.DarkRed);
-        poisoncount++;
-      }
-      if (Util.EnumHasFlag(Poison.code(), PoisonType.Slow.code())) {
-        DXManager.Sprite.Draw2D(DXManager.PoisonDotBackground, Point.Empty, 0, new PointF((int)(DisplayRectangle.X + 7 + (poisoncount * 3)), (int)(DisplayRectangle.Y - 21)), Color.Black);
-        DXManager.Sprite.Draw2D(DXManager.RadarTexture, Point.Empty, 0, new PointF((int)(DisplayRectangle.X + 8 + (poisoncount * 3)), (int)(DisplayRectangle.Y - 20)), Color.Purple);
-        poisoncount++;
-      }
-      if (Util.EnumHasFlag(Poison.code(), PoisonType.Stun.code())) {
-        DXManager.Sprite.Draw2D(DXManager.PoisonDotBackground, Point.Empty, 0, new PointF((int)(DisplayRectangle.X + 7 + (poisoncount * 3)), (int)(DisplayRectangle.Y - 21)), Color.Black);
-        DXManager.Sprite.Draw2D(DXManager.RadarTexture, Point.Empty, 0, new PointF((int)(DisplayRectangle.X + 8 + (poisoncount * 3)), (int)(DisplayRectangle.Y - 20)), Color.Yellow);
-        poisoncount++;
-      }
-      if (Util.EnumHasFlag(Poison.code(), PoisonType.Frozen.code())) {
-        DXManager.Sprite.Draw2D(DXManager.PoisonDotBackground, Point.Empty, 0, new PointF((int)(DisplayRectangle.X + 7 + (poisoncount * 3)), (int)(DisplayRectangle.Y - 21)), Color.Black);
-        DXManager.Sprite.Draw2D(DXManager.RadarTexture, Point.Empty, 0, new PointF((int)(DisplayRectangle.X + 8 + (poisoncount * 3)), (int)(DisplayRectangle.Y - 20)), Color.Blue);
-        poisoncount++;
-      }
-      if (Util.EnumHasFlag(Poison.code(), PoisonType.Paralysis.code()) || Util.EnumHasFlag(Poison.code(), PoisonType.LRParalysis.code())) {
-        DXManager.Sprite.Draw2D(DXManager.PoisonDotBackground, Point.Empty, 0, new PointF((int)(DisplayRectangle.X + 7 + (poisoncount * 3)), (int)(DisplayRectangle.Y - 21)), Color.Black);
-        DXManager.Sprite.Draw2D(DXManager.RadarTexture, Point.Empty, 0, new PointF((int)(DisplayRectangle.X + 8 + (poisoncount * 3)), (int)(DisplayRectangle.Y - 20)), Color.Gray);
-        poisoncount++;
-      }
-      if (Util.EnumHasFlag(Poison.code(), PoisonType.DelayedExplosion.code())) {
-        DXManager.Sprite.Draw2D(DXManager.PoisonDotBackground, Point.Empty, 0, new PointF((int)(DisplayRectangle.X + 7 + (poisoncount * 3)), (int)(DisplayRectangle.Y - 21)), Color.Black);
-        DXManager.Sprite.Draw2D(DXManager.RadarTexture, Point.Empty, 0, new PointF((int)(DisplayRectangle.X + 8 + (poisoncount * 3)), (int)(DisplayRectangle.Y - 20)), Color.Orange);
-        poisoncount++;
-      }
-    }
-  }
-
-  public abstract void drawBehindEffects(boolean effectsEnabled);
-
-  public abstract void drawEffects(boolean effectsEnabled);
+//  public void addBuffEffect(BuffType type) {
+//    for (int i = 0; i < Effects.size(); i++) {
+//      if (!(Effects.get(i) instanceof BuffEffect)) {
+//        continue;
+//      }
+//      if (((BuffEffect)(Effects.get(i))).BuffType == type) {
+//        return;
+//      }
+//    }
+//
+//    PlayerObject ob = null;
+//
+//    if (getRace() == ObjectType.Player) {
+//      ob = (PlayerObject)this;
+//    }
+//
+//    switch (type) {
+//      case Fury:
+//        Effects.add(new BuffEffect(MirLibFactory.getMirLib(MirLibFactory.Magic3), 190, 7, 1400, this, true, type) { Repeat = true });
+//        break;
+//      case ImmortalSkin:
+//        Effects.add(new BuffEffect(MirLibFactory.getMirLib(MirLibFactory.Magic3), 570, 5, 1400, this, true, type) { Repeat = true });
+//        break;
+//      case SwiftFeet:
+//        if (ob != null) {
+//          ob.sprint = true;
+//        }
+//        break;
+//      case MoonLight:
+//      case DarkBody:
+//        if (ob != null) {
+//          ob.Sneaking = true;
+//        }
+//        break;
+//      case VampireShot:
+//        Effects.add(new BuffEffect(MirLibFactory.getMirLib(MirLibFactory.Magic3), 2110, 6, 1400, this, true, type) { Repeat = false });
+//        break;
+//      case PoisonShot:
+//        Effects.add(new BuffEffect(MirLibFactory.getMirLib(MirLibFactory.Magic3), 2310, 7, 1400, this, true, type) { Repeat = false });
+//        break;
+//      case EnergyShield:
+//        BuffEffect effect;
+//
+//        Effects.add(effect = new BuffEffect(MirLibFactory.getMirLib(MirLibFactory.Magic2), 1880, 9, 900, this, true, type) { Repeat = false });
+//        SoundManager.playSound(20000 + (int) Spell.EnergyShield.code() * 10 + 0, false);
+//
+//        effect.Complete += (o, e) =>
+//      {
+//        Effects.add(new BuffEffect(MirLibFactory.getMirLib(MirLibFactory.Magic2), 1900, 2, 800, this, true, type) { Repeat = true });
+//      };
+//      break;
+//      case MagicBooster:
+//        Effects.add(new BuffEffect(MirLibFactory.getMirLib(MirLibFactory.Magic3), 90, 6, 1200, this, true, type) { Repeat = true });
+//        break;
+//      case PetEnhancer:
+//        Effects.add(new BuffEffect(MirLibFactory.getMirLib(MirLibFactory.Magic3), 230, 6, 1200, this, true, type) { Repeat = true });
+//        break;
+//    }
+//  }
+//
+//  public void removeBuffEffect(BuffType type) {
+//    PlayerObject ob = null;
+//
+//    if (getRace() == ObjectType.Player) {
+//      ob = (PlayerObject)this;
+//    }
+//
+//    for (int i = 0; i < Effects.size(); i++) {
+//      if (!(Effects.get(i) instanceof BuffEffect)) {
+//        continue;
+//      }
+//      if (((BuffEffect)(Effects.get(i))).BuffType != type) {
+//        continue;
+//      }
+//      Effects.get(i).Repeat = false;
+//    }
+//
+//    switch (type) {
+//      case SwiftFeet:
+//        if (ob != null) {
+//          ob.sprint = false;
+//        }
+//        break;
+//      case MoonLight:
+//      case DarkBody:
+//        if (ob != null) {
+//          ob.Sneaking = false;
+//        }
+//        break;
+//    }
+//  }
+//
+//  public void chat(String text) {
+//    if (ChatLabel != null && !ChatLabel.getIsDisposed()) {
+//      ChatLabel.dispose();
+//      ChatLabel = null;
+//    }
+//
+//    final int chatWidth = 200;
+//    List<String> chat = new ArrayList<>();
+//
+//    int index = 0;
+//    for (int i = 1; i < text.length(); i++) {
+//      if (TextRenderer.MeasureText(CMain.Graphics, text.Substring(index, i - index), ChatFont).Width > chatWidth) {
+//        chat.Add(text.Substring(index, i - index - 1));
+//        index = i - 1;
+//      }
+//    }
+//    chat.add(text.Substring(index, text.Length - index));
+//
+//    text = chat.get(0);
+//    for (int i = 1; i < chat.size(); i++) {
+//      text += String.format("\n{0}", chat.get(i));
+//    }
+//
+//    ChatLabel = new MirLabel
+//    {
+//      AutoSize = true,
+//          BackColour = Color.Transparent,
+//          ForeColour = Color.White,
+//          OutLine = true,
+//          OutLineColour = Color.Black,
+//          DrawFormat = TextFormatFlags.HorizontalCenter,
+//          Text = text,
+//    };
+//    ChatTime = CMain.Time + 5000;
+//  }
+//
+//  public void drawChat() {
+//    if (ChatLabel == null || ChatLabel.getIsDisposed()) {
+//      return;
+//    }
+//
+//    if (CMain.Time > ChatTime) {
+//      ChatLabel.dispose();
+//      ChatLabel = null;
+//      return;
+//    }
+//
+//    ChatLabel.setForeColor(Dead ? Color.Gray : Color.White);
+//    ChatLabel.Location = new Point(DisplayRectangle.X + (48 - ChatLabel.Size.Width) / 2, DisplayRectangle.Y - (60 + ChatLabel.Size.Height) - (Dead ? 35 : 0));
+//    ChatLabel.Draw();
+//  }
+//
+//  public void createLabel() {
+//    NameLabel = null;
+//
+//    for (int i = 0; i < LabelList.size(); i++) {
+//      if (LabelList.get(i).Text != Name || LabelList.get(i).ForeColour != NameColour) {
+//        continue;
+//      }
+//      NameLabel = LabelList.get(i);
+//      break;
+//    }
+//
+//
+//    if (NameLabel != null && !NameLabel.getIsDisposed()) {
+//      return;
+//    }
+//
+//    NameLabel = new MirLabel
+//    {
+//      AutoSize = true,
+//          BackColour = Color.Transparent,
+//          ForeColour = NameColour,
+//          OutLine = true,
+//          OutLineColour = Color.Black,
+//          Text = Name,
+//    };
+//    NameLabel.Disposing += (o, e) => LabelList.remove(NameLabel);
+//    LabelList.add(NameLabel);
+//
+//  }
+//
+//  public void drawName(long surface) {
+//    createLabel();
+//
+//    if (NameLabel == null) {
+//      return;
+//    }
+//
+//    NameLabel.setText(Name);
+//    NameLabel.Location = new Point(DisplayRectangle.getX() + (50 - NameLabel.getSize().getWidth()) / 2, DisplayRectangle.Y - (32 - NameLabel.Size.Height / 2) + (Dead ? 35 : 8)); //was 48 -
+//    NameLabel.Draw();
+//  }
+//
+//  public void drawBlend(long surface) {
+//    DXManager.SetBlend(true, 0.3F); //0.8
+//    draw(surface);
+//    DXManager.SetBlend(false);
+//  }
+//
+//  public void drawDamages(long surface) {
+//    for (int i = Damages.size() - 1; i >= 0; i--) {
+//      Damage info = Damages.get(i);
+//      if (CMain.Time > info.ExpireTime) {
+//        Damages.remove(i);
+//      } else {
+//        info.draw(surface, DisplayRectangle.getLocation());
+//      }
+//    }
+//  }
+//
+//  public void drawHealth(long surface) {
+//    String name = Name;
+//
+//    if (Name.contains("(")) {
+//      name = Name.substring(Name.indexOf("(") + 1, Name.length() - Name.indexOf("(") - 2);
+//    }
+//
+//    if (Dead) {
+//      return;
+//    }
+//    if (getRace() != ObjectType.Player && getRace() != ObjectType.Monster) {
+//      return;
+//    }
+//
+//    if (CMain.Time >= HealthTime) {
+//      //只能看到自己的宠物,组队成员的血条
+//      if (getRace() == ObjectType.Monster && !Name.endsWith(String.format("({0})", User.Name)) && !GroupDialog.GroupList.Contains(name)) {
+//        return;
+//      }
+//      if (getRace() == ObjectType.Player && this != User && !GroupDialog.GroupList.Contains(Name)) {
+//        return;
+//      }
+//      if (this == User && GroupDialog.GroupList.Count == 0) {
+//        return;
+//      }
+//    }
+//
+//    Libraries.Prguse2.Draw(0, DisplayRectangle.X + 8, DisplayRectangle.Y - 64);
+//    int index = 1;
+//
+//    switch (getRace()) {
+//      case Player:
+//        if (GroupDialog.GroupList.Contains(name)) {
+//          index = 10;
+//        }
+//        break;
+//      case Monster:
+//        if (GroupDialog.GroupList.Contains(name) || name == User.Name) {
+//          index = 11;
+//        }
+//        break;
+//    }
+//
+//    Libraries.Prguse2.Draw(index, new Rectangle(0, 0, (int)(32 * PercentHealth / 100F), 4), new Point(DisplayRectangle.X + 8, DisplayRectangle.Y - 64), Color.White, false);
+//  }
+//
+//  public void drawPoison(long surface) {
+//    byte poisoncount = 0;
+//    if (Poison != PoisonType.None) {
+//      if (Util.EnumHasFlag(Poison.code(), PoisonType.Green.code())) {
+//        DXManager.Sprite.Draw2D(DXManager.PoisonDotBackground, Point.Empty, 0, new PointF((int)(DisplayRectangle.X + 7 + (poisoncount * 3)), (int)(DisplayRectangle.Y - 21)), Color.Black);
+//        DXManager.Sprite.Draw2D(DXManager.RadarTexture, Point.Empty, 0, new PointF((int)(DisplayRectangle.X + 8 + (poisoncount * 3)), (int)(DisplayRectangle.Y - 20)), Color.Green);
+//        poisoncount++;
+//      }
+//      if (Util.EnumHasFlag(Poison.code(), PoisonType.Red.code())) {
+//        DXManager.Sprite.Draw2D(DXManager.PoisonDotBackground, Point.Empty, 0, new PointF((int)(DisplayRectangle.X + 7 + (poisoncount * 3)), (int)(DisplayRectangle.Y - 21)), Color.Black);
+//        DXManager.Sprite.Draw2D(DXManager.RadarTexture, Point.Empty, 0, new PointF((int)(DisplayRectangle.X + 8 + (poisoncount * 3)), (int)(DisplayRectangle.Y - 20)), Color.Red);
+//        poisoncount++;
+//      }
+//      if (Util.EnumHasFlag(Poison.code(), PoisonType.Bleeding.code())) {
+//        DXManager.Sprite.Draw2D(DXManager.PoisonDotBackground, Point.Empty, 0, new PointF((int)(DisplayRectangle.X + 7 + (poisoncount * 3)), (int)(DisplayRectangle.Y - 21)), Color.Black);
+//        DXManager.Sprite.Draw2D(DXManager.RadarTexture, Point.Empty, 0, new PointF((int)(DisplayRectangle.X + 8 + (poisoncount * 3)), (int)(DisplayRectangle.Y - 20)), Color.DarkRed);
+//        poisoncount++;
+//      }
+//      if (Util.EnumHasFlag(Poison.code(), PoisonType.Slow.code())) {
+//        DXManager.Sprite.Draw2D(DXManager.PoisonDotBackground, Point.Empty, 0, new PointF((int)(DisplayRectangle.X + 7 + (poisoncount * 3)), (int)(DisplayRectangle.Y - 21)), Color.Black);
+//        DXManager.Sprite.Draw2D(DXManager.RadarTexture, Point.Empty, 0, new PointF((int)(DisplayRectangle.X + 8 + (poisoncount * 3)), (int)(DisplayRectangle.Y - 20)), Color.Purple);
+//        poisoncount++;
+//      }
+//      if (Util.EnumHasFlag(Poison.code(), PoisonType.Stun.code())) {
+//        DXManager.Sprite.Draw2D(DXManager.PoisonDotBackground, Point.Empty, 0, new PointF((int)(DisplayRectangle.X + 7 + (poisoncount * 3)), (int)(DisplayRectangle.Y - 21)), Color.Black);
+//        DXManager.Sprite.Draw2D(DXManager.RadarTexture, Point.Empty, 0, new PointF((int)(DisplayRectangle.X + 8 + (poisoncount * 3)), (int)(DisplayRectangle.Y - 20)), Color.Yellow);
+//        poisoncount++;
+//      }
+//      if (Util.EnumHasFlag(Poison.code(), PoisonType.Frozen.code())) {
+//        DXManager.Sprite.Draw2D(DXManager.PoisonDotBackground, Point.Empty, 0, new PointF((int)(DisplayRectangle.X + 7 + (poisoncount * 3)), (int)(DisplayRectangle.Y - 21)), Color.Black);
+//        DXManager.Sprite.Draw2D(DXManager.RadarTexture, Point.Empty, 0, new PointF((int)(DisplayRectangle.X + 8 + (poisoncount * 3)), (int)(DisplayRectangle.Y - 20)), Color.Blue);
+//        poisoncount++;
+//      }
+//      if (Util.EnumHasFlag(Poison.code(), PoisonType.Paralysis.code()) || Util.EnumHasFlag(Poison.code(), PoisonType.LRParalysis.code())) {
+//        DXManager.Sprite.Draw2D(DXManager.PoisonDotBackground, Point.Empty, 0, new PointF((int)(DisplayRectangle.X + 7 + (poisoncount * 3)), (int)(DisplayRectangle.Y - 21)), Color.Black);
+//        DXManager.Sprite.Draw2D(DXManager.RadarTexture, Point.Empty, 0, new PointF((int)(DisplayRectangle.X + 8 + (poisoncount * 3)), (int)(DisplayRectangle.Y - 20)), Color.Gray);
+//        poisoncount++;
+//      }
+//      if (Util.EnumHasFlag(Poison.code(), PoisonType.DelayedExplosion.code())) {
+//        DXManager.Sprite.Draw2D(DXManager.PoisonDotBackground, Point.Empty, 0, new PointF((int)(DisplayRectangle.X + 7 + (poisoncount * 3)), (int)(DisplayRectangle.Y - 21)), Color.Black);
+//        DXManager.Sprite.Draw2D(DXManager.RadarTexture, Point.Empty, 0, new PointF((int)(DisplayRectangle.X + 8 + (poisoncount * 3)), (int)(DisplayRectangle.Y - 20)), Color.Orange);
+//        poisoncount++;
+//      }
+//    }
+//  }
+//
+//  public abstract void drawBehindEffects(boolean effectsEnabled);
+//
+//  public abstract void drawEffects(boolean effectsEnabled);
 
 }

@@ -14,7 +14,7 @@ import java.util.List;
 
 public class MapFloorControl extends MapCommonControl {
 
-  private long floorSurface=0L;
+  private boolean isFloorValid=false;
 
   public MapFloorControl(MirControl parent, long renderer_id,
       int width, int height,
@@ -26,35 +26,28 @@ public class MapFloorControl extends MapCommonControl {
       MapCellInfo[][] M2CellInfo,
       List<Door> doors
   ) {
-    super(parent, renderer_id);
-    setSize(new Size(width, height));
-
-    this.mapWidth=mapWidth;
-    this.mapHeight=mapHeight;
-
-    this.offSetX=offSetX;
-    this.offSetY=offSetY;
-    this.viewRangeX=viewRangeX;
-    this.viewRangeY=viewRangeY;
-
-    this.M2CellInfo=M2CellInfo;
-    this.doors=doors;
-  }
-
-  public void update(
-      int userMoveX,//getUser().Movement.getY()
-      int userMoveY,
-      int userOffsetMoveX,//getUser().OffSetMove.getY()
-      int userOffsetMoveY
-  ) throws Exception {
-    drawFloor(userMoveX, userMoveY, userOffsetMoveX, userOffsetMoveY);
+    super(
+        parent,
+        renderer_id,
+        width,
+        height,
+        mapWidth,
+        mapHeight,
+        viewRangeX,
+        viewRangeY,
+        offSetX,
+        offSetY,
+        M2CellInfo,
+        doors
+    );
   }
 
   /**
    * 刷新floor surface
    * @throws Exception
    */
-  private void drawFloor(
+  @Override
+  public final void updateSurface(
       int userMoveX,//getUser().Movement.getY()
       int userMoveY,
       int userOffsetMoveX,//getUser().OffSetMove.getY()
@@ -63,8 +56,8 @@ public class MapFloorControl extends MapCommonControl {
     int index;
     int drawY, drawX;
 
-    if(floorSurface==0L){
-      floorSurface = MirJNI.Mir_FillRect(getSize().getWidth(),getSize().getHeight(),new int[]{0,0,0,0});
+    if(surface==0L){
+      surface = MirJNI.Mir_FillRect(getSize().getWidth(),getSize().getHeight(),new int[]{0,0,0,0});
     }
 
     //getUser().Movement.getY()
@@ -90,7 +83,7 @@ public class MapFloorControl extends MapCommonControl {
         }
         index = (M2CellInfo[x][y].BackImage & 0x1FFFF) - 1;
         MirImage img = MirLibFactory.getMapLib(M2CellInfo[x][y].BackIndex).GetMirImage(index);
-        MirJNI.Mir_SurfaceBlendAdd(floorSurface,img.getSurface(ImageEffect.None),drawX, drawY,1);
+        MirJNI.Mir_SurfaceBlendAdd(surface,img.getSurface(ImageEffect.None),drawX, drawY,1);
       }
     }
 
@@ -125,7 +118,7 @@ public class MapFloorControl extends MapCommonControl {
             continue;
           }
         }
-        MirJNI.Mir_SurfaceBlendAdd(floorSurface,img.getSurface(ImageEffect.None),drawX, drawY,1);
+        MirJNI.Mir_SurfaceBlendAdd(surface,img.getSurface(ImageEffect.None),drawX, drawY,1);
       }
     }
     for (int y = userMoveY - viewRangeY; y <= userMoveY + viewRangeY + 5; y++) {
@@ -181,7 +174,37 @@ public class MapFloorControl extends MapCommonControl {
           continue;
         }
         img = MirLibFactory.getMapLib(fileIndex).GetMirImage(index);
-        MirJNI.Mir_SurfaceBlendAdd(floorSurface,img.getSurface(ImageEffect.None),drawX, drawY,1);
+        MirJNI.Mir_SurfaceBlendAdd(surface,img.getSurface(ImageEffect.None),drawX, drawY,1);
+      }
+    }
+  }
+
+  public void processdoors()
+  {
+    for (int i = 0; i < doors.size(); i++)
+    {
+      if ((doors.get(i).getDoorState() == 1) || (doors.get(i).getDoorState() == 3))
+      {
+        if (doors.get(i).getLastTick() + 50 < Settings.getTime())
+        {
+          doors.get(i).setLastTick(Settings.getTime());
+          doors.get(i).setImageIndex((byte)(doors.get(i).getImageIndex()+1));
+          if (doors.get(i).getImageIndex() == 1)//change the 1 if you want to actualy animate doors opening/closing
+          {
+            doors.get(i).setImageIndex((byte)0);
+            doors.get(i).setDoorState((byte)(doors.get(i).getDoorState()+1 % 4));
+          }
+          isFloorValid = false;
+        }
+      }
+      if (doors.get(i).getDoorState() == 2)
+      {
+        if (doors.get(i).getLastTick() + 5000 < Settings.getTime())
+        {
+          doors.get(i).setLastTick(Settings.getTime());
+          doors.get(i).setDoorState((byte)3);
+          isFloorValid = false;
+        }
       }
     }
   }
