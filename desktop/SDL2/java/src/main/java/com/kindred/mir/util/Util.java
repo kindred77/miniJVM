@@ -56,19 +56,19 @@ public class Util {
 
     public static short ToInt16(byte[] bytes, int index) {
         ByteBuffer buffer = ByteBuffer.wrap(bytes, index, 2);
-        buffer.order(ByteOrder.BIG_ENDIAN);
+        //buffer.order(ByteOrder.BIG_ENDIAN);
         return buffer.getShort();
     }
 
     public static int ToInt32(byte[] bytes, int index) {
         ByteBuffer buffer = ByteBuffer.wrap(bytes, index, 4);
-        buffer.order(ByteOrder.BIG_ENDIAN);
+        //buffer.order(ByteOrder.BIG_ENDIAN);
         return buffer.getInt();
     }
 
     public static int ToUInt16(byte[] bytes, int index) {
         ByteBuffer buffer = ByteBuffer.wrap(bytes, index, 2);
-        buffer.order(ByteOrder.BIG_ENDIAN);
+        //buffer.order(ByteOrder.BIG_ENDIAN);
         return buffer.getShort() & 0xFFFF;
     }
 

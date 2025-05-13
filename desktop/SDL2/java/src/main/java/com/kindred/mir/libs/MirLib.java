@@ -15,10 +15,10 @@ public class MirLib {
     private MirImage[] images;
     private int[] indexList;
 
-    MirLib(String file_name)
+    MirLib(String fileName)
     {
-        this.file_name=file_name;
-        this.file=new File(file_name);
+        this.file_name=fileName+MirLibFactory.LIB_SUFFIX;
+        this.file=new File(this.file_name);
     }
 
     private synchronized boolean initializeImage(int index) throws Exception

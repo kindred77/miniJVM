@@ -10,6 +10,7 @@ import com.kindred.mir.libs.MirLibFactory;
 import com.kindred.mir.libs.map.MapCellInfo;
 import com.kindred.mir.scene.game.objects.UserObject;
 import com.kindred.mir.util.Size;
+import java.io.File;
 import java.util.List;
 
 public class MapBackGroundControl extends MapCommonControl {
@@ -56,8 +57,12 @@ public class MapBackGroundControl extends MapCommonControl {
     if(surface==0L){
       surface = MirJNI.Mir_FillRect(getSize().getWidth(),getSize().getHeight(),new int[]{0,0,0,0});
     }
+    File file=new File(fileName);
+    if(!file.exists() || !file.isFile()){
+      throw new Exception(fileName+" 不是文件!");
+    }
 
-    String cleanFilename = fileName.replace(Settings.MapPath, "");
+    String cleanFilename = file.getName();
     //long surface = MirJNI.Mir_FillRect(Settings.ScreenWidth,Settings.ScreenHeight,new int[]{0,0,0,0});
     if(cleanFilename.startsWith("ID1") || cleanFilename.startsWith("ID2")) {
       MirImage img = MirLibFactory.getMirLib(MirLibFactory.Background).GetMirImage(10);

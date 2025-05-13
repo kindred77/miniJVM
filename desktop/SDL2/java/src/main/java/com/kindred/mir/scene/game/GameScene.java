@@ -208,7 +208,7 @@ public class GameScene extends MirScene {
 
     public GameScene(MirControl parent, long window_id, long renderer_id,MirSceneData sceneData) throws Exception{
         super(parent, window_id, renderer_id,SceneEnumType.Game,sceneData);
-        this.mapControl=new MapMainControl(this,renderer_id,"");
+        this.mapControl=new MapMainControl(this,renderer_id,"../mir_client/map/0");
     }
 
     public void receiveChat(String msg, ChatType chatType) {

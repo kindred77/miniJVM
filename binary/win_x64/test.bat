@@ -6,3 +6,5 @@ mini_jvm.exe -bootclasspath ../lib/minijvm_rt.jar -cp ../libex/minijvm_test.jar 
 pause
 
 #mini_jvm.exe -bootclasspath ../lib/minijvm_rt.jar -cp ../libex/sdl2.jar;../libex/lombok-1.18.36.jar com.kindred.mir.test.TestLombok
+
+#mini_jvm.exe -bootclasspath ../lib/minijvm_rt.jar -cp ../libex/sdl2.jar;../libex/lombok-1.18.36.jar;../libex/aspectjrt-1.9.7.jar com.kindred.mir.test.TestLombok

@@ -17,7 +17,6 @@ public class Settings {
     public final static int MIR_INIT_USERITEMSLOTS_SIZE = 5;
 
     public static String DataPath = "Data/";
-    public static String MapPath = "Map/";
 
     //public static boolean isImguiUsed=false;
     public static volatile AtomicBoolean IsImguiUsed=new AtomicBoolean(false);

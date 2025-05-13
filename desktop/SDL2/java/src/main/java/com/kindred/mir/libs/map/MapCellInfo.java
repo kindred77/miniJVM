@@ -65,11 +65,10 @@ public class MapCellInfo {
   }
   public MapObject findObject(long ObjectID)
   {
-    List<MapObject> longWords = CellObjects.stream()
-        .filter(mapObj -> mapObj.ObjectID > ObjectID)
-        .collect(Collectors.toList());
-    if (longWords.size()>0) {
-      return longWords.get(0);
+    for(MapObject obj : CellObjects){
+      if(obj.ObjectID==ObjectID){
+        return obj;
+      }
     }
     return null;
   }

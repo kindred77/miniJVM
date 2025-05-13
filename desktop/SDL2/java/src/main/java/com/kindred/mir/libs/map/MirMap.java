@@ -1,9 +1,13 @@
 package com.kindred.mir.libs.map;
 
+import com.kindred.mir.libs.MirLibFactory;
 import com.kindred.mir.util.Util;
 import java.io.File;
 import java.io.FileInputStream;
 
+/**
+ * 注意：地图数据是LittleEndian
+ */
 public class MirMap {
 
   private int width,height;
@@ -12,7 +16,7 @@ public class MirMap {
   private byte[] data;
 
   public MirMap(String fileName) throws Exception{
-    this.fileName=fileName;
+    this.fileName=fileName+MirLibFactory.MAP_SUFFIX;
     initiate();
   }
 
@@ -20,7 +24,10 @@ public class MirMap {
     File file=new File(this.fileName);
     if (file.exists()) {
       //Bytes = File.ReadAllBytes(FileName);
-      //data=new byte[file.length()];
+      if(file.length() > Integer.MAX_VALUE){
+        throw new Exception(this.fileName+" is too big!");
+      }
+      data=new byte[(int)file.length()];
       FileInputStream fis = new FileInputStream(file);
       fis.read(data);
     } else {
@@ -137,7 +144,7 @@ public class MirMap {
     {
       ex.printStackTrace();
     }
-
+    System.out.println("map type: 0, width: "+width+", height: "+height);
   }
 
   private void LoadMapType1()
@@ -184,6 +191,8 @@ public class MirMap {
     {
       ex.printStackTrace();
     }
+
+    System.out.println("map type: 1, width: "+width+", height: "+height);
   }
 
   private void LoadMapType2()
@@ -227,6 +236,8 @@ public class MirMap {
     {
       ex.printStackTrace();
     }
+
+    System.out.println("map type: 2, width: "+width+", height: "+height);
 
   }
 
@@ -275,6 +286,8 @@ public class MirMap {
     {
       ex.printStackTrace();
     }
+
+    System.out.println("map type: 3, width: "+width+", height: "+height);
   }
 
   private void LoadMapType4()
@@ -322,6 +335,8 @@ public class MirMap {
     {
       ex.printStackTrace();
     }
+
+    System.out.println("map type: 4, width: "+width+", height: "+height);
   }
 
   private void LoadMapType5()
@@ -399,6 +414,8 @@ public class MirMap {
     {
       ex.printStackTrace();
     }
+
+    System.out.println("map type: 5, width: "+width+", height: "+height);
   }
 
   private void LoadMapType6()
@@ -456,6 +473,8 @@ public class MirMap {
       ex.printStackTrace();
     }
 
+    System.out.println("map type: 6, width: "+width+", height: "+height);
+
   }
 
   private void LoadMapType7()
@@ -500,6 +519,8 @@ public class MirMap {
     {
       ex.printStackTrace();
     }
+
+    System.out.println("map type: 7, width: "+width+", height: "+height);
   }
 
   private void LoadMapType100()
@@ -554,6 +575,8 @@ public class MirMap {
     {
       ex.printStackTrace();
     }
+
+    System.out.println("map type: 100, width: "+width+", height: "+height);
   }
 
   public MapCellInfo[][] getMapCells() {
