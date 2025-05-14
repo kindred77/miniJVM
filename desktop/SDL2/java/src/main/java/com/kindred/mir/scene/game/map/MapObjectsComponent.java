@@ -118,7 +118,9 @@ public class MapObjectsComponent extends MapCommonComponent {
                 if (blend && (animation == 10 || animation == 8)) //diamond mines, abyss blends
                 {
                   MirImage img = MirLibFactory.getMapLib(M2CellInfo[x][y].MiddleIndex).GetMirImage(index);
-                  drawToSurface(targetSurface,img.getSurface(ImageEffect.None),drawX,drawY);
+                  drawToSurface(targetSurface,img.getSurface(ImageEffect.None),
+                      drawX+img.getOffset().getX(),
+                      drawY+img.getOffset().getX());
                   //Libraries.MapLibs[M2CellInfo[x][y].MiddleIndex].DrawUpBlend(index, new Point(drawX, drawY));
                 }
                 else
@@ -188,18 +190,24 @@ public class MapObjectsComponent extends MapCommonComponent {
 
         if (blend) {
           if ((fileIndex > 99) & (fileIndex < 199)) {
-            drawToSurface(targetSurface,img.getSurface(ImageEffect.None),drawX,drawY - (3 * CellHeight));
+            drawToSurface(targetSurface,img.getSurface(ImageEffect.None),
+                drawX+img.getOffset().getX(),
+                drawY - (3 * CellHeight)+img.getOffset().getX());
             //img = MirLibFactory.getMapLib(fileIndex).GetMirImage(index);
             //Libraries.MapLibs[fileIndex]
             //    .DrawBlend(index, new Point(drawX, drawY - (3 * CellHeight)), Color.White, true);
           } else {
             //img = MirLibFactory.getMapLib(fileIndex).GetMirImage(index);
-            drawToSurface(targetSurface,img.getSurface(ImageEffect.None),drawX,drawY - s.getHeight());
+            drawToSurface(targetSurface,img.getSurface(ImageEffect.None),
+                drawX+img.getOffset().getX(),
+                drawY - s.getHeight()+img.getOffset().getY());
             //Libraries.MapLibs[fileIndex]
             //    .DrawBlend(index, new Point(drawX, drawY - s.Height), Color.White, (index >= 2723 && index <= 2732));
           }
         } else {
-          drawToSurface(targetSurface,img.getSurface(ImageEffect.None),drawX,drawY - s.getHeight());
+          drawToSurface(targetSurface,img.getSurface(ImageEffect.None),
+              drawX+img.getOffset().getX(),
+              drawY - s.getHeight()+img.getOffset().getX());
           //Libraries.MapLibs[fileIndex].Draw(index, drawX, drawY - s.Height);
         }
       }
