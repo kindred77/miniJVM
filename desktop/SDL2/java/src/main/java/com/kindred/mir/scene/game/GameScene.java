@@ -208,7 +208,10 @@ public class GameScene extends MirScene {
     public GameScene(MirControl parent, long window_id, long renderer_id,MirSceneData sceneData) throws Exception{
         super(parent, window_id, renderer_id,SceneEnumType.Game,sceneData);
         this.mapControl=new MapMainControl(this,renderer_id,"../mir_client/map/0");
-        this.mapControl.updateSurface(300,300,20,20);
+        this.mapControl.updateSurface(MapObject.User.Movement.getX(),
+            MapObject.User.Movement.getY(),
+            MapObject.User.OffSetMove.getX(),
+            MapObject.User.OffSetMove.getY());
     }
 
     public void receiveChat(String msg, ChatType chatType) {

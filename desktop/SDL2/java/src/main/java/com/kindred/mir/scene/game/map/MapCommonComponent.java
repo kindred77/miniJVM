@@ -1,6 +1,8 @@
 package com.kindred.mir.scene.game.map;
 
 import com.kindred.mir.GameCommon.Door;
+import com.kindred.mir.engine.MirJNI;
+import com.kindred.mir.libs.MirImage.ImageEffect;
 import com.kindred.mir.libs.map.MapCellInfo;
 import com.kindred.mir.scene.game.objects.MapObject;
 import com.kindred.mir.scene.game.objects.UserObject;
@@ -84,6 +86,13 @@ public abstract class MapCommonComponent {
 
   public UserObject getUser() {
     return MapObject.User;
+  }
+
+  protected final void drawToSurface(
+      long targetSurface,
+      long srcSurface,
+      int x, int y) {
+    MirJNI.Mir_SurfaceBlendNormalTransparent(targetSurface,srcSurface,x, y,1,0,0,0);
   }
 
   protected abstract void updateSurface(

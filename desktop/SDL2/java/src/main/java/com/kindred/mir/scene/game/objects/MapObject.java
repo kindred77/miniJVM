@@ -36,7 +36,7 @@ public abstract class MapObject {
   //for test
   public static UserObject User=new UserObject(1);
   static {
-    User.Movement=new Point(300,300);
+    User.Movement=new Point(320,280);
     User.OffSetMove=new Point(20,20);
   }
   public static MapObject MouseObject, TargetObject, MagicObject;
