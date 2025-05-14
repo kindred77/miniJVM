@@ -75,7 +75,7 @@ public class MapFloorComponent extends MapCommonComponent {
         }
         index = (M2CellInfo[x][y].BackImage & 0x1FFFF) - 1;
         MirImage img = MirLibFactory.getMapLib(M2CellInfo[x][y].BackIndex).GetMirImage(index);
-        drawToSurface(targetSurface,img.getSurface(ImageEffect.None),drawX,drawY);
+        drawToSurface(targetSurface,img.getSurface(ImageEffect.None),false,drawX,drawY);
       }
     }
 
@@ -110,7 +110,7 @@ public class MapFloorComponent extends MapCommonComponent {
             continue;
           }
         }
-        drawToSurface(targetSurface,img.getSurface(ImageEffect.None),drawX,drawY);
+        drawToSurface(targetSurface,img.getSurface(ImageEffect.None),false,drawX,drawY);
       }
     }
 
@@ -167,7 +167,7 @@ public class MapFloorComponent extends MapCommonComponent {
           continue;
         }
         img = MirLibFactory.getMapLib(fileIndex).GetMirImage(index);
-        drawToSurface(targetSurface,img.getSurface(ImageEffect.None),drawX,drawY);
+        drawToSurface(targetSurface,img.getSurface(ImageEffect.None),false,drawX,drawY);
       }
     }
   }

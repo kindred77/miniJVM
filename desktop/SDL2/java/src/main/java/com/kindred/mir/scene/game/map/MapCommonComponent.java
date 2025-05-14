@@ -1,7 +1,9 @@
 package com.kindred.mir.scene.game.map;
 
 import com.kindred.mir.GameCommon.Door;
+import com.kindred.mir.Settings;
 import com.kindred.mir.engine.MirJNI;
+import com.kindred.mir.libs.MirImage;
 import com.kindred.mir.libs.MirImage.ImageEffect;
 import com.kindred.mir.libs.map.MapCellInfo;
 import com.kindred.mir.scene.game.objects.MapObject;
@@ -88,11 +90,36 @@ public abstract class MapCommonComponent {
     return MapObject.User;
   }
 
+  protected final void drawUp(
+      long targetSurface,
+      MirImage img,
+      boolean isBlend,
+      int x, int y)
+  {
+    if (x >= Settings.ScreenWidth)
+      return;
+
+    y -= img.getHeight();
+    if (y >= Settings.ScreenHeight)
+      return;
+    if (x + img.getWidth() < 0 || y + img.getHeight() < 0)
+      return;
+
+    drawToSurface(targetSurface, img.getSurface(ImageEffect.None), isBlend, x, y);
+  }
+
   protected final void drawToSurface(
       long targetSurface,
       long srcSurface,
+      boolean isBlend,
       int x, int y) {
-    MirJNI.Mir_SurfaceBlendNormalTransparent(targetSurface,srcSurface,x, y,1,0,0,0);
+    if(!isBlend) {
+      MirJNI.Mir_SurfaceBlendNormalTransparent(targetSurface,srcSurface,x, y,1,0,0,0);
+    } else {
+      MirJNI.Mir_SurfaceBlendAddTransparent(targetSurface,
+          srcSurface, x, y,
+          1,0,0,0);
+    }
   }
 
   protected abstract void updateSurface(

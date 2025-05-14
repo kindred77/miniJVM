@@ -1358,7 +1358,7 @@ int com_kindred_sdl_SDL_Mir_SurfaceBlendNormalTransparent(Runtime *runtime, JCla
 
                 if (r == sr && g == sg && b == sb || !sa) continue;
 
-                //依然用dst的alpha值
+                //alpha = (float)((float)sa / 255.0);
                 sr *= alpha;
                 sg *= alpha;
                 sb *= alpha;

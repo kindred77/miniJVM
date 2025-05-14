@@ -50,16 +50,16 @@ public class MapBackGroundComponent extends MapCommonComponent {
 
     if(cleanFilename.startsWith("ID1") || cleanFilename.startsWith("ID2")) {
       MirImage img = MirLibFactory.getMirLib(MirLibFactory.Background).GetMirImage(10);
-      drawToSurface(targetSurface,img.getSurface(ImageEffect.None),0,0);
+      drawToSurface(targetSurface,img.getSurface(ImageEffect.None),false,0,0);
     } else if(cleanFilename.startsWith("ID3_013")) {
       MirImage img = MirLibFactory.getMirLib(MirLibFactory.Background).GetMirImage(22);
-      drawToSurface(targetSurface,img.getSurface(ImageEffect.None),0,0);
+      drawToSurface(targetSurface,img.getSurface(ImageEffect.None),false,0,0);
     } else if (cleanFilename.startsWith("ID3_015")) {
       MirImage img = MirLibFactory.getMirLib(MirLibFactory.Background).GetMirImage(23);
-      drawToSurface(targetSurface,img.getSurface(ImageEffect.None),0,0);
+      drawToSurface(targetSurface,img.getSurface(ImageEffect.None),false,0,0);
     } else if (cleanFilename.startsWith("ID3_023") || cleanFilename.startsWith("ID3_025")) {
       MirImage img = MirLibFactory.getMirLib(MirLibFactory.Background).GetMirImage(21);
-      drawToSurface(targetSurface,img.getSurface(ImageEffect.None),0,0);
+      drawToSurface(targetSurface,img.getSurface(ImageEffect.None),false,0,0);
     }
   }
 }

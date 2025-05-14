@@ -94,7 +94,10 @@ public class MapObjectsComponent extends MapCommonComponent {
           int animationoffset = M2CellInfo[x][y].TileAnimationOffset ^ 0x2000;
           index += animationoffset * (animationCount % animation);
           MirImage img = MirLibFactory.getMapLib(190).GetMirImage(index);
-          drawToSurface(targetSurface,img.getSurface(ImageEffect.None),drawX,drawY);
+          drawUp(targetSurface,img,false,drawX,drawY);
+//          drawToSurface(targetSurface,img.getSurface(ImageEffect.None),false,
+//              drawX,
+//              drawY);
         }
 
         if ((M2CellInfo[x][y].MiddleIndex > 199) && (M2CellInfo[x][y].MiddleIndex != -1)) {
@@ -118,15 +121,19 @@ public class MapObjectsComponent extends MapCommonComponent {
                 if (blend && (animation == 10 || animation == 8)) //diamond mines, abyss blends
                 {
                   MirImage img = MirLibFactory.getMapLib(M2CellInfo[x][y].MiddleIndex).GetMirImage(index);
-                  drawToSurface(targetSurface,img.getSurface(ImageEffect.None),
-                      drawX+img.getOffset().getX(),
-                      drawY+img.getOffset().getX());
+//                  drawToSurface(targetSurface,img.getSurface(ImageEffect.None),true,
+//                      drawX,
+//                      drawY);
+                  drawUp(targetSurface,img,true,drawX,drawY);
                   //Libraries.MapLibs[M2CellInfo[x][y].MiddleIndex].DrawUpBlend(index, new Point(drawX, drawY));
                 }
                 else
                 {
                   MirImage img = MirLibFactory.getMapLib(M2CellInfo[x][y].MiddleIndex).GetMirImage(index);
-                  drawToSurface(targetSurface,img.getSurface(ImageEffect.None),drawX,drawY);
+//                  drawToSurface(targetSurface,img.getSurface(ImageEffect.None),false,
+//                      drawX,
+//                      drawY);
+                  drawUp(targetSurface,img,false,drawX,drawY);
                   //Libraries.MapLibs[M2CellInfo[x][y].MiddleIndex].DrawUp(index, drawX, drawY);
                 }
               }
@@ -135,7 +142,10 @@ public class MapObjectsComponent extends MapCommonComponent {
             s = img.getTrueSize();
             if ((s.getWidth() != CellWidth || s.getHeight() != CellHeight) && (s.getWidth() != (CellWidth * 2) || s.getHeight() != (CellHeight * 2)) && !blend)
             {
-              drawToSurface(targetSurface,img.getSurface(ImageEffect.None),drawX,drawY);
+//              drawToSurface(targetSurface,img.getSurface(ImageEffect.None),false,
+//                  drawX,
+//                  drawY);
+              drawUp(targetSurface,img,false,drawX,drawY);
               //Libraries.MapLibs[M2CellInfo[x][y].MiddleIndex].DrawUp(index, drawX, drawY);
             }
           }
@@ -190,24 +200,33 @@ public class MapObjectsComponent extends MapCommonComponent {
 
         if (blend) {
           if ((fileIndex > 99) & (fileIndex < 199)) {
-            drawToSurface(targetSurface,img.getSurface(ImageEffect.None),
-                drawX+img.getOffset().getX(),
-                drawY - (3 * CellHeight)+img.getOffset().getX());
+            //use offset
+            drawToSurface(targetSurface,img.getSurface(ImageEffect.None),true,
+                drawX + img.getOffset().getX(),
+                drawY - (3 * CellHeight) + img.getOffset().getY());
             //img = MirLibFactory.getMapLib(fileIndex).GetMirImage(index);
             //Libraries.MapLibs[fileIndex]
             //    .DrawBlend(index, new Point(drawX, drawY - (3 * CellHeight)), Color.White, true);
           } else {
             //img = MirLibFactory.getMapLib(fileIndex).GetMirImage(index);
-            drawToSurface(targetSurface,img.getSurface(ImageEffect.None),
-                drawX+img.getOffset().getX(),
-                drawY - s.getHeight()+img.getOffset().getY());
+            if((index >= 2723 && index <= 2732)){
+              //use offset
+              drawToSurface(targetSurface,img.getSurface(ImageEffect.None),true,
+                  drawX + img.getOffset().getX(),
+                  drawY - s.getHeight() + img.getOffset().getY());
+            } else {
+              drawToSurface(targetSurface,img.getSurface(ImageEffect.None),true,
+                  drawX,
+                  drawY - s.getHeight());
+            }
+
             //Libraries.MapLibs[fileIndex]
             //    .DrawBlend(index, new Point(drawX, drawY - s.Height), Color.White, (index >= 2723 && index <= 2732));
           }
         } else {
-          drawToSurface(targetSurface,img.getSurface(ImageEffect.None),
-              drawX+img.getOffset().getX(),
-              drawY - s.getHeight()+img.getOffset().getX());
+          drawToSurface(targetSurface,img.getSurface(ImageEffect.None),false,
+              drawX,
+              drawY - s.getHeight());
           //Libraries.MapLibs[fileIndex].Draw(index, drawX, drawY - s.Height);
         }
       }
