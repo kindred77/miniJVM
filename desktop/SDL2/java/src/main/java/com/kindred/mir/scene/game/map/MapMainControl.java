@@ -2,9 +2,11 @@ package com.kindred.mir.scene.game.map;
 
 import com.kindred.mir.Env;
 import com.kindred.mir.GameCommon.ChatType;
+import com.kindred.mir.GameCommon.Door;
 import com.kindred.mir.Settings;
 import com.kindred.mir.controls.MirControl;
 import com.kindred.mir.controls.MirControlWithTexture;
+import com.kindred.mir.engine.MirJNI;
 import com.kindred.mir.engine.SoundList;
 import com.kindred.mir.engine.SoundManager;
 import com.kindred.mir.libs.map.MapCellInfo;
@@ -13,7 +15,6 @@ import com.kindred.mir.scene.MirScene.SceneEnumType;
 import com.kindred.mir.scene.game.GameScene;
 import com.kindred.mir.scene.game.objects.MapObject;
 import com.kindred.mir.scene.game.objects.MonsterObject;
-import com.kindred.mir.scene.game.objects.UserObject;
 import com.kindred.mir.scene.game.objects.effects.Effect;
 import com.kindred.mir.util.Color;
 import com.kindred.mir.util.Point;
@@ -21,28 +22,37 @@ import com.kindred.mir.util.Size;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MapMainControl extends MapCommonControl {
+public class MapMainControl extends MirControlWithTexture {
 
-  private String fileName = "";
+  public static List<MapObject> Objects = new ArrayList<MapObject>();
+
+  private String fileNameWithoutSuffix;
+  private String fileName;
   private Point mouseLocation;
   private boolean isUpgradingAction;
   private boolean isAutoRun;
   private List<Effect> effects = new ArrayList<>();
   private int music, setMusic;
 
-  private MapBackGroundControl backGroundControl;
-  private MapFloorControl floorControl;
-  private MapObjectsControl objectsControl;
+  protected MapCellInfo[][] M2CellInfo;
+  protected List<Door> doors = new ArrayList<Door>();
+  protected int mapWidth, mapHeight;
+  protected int offSetX,offSetY;
+  protected int viewRangeX,viewRangeY;
+
+  private MapBackGroundComponent backGroundComponent;
+  private MapFloorComponent floorComponent;
+  private MapObjectsComponent objectsComponent;
 
   public MapMainControl(MirControl parent, long renderer_id, String fileName) throws Exception{
     super(parent, renderer_id);
-    this.fileName=fileName;
+    this.fileNameWithoutSuffix=fileName;
     initMap();
 
     //MapButtons = MouseButtons.None;
 
-    offSetX = Settings.ScreenWidth / 2 / CellWidth;
-    offSetY = Settings.ScreenHeight / 2 / CellHeight - 1;
+    offSetX = Settings.ScreenWidth / 2 / MapCommonComponent.CellWidth;
+    offSetY = Settings.ScreenHeight / 2 / MapCommonComponent.CellHeight - 1;
 
     viewRangeX = offSetX + 4;
     viewRangeY = offSetY + 4;
@@ -57,9 +67,7 @@ public class MapMainControl extends MapCommonControl {
 //    MouseMove += (o, e) => MouseLocation = e.Location;
 //    Click += OnMouseClick;
 
-    backGroundControl=new MapBackGroundControl(
-        this,
-        renderer_id,
+    backGroundComponent=new MapBackGroundComponent(
         this.getSize().getWidth(),
         this.getSize().getHeight(),
         mapWidth,
@@ -72,9 +80,7 @@ public class MapMainControl extends MapCommonControl {
         doors,
         this.fileName);
 
-    floorControl=new MapFloorControl(
-        this,
-        renderer_id,
+    floorComponent=new MapFloorComponent(
         this.getSize().getWidth(),
         this.getSize().getHeight(),
         mapWidth,
@@ -86,9 +92,7 @@ public class MapMainControl extends MapCommonControl {
         M2CellInfo,
         doors);
 
-    objectsControl=new MapObjectsControl(
-        this,
-        renderer_id,
+    objectsComponent=new MapObjectsComponent(
         this.getSize().getWidth(),
         this.getSize().getHeight(),
         mapWidth,
@@ -118,7 +122,8 @@ public class MapMainControl extends MapCommonControl {
     MapObject.MouseObject = null;
     MapObject.TargetObject = null;
     MapObject.MagicObject = null;
-    MirMap mirMap = new MirMap(fileName);
+    MirMap mirMap = new MirMap(fileNameWithoutSuffix);
+    this.fileName=mirMap.getFileName();
     M2CellInfo = mirMap.getMapCells();
     mapWidth = mirMap.getWidth();
     mapHeight = mirMap.getHeight();
@@ -142,10 +147,23 @@ public class MapMainControl extends MapCommonControl {
       return Point.Empty;
     } else {
       return Point.add(
-          new Point(mouseLocation.getX() / CellWidth - offSetX, mouseLocation.getY() / CellHeight - offSetY),
+          new Point(mouseLocation.getX() / MapCommonComponent.CellWidth - offSetX,
+              mouseLocation.getY() / MapCommonComponent.CellHeight - offSetY),
           GameScene.getUser().CurrentLocation
       );
     }
+  }
+
+  public MapObject getObject(long targetID)
+  {
+    for (int i = 0; i < Objects.size(); i++) {
+      MapObject ob = Objects.get(i);
+      if (ob.ObjectID != targetID) {
+        continue;
+      }
+      return ob;
+    }
+    return null;
   }
 
   public boolean getIsUpgradingAction() {
@@ -194,7 +212,7 @@ public class MapMainControl extends MapCommonControl {
 
   public void process()
   {
-    floorControl.processdoors();
+    floorComponent.processdoors();
     MapObject.User.process();
 
     for (int i = Objects.size() - 1; i >= 0; i--) {
@@ -273,14 +291,15 @@ public class MapMainControl extends MapCommonControl {
     }
   }
 
-  @Override
   public final void updateSurface(
       int userMoveX,//getUser().Movement.getY()
       int userMoveY,
       int userOffsetMoveX,//getUser().OffSetMove.getY()
       int userOffsetMoveY) throws Exception {
-    floorControl.updateSurface(userMoveX, userMoveY, userOffsetMoveX, userOffsetMoveY);
-    backGroundControl.updateSurface(userMoveX, userMoveY, userOffsetMoveX, userOffsetMoveY);
-    objectsControl.updateSurface(userMoveX, userMoveY, userOffsetMoveX, userOffsetMoveY);
+    long surface = MirJNI.Mir_FillRect(getSize().getWidth(),getSize().getHeight(),new int[]{0,0,0,255});
+    floorComponent.updateSurface(userMoveX, userMoveY, userOffsetMoveX, userOffsetMoveY,surface);
+    //backGroundComponent.updateSurface(userMoveX, userMoveY, userOffsetMoveX, userOffsetMoveY,surface);
+    //objectsComponent.updateSurface(userMoveX, userMoveY, userOffsetMoveX, userOffsetMoveY,surface);
+    updateTexture(surface);
   }
 }

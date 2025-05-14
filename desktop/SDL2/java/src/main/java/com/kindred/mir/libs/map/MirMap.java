@@ -12,24 +12,29 @@ public class MirMap {
 
   private int width,height;
   private MapCellInfo[][] mapCells;
-  private String fileName;
+  private File file;
   private byte[] data;
 
   public MirMap(String fileName) throws Exception{
-    this.fileName=fileName+MirLibFactory.MAP_SUFFIX;
+    this.file=new File(fileName+MirLibFactory.MAP_SUFFIX);
     initiate();
   }
 
+  public String getFileName() {
+    return this.file.getName();
+  }
+
   private void initiate() throws Exception {
-    File file=new File(this.fileName);
+
     if (file.exists()) {
       //Bytes = File.ReadAllBytes(FileName);
       if(file.length() > Integer.MAX_VALUE){
-        throw new Exception(this.fileName+" is too big!");
+        throw new Exception(this.file.getAbsolutePath()+" is too big!");
       }
       data=new byte[(int)file.length()];
       FileInputStream fis = new FileInputStream(file);
       fis.read(data);
+      fis.close();
     } else {
       width = 1000;
       height = 1000;

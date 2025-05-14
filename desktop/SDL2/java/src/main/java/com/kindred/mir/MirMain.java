@@ -6,6 +6,8 @@ import static com.kindred.sdl.constcode.SDLWindowFlags.SDL_WINDOW_MINIMIZED;
 import com.kindred.mir.controls.events.CommonEvent;
 import com.kindred.mir.controls.events.CommonEvent.EventEnum;
 import com.kindred.mir.scene.charsel.CharSelScene;
+import com.kindred.mir.scene.game.GameScene;
+import com.kindred.mir.scene.game.GameScene.GameSceneData;
 import com.kindred.mir.util.ExecutionService;
 import com.kindred.mir.scene.MirScene;
 import com.kindred.mir.engine.MirJNI;
@@ -150,8 +152,8 @@ public class MirMain {
 
             //MirScene.SwitchToScene(MirScene.PrepareNextScene(win_id, renderer_id,null));
             //TODO for test
-            MirScene.SwitchToScene(new CharSelScene(null,win_id,renderer_id,new CharSelScene.CharSelSceneData("")));
-
+            //MirScene.SwitchToScene(new CharSelScene(null,win_id,renderer_id,new CharSelScene.CharSelSceneData("")));
+            MirScene.SwitchToScene(new GameScene(null,win_id,renderer_id, new GameSceneData()));
             while (shouldRun) {
                 updateTime();
                 updateEnviroment();

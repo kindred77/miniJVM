@@ -8,7 +8,6 @@ public class MirLib {
     private final int LibVersion = 2;
     private boolean initialized = false;
     private int imageCnt = 0;
-    private String file_name;
     private File file=null;
     private MyRandomAccessFile myRAF=null;
 
@@ -17,8 +16,7 @@ public class MirLib {
 
     MirLib(String fileName)
     {
-        this.file_name=fileName+MirLibFactory.LIB_SUFFIX;
-        this.file=new File(this.file_name);
+        this.file=new File(fileName+MirLibFactory.LIB_SUFFIX);
     }
 
     private synchronized boolean initializeImage(int index) throws Exception
@@ -36,7 +34,7 @@ public class MirLib {
             }
             catch(Exception e)
             {
-                throw new Exception("Can not initialize image, lib name: "+file_name+", index "+index);
+                throw new Exception("Can not initialize image, lib name: "+this.file.getAbsolutePath()+", index "+index);
             }
         }
         return true;
@@ -50,22 +48,22 @@ public class MirLib {
         }
         if (!file.exists())
         {
-            throw new Exception("File not exists: "+file_name);
+            throw new Exception("File not exists: "+this.file.getAbsolutePath());
         }
         if (!file.canRead())
         {
-            throw new Exception("File can not read: "+file_name);
+            throw new Exception("File can not read: "+this.file.getAbsolutePath());
         }
         if (!file.isFile())
         {
-            throw new Exception("File is not file: "+file_name);
+            throw new Exception("File is not file: "+this.file.getAbsolutePath());
         }
 
         myRAF = new MyRandomAccessFile(file, "r");
         int libVersion = myRAF.readIntLE();
         if (libVersion != LibVersion)
         {
-            throw new Exception("Invalid mir lib file "+file_name+". Wrong version: "+libVersion);
+            throw new Exception("Invalid mir lib file "+this.file.getAbsolutePath()+". Wrong version: "+libVersion);
         }
         imageCnt = myRAF.readIntLE();
         images = new MirImage[imageCnt];
@@ -118,7 +116,7 @@ public class MirLib {
 
     public String GetFilName()
     {
-        return file_name;
+        return this.file.getAbsolutePath();
     }
 
 

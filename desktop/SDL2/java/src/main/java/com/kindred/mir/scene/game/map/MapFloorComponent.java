@@ -2,8 +2,6 @@ package com.kindred.mir.scene.game.map;
 
 import com.kindred.mir.GameCommon.Door;
 import com.kindred.mir.Settings;
-import com.kindred.mir.controls.MirControl;
-import com.kindred.mir.controls.MirControlWithTexture;
 import com.kindred.mir.engine.MirJNI;
 import com.kindred.mir.libs.MirImage;
 import com.kindred.mir.libs.MirImage.ImageEffect;
@@ -12,12 +10,11 @@ import com.kindred.mir.libs.map.MapCellInfo;
 import com.kindred.mir.util.Size;
 import java.util.List;
 
-public class MapFloorControl extends MapCommonControl {
+public class MapFloorComponent extends MapCommonComponent {
 
   private boolean isFloorValid=false;
 
-  public MapFloorControl(MirControl parent, long renderer_id,
-      int width, int height,
+  public MapFloorComponent(int width, int height,
       int mapWidth, int mapHeight,
       int viewRangeX,
       int viewRangeY,
@@ -27,8 +24,6 @@ public class MapFloorControl extends MapCommonControl {
       List<Door> doors
   ) {
     super(
-        parent,
-        renderer_id,
         width,
         height,
         mapWidth,
@@ -47,18 +42,15 @@ public class MapFloorControl extends MapCommonControl {
    * @throws Exception
    */
   @Override
-  public final void updateSurface(
+  protected final void updateSurface(
       int userMoveX,//getUser().Movement.getY()
       int userMoveY,
       int userOffsetMoveX,//getUser().OffSetMove.getY()
-      int userOffsetMoveY
+      int userOffsetMoveY,
+      long targetSurface
   ) throws Exception{
     int index;
     int drawY, drawX;
-
-    if(surface==0L){
-      surface = MirJNI.Mir_FillRect(getSize().getWidth(),getSize().getHeight(),new int[]{0,0,0,0});
-    }
 
     //getUser().Movement.getY()
     for (int y = userMoveY - viewRangeY; y <= userMoveY + viewRangeY; y++) {
@@ -83,7 +75,7 @@ public class MapFloorControl extends MapCommonControl {
         }
         index = (M2CellInfo[x][y].BackImage & 0x1FFFF) - 1;
         MirImage img = MirLibFactory.getMapLib(M2CellInfo[x][y].BackIndex).GetMirImage(index);
-        MirJNI.Mir_SurfaceBlendAdd(surface,img.getSurface(ImageEffect.None),drawX, drawY,1);
+        MirJNI.Mir_SurfaceBlendAdd(targetSurface,img.getSurface(ImageEffect.None),drawX, drawY,1);
       }
     }
 
@@ -118,9 +110,10 @@ public class MapFloorControl extends MapCommonControl {
             continue;
           }
         }
-        MirJNI.Mir_SurfaceBlendAdd(surface,img.getSurface(ImageEffect.None),drawX, drawY,1);
+        MirJNI.Mir_SurfaceBlendAdd(targetSurface,img.getSurface(ImageEffect.None),drawX, drawY,1);
       }
     }
+
     for (int y = userMoveY - viewRangeY; y <= userMoveY + viewRangeY + 5; y++) {
       if (y <= 0) {
         continue;
@@ -174,7 +167,7 @@ public class MapFloorControl extends MapCommonControl {
           continue;
         }
         img = MirLibFactory.getMapLib(fileIndex).GetMirImage(index);
-        MirJNI.Mir_SurfaceBlendAdd(surface,img.getSurface(ImageEffect.None),drawX, drawY,1);
+        MirJNI.Mir_SurfaceBlendAdd(targetSurface,img.getSurface(ImageEffect.None),drawX, drawY,1);
       }
     }
   }

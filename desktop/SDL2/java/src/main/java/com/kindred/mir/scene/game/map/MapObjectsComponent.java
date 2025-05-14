@@ -2,23 +2,20 @@ package com.kindred.mir.scene.game.map;
 
 import com.kindred.mir.GameCommon.Door;
 import com.kindred.mir.Settings;
-import com.kindred.mir.controls.MirControl;
 import com.kindred.mir.engine.MirJNI;
 import com.kindred.mir.libs.MirImage;
 import com.kindred.mir.libs.MirImage.ImageEffect;
 import com.kindred.mir.libs.MirLibFactory;
 import com.kindred.mir.libs.map.MapCellInfo;
-import com.kindred.mir.scene.game.objects.MapObject;
 import com.kindred.mir.scene.game.objects.UserObject;
 import com.kindred.mir.util.Size;
 import java.util.List;
 
-public class MapObjectsControl extends MapCommonControl {
+public class MapObjectsComponent extends MapCommonComponent {
 
   private int animationCount;
 
-  public MapObjectsControl(MirControl parent, long renderer_id,
-      int width, int height,
+  public MapObjectsComponent(int width, int height,
       int mapWidth, int mapHeight,
       int viewRangeX,
       int viewRangeY,
@@ -28,8 +25,6 @@ public class MapObjectsControl extends MapCommonControl {
       List<Door> doors
   ) {
     super(
-        parent,
-        renderer_id,
         width,
         height,
         mapWidth,
@@ -44,16 +39,13 @@ public class MapObjectsControl extends MapCommonControl {
   }
 
   @Override
-  public final void updateSurface(
+  protected final void updateSurface(
       int userMoveX,
       int userMoveY,
       int userOffsetMoveX,
-      int userOffsetMoveY) throws Exception
+      int userOffsetMoveY,
+      long targetSurface) throws Exception
   {
-    if(surface==0L){
-      surface = MirJNI.Mir_FillRect(getSize().getWidth(),getSize().getHeight(),new int[]{0,0,0,0});
-    }
-
     UserObject userObject=getUser();
     for (int y = userMoveY - viewRangeY; y <= userMoveY + viewRangeY + 25; y++) {
       if (y <= 0) {
@@ -69,7 +61,7 @@ public class MapObjectsControl extends MapCommonControl {
         if (x >= mapWidth) {
           break;
         }
-        M2CellInfo[x][y].drawDeadObjects(surface);
+        M2CellInfo[x][y].drawDeadObjects(targetSurface);
       }
     }
 
@@ -102,7 +94,7 @@ public class MapObjectsControl extends MapCommonControl {
           int animationoffset = M2CellInfo[x][y].TileAnimationOffset ^ 0x2000;
           index += animationoffset * (animationCount % animation);
           MirImage img = MirLibFactory.getMapLib(190).GetMirImage(index);
-          MirJNI.Mir_SurfaceBlendAdd(surface,img.getSurface(ImageEffect.None),drawX,drawY,1);
+          MirJNI.Mir_SurfaceBlendAdd(targetSurface,img.getSurface(ImageEffect.None),drawX,drawY,1);
         }
 
         if ((M2CellInfo[x][y].MiddleIndex > 199) && (M2CellInfo[x][y].MiddleIndex != -1)) {
@@ -126,13 +118,13 @@ public class MapObjectsControl extends MapCommonControl {
                 if (blend && (animation == 10 || animation == 8)) //diamond mines, abyss blends
                 {
                   MirImage img = MirLibFactory.getMapLib(M2CellInfo[x][y].MiddleIndex).GetMirImage(index);
-                  MirJNI.Mir_SurfaceBlendAdd(surface,img.getSurface(ImageEffect.None),drawX,drawY,1);
+                  MirJNI.Mir_SurfaceBlendAdd(targetSurface,img.getSurface(ImageEffect.None),drawX,drawY,1);
                   //Libraries.MapLibs[M2CellInfo[x][y].MiddleIndex].DrawUpBlend(index, new Point(drawX, drawY));
                 }
                 else
                 {
                   MirImage img = MirLibFactory.getMapLib(M2CellInfo[x][y].MiddleIndex).GetMirImage(index);
-                  MirJNI.Mir_SurfaceBlendAdd(surface,img.getSurface(ImageEffect.None),drawX,drawY,1);
+                  MirJNI.Mir_SurfaceBlendAdd(targetSurface,img.getSurface(ImageEffect.None),drawX,drawY,1);
                   //Libraries.MapLibs[M2CellInfo[x][y].MiddleIndex].DrawUp(index, drawX, drawY);
                 }
               }
@@ -141,7 +133,7 @@ public class MapObjectsControl extends MapCommonControl {
             s = img.getTrueSize();
             if ((s.getWidth() != CellWidth || s.getHeight() != CellHeight) && (s.getWidth() != (CellWidth * 2) || s.getHeight() != (CellHeight * 2)) && !blend)
             {
-              MirJNI.Mir_SurfaceBlendAdd(surface,img.getSurface(ImageEffect.None),drawX,drawY,1);
+              MirJNI.Mir_SurfaceBlendAdd(targetSurface,img.getSurface(ImageEffect.None),drawX,drawY,1);
               //Libraries.MapLibs[M2CellInfo[x][y].MiddleIndex].DrawUp(index, drawX, drawY);
             }
           }
@@ -197,17 +189,17 @@ public class MapObjectsControl extends MapCommonControl {
         if (blend) {
           if ((fileIndex > 99) & (fileIndex < 199)) {
             //img = MirLibFactory.getMapLib(fileIndex).GetMirImage(index);
-            MirJNI.Mir_SurfaceBlendAdd(surface,img.getSurface(ImageEffect.None),drawX,drawY - (3 * CellHeight),1);
+            MirJNI.Mir_SurfaceBlendAdd(targetSurface,img.getSurface(ImageEffect.None),drawX,drawY - (3 * CellHeight),1);
             //Libraries.MapLibs[fileIndex]
             //    .DrawBlend(index, new Point(drawX, drawY - (3 * CellHeight)), Color.White, true);
           } else {
             //img = MirLibFactory.getMapLib(fileIndex).GetMirImage(index);
-            MirJNI.Mir_SurfaceBlendAdd(surface,img.getSurface(ImageEffect.None),drawX,drawY - s.getHeight(),1);
+            MirJNI.Mir_SurfaceBlendAdd(targetSurface,img.getSurface(ImageEffect.None),drawX,drawY - s.getHeight(),1);
             //Libraries.MapLibs[fileIndex]
             //    .DrawBlend(index, new Point(drawX, drawY - s.Height), Color.White, (index >= 2723 && index <= 2732));
           }
         } else {
-          MirJNI.Mir_SurfaceBlendAdd(surface,img.getSurface(ImageEffect.None),drawX,drawY - s.getHeight(),1);
+          MirJNI.Mir_SurfaceBlendAdd(targetSurface,img.getSurface(ImageEffect.None),drawX,drawY - s.getHeight(),1);
           //Libraries.MapLibs[fileIndex].Draw(index, drawX, drawY - s.Height);
         }
       }
@@ -219,7 +211,7 @@ public class MapObjectsControl extends MapCommonControl {
         if (x >= mapWidth) {
           break;
         }
-        M2CellInfo[x][y].drawObjects(surface);
+        M2CellInfo[x][y].drawObjects(targetSurface);
       }
     }
 

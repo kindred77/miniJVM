@@ -6,22 +6,17 @@ import com.kindred.mir.GameCommon.MirAction;
 import com.kindred.mir.GameCommon.MirDirection;
 import com.kindred.mir.GameCommon.ObjectType;
 import com.kindred.mir.GameCommon.PoisonType;
-import com.kindred.mir.GameCommon.Spell;
 import com.kindred.mir.Settings;
 import com.kindred.mir.controls.MirLabel;
 import com.kindred.mir.engine.Font;
-import com.kindred.mir.engine.SoundManager;
 import com.kindred.mir.libs.MirLib;
-import com.kindred.mir.libs.MirLibFactory;
 import com.kindred.mir.scene.game.GameScene;
-import com.kindred.mir.scene.game.map.MapCommonControl;
-import com.kindred.mir.scene.game.objects.effects.BuffEffect;
+import com.kindred.mir.scene.game.map.MapCommonComponent;
+import com.kindred.mir.scene.game.map.MapMainControl;
 import com.kindred.mir.scene.game.objects.effects.Effect;
 import com.kindred.mir.util.Color;
 import com.kindred.mir.util.Point;
-import com.kindred.mir.util.PointF;
 import com.kindred.mir.util.Rectangle;
-import com.kindred.mir.util.Util;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,7 +33,12 @@ public abstract class MapObject {
   public static Font ChatFont = Settings.FONT_SIZE10;
   public static List<MirLabel> LabelList = new ArrayList<>();
 
-  public static UserObject User;
+  //for test
+  public static UserObject User=new UserObject(1);
+  static {
+    User.Movement=new Point(300,300);
+    User.OffSetMove=new Point(20,20);
+  }
   public static MapObject MouseObject, TargetObject, MagicObject;
 
   protected ObjectType race;
@@ -103,15 +103,15 @@ public abstract class MapObject {
   protected MapObject(long objectID) {
     ObjectID = objectID;
 
-    for (int i = MapCommonControl.Objects.size() - 1; i >= 0; i--) {
-      MapObject ob = MapCommonControl.Objects.get(i);
+    for (int i = MapMainControl.Objects.size() - 1; i >= 0; i--) {
+      MapObject ob = MapMainControl.Objects.get(i);
       if (ob.ObjectID != ObjectID) {
         continue;
       }
       ob.remove();
     }
 
-    MapCommonControl.Objects.add(this);
+    MapMainControl.Objects.add(this);
   }
 
   public void remove() {
@@ -134,7 +134,7 @@ public abstract class MapObject {
       User.clearMagic();
     }
 
-    MapCommonControl.Objects.remove(this);
+    MapMainControl.Objects.remove(this);
     ((GameScene) Env.ActiveScene).mapControl.removeObject(this);
 
     if (ObjectID != GameScene.npcID) {
