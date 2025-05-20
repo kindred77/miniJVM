@@ -118,7 +118,7 @@ public class Effect {
       Owner.Effects.remove(this);
     } else {
       if (Env.ActiveScene!=null && Env.ActiveScene.getSceneType() == SceneEnumType.Game) {
-        ((GameScene)Env.ActiveScene).mapControl.removeEffect(this);
+        ((GameScene)Env.ActiveScene).getMapControl().removeEffect(this);
       }
     }
 

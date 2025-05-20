@@ -16,6 +16,8 @@ public class Settings {
 
     public final static int MIR_INIT_USERITEMSLOTS_SIZE = 5;
 
+    public static boolean IsTargetDead=false;
+
     public static String DataPath = "Data/";
 
     //public static boolean isImguiUsed=false;

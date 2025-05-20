@@ -295,4 +295,8 @@ public class MapObjectsComponent extends MapCommonComponent {
 //      Effects.get(i).Draw();
 //    }
   }
+
+  public void increAnimationCount() {
+    animationCount++;
+  }
 }

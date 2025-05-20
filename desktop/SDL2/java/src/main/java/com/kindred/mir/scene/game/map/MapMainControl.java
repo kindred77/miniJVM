@@ -3,6 +3,7 @@ package com.kindred.mir.scene.game.map;
 import com.kindred.mir.Env;
 import com.kindred.mir.GameCommon.ChatType;
 import com.kindred.mir.GameCommon.Door;
+import com.kindred.mir.MirMain;
 import com.kindred.mir.Settings;
 import com.kindred.mir.controls.MirControl;
 import com.kindred.mir.controls.MirControlWithTexture;
@@ -13,6 +14,7 @@ import com.kindred.mir.libs.map.MapCellInfo;
 import com.kindred.mir.libs.map.MirMap;
 import com.kindred.mir.scene.MirScene.SceneEnumType;
 import com.kindred.mir.scene.game.GameScene;
+import com.kindred.mir.scene.game.objects.ItemObject;
 import com.kindred.mir.scene.game.objects.MapObject;
 import com.kindred.mir.scene.game.objects.MonsterObject;
 import com.kindred.mir.scene.game.objects.effects.Effect;
@@ -108,9 +110,9 @@ public class MapMainControl extends MirControlWithTexture {
 
   private void initMap() throws Exception
   {
-    if (Env.ActiveScene!=null && Env.ActiveScene.getSceneType() == SceneEnumType.Game) {
-      ((GameScene)Env.ActiveScene).npcDialog.setIsVisible(false);
-    }
+//    if (Env.ActiveScene!=null && Env.ActiveScene.getSceneType() == SceneEnumType.Game) {
+//      ((GameScene)Env.ActiveScene).npcDialog.setIsVisible(false);
+//    }
     Objects.clear();
     effects.clear();
     doors.clear();
@@ -210,8 +212,11 @@ public class MapMainControl extends MirControlWithTexture {
     this.effects.remove(effect);
   }
 
-  public void process()
-  {
+  public void increAnimationCount() {
+    this.objectsComponent.increAnimationCount();
+  }
+
+  public void process() throws Exception{
     floorComponent.processdoors();
     MapObject.User.process();
 
@@ -220,7 +225,6 @@ public class MapMainControl extends MirControlWithTexture {
       if (ob == MapObject.User) {
         continue;
       }
-      //  if (ob.ActionFeed.Count > 0 || ob.Effects.Count > 0 || GameScene.CanMove || CMain.Time >= ob.NextMotion)
       ob.process();
     }
 
@@ -239,27 +243,27 @@ public class MapMainControl extends MirControlWithTexture {
 
     //CheckInput();
 
-    MapObject bestmouseobject = null;
-    for (int y = getMapLocation().getY() + 2; y >= getMapLocation().getY() - 2; y--)
-    {
-      if (y >= mapHeight) {
-        continue;
-      }
-      if (y < 0) {
-        break;
-      }
-      for (int x = getMapLocation().getX() + 2; x >= getMapLocation().getX() - 2; x--) {
-        if (x >= mapWidth) {
-          continue;
-        }
-        if (x < 0) {
-          break;
-        }
-        MapCellInfo cell = M2CellInfo[x][y];
-        if (cell.CellObjects == null) {
-          continue;
-        }
-
+//    MapObject bestmouseobject = null;
+//    for (int y = getMapLocation().getY() + 2; y >= getMapLocation().getY() - 2; y--)
+//    {
+//      if (y >= mapHeight) {
+//        continue;
+//      }
+//      if (y < 0) {
+//        break;
+//      }
+//      for (int x = getMapLocation().getX() + 2; x >= getMapLocation().getX() - 2; x--) {
+//        if (x >= mapWidth) {
+//          continue;
+//        }
+//        if (x < 0) {
+//          break;
+//        }
+//        MapCellInfo cell = M2CellInfo[x][y];
+//        if (cell.CellObjects == null) {
+//          continue;
+//        }
+//
 //        for (int i = cell.CellObjects.size() - 1; i >= 0; i--) {
 //          MapObject ob = cell.CellObjects.get(i);
 //          if (ob == MapObject.User || !ob.MouseOver(CMain.MPoint)) {
@@ -267,8 +271,8 @@ public class MapMainControl extends MirControlWithTexture {
 //          }
 //
 //          if (MapObject.MouseObject != ob) {
-//            if (ob.Dead) {
-//              if (!Settings.TargetDead && GameScene.TargetDeadTime <= CMain.Time) {
+//            if (ob.isDead) {
+//              if (!Settings.IsTargetDead && GameScene.TargetDeadTime <= Env.Time) {
 //                continue;
 //              }
 //
@@ -282,24 +286,56 @@ public class MapMainControl extends MirControlWithTexture {
 //          }
 //          return;
 //        }
-      }
-    }
-
-
-    if (MapObject.MouseObject != null) {
-      MapObject.MouseObject = null;
-    }
+//      }
+//    }
+//
+//
+//    if (MapObject.MouseObject != null) {
+//      MapObject.MouseObject = null;
+//      updateSurface();
+//    }
   }
 
-  public final void updateSurface(
-      int userMoveX,//getUser().Movement.getY()
-      int userMoveY,
-      int userOffsetMoveX,//getUser().OffSetMove.getY()
-      int userOffsetMoveY) throws Exception {
+  public void updateSurface() throws Exception {
+    int userMoveX=GameScene.getUser().Movement.getX();
+    int userMoveY=GameScene.getUser().Movement.getY();
+    int userOffsetMoveX=GameScene.getUser().OffSetMove.getX();
+    int userOffsetMoveY=GameScene.getUser().OffSetMove.getY();
     long surface = MirJNI.Mir_FillRect(getSize().getWidth(),getSize().getHeight(),new int[]{0,0,0,255});
     floorComponent.updateSurface(userMoveX, userMoveY, userOffsetMoveX, userOffsetMoveY,surface);
-    //backGroundComponent.updateSurface(userMoveX, userMoveY, userOffsetMoveX, userOffsetMoveY,surface);
+    backGroundComponent.updateSurface(userMoveX, userMoveY, userOffsetMoveX, userOffsetMoveY,surface);
     objectsComponent.updateSurface(userMoveX, userMoveY, userOffsetMoveX, userOffsetMoveY,surface);
+
+//    if (Settings.DropView || GameScene.DropViewTime > Env.Time) {
+//      for (int i = 0; i < Objects.size(); i++) {
+//        MapObject ob = Objects.get(i);
+//        if(ob instanceof ItemObject){
+//          if (!ob.MouseOver(MouseLocation)) {
+//            ob.drawName(surface);
+//          }
+//        }
+//      }
+//    }
+//
+//    if (MapObject.MouseObject != null && !(MapObject.MouseObject instanceof ItemObject)){
+//      MapObject.MouseObject.drawName(surface);
+//    }
+//
+//    int offSet = 0;
+//    for (int i = 0; i < Objects.size(); i++) {
+//      MapObject ob = Objects.get(i);
+//      if(ob instanceof ItemObject) {
+//        ItemObject itemObj=(ItemObject)ob;
+//        if (!itemObj.MouseOver(MouseLocation)) continue;
+//        itemObj.drawName(surface,offSet);
+//        offSet -= (itemObj.NameLabel.getSize().getHeight() +
+//            (itemObj.NameLabel.getIsBorder() ? 1 : 0));
+//      }
+//    }
+//
+//    if (MapObject.User.MouseOver(MouseLocation))
+//      MapObject.User.drawName(surface);
+
     updateTexture(surface);
   }
 }

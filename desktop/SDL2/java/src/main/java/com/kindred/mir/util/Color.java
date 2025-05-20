@@ -14,6 +14,8 @@ public class Color {
     public static Color Purple = new Color(128,0,128, 255);
     public static Color Orange = new Color(255,165,0, 255);
     public static Color DarkRed = new Color(139,0,0, 255);
+    public static Color Gold = new Color(255,215,0, 255);
+    public static Color LimeGreen = new Color(50,205,50, 255);
 
     private int r;
     private float rf;

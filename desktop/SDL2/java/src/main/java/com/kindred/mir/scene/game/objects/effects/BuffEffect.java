@@ -8,8 +8,8 @@ import com.kindred.mir.scene.game.objects.MapObject;
 public class BuffEffect extends Effect {
 
   public BuffEffect(MirLib library, int baseIndex, int count, int duration,
-      MapObject owner, long starttime, boolean drawBehind) {
-    super(library, baseIndex, count, duration, owner, starttime, drawBehind);
+      MapObject owner, boolean drawBehind, BuffType buffType) {
+    super(library, baseIndex, count, duration, owner, 0, drawBehind);
   }
   public GameCommon.BuffType BuffType;
 //

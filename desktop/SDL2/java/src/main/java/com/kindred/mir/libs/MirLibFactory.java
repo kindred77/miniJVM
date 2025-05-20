@@ -1,6 +1,8 @@
 package com.kindred.mir.libs;
 
 import com.kindred.mir.Settings;
+import com.kindred.mir.engine.MirJNI;
+import com.kindred.mir.libs.MirImage.ImageEffect;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +16,7 @@ public class MirLibFactory {
     public static String ChrSel = "ChrSel";
 
     public static String Prguse = "Prguse";
+    public static String Prguse3 = "Prguse3";
 
     public static String Magic2 = "Magic2";
 
@@ -108,7 +111,7 @@ public class MirLibFactory {
                 try{
                     lib.Initialize();
                 } catch(Exception e) {
-                    System.out.println(lib.GetFilName() + " load failed: " + e.getMessage());
+                    //System.out.println(lib.GetFilName() + " load failed: " + e.getMessage());
                 }
             }
         }
@@ -116,5 +119,35 @@ public class MirLibFactory {
 
     public static MirLib getMapLib(int idx) {
         return mapLibs[idx];
+    }
+
+    public static void tryToDraw(
+        long targetSurface,
+        String libName,
+        int imgIdx,
+        ImageEffect effect,
+        int x,
+        int y,
+        boolean isBlend
+    ) {
+        MirLib lib=MirLibFactory.getMirLib(libName);
+        if(null != lib){
+            MirImage img=null;
+            try {
+                img = lib.GetMirImage(0);
+            } catch (Exception e) {
+                System.out.println("Warn: can not draw MirImage: "+e.getMessage());
+                return;
+            }
+            long srcSurface=img.getSurface(effect);
+            if(!isBlend) {
+                MirJNI.Mir_SurfaceBlendNormalTransparent(targetSurface,srcSurface,x, y,1,0,0,0);
+            } else {
+                MirJNI.Mir_SurfaceBlendAddTransparent(targetSurface,
+                    srcSurface, x, y,
+                    1,0,0,0);
+            }
+        }
+
     }
 }

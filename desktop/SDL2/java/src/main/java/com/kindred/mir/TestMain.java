@@ -98,18 +98,18 @@ public class TestMain {
             //int ret = Mir_TextureInverse(img.getTexture());
 
             //blend
-            //ret = MirJNI.Mir_SurfaceBlendNormal(img.getSurface(), img2.getSurface(), 50, 50, 0.5f);
+            ret = MirJNI.Mir_SurfaceBlendNormal(img.getSurface(MirImage.ImageEffect.None), img2.getSurface(MirImage.ImageEffect.None), 50, 50, null,0.5f);
             //ret = MirJNI.Mir_SurfaceBlendNormalTransparent(img.getSurface(), img2.getSurface(), 50, 50, 0.5f, 0, 0, 0);
             //ret = MirJNI.Mir_SurfaceBlendAdd(img.getSurface(), img2.getSurface(), 50, 50, 1f);
             //ret = MirJNI.Mir_SurfaceBlendAddTransparent(img.getSurface(MirImage.ImageEffect.None), img2.getSurface(MirImage.ImageEffect.None), 60, 60, 1f, 0, 0, 0);
-            long tmpSurface=MirJNI.Mir_FillRect(400,300,new int[]{0,0,0,255});
-            ret = MirJNI.Mir_SurfaceBlendAdd(tmpSurface, img2.getSurface(MirImage.ImageEffect.None), 60, 60, 1f);
+            //long tmpSurface=MirJNI.Mir_FillRect(400,300,new int[]{0,0,0,255});
+            //ret = MirJNI.Mir_SurfaceBlendAdd(tmpSurface, img2.getSurface(MirImage.ImageEffect.None), 60, 60, 1f);
             if (ret != 0) {
                 throw new IllegalStateException("Unable to blend surface.");
             }
 
-            //long draw_surface = img.getSurface(MirImage.ImageEffect.None);
-            long draw_surface = tmpSurface;
+            long draw_surface = img.getSurface(MirImage.ImageEffect.None);
+            //long draw_surface = tmpSurface;
             //draw with texture
             long testTexture_id = MirJNI.SDL_CreateTextureFromSurface(renderer_id, draw_surface);
             if (testTexture_id == 0) {

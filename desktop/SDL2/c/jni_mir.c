@@ -1193,7 +1193,59 @@ int com_kindred_sdl_SDL_Mir_TextureAlpha(Runtime *runtime, JClass *clazz) {
     return 0;
 }
 
+//以下应该是一种更标准的像素级处理方式
+/*
+void customBlit(SDL_Surface* src, SDL_Surface* dst) {
+    if (src->format->BitsPerPixel != dst->format->BitsPerPixel) {
+        fprintf(stderr, "Source and destination surfaces must have the same pixel format.\n");
+        return;
+    }
+
+    Uint32 rmask, gmask, bmask, amask;
+    SDL_PixelFormatEnumToMasks(src->format->format, &src->format->BitsPerPixel, &rmask, &gmask, &bmask, &amask);
+
+    // 锁定源和目标 Surface
+    if (SDL_MUSTLOCK(src)) {
+        if (SDL_LockSurface(src) < 0) return;
+    }
+    if (SDL_MUSTLOCK(dst)) {
+        if (SDL_LockSurface(dst) < 0) {
+            if (SDL_MUSTLOCK(src)) SDL_UnlockSurface(src);
+            return;
+        }
+    }
+
+    int pitch = src->pitch; // 每行字节数
+    int bytes_per_pixel = src->format->BytesPerPixel;
+
+    for (int y = 0; y < src->h; y++) {
+        Uint8* src_row = (Uint8*)src->pixels + y * pitch;
+        Uint8* dst_row = (Uint8*)dst->pixels + y * pitch;
+
+        for (int x = 0; x < src->w; x++) {
+            Uint32 pixel = *((Uint32*)src_row);
+            Uint8 r, g, b, a;
+            SDL_GetRGBA(pixel, src->format, &r, &g, &b, &a);
+
+            // 自定义逻辑：将红色通道值加倍
+            r = SDL_min(r * 2, 255);
+
+            Uint32 new_pixel = SDL_MapRGBA(dst->format, r, g, b, a);
+            *((Uint32*)dst_row) = new_pixel;
+
+            src_row += bytes_per_pixel;
+            dst_row += bytes_per_pixel;
+        }
+    }
+
+    // 解锁 Surface
+    if (SDL_MUSTLOCK(src)) SDL_UnlockSurface(src);
+    if (SDL_MUSTLOCK(dst)) SDL_UnlockSurface(dst);
+}
+*/
+
 int com_kindred_sdl_SDL_Mir_SurfaceBlendNormal(Runtime *runtime, JClass *clazz) {
+    printf("0000000000000\n");
     JniEnv *env = runtime->jnienv;
     s32 pos = 0;
 
@@ -1203,6 +1255,42 @@ int com_kindred_sdl_SDL_Mir_SurfaceBlendNormal(Runtime *runtime, JClass *clazz) 
     pos += 2;
     s32 x = env->localvar_getInt(runtime->localvar, pos++);
     s32 y = env->localvar_getInt(runtime->localvar, pos++);
+
+    Instance *rect_ref = env->localvar_getRefer(runtime->localvar, pos++);
+    __refer ptr_rect = NULL;
+    if (rect_ref) {
+        ptr_rect = rect_ref->arr_body;
+    }
+
+    int srcLeft=0;
+    int srcTop=0;
+    int srcRight=src_surface->w;
+    int srcBottom=src_surface->h;
+    printf("11111111111\n");
+    if (ptr_rect) {
+        srcLeft = ((int*)ptr_rect)[0];
+        srcLeft = srcLeft <= 0 ? 0 : srcLeft;
+
+        srcTop = ((int*)ptr_rect)[1];
+        srcTop = srcTop <= 0 ? 0 : srcTop;
+
+        srcRight = ((int*)ptr_rect)[2];
+        srcRight = srcRight >= src_surface->w ? src_surface->w : srcRight;
+
+        srcBottom = ((int*)ptr_rect)[3];
+        srcBottom = srcBottom >= src_surface->h ? src_surface->h : srcBottom;
+
+        if (srcLeft >= src_surface->w ||
+            srcTop >= src_surface->h ||
+            srcRight <= 0 ||
+            srcBottom <= 0 ||
+            srcLeft >= srcRight ||
+            srcTop >= srcBottom) {
+            env->push_int(runtime->stack, 0);
+            return 0;
+        }
+    }
+    printf("22222222222222\n");
     Int2Float psize;
     psize.i = env->localvar_getInt(runtime->localvar, pos++);
     float alpha = (float)psize.f;
@@ -1212,8 +1300,9 @@ int com_kindred_sdl_SDL_Mir_SurfaceBlendNormal(Runtime *runtime, JClass *clazz) 
     int dst_height = dst_surface->h;
     int dst_pitch = dst_surface->pitch;
     Uint32 * src_pixels = ((Uint32*)src_surface->pixels);
-    int src_width = src_surface->w;
-    int src_height = src_surface->h;
+    int src_width = srcRight - srcLeft;
+    int src_origin_width = src_surface->w;
+    int src_height = srcBottom - srcTop;
     int src_pitch = src_surface->pitch;
     if (x > dst_width || y > dst_height || (x < 0 && -x >= src_width) || (y < 0 && -y >= src_height)) {
         fprintf(stdout,
@@ -1222,30 +1311,37 @@ int com_kindred_sdl_SDL_Mir_SurfaceBlendNormal(Runtime *runtime, JClass *clazz) 
         env->push_int(runtime->stack, 0);
         return 0;
     }
-
+    printf("333333333---dst_width:%d------dst_surface->pitch:%d----\n",dst_width,dst_surface->pitch);
     int ret = SDL_LockSurface(dst_surface);
     if (ret) {
         fprintf(stderr, "Unable to lock surface! SDL Error: %s\n", SDL_GetError() );
         env->push_int(runtime->stack, -1);
         return 0;
     }
+    printf("4444444444------src_width:%d------src_surface->pitch:%d--------\n",src_width,src_surface->pitch);
     if (dst_surface->format->format == SDL_PIXELFORMAT_ARGB8888
         && src_surface->format->format == SDL_PIXELFORMAT_ARGB8888) {
+        printf("5555555555\n");
+        //left, top, rx, by其实就是dest rect
         int left = x < 0 ? 0 : x;
         int top = y < 0 ? 0 : y;
+        //tarleft和tartop是辅助变量
         int tarleft = x < 0 ? -x : 0;
         int tartop = y < 0 ? -y : 0;
         int rx = left + src_width - tarleft;
+        //超过了dest width
         if (rx >= dst_width)
             rx = dst_width - 1;
         int by = top + src_height - tartop;
+        //超过了dest height
         if (by >= dst_height)
             by = dst_height - 1;
         for (int i = top; i < by; ++i) {
             for (int j = left; j < rx; ++j) {
-                
+                //j和i是dest中的坐标
                 int _idx_this = (j + i * dst_width);
-                int _idx_that = (j - left + tarleft + (i - top + tartop) * src_width);
+                //(j - left + tarleft)和(i - top + tartop)是相对source中的坐标
+                int _idx_that = ((j - left + tarleft) + srcLeft) + ( (i - top + tartop) + srcTop) * src_origin_width;
 
                 Uint32 d = dst_pixels[_idx_this];
                 Uint32 s = src_pixels[_idx_that];
@@ -1268,6 +1364,7 @@ int com_kindred_sdl_SDL_Mir_SurfaceBlendNormal(Runtime *runtime, JClass *clazz) 
                 dst_pixels[_idx_this] = (a << 24) | (r << 16) | (g << 8) | b;
             }
         }
+        printf("66666666666\n");
     }
     else {
         fprintf(stderr, "Unable to blend surfaces, pixel format unsupported, both must be SDL_PIXELFORMAT_ARGB8888! \n");
@@ -2070,7 +2167,7 @@ static java_native_method method_mir_table[] = {
     
     {"com/kindred/mir/engine/MirJNI", "Mir_SurfaceInverse",             "(J)I",                       com_kindred_sdl_SDL_Mir_SurfaceInverse},
     {"com/kindred/mir/engine/MirJNI", "Mir_SurfaceAlpha",               "(JF)I",                      com_kindred_sdl_SDL_Mir_SurfaceAlpha},
-    {"com/kindred/mir/engine/MirJNI", "Mir_SurfaceBlendNormal",         "(JJIIF)I",                   com_kindred_sdl_SDL_Mir_SurfaceBlendNormal},
+    {"com/kindred/mir/engine/MirJNI", "Mir_SurfaceBlendNormal",         "(JJII[IF)I",                 com_kindred_sdl_SDL_Mir_SurfaceBlendNormal},
     {"com/kindred/mir/engine/MirJNI", "Mir_SurfaceBlendNormalTransparent",         "(JJIIFIII)I",     com_kindred_sdl_SDL_Mir_SurfaceBlendNormalTransparent},
     {"com/kindred/mir/engine/MirJNI", "Mir_SurfaceBlendAdd",            "(JJIIF)I",                   com_kindred_sdl_SDL_Mir_SurfaceBlendAdd},
     {"com/kindred/mir/engine/MirJNI", "Mir_SurfaceBlendAddTransparent", "(JJIIFIII)I",                com_kindred_sdl_SDL_Mir_SurfaceBlendAddTransparent},

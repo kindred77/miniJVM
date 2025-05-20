@@ -10,4 +10,8 @@ public class MainDialog extends MirControlWithStaticImage {
       MirImage image) throws Exception {
     super(parent, renderer_id, image);
   }
+
+  public void process() {
+
+  }
 }

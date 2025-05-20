@@ -3,6 +3,7 @@ package com.kindred.mir.scene.game.objects;
 import static com.kindred.mir.GameCommon.MirDirection.Up;
 
 import com.kindred.mir.GameCommon.MirDirection;
+import com.kindred.mir.controls.MirControl;
 import com.kindred.mir.util.Point;
 import java.util.ArrayList;
 
@@ -59,8 +60,8 @@ public class UserObject extends PlayerObject{
   public MirDirection NextMagicDirection;
   public QueuedAction QueuedAction;
 
-  protected UserObject(long objectID) {
-    super(objectID);
+  protected UserObject(MirControl parent, long renderer_id,long objectID) {
+    super(parent,renderer_id,objectID);
   }
 
 

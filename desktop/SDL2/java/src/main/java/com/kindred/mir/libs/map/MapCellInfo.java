@@ -80,7 +80,7 @@ public class MapCellInfo {
 
     for (int i = 0; i < CellObjects.size(); i++)
     {
-      if (!CellObjects.get(i).Dead)
+      if (!CellObjects.get(i).isDead)
       {
         CellObjects.get(i).draw(surface);
         continue;
@@ -113,7 +113,7 @@ public class MapCellInfo {
     }
     for (int i = 0; i < CellObjects.size(); i++)
     {
-      if (!CellObjects.get(i).Dead) {
+      if (!CellObjects.get(i).isDead) {
         continue;
       }
 
@@ -152,7 +152,7 @@ public class MapCellInfo {
         return 1;
       }
 
-      int i = Boolean.compare(ob2.Dead,ob1.Dead);
+      int i = Boolean.compare(ob2.isDead,ob1.isDead);
       return i == 0 ? Long.compare(ob1.ObjectID,ob2.ObjectID) : i;
     });
 

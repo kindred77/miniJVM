@@ -10,8 +10,9 @@ import com.kindred.mir.util.*;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
+import lombok.Builder;
 
-/*
+/**
 所有控件的基类，
 默认是不会显示子控件的
  */

@@ -6,6 +6,7 @@ import com.kindred.mir.GameCommon.ObjectType;
 import com.kindred.mir.GameCommon.Spell;
 import com.kindred.mir.GameCommon.SpellEffect;
 import com.kindred.mir.constcode.MirEnums.MirGender;
+import com.kindred.mir.controls.MirControl;
 import com.kindred.mir.libs.MirLib;
 import com.kindred.mir.scene.game.objects.effects.Effect;
 import com.kindred.mir.scene.game.objects.effects.InterruptionEffect;
@@ -29,8 +30,8 @@ public class PlayerObject extends MapObject {
   public int frameIndex, frameInterval, effectFrameIndex, effectFrameInterval, slowFrameIndex;
   public byte skipFrameUpdate = 0;
 
-  protected PlayerObject(long objectID) {
-    super(objectID);
+  protected PlayerObject(MirControl parent, long renderer_id,long objectID) {
+    super(parent, renderer_id, objectID);
   }
 
   public boolean getHasClassWeapon() {
@@ -109,6 +110,16 @@ public class PlayerObject extends MapObject {
 
   @Override
   public void process() {
+
+  }
+
+  @Override
+  public void drawBehindEffects(boolean effectsEnabled) {
+
+  }
+
+  @Override
+  public void drawEffects(boolean effectsEnabled) {
 
   }
 

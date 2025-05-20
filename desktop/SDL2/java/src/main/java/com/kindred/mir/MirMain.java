@@ -19,10 +19,22 @@ import com.kindred.sdl.constcode.*;
 
 public class MirMain {
 
+    static class SceneProcessor implements Runnable {
+        public void run() {
+            while (shouldRun) {
+                try {
+                    updateTime();
+                    updateEnviroment();
+                    Thread.sleep(10);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
     //public static Point MPoint;
-    public static long Time = 0L;
 
-    static boolean shouldRun = true;
+    static volatile boolean shouldRun = true;
 
     private static void updateEnviroment()
     {
@@ -41,7 +53,7 @@ public class MirMain {
 
     private static void updateTime()
     {
-        Time = MirJNI.SDL_GetTicks();
+        Env.Time = MirJNI.SDL_GetTicks();
     }
 
     public static void mainMouseMove(Point pos)
@@ -149,14 +161,16 @@ public class MirMain {
             Settings.makeSureSDLFontsInited();
 
             long event_id = MirJNI.SDL_CreateEvent();
+            //开一个后台专门的线程用来刷Scene
+            new Thread(new SceneProcessor()).start();
 
             //MirScene.SwitchToScene(MirScene.PrepareNextScene(win_id, renderer_id,null));
             //TODO for test
             //MirScene.SwitchToScene(new CharSelScene(null,win_id,renderer_id,new CharSelScene.CharSelSceneData("")));
             MirScene.SwitchToScene(new GameScene(null,win_id,renderer_id, new GameSceneData()));
             while (shouldRun) {
-                updateTime();
-                updateEnviroment();
+                //updateTime();
+                //updateEnviroment();
                 while (MirJNI.SDL_PollEvent(event_id) != 0) {
                     if (Settings.IsImguiUsed.get()) {
                         MirJNI.ImGui_SDL2_ProcessEvent(event_id);

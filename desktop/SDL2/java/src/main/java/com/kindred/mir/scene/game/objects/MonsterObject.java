@@ -3,13 +3,17 @@ package com.kindred.mir.scene.game.objects;
 import com.kindred.mir.GameCommon.MirDirection;
 import com.kindred.mir.GameCommon.Monster;
 import com.kindred.mir.GameCommon.ObjectType;
+import com.kindred.mir.controls.MirControl;
 import com.kindred.mir.util.Color;
 import com.kindred.mir.util.Point;
 
 public class MonsterObject extends MapObject {
 
-  protected MonsterObject(long objectID) {
-    super(objectID);
+  //主人的objectID
+  public long MasterID;
+
+  protected MonsterObject(MirControl parent, long renderer_id,long objectID) {
+    super(parent,renderer_id,objectID);
   }
 
   @Override
@@ -27,7 +31,8 @@ public class MonsterObject extends MapObject {
 
   @Override
   public boolean getIsBlocking() {
-    return AI == 64 || (AI == 72 && Direction == MirDirection.Left) ? false : !Dead;
+    return AI == 64 || (AI == 72 && Direction == MirDirection.Left)
+        ? false : !isDead;
   }
 
   @Override
