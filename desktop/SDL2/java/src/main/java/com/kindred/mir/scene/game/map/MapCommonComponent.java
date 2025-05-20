@@ -114,10 +114,10 @@ public abstract class MapCommonComponent {
       boolean isBlend,
       int x, int y) {
     if(!isBlend) {
-      MirJNI.Mir_SurfaceBlendNormalTransparent(targetSurface,srcSurface,x, y,1,0,0,0);
+      MirJNI.Mir_SurfaceBlendNormalTransparent(targetSurface,srcSurface,x, y,null, 1,0,0,0);
     } else {
       MirJNI.Mir_SurfaceBlendAddTransparent(targetSurface,
-          srcSurface, x, y,
+          srcSurface, x, y, null,
           1,0,0,0);
     }
   }

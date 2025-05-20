@@ -3,6 +3,7 @@ package com.kindred.mir;
 
 import static com.kindred.sdl.constcode.SDLWindowFlags.SDL_WINDOW_MINIMIZED;
 
+import com.kindred.mir.libs.MirImage.ImageEffect;
 import java.io.UnsupportedEncodingException;
 
 import com.kindred.mir.engine.MirJNI;
@@ -98,10 +99,12 @@ public class TestMain {
             //int ret = Mir_TextureInverse(img.getTexture());
 
             //blend
-            ret = MirJNI.Mir_SurfaceBlendNormal(img.getSurface(MirImage.ImageEffect.None), img2.getSurface(MirImage.ImageEffect.None), 50, 50, null,0.5f);
-            //ret = MirJNI.Mir_SurfaceBlendNormalTransparent(img.getSurface(), img2.getSurface(), 50, 50, 0.5f, 0, 0, 0);
-            //ret = MirJNI.Mir_SurfaceBlendAdd(img.getSurface(), img2.getSurface(), 50, 50, 1f);
-            //ret = MirJNI.Mir_SurfaceBlendAddTransparent(img.getSurface(MirImage.ImageEffect.None), img2.getSurface(MirImage.ImageEffect.None), 60, 60, 1f, 0, 0, 0);
+            System.out.println(img2.getTrueSize()+"-----------"+img2.getOffset());
+            //ret = MirJNI.Mir_SurfaceBlendNormal(img.getSurface(MirImage.ImageEffect.None), img2.getSurface(MirImage.ImageEffect.None), 100, 100, new int[]{200,200,500,500},1f);
+            //ret = MirJNI.Mir_SurfaceBlendNormalTransparent(img.getSurface(MirImage.ImageEffect.None), img2.getSurface(MirImage.ImageEffect.None), 50, 50, new int[]{200,200,500,500}, 1f, 0, 0, 0);
+            //ret = MirJNI.Mir_SurfaceBlendAdd(img.getSurface(MirImage.ImageEffect.None), img2.getSurface(MirImage.ImageEffect.None), 50, 50, new int[]{200,200,500,500}, 1f);
+            ret = MirJNI.Mir_SurfaceBlendAddTransparent(img.getSurface(MirImage.ImageEffect.None), img2.getSurface(
+                ImageEffect.GreenEffect), 60, 60, new int[]{0,0,400,400}, 1f, 0, 0, 0);
             //long tmpSurface=MirJNI.Mir_FillRect(400,300,new int[]{0,0,0,255});
             //ret = MirJNI.Mir_SurfaceBlendAdd(tmpSurface, img2.getSurface(MirImage.ImageEffect.None), 60, 60, 1f);
             if (ret != 0) {
@@ -211,13 +214,13 @@ public class TestMain {
 //                    MirJNI.ImGui_Render(renderer_id, textinput_data_ptr2);
 //                }
 
-                long textinput_data_ptr1=generateTextInput(imgui_context2, 50,50, font_id_2, color_mod, buf);
+                long textinput_data_ptr1=generateTextInput(imgui_context2, 400,50, font_id_2, color_mod, buf);
                 MirJNI.ImGui_Render(renderer_id, textinput_data_ptr1);
 
                 //long label_data_ptr=generateLabel(imgui_context2,font_id_2, color_mod);
                 //MirJNI.ImGui_Render(renderer_id, label_data_ptr);
 
-                long textinput_data_ptr2=generateTextInput(imgui_context,200,300, font_id_1, color_mod, buf2);
+                long textinput_data_ptr2=generateTextInput(imgui_context,400,300, font_id_1, color_mod, buf2);
                 MirJNI.ImGui_Render(renderer_id, textinput_data_ptr2);
 
 

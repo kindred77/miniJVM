@@ -81,7 +81,7 @@ public class TextInputTest {
       //ret = MirJNI.Mir_SurfaceBlendNormal(img.getSurface(), img2.getSurface(), 50, 50, 0.5f);
       //ret = MirJNI.Mir_SurfaceBlendNormalTransparent(img.getSurface(), img2.getSurface(), 50, 50, 0.5f, 0, 0, 0);
       //ret = MirJNI.Mir_SurfaceBlendAdd(img.getSurface(), img2.getSurface(), 50, 50, 1f);
-      ret = MirJNI.Mir_SurfaceBlendAddTransparent(img.getSurface(MirImage.ImageEffect.None), img2.getSurface(MirImage.ImageEffect.None), 60, 60, 1f, 0, 0, 0);
+      ret = MirJNI.Mir_SurfaceBlendAddTransparent(img.getSurface(MirImage.ImageEffect.None), img2.getSurface(MirImage.ImageEffect.None), 60, 60, null, 1f, 0, 0, 0);
       if (ret != 0) {
         throw new IllegalStateException("Unable to blend surface.");
       }

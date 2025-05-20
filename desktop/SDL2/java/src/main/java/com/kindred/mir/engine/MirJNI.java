@@ -26,10 +26,10 @@ public class MirJNI extends SDL {
     public static native int Mir_SurfaceInverse(long surface_id);
     public static native int Mir_SurfaceAlpha(long surface_id, float alpha);
     public static native int Mir_SurfaceBlendNormal(long dst_surface_id, long src_surface_id, int x, int y, int[] srcRect, float alpha);
-    public static native int Mir_SurfaceBlendNormalTransparent(long dst_surface_id, long src_surface_id, int x, int y, float alpha, int transparent_r, int transparent_g, int transparent_b);
+    public static native int Mir_SurfaceBlendNormalTransparent(long dst_surface_id, long src_surface_id, int x, int y, int[] srcRect, float alpha, int transparent_r, int transparent_g, int transparent_b);
     //looks the same
-    public static native int Mir_SurfaceBlendAdd(long dst_surface_id, long src_surface_id, int x, int y, float alpha);
-    public static native int Mir_SurfaceBlendAddTransparent(long dst_surface_id, long src_surface_id, int x, int y, float alpha, int transparent_r, int transparent_g, int transparent_b);
+    public static native int Mir_SurfaceBlendAdd(long dst_surface_id, long src_surface_id, int x, int y, int[] srcRect, float alpha);
+    public static native int Mir_SurfaceBlendAddTransparent(long dst_surface_id, long src_surface_id, int x, int y, int[] srcRect, float alpha, int transparent_r, int transparent_g, int transparent_b);
 
     //return surface
     public static native long Mir_FillRect(int width, int height, int[] color);

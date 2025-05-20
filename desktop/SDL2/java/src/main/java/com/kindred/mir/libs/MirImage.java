@@ -46,9 +46,35 @@ public class MirImage {
 
     public long getSurface(ImageEffect effect)
     {
-        if(effect == ImageEffect.None)
-        {
-            return surface_id;
+        if(surface_id!=0){
+            switch(effect) {
+                case None:
+                    return surface_id;
+                case Inverse:
+                    MirJNI.Mir_SurfaceInverse(surface_id);
+                    return surface_id;
+                case BlackEffect:
+                    MirJNI.Mir_SurfaceBlackEffect(surface_id);
+                    return surface_id;
+                case WhiteEffect:
+                    MirJNI.Mir_SurfaceWhiteEffect(surface_id);
+                    return surface_id;
+                case GreenEffect:
+                    MirJNI.Mir_SurfaceGreenEffect(surface_id);
+                    return surface_id;
+                case BlueEffect:
+                    MirJNI.Mir_SurfaceBlueEffect(surface_id);
+                    return surface_id;
+                case YellowEffect:
+                    MirJNI.Mir_SurfaceYellowEffect(surface_id);
+                    return surface_id;
+                case FuchsiaEffect:
+                    MirJNI.Mir_SurfaceFuchsiaEffect(surface_id);
+                    return surface_id;
+                case BrightEffect:
+                    MirJNI.Mir_SurfaceBrightEffect(surface_id);
+                    return surface_id;
+            }
         }
         return surface_id;
     }

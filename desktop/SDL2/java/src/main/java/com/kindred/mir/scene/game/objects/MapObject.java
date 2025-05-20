@@ -48,7 +48,7 @@ public abstract class MapObject extends MirControlWithTexture {
   //for test
   public static UserObject User=new UserObject(null, 0l, 1);
   static {
-    User.Movement=new Point(328,300);
+    User.Movement=new Point(318,280);
     User.OffSetMove=new Point(20,20);
   }
   public static MapObject MouseObject, TargetObject, MagicObject;
