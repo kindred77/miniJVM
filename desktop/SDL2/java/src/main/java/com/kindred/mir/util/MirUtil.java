@@ -1,6 +1,7 @@
 package com.kindred.mir.util;
 
 import com.kindred.mir.GameCommon.BuffType;
+import com.kindred.mir.GameCommon.MirDirection;
 
 public class MirUtil {
 
@@ -103,6 +104,50 @@ public class MirUtil {
       default:
         return 0;
     }
+  }
+
+  public static boolean EnumHasFlag(int srcVal, int tgtVal)
+  {
+    if ((srcVal & tgtVal) == tgtVal)
+    {
+      return true;
+    }
+    else
+    {
+      return false;
+    }
+  }
+
+  public static Point PointMove(Point p, MirDirection d, int i)
+  {
+    switch (d)
+    {
+      case Up:
+        p.Offset(0, -i);
+        break;
+      case UpRight:
+        p.Offset(i, -i);
+        break;
+      case Right:
+        p.Offset(i, 0);
+        break;
+      case DownRight:
+        p.Offset(i, i);
+        break;
+      case Down:
+        p.Offset(0, i);
+        break;
+      case DownLeft:
+        p.Offset(-i, i);
+        break;
+      case Left:
+        p.Offset(-i, 0);
+        break;
+      case UpLeft:
+        p.Offset(-i, -i);
+        break;
+    }
+    return p;
   }
 
 }

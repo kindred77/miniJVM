@@ -143,7 +143,7 @@ public class Point {
         return x ^ y;
     }
 
-    public void offset(int dx, int dy)
+    public void Offset(int dx, int dy)
     {
         x += dx;
         y += dy;
@@ -151,7 +151,7 @@ public class Point {
 
     public void Offset(Point p)
     {
-        offset(p.x, p.y);
+        Offset(p.x, p.y);
     }
 
     @Override

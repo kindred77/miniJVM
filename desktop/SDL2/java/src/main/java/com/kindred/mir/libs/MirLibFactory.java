@@ -3,6 +3,7 @@ package com.kindred.mir.libs;
 import com.kindred.mir.Settings;
 import com.kindred.mir.engine.MirJNI;
 import com.kindred.mir.libs.MirImage.ImageEffect;
+import com.kindred.mir.util.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -128,23 +129,30 @@ public class MirLibFactory {
         ImageEffect effect,
         int x,
         int y,
+        Rectangle srcRect,
         boolean isBlend
     ) {
         MirLib lib=MirLibFactory.getMirLib(libName);
         if(null != lib){
             MirImage img=null;
             try {
-                img = lib.GetMirImage(0);
+                img = lib.GetMirImage(imgIdx);
             } catch (Exception e) {
                 System.out.println("Warn: can not draw MirImage: "+e.getMessage());
                 return;
             }
             long srcSurface=img.getSurface(effect);
+            int[] rct = null;
+            if(srcRect!=null){
+                rct=new int[]{srcRect.getLeft(),srcRect.getTop(),srcRect.getRight(),srcRect.getBottom()};
+            }
             if(!isBlend) {
-                MirJNI.Mir_SurfaceBlendNormalTransparent(targetSurface,srcSurface,x, y,null, 1,0,0,0);
+                MirJNI.Mir_SurfaceBlendNormalTransparent(targetSurface,
+                    srcSurface,x, y,rct, 1,
+                    0,0,0);
             } else {
                 MirJNI.Mir_SurfaceBlendAddTransparent(targetSurface,
-                    srcSurface, x, y, null,
+                    srcSurface, x, y, rct,
                     1,0,0,0);
             }
         }

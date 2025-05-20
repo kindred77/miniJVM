@@ -12,6 +12,10 @@ public class Env {
   public static MirScene ActiveScene = null;
 
   public static long Time = 0L;
+  public static long LastRunTime = 0L;
+
+  public static boolean CanRun;
+  public static boolean CanMove;
 
   //队伍列表
   public static List<Long> MyGroupList=new ArrayList<>();

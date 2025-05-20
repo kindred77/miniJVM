@@ -192,7 +192,7 @@ public abstract class MapObject extends MirControlWithTexture {
         break;
       case SwiftFeet:
         if (ob != null) {
-          ob.sprint = true;
+          ob.isSprint = true;
         }
         break;
       case MoonLight:
@@ -256,7 +256,7 @@ public abstract class MapObject extends MirControlWithTexture {
     switch (type) {
       case SwiftFeet:
         if (ob != null) {
-          ob.sprint = false;
+          ob.isSprint = false;
         }
         break;
       case MoonLight:
@@ -443,7 +443,7 @@ public abstract class MapObject extends MirControlWithTexture {
     MirLibFactory.tryToDraw(surface,
         MirLibFactory.Prguse3,0,
         ImageEffect.None,DisplayRectangle.getX() + 8,
-        DisplayRectangle.getY() - 64,false);
+        DisplayRectangle.getY() - 64,null, false);
     //Libraries.Prguse2.Draw(0, DisplayRectangle.getX() + 8, DisplayRectangle.getY() - 64);
     int index = 1;
 
@@ -464,11 +464,12 @@ public abstract class MapObject extends MirControlWithTexture {
 //        new Rectangle(0, 0, (int)(32 * PercentHealth / 100F), 4),
 //        new Point(DisplayRectangle.X + 8, DisplayRectangle.Y - 64),
 //        Color.White, false);
-//
-//    MirLibFactory.tryToDraw(surface,
-//        MirLibFactory.Prguse3,index,
-//        ImageEffect.None,DisplayRectangle.getX() + 8,
-//        DisplayRectangle.getY() - 64,false);
+
+    MirLibFactory.tryToDraw(surface,
+        MirLibFactory.Prguse3,index,
+        ImageEffect.None,DisplayRectangle.getX() + 8,
+        DisplayRectangle.getY() - 64,
+        new Rectangle(0, 0, (int)(32 * PercentHealth / 100F), 4),false);
   }
 
   public void drawPoison(long surface) {

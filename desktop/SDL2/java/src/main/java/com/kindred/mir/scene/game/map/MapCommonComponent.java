@@ -13,9 +13,6 @@ import java.util.List;
 
 public abstract class MapCommonComponent {
 
-  public static final int CellWidth = 48;
-  public static final int CellHeight = 32;
-
   protected int offSetX;
   protected int offSetY;
 

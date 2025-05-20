@@ -1,12 +1,17 @@
 package com.kindred.mir;
 
 import com.kindred.mir.engine.Font;
+import com.kindred.mir.util.Point;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Settings {
 
     public static int ScreenWidth = 800;
     public static int ScreenHeight = 600;
+
+    public static final int CellWidth = 48;
+    public static final int CellHeight = 32;
+
     public static boolean IsFullScreen = false;
     public static long DoubleClickIntervalTime=200L;
 
@@ -19,6 +24,8 @@ public class Settings {
     public static boolean IsTargetDead=false;
 
     public static String DataPath = "Data/";
+
+    public static Point GlobalDisplayLocationOffset=new Point(0, 0);
 
     //public static boolean isImguiUsed=false;
     public static volatile AtomicBoolean IsImguiUsed=new AtomicBoolean(false);

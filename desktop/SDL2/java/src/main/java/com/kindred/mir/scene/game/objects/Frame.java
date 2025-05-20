@@ -1,12 +1,43 @@
 package com.kindred.mir.scene.game.objects;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Builder
-@Data
 public class Frame {
+  @Setter
+  @Getter
   private int start, count, skip, effectStart, effectCount, effectSkip;
+  @Setter
+  @Getter
   private int interval, effectInterval;
-  private boolean reverse, blend;
+  @Setter
+  @Getter
+  private boolean reverse;
+  private boolean blend;
+
+  public int getOffSet() {
+    return count + skip;
+  }
+
+  public int getEffectOffSet()
+  {
+    return effectCount + effectSkip;
+  }
+
+  public Frame(int start, int count, int skip, int interval, int effectstart, int effectcount, int effectskip, int effectinterval)
+  {
+    this.start = start;
+    this.count = count;
+    this.skip = skip;
+    this.interval = interval;
+    this.effectStart = effectstart;
+    this.effectCount = effectcount;
+    this.effectSkip = effectskip;
+    this.effectInterval = effectinterval;
+  }
+
+  public Frame(int start, int count, int skip, int interval)
+  {
+    this(start, count, skip, interval, 0, 0, 0, 0);
+  }
 }

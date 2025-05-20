@@ -27,7 +27,10 @@ import java.util.List;
 public class MapMainControl extends MirControlWithTexture {
 
   public static List<MapObject> Objects = new ArrayList<MapObject>();
-
+  public static int OffSetX = Settings.ScreenWidth / 2 / Settings.CellWidth;
+  public static int OffSetY = Settings.ScreenHeight / 2 / Settings.CellHeight - 1;;
+  public static int ViewRangeX = OffSetX + 4;
+  public static int ViewRangeY = OffSetY + 4;
   private String fileNameWithoutSuffix;
   private String fileName;
   private Point mouseLocation;
@@ -39,8 +42,6 @@ public class MapMainControl extends MirControlWithTexture {
   protected MapCellInfo[][] M2CellInfo;
   protected List<Door> doors = new ArrayList<Door>();
   protected int mapWidth, mapHeight;
-  protected int offSetX,offSetY;
-  protected int viewRangeX,viewRangeY;
 
   private MapBackGroundComponent backGroundComponent;
   private MapFloorComponent floorComponent;
@@ -53,11 +54,11 @@ public class MapMainControl extends MirControlWithTexture {
 
     //MapButtons = MouseButtons.None;
 
-    offSetX = Settings.ScreenWidth / 2 / MapCommonComponent.CellWidth;
-    offSetY = Settings.ScreenHeight / 2 / MapCommonComponent.CellHeight - 1;
+    //OffSetX = Settings.ScreenWidth / 2 / Settings.CellWidth;
+    //OffSetY = Settings.ScreenHeight / 2 / Settings.CellHeight - 1;
 
-    viewRangeX = offSetX + 4;
-    viewRangeY = offSetY + 4;
+//    viewRangeX = OffSetX + 4;
+//    viewRangeY = OffSetY + 4;
 
     setSize(new Size(Settings.ScreenWidth, Settings.ScreenHeight));
 
@@ -74,10 +75,10 @@ public class MapMainControl extends MirControlWithTexture {
         this.getSize().getHeight(),
         mapWidth,
         mapHeight,
-        viewRangeX,
-        viewRangeY,
-        offSetX,
-        offSetY,
+        ViewRangeX,
+        ViewRangeY,
+        OffSetX,
+        OffSetY,
         M2CellInfo,
         doors,
         this.fileName);
@@ -87,10 +88,10 @@ public class MapMainControl extends MirControlWithTexture {
         this.getSize().getHeight(),
         mapWidth,
         mapHeight,
-        viewRangeX,
-        viewRangeY,
-        offSetX,
-        offSetY,
+        ViewRangeX,
+        ViewRangeY,
+        OffSetX,
+        OffSetY,
         M2CellInfo,
         doors);
 
@@ -99,10 +100,10 @@ public class MapMainControl extends MirControlWithTexture {
         this.getSize().getHeight(),
         mapWidth,
         mapHeight,
-        viewRangeX,
-        viewRangeY,
-        offSetX,
-        offSetY,
+        ViewRangeX,
+        ViewRangeY,
+        OffSetX,
+        OffSetY,
         M2CellInfo,
         doors);
 
@@ -149,8 +150,8 @@ public class MapMainControl extends MirControlWithTexture {
       return Point.Empty;
     } else {
       return Point.add(
-          new Point(mouseLocation.getX() / MapCommonComponent.CellWidth - offSetX,
-              mouseLocation.getY() / MapCommonComponent.CellHeight - offSetY),
+          new Point(mouseLocation.getX() / Settings.CellWidth - OffSetX,
+              mouseLocation.getY() / Settings.CellHeight - OffSetY),
           GameScene.getUser().CurrentLocation
       );
     }

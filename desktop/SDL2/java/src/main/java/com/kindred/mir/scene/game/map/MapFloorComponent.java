@@ -60,7 +60,7 @@ public class MapFloorComponent extends MapCommonComponent {
       if (y >= mapHeight) {
         break;
       }
-      drawY = (y - userMoveY + offSetY) * CellHeight + userOffsetMoveY; //Moving OffSet
+      drawY = (y - userMoveY + offSetY) * Settings.CellHeight + userOffsetMoveY; //Moving OffSet
 
       for (int x = userMoveX - viewRangeX; x <= userMoveX + viewRangeX; x++) {
         if (x <= 0 || x % 2 == 1) {
@@ -69,7 +69,7 @@ public class MapFloorComponent extends MapCommonComponent {
         if (x >= mapWidth) {
           break;
         }
-        drawX = (x - userMoveX + offSetX) * CellWidth - offSetX + userOffsetMoveX; //Moving OffSet
+        drawX = (x - userMoveX + offSetX) * Settings.CellWidth - offSetX + userOffsetMoveX; //Moving OffSet
         if ((M2CellInfo[x][y].BackImage == 0) || (M2CellInfo[x][y].BackIndex == -1)) {
           continue;
         }
@@ -86,7 +86,7 @@ public class MapFloorComponent extends MapCommonComponent {
       if (y >= mapHeight) {
         break;
       }
-      drawY = (y - userMoveY + offSetY) * CellHeight + userOffsetMoveY; //Moving OffSet
+      drawY = (y - userMoveY + offSetY) * Settings.CellHeight + userOffsetMoveY; //Moving OffSet
 
       for (int x = userMoveX - viewRangeX; x <= userMoveX + viewRangeX; x++) {
         if (x < 0) {
@@ -95,7 +95,7 @@ public class MapFloorComponent extends MapCommonComponent {
         if (x >= mapWidth) {
           break;
         }
-        drawX = (x - userMoveX + offSetX) * CellWidth - offSetX + userOffsetMoveX; //Moving OffSet
+        drawX = (x - userMoveX + offSetX) * Settings.CellWidth - offSetX + userOffsetMoveX; //Moving OffSet
 
         index = M2CellInfo[x][y].MiddleImage - 1;
 
@@ -106,7 +106,7 @@ public class MapFloorComponent extends MapCommonComponent {
         if (M2CellInfo[x][y].MiddleIndex > 199){//mir3 mid layer is same level as front layer not real middle + it cant draw index -1 so 2 birds in one stone :p
           Size s = img.getTrueSize();
 
-          if (s.getWidth() != CellWidth || s.getHeight() != CellHeight) {
+          if (s.getWidth() != Settings.CellWidth || s.getHeight() != Settings.CellHeight) {
             continue;
           }
         }
@@ -121,7 +121,7 @@ public class MapFloorComponent extends MapCommonComponent {
       if (y >= mapHeight) {
         break;
       }
-      drawY = (y - userMoveY + offSetY) * CellHeight + userOffsetMoveY; //Moving OffSet
+      drawY = (y - userMoveY + offSetY) * Settings.CellHeight + userOffsetMoveY; //Moving OffSet
 
       for (int x = userMoveX - viewRangeX; x <= userMoveX + viewRangeX; x++)
       {
@@ -131,7 +131,7 @@ public class MapFloorComponent extends MapCommonComponent {
         if (x >= mapWidth) {
           break;
         }
-        drawX = (x - userMoveX + offSetX) * CellWidth - offSetX + userOffsetMoveX; //Moving OffSet
+        drawX = (x - userMoveX + offSetX) * Settings.CellWidth - offSetX + userOffsetMoveX; //Moving OffSet
 
         index = (M2CellInfo[x][y].FrontImage & 0x7FFF) - 1;
         if (index == -1) {
@@ -161,9 +161,9 @@ public class MapFloorComponent extends MapCommonComponent {
         }
 
         if (index < 0
-            || ((img.getTrueSize().getWidth() != CellWidth || img.getTrueSize().getHeight() != CellHeight)
-            && ((img.getTrueSize().getWidth() != CellWidth * 2)
-            || (img.getTrueSize().getHeight() != CellHeight * 2)))) {
+            || ((img.getTrueSize().getWidth() != Settings.CellWidth || img.getTrueSize().getHeight() != Settings.CellHeight)
+            && ((img.getTrueSize().getWidth() != Settings.CellWidth * 2)
+            || (img.getTrueSize().getHeight() != Settings.CellHeight * 2)))) {
           continue;
         }
         img = MirLibFactory.getMapLib(fileIndex).GetMirImage(index);

@@ -72,7 +72,7 @@ public class MapObjectsComponent extends MapCommonComponent {
       if (y >= mapHeight) {
         break;
       }
-      int drawY = (y - userObject.Movement.getY() + offSetY + 1) * CellHeight + userObject.OffSetMove.getY();
+      int drawY = (y - userObject.Movement.getY() + offSetY + 1) * Settings.CellHeight + userObject.OffSetMove.getY();
 
       for (int x = userObject.Movement.getX() - viewRangeX; x <= userObject.Movement.getX() + viewRangeX; x++) {
         if (x < 0) {
@@ -81,7 +81,7 @@ public class MapObjectsComponent extends MapCommonComponent {
         if (x >= mapWidth) {
           break;
         }
-        int drawX = (x - userObject.Movement.getX() + offSetX) * CellWidth - offSetX + userObject.OffSetMove.getX();
+        int drawX = (x - userObject.Movement.getX() + offSetX) * Settings.CellWidth - offSetX + userObject.OffSetMove.getX();
         int index;
         byte animation;
         boolean blend;
@@ -140,7 +140,8 @@ public class MapObjectsComponent extends MapCommonComponent {
             }
             MirImage img = MirLibFactory.getMapLib(M2CellInfo[x][y].MiddleIndex).GetMirImage(index);
             s = img.getTrueSize();
-            if ((s.getWidth() != CellWidth || s.getHeight() != CellHeight) && (s.getWidth() != (CellWidth * 2) || s.getHeight() != (CellHeight * 2)) && !blend)
+            if ((s.getWidth() != Settings.CellWidth || s.getHeight() != Settings.CellHeight)
+                && (s.getWidth() != (Settings.CellWidth * 2) || s.getHeight() != (Settings.CellHeight * 2)) && !blend)
             {
 //              drawToSurface(targetSurface,img.getSurface(ImageEffect.None),false,
 //                  drawX,
@@ -191,10 +192,10 @@ public class MapObjectsComponent extends MapCommonComponent {
         }
         MirImage img = MirLibFactory.getMapLib(fileIndex).GetMirImage(index);
         s = img.getTrueSize();
-        if (s.getWidth() == CellWidth && s.getHeight() == CellHeight && animation == 0) {
+        if (s.getWidth() == Settings.CellWidth && s.getHeight() == Settings.CellHeight && animation == 0) {
           continue;
         }
-        if ((s.getWidth() == CellWidth * 2) && (s.getHeight() == CellHeight * 2) && (animation == 0)) {
+        if ((s.getWidth() == Settings.CellWidth * 2) && (s.getHeight() == Settings.CellHeight * 2) && (animation == 0)) {
           continue;
         }
 
@@ -203,7 +204,7 @@ public class MapObjectsComponent extends MapCommonComponent {
             //use offset
             drawToSurface(targetSurface,img.getSurface(ImageEffect.None),true,
                 drawX + img.getOffset().getX(),
-                drawY - (3 * CellHeight) + img.getOffset().getY());
+                drawY - (3 * Settings.CellHeight) + img.getOffset().getY());
             //img = MirLibFactory.getMapLib(fileIndex).GetMirImage(index);
             //Libraries.MapLibs[fileIndex]
             //    .DrawBlend(index, new Point(drawX, drawY - (3 * CellHeight)), Color.White, true);
