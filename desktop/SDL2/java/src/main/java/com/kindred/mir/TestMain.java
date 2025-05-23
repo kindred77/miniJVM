@@ -70,7 +70,7 @@ public class TestMain {
             //MirJNI.ImGui_InitForeColor(1.0f, 0.0f, 0.0f, 0.5f);
             //---------------------
 
-            MirLib mir_lib = MirLibFactory.getMirLib("../mir_client/ChrSel");
+            MirLib mir_lib = MirLibFactory.ChrSel;
             
             MirImage img = mir_lib.GetMirImage(22);
             MirImage img2 = mir_lib.GetMirImage(8);

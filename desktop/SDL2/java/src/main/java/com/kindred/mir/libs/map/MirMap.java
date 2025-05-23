@@ -1,5 +1,6 @@
 package com.kindred.mir.libs.map;
 
+import com.kindred.mir.Settings;
 import com.kindred.mir.libs.MirLibFactory;
 import com.kindred.mir.util.Util;
 import java.io.File;
@@ -16,7 +17,7 @@ public class MirMap {
   private byte[] data;
 
   public MirMap(String fileName) throws Exception{
-    this.file=new File(fileName+MirLibFactory.MAP_SUFFIX);
+    this.file=new File(fileName + Settings.MAP_SUFFIX);
     initiate();
   }
 

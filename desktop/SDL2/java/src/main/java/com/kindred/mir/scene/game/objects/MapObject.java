@@ -181,12 +181,12 @@ public abstract class MapObject extends MirControlWithTexture {
     BuffEffect effect=null;
     switch (type) {
       case Fury:
-        effect=new BuffEffect(MirLibFactory.getMirLib(MirLibFactory.Magic3), 190, 7, 1400, this, true, type);
+        effect=new BuffEffect(MirLibFactory.Magic3, 190, 7, 1400, this, true, type);
         effect.Repeat=true;
         Effects.add(effect);
         break;
       case ImmortalSkin:
-        effect=new BuffEffect(MirLibFactory.getMirLib(MirLibFactory.Magic3), 570, 5, 1400, this, true, type);
+        effect=new BuffEffect(MirLibFactory.Magic3, 570, 5, 1400, this, true, type);
         effect.Repeat=true;
         Effects.add(effect);
         break;
@@ -202,34 +202,34 @@ public abstract class MapObject extends MirControlWithTexture {
         }
         break;
       case VampireShot:
-        effect=new BuffEffect(MirLibFactory.getMirLib(MirLibFactory.Magic3), 2110, 6, 1400, this, true, type);
+        effect=new BuffEffect(MirLibFactory.Magic3, 2110, 6, 1400, this, true, type);
         effect.Repeat=false;
         Effects.add(effect);
         break;
       case PoisonShot:
-        effect=new BuffEffect(MirLibFactory.getMirLib(MirLibFactory.Magic3), 2310, 7, 1400, this, true, type);
+        effect=new BuffEffect(MirLibFactory.Magic3, 2310, 7, 1400, this, true, type);
         effect.Repeat=false;
         Effects.add(effect);
         break;
       case EnergyShield:
-        effect = new BuffEffect(MirLibFactory.getMirLib(MirLibFactory.Magic2), 1880, 9, 900, this, true, type);
+        effect = new BuffEffect(MirLibFactory.Magic2, 1880, 9, 900, this, true, type);
         effect.Repeat=false;
         Effects.add(effect);
         SoundManager.playSound(20000 + (int) Spell.EnergyShield.code() * 10 + 0, false);
 
         effect.onComplete=(control, argObj) -> {
-          BuffEffect bufEffect=new BuffEffect(MirLibFactory.getMirLib(MirLibFactory.Magic2), 1900, 2, 800, this, true, type);
+          BuffEffect bufEffect=new BuffEffect(MirLibFactory.Magic2, 1900, 2, 800, this, true, type);
           bufEffect.Repeat=true;
           Effects.add(bufEffect);
         };
       break;
       case MagicBooster:
-        effect = new BuffEffect(MirLibFactory.getMirLib(MirLibFactory.Magic3), 90, 6, 1200, this, true, type);
+        effect = new BuffEffect(MirLibFactory.Magic3, 90, 6, 1200, this, true, type);
         effect.Repeat=true;
         Effects.add(effect);
         break;
       case PetEnhancer:
-        effect = new BuffEffect(MirLibFactory.getMirLib(MirLibFactory.Magic3), 230, 6, 1200, this, true, type);
+        effect = new BuffEffect(MirLibFactory.Magic3, 230, 6, 1200, this, true, type);
         effect.Repeat=true;
         Effects.add(effect);
         break;

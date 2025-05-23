@@ -1,5 +1,6 @@
 package com.kindred.mir.libs;
 
+import com.kindred.mir.Settings;
 import com.kindred.mir.util.MyRandomAccessFile;
 
 import java.io.File;
@@ -16,7 +17,7 @@ public class MirLib {
 
     MirLib(String fileName)
     {
-        this.file=new File(fileName+MirLibFactory.LIB_SUFFIX);
+        this.file=new File(fileName + Settings.LIB_SUFFIX);
     }
 
     private synchronized boolean initializeImage(int index) throws Exception
@@ -40,8 +41,20 @@ public class MirLib {
         return true;
     }
 
+    public boolean tryToInitialize() {
+        try{
+            System.out.println("tryToInitialize----------000000-----------------"+this.file.getName());
+            return Initialize();
+        } catch(Exception e) {
+            e.printStackTrace();
+            System.out.println("Can not initialize mir lib: "+this.file.getAbsolutePath());
+            return false;
+        }
+    }
+
     boolean Initialize() throws Exception
     {
+        System.out.println("Initialize----------start-----------------");
         if (initialized)
         {
             return true;
@@ -74,7 +87,7 @@ public class MirLib {
         }
 
         initialized=true;
-
+        System.out.println("Initialize----------end-----------------"+this.file.getName());
         return true;
     }
 

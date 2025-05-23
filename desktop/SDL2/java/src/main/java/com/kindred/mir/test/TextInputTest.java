@@ -49,7 +49,7 @@ public class TextInputTest {
         throw new IllegalStateException("Unable to create SDL renderer: " + MirJNI.SDL_GetError());
       }
 
-      MirLib mir_lib = MirLibFactory.getMirLib("../mir_client/ChrSel.Lib");
+      MirLib mir_lib = MirLibFactory.ChrSel;
 
       MirImage img = mir_lib.GetMirImage(22);
       MirImage img2 = mir_lib.GetMirImage(8);

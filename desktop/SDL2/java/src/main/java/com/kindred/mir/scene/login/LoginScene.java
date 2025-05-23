@@ -52,14 +52,14 @@ public class LoginScene extends MirScene {
             SoundManager.stopSound(SoundList.IntroMusic);
         };
 
-        MirImage backgroundImg = MirLibFactory.getMirLib(MirLibFactory.ChrSel).GetMirImage(22);
+        MirImage backgroundImg = MirLibFactory.ChrSel.GetMirImage(22);
         background=new MirControlWithStaticImage(this,renderer_id,backgroundImg);
         background.setIsUseOffSet(false);
         System.out.println("background-----ID: "+background.getID()+"----Size: "+background.getSize());
         //setSize(background.getSize());
         //setLocation(backgroundImg.getOffset());
 
-        MirImage[] animImgs = MirLibFactory.getMirLib(MirLibFactory.ChrSel).GetMirImages(Util.genSeq(23, 32));
+        MirImage[] animImgs = MirLibFactory.ChrSel.GetMirImages(Util.genSeq(23, 32));
         openDoorAnimation = new MirAnimatedControl(background,renderer_id, animImgs,false,200);
         openDoorAnimation.setIsAnimated(false);
         openDoorAnimation.setAfterAnimation((mirControl, obj) -> {
@@ -73,7 +73,7 @@ public class LoginScene extends MirScene {
             new Point(0,0), Settings.FONT_SIZE20, "", Color.Yellow, Color.Empty,0);
         titleLabel.setLocation(titleLabel.Top());
         System.out.println("titleLabel-----ID: "+titleLabel.getID());
-        MirImage loginDialogImg = MirLibFactory.getMirLib(MirLibFactory.Prguse).GetMirImage(60);
+        MirImage loginDialogImg = MirLibFactory.Prguse.GetMirImage(60);
         loginDialog = new LoginDialog(this,window_id,renderer_id,loginDialogImg);
         loginDialog.setOnSuccessClose((control, argObj) -> {
             loginDialog.setIsVisible(false);
@@ -86,7 +86,7 @@ public class LoginScene extends MirScene {
         loginDialog.setIsVisible(false);
 
         System.out.println("loginDialog-----ID: "+loginDialog.getID());
-        MirImage selectServerDialogImg = MirLibFactory.getMirLib(MirLibFactory.Prguse).GetMirImage(256);
+        MirImage selectServerDialogImg = MirLibFactory.Prguse.GetMirImage(256);
         String[] servers={"逐鹿中原","九天烈焰"};
         selectServerDialog = new SelectServerDialog(this,renderer_id,selectServerDialogImg,servers);
         selectServerDialog.setOnSuccessClose((control, argObj) -> {

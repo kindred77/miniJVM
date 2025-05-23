@@ -42,7 +42,7 @@ public class SelectServerDialog extends MirControlWithStaticImage {
       MirImage image,String[] serverNames) throws Exception {
     super(parent, renderer_id, image);
     this.serverNames=serverNames;
-    MirImage[] imgs = MirLibFactory.getMirLib(MirLibFactory.Prguse).GetMirImages(new int[]{257, 258});
+    MirImage[] imgs = MirLibFactory.Prguse.GetMirImages(new int[]{257, 258});
     for (int i=0; i<this.serverNames.length; ++i) {
       String serverName=this.serverNames[i];
       ServerButton serverButton = new ServerButton(this, renderer_id, imgs[0], imgs[0], imgs[1],serverName,i);
@@ -55,7 +55,7 @@ public class SelectServerDialog extends MirControlWithStaticImage {
       serverButtons.add(serverButton);
     }
 
-    MirImage closePressedImg = MirLibFactory.getMirLib(MirLibFactory.Prguse).GetMirImage(64);
+    MirImage closePressedImg = MirLibFactory.Prguse.GetMirImage(64);
     closeButton = new MirButton(this, renderer_id, null, null, closePressedImg,
         closePressedImg.getTrueSize(), new Point(244,30));
     closeButton.setIsBorder(true);

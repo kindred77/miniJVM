@@ -41,7 +41,7 @@ public class CharSelScene extends MirScene {
 
   public CharSelScene(MirControl parent, long window_id, long renderer_id, MirSceneData sceneData) throws Exception{
     super(parent, window_id, renderer_id,SceneEnumType.CharSel,sceneData);
-    MirImage backgroundImg = MirLibFactory.getMirLib(MirLibFactory.Prguse).GetMirImage(BACKGROUND_IMG_INDEX);
+    MirImage backgroundImg = MirLibFactory.Prguse.GetMirImage(BACKGROUND_IMG_INDEX);
     background=new MirControlWithStaticImage(this,renderer_id,backgroundImg);
     background.setIsUseOffSet(false);
 
@@ -50,7 +50,7 @@ public class CharSelScene extends MirScene {
     Point pos = titleLabel.Top();
     titleLabel.setLocation(new Point(pos.getX(),pos.getY()+4));
 
-    MirImage startBtnPressedImg = MirLibFactory.getMirLib(MirLibFactory.Prguse).GetMirImage(68);
+    MirImage startBtnPressedImg = MirLibFactory.Prguse.GetMirImage(68);
     startButton=new MirButton(background,renderer_id,null,null,
         startBtnPressedImg,startBtnPressedImg.getTrueSize(),new Point(385,457));
     startButton.setOnMouseLeftClick((mirControl,arg) -> {
@@ -89,7 +89,7 @@ public class CharSelScene extends MirScene {
   private void initMyChars(long renderer_id, MyCharInfo[] myCharInfos) throws Exception{
     myChars=new MirAnimatedControl[myCharInfos.length];
     for (int i=0; i<myCharInfos.length; ++i) {
-      MirImage[] imgs =MirLibFactory.getMirLib(MirLibFactory.ChrSel).GetMirImages(
+      MirImage[] imgs =MirLibFactory.ChrSel.GetMirImages(
           getImgIndexes(myCharInfos[i].getJob(),myCharInfos[i].getGender()));
       myChars[i]=new MirAnimatedControl(background,renderer_id,imgs,true,200);
       myChars[i].setIsAnimated(true);

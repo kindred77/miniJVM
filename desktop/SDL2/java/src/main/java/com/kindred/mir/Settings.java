@@ -22,8 +22,39 @@ public class Settings {
     public final static int MIR_INIT_USERITEMSLOTS_SIZE = 5;
 
     public static boolean IsTargetDead=false;
+    public static boolean IsEffect=true;
 
-    public static String DataPath = "Data/";
+    public static final String LIB_SUFFIX=".Lib";
+    public static final String MAP_SUFFIX=".map";
+    public static final String MIR_LIB_BASE_DIR = "../mir_client/";
+    public static final String DataPath = MIR_LIB_BASE_DIR+"Data/",
+    MapPath = MIR_LIB_BASE_DIR+"Map/",
+    SoundPath = MIR_LIB_BASE_DIR+"Sound/",
+    ExtraDataPath = MIR_LIB_BASE_DIR+"Data/Extra/",
+    ShadersPath = MIR_LIB_BASE_DIR+"Data/Shaders/",
+    MonsterPath = MIR_LIB_BASE_DIR+"Data/Monster/",
+    GatePath = MIR_LIB_BASE_DIR+"Data/Gate/",
+    NPCPath = MIR_LIB_BASE_DIR+"Data/NPC/",
+    CArmourPath = MIR_LIB_BASE_DIR+"Data/CArmour/",
+    CWeaponPath = MIR_LIB_BASE_DIR+"Data/CWeapon/",
+    CHairPath = MIR_LIB_BASE_DIR+"Data/CHair/",
+    AArmourPath = MIR_LIB_BASE_DIR+"Data/AArmour/",
+    AWeaponPath = MIR_LIB_BASE_DIR+"Data/AWeapon/",
+    AHairPath = MIR_LIB_BASE_DIR+"Data/AHair/",
+    ARArmourPath = MIR_LIB_BASE_DIR+"Data/ARArmour/",
+    ARWeaponPath = MIR_LIB_BASE_DIR+"Data/ARWeapon/",
+    ARHairPath = MIR_LIB_BASE_DIR+"Data/ARHair/",
+    CHumEffectPath = MIR_LIB_BASE_DIR+"Data/CHumEffect/",
+    AHumEffectPath = MIR_LIB_BASE_DIR+"Data/AHumEffect/",
+    ARHumEffectPath = MIR_LIB_BASE_DIR+"Data/ARHumEffect/",
+    MountPath = MIR_LIB_BASE_DIR+"Data/Mount/",
+    FishingPath = MIR_LIB_BASE_DIR+"Data/Fishing/",
+    PetsPath = MIR_LIB_BASE_DIR+"Data/Pet/",
+    TransformPath = MIR_LIB_BASE_DIR+"Data/Transform/",
+    TransformMountsPath = MIR_LIB_BASE_DIR+"Data/TransformRide2/",
+    TransformEffectPath = MIR_LIB_BASE_DIR+"Data/TransformEffect/",
+    TransformWeaponEffectPath = MIR_LIB_BASE_DIR+"Data/TransformWeaponEffect/",
+    TmpPath=MIR_LIB_BASE_DIR+"Tmp/";
 
     public static Point GlobalDisplayLocationOffset=new Point(0, 0);
 
