@@ -6,7 +6,22 @@ import lombok.Setter;
 public class Frame {
   @Setter
   @Getter
-  private int start, count, skip, effectStart, effectCount, effectSkip;
+  private int start;
+  @Setter
+  @Getter
+  private int count;
+  @Setter
+  @Getter
+  private int skip;
+  @Setter
+  @Getter
+  private int effectStart;
+  @Setter
+  @Getter
+  private int effectCount;
+  @Setter
+  @Getter
+  private int effectSkip;
   @Setter
   @Getter
   private int interval, effectInterval;

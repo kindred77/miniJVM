@@ -121,7 +121,7 @@ public class PlayerObject extends MapObject {
 
     CurrentLocation = info.getCurrentLocation();
     MapLocation = info.getMapLocation();
-    GameScene.Scene.getMapControl().addObject(this);
+    GameScene.Scene.GetMapControl().addObject(this);
 
     Direction = info.getDirection();
     hair = info.getHair();

@@ -2,7 +2,6 @@ package com.kindred.mir.scene.game.map;
 
 import com.kindred.mir.GameCommon.Door;
 import com.kindred.mir.Settings;
-import com.kindred.mir.engine.MirJNI;
 import com.kindred.mir.libs.MirImage;
 import com.kindred.mir.libs.MirImage.ImageEffect;
 import com.kindred.mir.libs.MirLibFactory;

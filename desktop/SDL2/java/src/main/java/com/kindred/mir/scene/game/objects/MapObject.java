@@ -152,14 +152,14 @@ public abstract class MapObject extends MirControlWithTexture {
 
     MapMainControl.Objects.remove(this);
     GameScene gameScene=(GameScene) Env.ActiveScene;
-    gameScene.getMapControl().removeObject(this);
+    gameScene.GetMapControl().removeObject(this);
 
-    if (ObjectID != gameScene.getNpcID()) {
+    if (ObjectID != gameScene.GetNpcID()) {
       return;
     }
 
-    gameScene.setNpcID(0);
-    ((GameScene) Env.ActiveScene).getNpcDialog().setIsVisible(false);
+    gameScene.SetNpcID(0);
+    ((GameScene) Env.ActiveScene).GetNPCDialog().setIsVisible(false);
   }
 
   public void addBuffEffect(BuffType type) {

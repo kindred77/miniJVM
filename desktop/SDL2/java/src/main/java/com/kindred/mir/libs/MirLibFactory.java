@@ -89,7 +89,50 @@ public class MirLibFactory implements Runnable{
 //        return lib;
 //    }
 
-    static {
+    public static void StartToInit() {
+        //开启后台线程异步加载其它素材
+        Thread thread = new Thread(new MirLibFactory());
+        thread.start();
+
+        try {
+            //基础素材,如果加载不成功就不能启动
+            loadBaseLibraries();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void run() {
+        loadGameLibraries();
+    }
+
+    private static void loadBaseLibraries()
+    {
+        if(!ChrSel.Initialize(false)) {
+            throw new RuntimeException("ChrSel initialize failed.");
+        }
+        Progress++;
+
+        if(!Prguse.Initialize(false)) {
+            throw new RuntimeException("Prguse initialize failed.");
+        }
+        Progress++;
+
+        //Prguse2.Initialize();
+        //Progress++;
+
+        if(!Prguse3.Initialize(false)) {
+            throw new RuntimeException("Prguse3 initialize failed.");
+        }
+        Progress++;
+
+        //Title.Initialize();
+        //Progress++;
+    }
+
+    private static void loadGameLibraries()
+    {
         //Wiz/War/Tao
         for (int i = 0; i < CArmours.length; i++)
             CArmours[i] = new MirLib(Settings.CArmourPath + String.format("%02d", i));
@@ -227,209 +270,159 @@ public class MirLibFactory implements Runnable{
             mapLibs[313 + (i * 15)] = new MirLib(Settings.DataPath+"ShandaMir3\\" + "Object2c" + mapState[i]);
         }
 
-        //开启后台线程异步加载其它素材
-        Thread thread = new Thread(new MirLibFactory());
-        thread.start();
-
-        try {
-            //基础素材,如果加载不成功就不能启动
-            LoadBaseLibraries();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
-        //TODO 测试用，实际不要阻塞
-        while(!Loaded){
-            try{Thread.sleep(500);} catch (Exception e) {}
-        }
-    }
-
-    @Override
-    public void run() {
-        LoadGameLibraries();
-    }
-
-    static void LoadBaseLibraries() throws Exception
-    {
-        ChrSel.Initialize();
-        Progress++;
-
-        Prguse.Initialize();
-        Progress++;
-
-        //Prguse2.Initialize();
-        //Progress++;
-
-        Prguse3.Initialize();
-        Progress++;
-
-        //Title.Initialize();
-        //Progress++;
-    }
-
-    private static void LoadGameLibraries()
-    {
-        System.out.println("LoadGameLibraries----------000000------------");
         Count = mapLibs.length + Monsters.length + Gates.length + NPCs.length + CArmours.length +
             CHair.length + CWeapons.length + AArmours.length + AHair.length + AWeaponsL.length + AWeaponsR.length +
             ARArmours.length + ARHair.length + ARWeapons.length + ARWeaponsS.length +
             CHumEffect.length + AHumEffect.length + ARHumEffect.length + Mounts.length + Fishing.length + Pets.length +
             Transform.length + TransformMounts.length + TransformEffect.length + TransformWeaponEffect.length + 17;
-        System.out.println("LoadGameLibraries----------000000-----11111------------");
-        Dragon.tryToInitialize();
-        System.out.println("LoadGameLibraries----------000000-----22222------------");
+
+        Dragon.Initialize(true);
         Progress++;
 
-        BuffIcon.tryToInitialize();
+        BuffIcon.Initialize(true);
         Progress++;
 
-        Help.tryToInitialize();
+        Help.Initialize(true);
         Progress++;
 
-        MiniMap.tryToInitialize();
+        MiniMap.Initialize(true);
         Progress++;
 
-        MagIcon.tryToInitialize();
+        MagIcon.Initialize(true);
         Progress++;
-        MagIcon2.tryToInitialize();
-        Progress++;
-
-        Magic.tryToInitialize();
-        Progress++;
-        Magic2.tryToInitialize();
-        Progress++;
-        Magic3.tryToInitialize();
-        Progress++;
-        MagicC.tryToInitialize();
+        MagIcon2.Initialize(true);
         Progress++;
 
-        Effect.tryToInitialize();
+        Magic.Initialize(true);
+        Progress++;
+        Magic2.Initialize(true);
+        Progress++;
+        Magic3.Initialize(true);
+        Progress++;
+        MagicC.Initialize(true);
         Progress++;
 
-        GuildSkill.tryToInitialize();
+        Effect.Initialize(true);
         Progress++;
 
-        Background.tryToInitialize();
+        GuildSkill.Initialize(true);
         Progress++;
 
-        Deco.tryToInitialize();
+        Background.Initialize(true);
         Progress++;
 
-        Items.tryToInitialize();
+        Deco.Initialize(true);
         Progress++;
-        StateItems.tryToInitialize();
+
+        Items.Initialize(true);
         Progress++;
-        FloorItems.tryToInitialize();
+        StateItems.Initialize(true);
         Progress++;
-        System.out.println("LoadGameLibraries----------111111------------");
+        FloorItems.Initialize(true);
+        Progress++;
         for (int i = 0; i < mapLibs.length; i++) {
             if (mapLibs[i] == null)
                 mapLibs[i] = new MirLib("");
             else
-                mapLibs[i].tryToInitialize();
+                mapLibs[i].Initialize(true);
             Progress++;
         }
         for (int i = 0; i < Monsters.length; i++) {
-            Monsters[i].tryToInitialize();
+            Monsters[i].Initialize(true);
             Progress++;
         }
         for (int i = 0; i < Gates.length; i++) {
-            Gates[i].tryToInitialize();
+            Gates[i].Initialize(true);
             Progress++;
         }
         for (int i = 0; i < NPCs.length; i++) {
-            NPCs[i].tryToInitialize();
+            NPCs[i].Initialize(true);
             Progress++;
         }
         for (int i = 0; i < CArmours.length; i++) {
-            CArmours[i].tryToInitialize();
+            CArmours[i].Initialize(true);
             Progress++;
         }
-        System.out.println("----------222222222------------");
         for (int i = 0; i < CHair.length; i++) {
-            CHair[i].tryToInitialize();
+            CHair[i].Initialize(true);
             Progress++;
         }
         for (int i = 0; i < CWeapons.length; i++) {
-            CWeapons[i].tryToInitialize();
+            CWeapons[i].Initialize(true);
             Progress++;
         }
         for (int i = 0; i < AArmours.length; i++) {
-            AArmours[i].tryToInitialize();
+            AArmours[i].Initialize(true);
             Progress++;
         }
         for (int i = 0; i < AHair.length; i++) {
-            AHair[i].tryToInitialize();
+            AHair[i].Initialize(true);
             Progress++;
         }
         for (int i = 0; i < AWeaponsL.length; i++) {
-            AWeaponsL[i].tryToInitialize();
+            AWeaponsL[i].Initialize(true);
             Progress++;
         }
-        System.out.println("----------3333333333------------");
         for (int i = 0; i < AWeaponsR.length; i++) {
-            AWeaponsR[i].tryToInitialize();
+            AWeaponsR[i].Initialize(true);
             Progress++;
         }
         for (int i = 0; i < ARArmours.length; i++) {
-            ARArmours[i].tryToInitialize();
+            ARArmours[i].Initialize(true);
             Progress++;
         }
         for (int i = 0; i < ARHair.length; i++) {
-            ARHair[i].tryToInitialize();
+            ARHair[i].Initialize(true);
             Progress++;
         }
         for (int i = 0; i < ARWeapons.length; i++) {
-            ARWeapons[i].tryToInitialize();
+            ARWeapons[i].Initialize(true);
             Progress++;
         }
         for (int i = 0; i < ARWeaponsS.length; i++) {
-            ARWeaponsS[i].tryToInitialize();
+            ARWeaponsS[i].Initialize(true);
             Progress++;
         }
-        System.out.println("----------4444444444------------");
         for (int i = 0; i < CHumEffect.length; i++) {
-            CHumEffect[i].tryToInitialize();
+            CHumEffect[i].Initialize(true);
             Progress++;
         }
         for (int i = 0; i < AHumEffect.length; i++) {
-            AHumEffect[i].tryToInitialize();
+            AHumEffect[i].Initialize(true);
             Progress++;
         }
         for (int i = 0; i < ARHumEffect.length; i++) {
-            ARHumEffect[i].tryToInitialize();
+            ARHumEffect[i].Initialize(true);
             Progress++;
         }
         for (int i = 0; i < Mounts.length; i++) {
-            Mounts[i].tryToInitialize();
+            Mounts[i].Initialize(true);
             Progress++;
         }
         for (int i = 0; i < Fishing.length; i++) {
-            Fishing[i].tryToInitialize();
+            Fishing[i].Initialize(true);
             Progress++;
         }
-        System.out.println("----------5555555555------------");
         for (int i = 0; i < Pets.length; i++) {
-            Pets[i].tryToInitialize();
+            Pets[i].Initialize(true);
             Progress++;
         }
         for (int i = 0; i < Transform.length; i++) {
-            Transform[i].tryToInitialize();
+            Transform[i].Initialize(true);
             Progress++;
         }
         for (int i = 0; i < TransformEffect.length; i++) {
-            TransformEffect[i].tryToInitialize();
+            TransformEffect[i].Initialize(true);
             Progress++;
         }
         for (int i = 0; i < TransformWeaponEffect.length; i++) {
-            TransformWeaponEffect[i].tryToInitialize();
+            TransformWeaponEffect[i].Initialize(true);
             Progress++;
         }
         for (int i = 0; i < TransformMounts.length; i++) {
-            TransformMounts[i].tryToInitialize();
+            TransformMounts[i].Initialize(true);
             Progress++;
         }
-        System.out.println("----------666666666------------");
         Loaded = true;
     }
 

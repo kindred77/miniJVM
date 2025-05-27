@@ -5,6 +5,7 @@ import static com.kindred.sdl.constcode.SDLWindowFlags.SDL_WINDOW_MINIMIZED;
 
 import com.kindred.mir.controls.events.CommonEvent;
 import com.kindred.mir.controls.events.CommonEvent.EventEnum;
+import com.kindred.mir.libs.MirLibFactory;
 import com.kindred.mir.scene.charsel.CharSelScene;
 import com.kindred.mir.scene.game.GameScene;
 import com.kindred.mir.scene.game.GameScene.GameSceneData;
@@ -126,6 +127,7 @@ public class MirMain {
     }
 
     public static void main(String args[]) throws Exception{
+        MirLibFactory.StartToInit();
         try {
             Env.BackGroundExeService=new ExecutionService(Settings.BACKGROUND_WORKER_THREADS_CNT);
             int result = MirJNI.SDL_Init(SdlSubSystemConst.SDL_INIT_EVERYTHING);

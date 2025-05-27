@@ -6,6 +6,10 @@ import com.kindred.mir.util.Color;
 import com.kindred.mir.util.Util;
 
 public final class Font {
+
+  //注意：加锁不要使用synchronized代码块的方式，有问题
+  private final static Object lock = new Object();
+
   private String fontFileName;
   private float size;
   private long imgui_font_id;
@@ -110,8 +114,10 @@ public final class Font {
       return this.styleFlags;
   }
 
-  public static synchronized long generateTextSurface(Font font,String text, Color foreColor, Color backColor,int wraplength) {
-    MirJNI.SDL_TTF_SetFontStyle(font.getSDLFontID(), font.getStyleFlags());
+  public static long generateTextSurface(Font font,String text, Color foreColor, Color backColor,int wraplength) {
+    synchronized (lock) {
+      MirJNI.SDL_TTF_SetFontStyle(font.getSDLFontID(), font.getStyleFlags());
+    }
     return MirJNI.SDL_TTF_RenderUTF8_LCD_Wrapped(font.getSDLFontID(), Util.toCstyleBytes(text),
         new int[]{foreColor.getRed(),foreColor.getGreen(),foreColor.getBlue(),foreColor.getAlpha()},
         new int[]{backColor.getRed(),backColor.getGreen(),backColor.getBlue(),backColor.getAlpha()},

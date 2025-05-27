@@ -60,4 +60,34 @@ int main()
 }
 
 
-2、静态初始化代码开启线程访问静态变量会卡住？
+2、miniJVM静态初始化代码开启线程访问静态变量会卡住？
+
+3、miniJVM多线程时，加锁不要使用synchronized代码块的方式，而使用：
+Object lock = new Object();
+synchronized (lock) {}
+否则会有一些奇怪的问题。
+
+4、synchronized里抛出异常会异常阻塞
+
+5、尽量不要使用static{}代码块进行初始化，static{}代码初始化以后再由main函数执行操作可能会有问题。
+
+6、当前代码有报错风险：
+c:\mywork\projects\java\miniJVM\binary\win_x64>mini_jvm.exe -bootclasspath ../lib/minijvm_rt.jar -cp ../libex/sdl2.jar;../libex/lombok-1.18.36.jar;../libex/aspectjrt-1.9.7.jar com.kindred.mir.MirMain
+Compiled by: __JVM_OS_MINGW__
+App dir:./
+[INFO]jvm inited
+
+[INFO]main thread start
+[INFO]thread start 20d6b9b4450
+[INFO]thread start 20d6baa8e30
+[INFO]thread start 20d6baaa2b0
+java.lang.NullPointerException:
+    at com/sun/cldc/i18n/j2me/UTF_8_Writer.write(UTF_8_Writer.java:128)
+    at com/sun/cldc/i18n/Helper.charToByteArray(Helper.java:354)
+    at java/lang/String.getBytes(String.java:421)
+    at com/kindred/mir/util/Util.toCstyleBytes(Util.java:20)
+    at com/kindred/mir/MirMain.main(MirMain.java:141)
+[INFO]main thread over 20d6b7666b0 , return 0 , spent : 242
+[INFO]waitting for thread terminate
+[INFO]thread over 20d6baa8e30 , return 0 , spent : 210
+[INFO]thread over 20d6baaa2b0 , return 0 , spent : 210

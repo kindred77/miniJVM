@@ -100,7 +100,7 @@ public class GameScene extends MirScene {
     protected long moveTime, AttackTime, NextRunTime, LogTime, LastRunTime;
     protected boolean canMove, CanRun;
 
-    @Getter
+
     protected MapMainControl mapControl;
     protected MainDialog mainDialog;
     protected ChatDialog chatDialog;
@@ -113,7 +113,7 @@ public class GameScene extends MirScene {
     protected InspectDialog inspectDialog;
     protected OptionDialog optionDialog;
     protected MenuDialog menuDialog;
-    @Getter
+
     protected NPCDialog npcDialog;
     protected NPCGoodsDialog npcGoodsDialog;
     protected NPCDropDialog npcDropDialog;
@@ -197,8 +197,7 @@ public class GameScene extends MirScene {
     protected LightSetting Lights;
 
     protected long npcTime;
-    @Getter
-    @Setter
+
     protected long npcID;
     protected float npcRate;
     protected long defaultNPCID;
@@ -233,6 +232,22 @@ public class GameScene extends MirScene {
             itemLabel.dispose();
         }
         itemLabel = null;
+    }
+
+    public MapMainControl GetMapControl() {
+        return mapControl;
+    }
+
+    public void SetNpcID(long npcID) {
+        this.npcID = npcID;
+    }
+
+    public long GetNpcID() {
+        return npcID;
+    }
+
+    public NPCDialog GetNPCDialog() {
+        return npcDialog;
     }
 
     public void createItemLabel(UserItem item, boolean isInspect) {
@@ -471,16 +486,16 @@ public class GameScene extends MirScene {
 
         updateBuffs();
         //mapControl.process();
-        mainDialog.process();
-        inventoryDialog.process();
-        gameShopDialog.process();
-        miniMapDialog.process();
-        for(SkillBarDialog bar : Scene.skillBarDialogs) {
-            bar.process();
-        }
-
-        dialogProcess();
-
-        processOuput();
+        //mainDialog.process();
+        //inventoryDialog.process();
+        //gameShopDialog.process();
+        //miniMapDialog.process();
+//        for(SkillBarDialog bar : Scene.skillBarDialogs) {
+//            bar.process();
+//        }
+//
+//        dialogProcess();
+//
+//        processOuput();
     }
 }

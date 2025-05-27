@@ -1331,9 +1331,9 @@ int com_kindred_sdl_SDL_Mir_SurfaceBlendNormal(Runtime *runtime, JClass *clazz) 
             srcLeft >= srcRight ||
             srcTop >= srcBottom) {
             env->push_int(runtime->stack, 0);
-            fprintf(stdout,
-                "Do noting in com_kindred_sdl_SDL_Mir_SurfaceBlendNormal, out of bounds, srcLeft: %d, srcTop: %d, srcRight: %d, srcBottom: %d \n",
-                srcLeft,srcTop,srcRight,srcBottom);
+            // fprintf(stdout,
+            //     "Do noting in com_kindred_sdl_SDL_Mir_SurfaceBlendNormal, out of bounds, srcLeft: %d, srcTop: %d, srcRight: %d, srcBottom: %d \n",
+            //     srcLeft,srcTop,srcRight,srcBottom);
             return 0;
         }
     }
@@ -1351,9 +1351,9 @@ int com_kindred_sdl_SDL_Mir_SurfaceBlendNormal(Runtime *runtime, JClass *clazz) 
     int src_height = srcBottom - srcTop;
     int src_pitch = src_surface->pitch;
     if (x > dst_width || y > dst_height || (x < 0 && -x >= src_width) || (y < 0 && -y >= src_height)) {
-        fprintf(stdout,
-            "Do noting in com_kindred_sdl_SDL_Mir_SurfaceBlendNormal, out of bounds,x: %d, y: %d, src_width: %d, src_height: %d, dst_width: %d, dst_height: %d\n",
-            x,y,src_width,src_height,dst_width,dst_height);
+        // fprintf(stdout,
+        //     "Do noting in com_kindred_sdl_SDL_Mir_SurfaceBlendNormal, out of bounds,x: %d, y: %d, src_width: %d, src_height: %d, dst_width: %d, dst_height: %d\n",
+        //     x,y,src_width,src_height,dst_width,dst_height);
         env->push_int(runtime->stack, 0);
         return 0;
     }
@@ -1457,9 +1457,9 @@ int com_kindred_sdl_SDL_Mir_SurfaceBlendNormalTransparent(Runtime *runtime, JCla
             srcLeft >= srcRight ||
             srcTop >= srcBottom) {
             env->push_int(runtime->stack, 0);
-            fprintf(stdout,
-                "Do noting in com_kindred_sdl_SDL_Mir_SurfaceBlendNormalTransparent, out of bounds, srcLeft: %d, srcTop: %d, srcRight: %d, srcBottom: %d \n",
-                srcLeft,srcTop,srcRight,srcBottom);
+            // fprintf(stdout,
+            //     "Do noting in com_kindred_sdl_SDL_Mir_SurfaceBlendNormalTransparent, out of bounds, srcLeft: %d, srcTop: %d, srcRight: %d, srcBottom: %d \n",
+            //     srcLeft,srcTop,srcRight,srcBottom);
             return 0;
         }
     }
@@ -1483,9 +1483,9 @@ int com_kindred_sdl_SDL_Mir_SurfaceBlendNormalTransparent(Runtime *runtime, JCla
     int src_pitch = src_surface->pitch;
 
     if (x > dst_width || y > dst_height || (x < 0 && -x >= src_width) || (y < 0 && -y >= src_height)) {
-        fprintf(stdout,
-            "Do noting in com_kindred_sdl_SDL_Mir_SurfaceBlendNormalTransparent, out of bounds,x: %d, y: %d, src_width: %d, src_height: %d, dst_width: %d, dst_height: %d\n",
-            x,y,src_width,src_height,dst_width,dst_height);
+        // fprintf(stdout,
+        //     "Do noting in com_kindred_sdl_SDL_Mir_SurfaceBlendNormalTransparent, out of bounds,x: %d, y: %d, src_width: %d, src_height: %d, dst_width: %d, dst_height: %d\n",
+        //     x,y,src_width,src_height,dst_width,dst_height);
         env->push_int(runtime->stack, 0);
         return 0;
     }
@@ -1585,9 +1585,9 @@ int com_kindred_sdl_SDL_Mir_SurfaceBlendAdd(Runtime *runtime, JClass *clazz) {
             srcLeft >= srcRight ||
             srcTop >= srcBottom) {
             env->push_int(runtime->stack, 0);
-            fprintf(stdout,
-                "Do noting in com_kindred_sdl_SDL_Mir_SurfaceBlendAdd, out of bounds, srcLeft: %d, srcTop: %d, srcRight: %d, srcBottom: %d \n",
-                srcLeft,srcTop,srcRight,srcBottom);
+            // fprintf(stdout,
+            //     "Do noting in com_kindred_sdl_SDL_Mir_SurfaceBlendAdd, out of bounds, srcLeft: %d, srcTop: %d, srcRight: %d, srcBottom: %d \n",
+            //     srcLeft,srcTop,srcRight,srcBottom);
             return 0;
         }
     }
@@ -1608,9 +1608,9 @@ int com_kindred_sdl_SDL_Mir_SurfaceBlendAdd(Runtime *runtime, JClass *clazz) {
     int src_pitch = src_surface->pitch;
 
     if (x > dst_width || y > dst_height || (x < 0 && -x >= src_width) || (y < 0 && -y >= src_height)) {
-        fprintf(stdout,
-            "Do noting in com_kindred_sdl_SDL_Mir_SurfaceBlendAdd, out of bounds,x: %d, y: %d, src_width: %d, src_height: %d, dst_width: %d, dst_height: %d\n",
-            x,y,src_width,src_height,dst_width,dst_height);
+        // fprintf(stdout,
+        //     "Do noting in com_kindred_sdl_SDL_Mir_SurfaceBlendAdd, out of bounds,x: %d, y: %d, src_width: %d, src_height: %d, dst_width: %d, dst_height: %d\n",
+        //     x,y,src_width,src_height,dst_width,dst_height);
         env->push_int(runtime->stack, 0);
         return 0;
     }
@@ -1717,9 +1717,9 @@ int com_kindred_sdl_SDL_Mir_SurfaceBlendAddTransparent(Runtime *runtime, JClass 
             srcLeft >= srcRight ||
             srcTop >= srcBottom) {
             env->push_int(runtime->stack, 0);
-            fprintf(stdout,
-                "Do noting in com_kindred_sdl_SDL_Mir_SurfaceBlendAddTransparent, out of bounds, srcLeft: %d, srcTop: %d, srcRight: %d, srcBottom: %d \n",
-                srcLeft,srcTop,srcRight,srcBottom);
+            // fprintf(stdout,
+            //     "Do noting in com_kindred_sdl_SDL_Mir_SurfaceBlendAddTransparent, out of bounds, srcLeft: %d, srcTop: %d, srcRight: %d, srcBottom: %d \n",
+            //     srcLeft,srcTop,srcRight,srcBottom);
             return 0;
         }
     }
@@ -1743,9 +1743,9 @@ int com_kindred_sdl_SDL_Mir_SurfaceBlendAddTransparent(Runtime *runtime, JClass 
     int src_pitch = src_surface->pitch;
 
     if (x > dst_width || y > dst_height || (x < 0 && -x >= src_width) || (y < 0 && -y >= src_height)) {
-        fprintf(stdout,
-            "Do noting in com_kindred_sdl_SDL_Mir_SurfaceBlendAddTransparent, out of bounds,x: %d, y: %d, src_width: %d, src_height: %d, dst_width: %d, dst_height: %d\n",
-            x,y,src_width,src_height,dst_width,dst_height);
+        // fprintf(stdout,
+        //     "Do noting in com_kindred_sdl_SDL_Mir_SurfaceBlendAddTransparent, out of bounds,x: %d, y: %d, src_width: %d, src_height: %d, dst_width: %d, dst_height: %d\n",
+        //     x,y,src_width,src_height,dst_width,dst_height);
         env->push_int(runtime->stack, 0);
         return 0;
     }
