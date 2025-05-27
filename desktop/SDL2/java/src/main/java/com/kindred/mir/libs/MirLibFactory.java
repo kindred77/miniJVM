@@ -10,7 +10,7 @@ import java.util.List;
 public class MirLibFactory implements Runnable{
 
     public static volatile boolean Loaded;
-    public static volatile int Count, Progress;
+    public static volatile int Progress;
 
     public static final MirLib
     ChrSel = new MirLib(Settings.DataPath + "ChrSel"),
@@ -73,6 +73,12 @@ public class MirLibFactory implements Runnable{
     TransformEffect = new MirLib[2],
     TransformWeaponEffect = new MirLib[1];
 
+    private static final int Count = mapLibs.length + Monsters.length + Gates.length + NPCs.length + CArmours.length +
+    CHair.length + CWeapons.length + AArmours.length + AHair.length + AWeaponsL.length + AWeaponsR.length +
+    ARArmours.length + ARHair.length + ARWeapons.length + ARWeaponsS.length +
+    CHumEffect.length + AHumEffect.length + ARHumEffect.length + Mounts.length + Fishing.length + Pets.length +
+    Transform.length + TransformMounts.length + TransformEffect.length + TransformWeaponEffect.length + 17;
+
 //    public static MirLib getMirLib(String file_name)
 //    {
 //        MirLib lib = new MirLib(MIR_LIB_BASE_DIR+file_name);
@@ -90,6 +96,7 @@ public class MirLibFactory implements Runnable{
 //    }
 
     public static void StartToInit() {
+
         //开启后台线程异步加载其它素材
         Thread thread = new Thread(new MirLibFactory());
         thread.start();
@@ -105,6 +112,7 @@ public class MirLibFactory implements Runnable{
     @Override
     public void run() {
         loadGameLibraries();
+        System.out.println("All libs initialized.");
     }
 
     private static void loadBaseLibraries()
@@ -269,12 +277,6 @@ public class MirLibFactory implements Runnable{
             mapLibs[312 + (i * 15)] = new MirLib(Settings.DataPath+"ShandaMir3\\" + "Object1c" + mapState[i]);
             mapLibs[313 + (i * 15)] = new MirLib(Settings.DataPath+"ShandaMir3\\" + "Object2c" + mapState[i]);
         }
-
-        Count = mapLibs.length + Monsters.length + Gates.length + NPCs.length + CArmours.length +
-            CHair.length + CWeapons.length + AArmours.length + AHair.length + AWeaponsL.length + AWeaponsR.length +
-            ARArmours.length + ARHair.length + ARWeapons.length + ARWeaponsS.length +
-            CHumEffect.length + AHumEffect.length + ARHumEffect.length + Mounts.length + Fishing.length + Pets.length +
-            Transform.length + TransformMounts.length + TransformEffect.length + TransformWeaponEffect.length + 17;
 
         Dragon.Initialize(true);
         Progress++;

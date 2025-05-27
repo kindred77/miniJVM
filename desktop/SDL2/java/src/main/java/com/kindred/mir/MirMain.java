@@ -230,15 +230,16 @@ public class MirMain {
 
             }
 
-            if (Settings.IsImguiUsed.get()) {
-                MirJNI.ImGui_Destroy();
-            }
-
+            //这些有没有必要，直接System.exit(0)就行了?
+//            if (Settings.IsImguiUsed.get()) {
+//                MirJNI.ImGui_Destroy();
+//            }
+//
             MirJNI.SDL_DestroyRenderer(renderer_id);
             MirJNI.SDL_DestroyWindow(win_id);
             MirJNI.SDL_TTF_Quit();
             MirJNI.SDL_Quit();
-            Env.BackGroundExeService.shutdown();
+//            Env.BackGroundExeService.shutdown();
         } catch(Exception e) {
             e.printStackTrace();
         } finally {
