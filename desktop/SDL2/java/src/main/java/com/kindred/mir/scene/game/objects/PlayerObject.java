@@ -145,14 +145,14 @@ public class PlayerObject extends MapObject {
 
     transformType = info.getTransformType();
 
-    //SetLibraries();
+    setLibraries();
 
     //if (isDead) ActionFeed.add(new QueuedAction { Action = MirAction.Dead, Direction = Direction, Location = CurrentLocation });
     //if (info.isExtra()) Effects.add(new Effect(Libraries.Magic2, 670, 10, 800, this));
 
-    elementEffect = (int)info.getElementEffect();
-    elementsLevel = (int)info.getElementsLevel();
-    elementOrbMax = (int)info.getElementOrbMax();
+    elementEffect = info.getElementEffect();
+    elementsLevel = info.getElementsLevel();
+    elementOrbMax = info.getElementOrbMax();
 
     Buffs = info.getBuffs();
 
