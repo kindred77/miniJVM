@@ -91,3 +91,5 @@ java.lang.NullPointerException:
 [INFO]waitting for thread terminate
 [INFO]thread over 20d6baa8e30 , return 0 , spent : 210
 [INFO]thread over 20d6baaa2b0 , return 0 , spent : 210
+
+7、异步加载素材会有冲突，而且启用异步加载素材似乎也什么用，暂时不用启用
