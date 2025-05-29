@@ -92,7 +92,7 @@ public class MapObjectsComponent extends MapCommonComponent {
           index--;
           int animationoffset = M2CellInfo[x][y].TileAnimationOffset ^ 0x2000;
           index += animationoffset * (animationCount % animation);
-          MirImage img = MirLibFactory.getMapLib(190).GetMirImage(index);
+          MirImage img = MirLibFactory.GetMirMapImage(190,index);
           drawUp(targetSurface,img,false,drawX,drawY);
 //          drawToSurface(targetSurface,img.getSurface(ImageEffect.None),false,
 //              drawX,
@@ -119,7 +119,7 @@ public class MapObjectsComponent extends MapCommonComponent {
 
                 if (blend && (animation == 10 || animation == 8)) //diamond mines, abyss blends
                 {
-                  MirImage img = MirLibFactory.getMapLib(M2CellInfo[x][y].MiddleIndex).GetMirImage(index);
+                  MirImage img = MirLibFactory.GetMirMapImage(M2CellInfo[x][y].MiddleIndex,index);
 //                  drawToSurface(targetSurface,img.getSurface(ImageEffect.None),true,
 //                      drawX,
 //                      drawY);
@@ -128,7 +128,7 @@ public class MapObjectsComponent extends MapCommonComponent {
                 }
                 else
                 {
-                  MirImage img = MirLibFactory.getMapLib(M2CellInfo[x][y].MiddleIndex).GetMirImage(index);
+                  MirImage img = MirLibFactory.GetMirMapImage(M2CellInfo[x][y].MiddleIndex,index);
 //                  drawToSurface(targetSurface,img.getSurface(ImageEffect.None),false,
 //                      drawX,
 //                      drawY);
@@ -137,7 +137,7 @@ public class MapObjectsComponent extends MapCommonComponent {
                 }
               }
             }
-            MirImage img = MirLibFactory.getMapLib(M2CellInfo[x][y].MiddleIndex).GetMirImage(index);
+            MirImage img = MirLibFactory.GetMirMapImage(M2CellInfo[x][y].MiddleIndex,index);
             s = img.getTrueSize();
             if ((s.getWidth() != Settings.CellWidth || s.getHeight() != Settings.CellHeight)
                 && (s.getWidth() != (Settings.CellWidth * 2) || s.getHeight() != (Settings.CellHeight * 2)) && !blend)
@@ -189,7 +189,7 @@ public class MapObjectsComponent extends MapCommonComponent {
             }
           }
         }
-        MirImage img = MirLibFactory.getMapLib(fileIndex).GetMirImage(index);
+        MirImage img = MirLibFactory.GetMirMapImage(fileIndex,index);
         s = img.getTrueSize();
         if (s.getWidth() == Settings.CellWidth && s.getHeight() == Settings.CellHeight && animation == 0) {
           continue;

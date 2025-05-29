@@ -5,6 +5,9 @@ import com.kindred.mir.util.MyRandomAccessFile;
 
 import java.io.File;
 
+/**
+ * 只能通过MirLibFactory使用
+ */
 public class MirLib {
     //注意：miniJVM加锁不要使用synchronized代码块的方式，有问题
     private final Object lock = new Object();

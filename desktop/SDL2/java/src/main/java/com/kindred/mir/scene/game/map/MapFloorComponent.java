@@ -74,7 +74,7 @@ public class MapFloorComponent extends MapCommonComponent {
           continue;
         }
         index = (M2CellInfo[x][y].BackImage & 0x1FFFF) - 1;
-        MirImage img = MirLibFactory.getMapLib(M2CellInfo[x][y].BackIndex).GetMirImage(index);
+        MirImage img = MirLibFactory.GetMirMapImage(M2CellInfo[x][y].BackIndex,index);
         drawToSurface(targetSurface,img.getSurface(ImageEffect.None),false,drawX,drawY);
       }
     }
@@ -102,7 +102,7 @@ public class MapFloorComponent extends MapCommonComponent {
         if ((index < 0) || (M2CellInfo[x][y].MiddleIndex == -1)) {
           continue;
         }
-        MirImage img = MirLibFactory.getMapLib(M2CellInfo[x][y].MiddleIndex).GetMirImage(index);
+        MirImage img = MirLibFactory.GetMirMapImage(M2CellInfo[x][y].MiddleIndex,index);
         if (M2CellInfo[x][y].MiddleIndex > 199){//mir3 mid layer is same level as front layer not real middle + it cant draw index -1 so 2 birds in one stone :p
           Size s = img.getTrueSize();
 
@@ -145,7 +145,7 @@ public class MapFloorComponent extends MapCommonComponent {
           continue; //fixes random bad spots on old school 4.map
         }
         //Size s = Libraries.MapLibs[fileIndex].GetSize(index);
-        MirImage img = MirLibFactory.getMapLib(fileIndex).GetMirImage(index);
+        MirImage img = MirLibFactory.GetMirMapImage(fileIndex,index);
         if (M2CellInfo[x][y].DoorIndex > 0){
           Door DoorInfo = getDoor(M2CellInfo[x][y].DoorIndex);
           if (DoorInfo == null) {
@@ -166,7 +166,7 @@ public class MapFloorComponent extends MapCommonComponent {
             || (img.getTrueSize().getHeight() != Settings.CellHeight * 2)))) {
           continue;
         }
-        img = MirLibFactory.getMapLib(fileIndex).GetMirImage(index);
+        img = MirLibFactory.GetMirMapImage(fileIndex,index);
         drawToSurface(targetSurface,img.getSurface(ImageEffect.None),false,drawX,drawY);
       }
     }

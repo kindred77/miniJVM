@@ -429,8 +429,12 @@ public class MirLibFactory implements Runnable{
         Loaded = true;
     }
 
-    public static MirLib getMapLib(int idx) {
-        return mapLibs[idx];
+    public static MirImage GetMirMapImage(int mapLibIdx, int imgIdx) {
+        //WemadeMir2的Tiles文件split
+        if(null == mapLibs[mapLibIdx]){
+            return null;
+        }
+        return mapLibs[mapLibIdx].GetMirImage(imgIdx);
     }
 
     public static void tryToDraw(
