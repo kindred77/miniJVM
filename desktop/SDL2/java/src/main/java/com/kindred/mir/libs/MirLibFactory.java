@@ -4,6 +4,7 @@ import com.kindred.mir.Settings;
 import com.kindred.mir.engine.MirJNI;
 import com.kindred.mir.libs.MirImage.ImageEffect;
 import com.kindred.mir.util.Rectangle;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,6 +38,8 @@ public class MirLibFactory implements Runnable{
     Dragon = new MirLib(Settings.DataPath + "Dragon");
 
     private final static MirLib[] mapLibs=new MirLib[400];
+
+    private final static MirLib[] wemadeMir2_tiles_ext=new MirLib[50];
 
     //Items
     public static final MirLib
@@ -73,7 +76,7 @@ public class MirLibFactory implements Runnable{
     TransformEffect = new MirLib[2],
     TransformWeaponEffect = new MirLib[1];
 
-    private static final int Count = mapLibs.length + Monsters.length + Gates.length + NPCs.length + CArmours.length +
+    private static final int Count = mapLibs.length + (Settings.IS_WEMADEMIR2_TILES_FILE_SPLIT ? wemadeMir2_tiles_ext.length : 0) + Monsters.length + Gates.length + NPCs.length + CArmours.length +
     CHair.length + CWeapons.length + AArmours.length + AHair.length + AWeaponsL.length + AWeaponsR.length +
     ARArmours.length + ARHair.length + ARWeapons.length + ARWeaponsS.length +
     CHumEffect.length + AHumEffect.length + ARHumEffect.length + Mounts.length + Fishing.length + Pets.length +
@@ -176,23 +179,35 @@ public class MirLibFactory implements Runnable{
 
         //map libs
         //wemade mir2 (allowed from 0-99)
-        mapLibs[0] = new MirLib(Settings.DataPath+"Map\\WemadeMir2\\Tiles");
+        if(!Settings.IS_WEMADEMIR2_TILES_FILE_SPLIT) {
+            mapLibs[0] = new MirLib(Settings.DataPath + "Map\\WemadeMir2\\Tiles");
+        }
         mapLibs[1] = new MirLib(Settings.DataPath+"Map\\WemadeMir2\\Smtiles");
         mapLibs[2] = new MirLib(Settings.DataPath+"Map\\WemadeMir2\\Objects");
+        //3-24
         for (int i = 2; i < 24; i++) {
             mapLibs[i + 1] = new MirLib(Settings.DataPath+"Map\\WemadeMir2\\Objects" + i);
         }
+        //加载wemade mir2 tiles扩展
+        if(Settings.IS_WEMADEMIR2_TILES_FILE_SPLIT){
+            for (int i = 0; i < wemadeMir2_tiles_ext.length; i++) {
+                wemadeMir2_tiles_ext[i] = new MirLib(Settings.DataPath+"Map\\WemadeMir2\\Tiles" + i);
+            }
+        }
         //shanda mir2 (allowed from 100-199)
         mapLibs[100] = new MirLib(Settings.DataPath+"Map\\ShandaMir2\\Tiles");
+        //101-109
         for (int i = 1; i < 10; i++) {
             mapLibs[100 + i] = new MirLib(Settings.DataPath+"Map\\ShandaMir2\\Tiles" + (i + 1));
         }
         mapLibs[110] = new MirLib(Settings.DataPath+"Map\\ShandaMir2\\SmTiles");
+        //111-119
         for (int i = 1; i < 10; i++)
         {
             mapLibs[110 + i] = new MirLib(Settings.DataPath+"Map\\ShandaMir2\\SmTiles" + (i + 1));
         }
         mapLibs[120] = new MirLib(Settings.DataPath+"Map\\ShandaMir2\\Objects");
+        //121-150
         for (int i = 1; i < 31; i++) {
             mapLibs[120 + i] = new MirLib(Settings.DataPath+"Map\\ShandaMir2\\Objects" + (i + 1));
         }
@@ -324,11 +339,22 @@ public class MirLibFactory implements Runnable{
         FloorItems.Initialize(true);
         Progress++;
         for (int i = 0; i < mapLibs.length; i++) {
-            if (mapLibs[i] == null)
+            if (mapLibs[i] == null) {
                 mapLibs[i] = new MirLib("");
-            else
+            } else {
                 mapLibs[i].Initialize(true);
+            }
             Progress++;
+        }
+        if(Settings.IS_WEMADEMIR2_TILES_FILE_SPLIT){
+            for (int i = 0; i < wemadeMir2_tiles_ext.length; i++) {
+                if (wemadeMir2_tiles_ext[i] == null) {
+                    wemadeMir2_tiles_ext[i] = new MirLib("");
+                } else {
+                    wemadeMir2_tiles_ext[i].Initialize(true);
+                }
+                Progress++;
+            }
         }
         for (int i = 0; i < Monsters.length; i++) {
             Monsters[i].Initialize(true);
@@ -430,11 +456,28 @@ public class MirLibFactory implements Runnable{
     }
 
     public static MirImage GetMirMapImage(int mapLibIdx, int imgIdx) {
-        //WemadeMir2的Tiles文件split
-        if(null == mapLibs[mapLibIdx]){
+        int newMapLibIdx = mapLibIdx;
+        int newImgIdx = imgIdx;
+        boolean ifUsingWemadeMir2TilesFileSplit = false;
+        //WemadeMir2的Tiles文件split要特殊处理
+        if(newMapLibIdx == 0 && Settings.IS_WEMADEMIR2_TILES_FILE_SPLIT){
+            //index为20000的图片mir lib index为1
+            newMapLibIdx = newImgIdx / Settings.WEMADEMIR2_TILES_FILE_SPLIT_CNT;
+            newImgIdx = newImgIdx % Settings.WEMADEMIR2_TILES_FILE_SPLIT_CNT;
+            ifUsingWemadeMir2TilesFileSplit=true;
+            if(imgIdx>=20000){
+                System.out.println("bingo a split test case, original index: "+imgIdx+", newMapLibIdx: "+newMapLibIdx+", newImgIdx: "+newImgIdx);
+            }
+        }
+
+        if((!ifUsingWemadeMir2TilesFileSplit && null == mapLibs[newMapLibIdx])
+            || (ifUsingWemadeMir2TilesFileSplit && wemadeMir2_tiles_ext[newMapLibIdx] == null)){
+            System.out.println("Can not get mir lib, lib index: " + newMapLibIdx);
             return null;
         }
-        return mapLibs[mapLibIdx].GetMirImage(imgIdx);
+        return ifUsingWemadeMir2TilesFileSplit
+            ? wemadeMir2_tiles_ext[newMapLibIdx].GetMirImage(newImgIdx)
+            : mapLibs[newMapLibIdx].GetMirImage(newImgIdx);
     }
 
     public static void tryToDraw(

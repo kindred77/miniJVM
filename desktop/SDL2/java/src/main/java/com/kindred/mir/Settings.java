@@ -27,6 +27,8 @@ public class Settings {
     public static final String LIB_SUFFIX=".Lib";
     public static final String MAP_SUFFIX=".map";
     public static final String MIR_LIB_BASE_DIR = "../mir_client/";
+    public static boolean IS_WEMADEMIR2_TILES_FILE_SPLIT=true;
+    public static final int WEMADEMIR2_TILES_FILE_SPLIT_CNT=20000;
     public static final String DataPath = MIR_LIB_BASE_DIR+"Data/",
     MapPath = MIR_LIB_BASE_DIR+"Map/",
     SoundPath = MIR_LIB_BASE_DIR+"Sound/",

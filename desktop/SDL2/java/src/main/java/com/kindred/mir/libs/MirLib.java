@@ -32,8 +32,12 @@ public class MirLib {
             return false;
         }
         synchronized (lock) {
-            if (images == null || index < 0 || index >= imageCnt) {
-                System.out.println("Error: Can not initialize image, mirlib do not initialized or invalid index "+index);
+            if (images == null) {
+                System.out.println("Error: Can not initialize image, mirlib do not initialized: "+this.file.getName());
+                return false;
+            }
+            if(index < 0 || index >= imageCnt) {
+                System.out.println("Error: Can not initialize image, invalid index: "+index+", total images: "+imageCnt);
                 return false;
             }
             if (images[index]==null) {
@@ -135,5 +139,7 @@ public class MirLib {
         return this.file.getAbsolutePath();
     }
 
-
+    public boolean isInitialized() {
+        return initialized;
+    }
 }

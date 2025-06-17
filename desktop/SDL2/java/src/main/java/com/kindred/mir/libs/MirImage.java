@@ -7,6 +7,7 @@ import com.kindred.sdl.constcode.SDL_PixelFormatEnum;
 
 import com.kindred.mir.engine.*;
 import com.kindred.sdl.constcode.SDL_TextureAccess;
+import java.io.IOException;
 
 import static com.kindred.sdl.constcode.SDL_PixelFormatEnum.SDL_PIXELFORMAT_ARGB8888;
 
@@ -179,7 +180,13 @@ public class MirImage {
         }
 
         byte[] data = new byte[this.header.length];
-        myRAF.readFully(data);
+        try {
+            myRAF.readFully(data);
+        } catch (IOException e) {
+            System.out.println("Failed reading fully to buffer, length: "+this.header.length);
+            throw e;
+        }
+
 
         convertPixelFormat(data);
     }
