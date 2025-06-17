@@ -1,0 +1,489 @@
+;Movement
+10001:  1.wav
+10002:  2.wav
+10003:  3.wav
+10004:  4.wav
+10005:  5.wav
+10006:  6.wav
+10007:  7.wav
+10008:  8.wav
+10009:  9.wav
+10010:  10.wav
+10011:  11.wav
+10012:  12.wav
+10013:  13.wav
+10014:  14.wav
+10015:  15.wav
+10016:  16.wav
+10017:  17.wav
+10018:  18.wav
+10019:  19.wav
+10020:  20.wav
+10021:  21.wav
+10022:  22.wav
+10023:  23.wav
+10024:  24.wav
+10025:  25.wav
+10026:  26.wav
+10027:  27.wav
+10028:  28.wav
+10029:  29.wav
+10030:  30.wav
+10031:  31.wav
+10032:  32.wav
+
+;Swing
+10050:  50.wav
+10051:  51.wav
+10052:  52.wav
+10053:  53.wav
+10054:  54.wav
+10055:  55.wav
+10056:  56.wav
+10057:  57.wav
+
+;Struck
+10060:  60.wav
+10061:  61.wav
+10062:  62.wav
+10063:  63.wav
+10064:  64.wav
+10065:  65.wav
+10070:  70.wav
+10071:  71.wav
+10072:  72.wav
+10073:  73.wav
+10080:  80.wav
+10081:  81.wav
+10082:  82.wav
+10083:  83.wav
+10091:  91.wav
+10092:  92.wav
+10100:  100.wav
+
+10103:  103.wav
+10104:  104.wav
+10105:  105.wav
+10106:  106.wav
+10107:  107.wav
+10108:  108.wav
+10109:  109.wav
+10110:  110.wav
+10111:  111.wav
+10112:  112.wav
+10113:  113.wav
+10114:  114.wav
+10115:  115.wav
+10116:  116.wav
+10117:  117.wav
+10118:  118.wav
+10125:  125.wav
+10126:  126.wav
+10138:  138.wav
+10139:  139.wav
+10144:  144.wav
+10145:  145.wav
+
+10146:  Login2.wav
+10147:  Select2.wav
+10148:  Login3.wav
+10149:  Select3.wav
+
+10156:  levelup.wav
+
+10160:  WarMSel.wav
+10161:  WarFSel.wav
+10162:  WizMSel.wav
+10163:  WizFSel.wav
+10164:  TaoMSel.wav
+10165:  TaoFSel.wav
+10166:  AssMSel.wav
+10167:  AssFSel.wav
+
+10168:  NewChar.wav
+
+;Mounts
+10176:  ride_walk_l.wav
+10177:  ride_walk_r.wav
+10178:  ride_run.wav
+10179:  tiger_struck_1.wav
+10180:  tiger_struck_2.wav
+10181:  tiger_attack_1.wav
+10182:  tiger_attack_2.wav
+10183:  tiger_attack_3.wav
+
+;Fishing
+10184:	fishing_throw.wav
+10185:	fishing_pull.wav
+10186:	fishing.wav
+
+;Mounts
+10188:  wolf_ride01.wav
+10189:  wolf_ride02.wav
+10190:  wolf_attack1.wav
+10191:  wolf_attack2.wav
+10192:  wolf_attack3.wav
+10193:  wolf_struck1.wav
+10194:  wolf_struck1.wav
+10217:  tiger_target_struck.wav
+10218:  tiger_ride_1.wav
+10219:  tiger_ride_2.wav
+
+;Pets
+10500:  pet_pig.wav
+10501:  pet_chick.wav
+10502:  pet_kitty.wav
+10503:  pet_skeleton.wav
+10504:  pet_pigman.wav
+10505:  pet_weman.wav
+10506:  pet_kitty.wav
+10507:  pet_blackdragon.wav
+10508:  pet_olympicmascot.wav
+10510:  pet_frog.wav
+10511:  pet_monkey.wav
+10520:  pet_pickup.wav
+
+;RakingCat -> HookingCat
+0070:  006-0.wav
+
+;BoneElite -> BoneElite
+0264:  026-1.wav
+
+;WoomaWarrior -> WoomaFighter
+0310:  030-0.wav
+0311:  030-1.wav
+0312:  030-2.wav
+0313:  030-3.wav
+
+;EvilSnake -> SnakeScorpion
+0490:  047-0.wav
+0491:  047-1.wav
+0492:  047-2.wav
+0493:  047-3.wav
+
+;VenomSpider -> SpiderBat
+0534:  052-4.wav
+
+;GangSpider -> SpiderBat
+0544:  052-4.wav
+
+;LureSpider -> SpiderBat
+0564:  052-4.wav
+
+;GrayEvilApe -> EvilApe
+0590:  058-0.wav
+0591:  058-1.wav
+0592:  058-2.wav
+0593:  058-3.wav
+0594:  058-4.wav
+
+;RedEvilApe -> EvilApe
+0600:  058-0.wav
+0601:  058-1.wav
+0602:  058-2.wav
+0603:  058-3.wav
+0604:  058-4.wav
+
+;ClZombie
+0705: ZombieRevive.wav
+
+;BoneFamiliar
+0781:  54.wav
+0784:  64.wav
+
+;MutatedHugger -> Hugger
+1620:  161-0.wav
+1621:  161-1.wav
+1622:  161-2.wav
+1623:  161-3.wav
+
+;Red Turtle -> Mixed
+1690:  046-0.wav
+1691:  071-1.wav
+1692:  020-2.wav
+1693:  073-3.wav
+
+;GreenTurtle -> Mixed
+1700:  046-0.wav
+1701:  071-1.wav
+1702:  020-2.wav
+1703:  073-3.wav
+
+;BlueTurtle -> Mixed
+1710:  046-0.wav
+1711:  071-1.wav
+1712:  020-2.wav
+1713:  073-3.wav
+
+;FlameTiger -> FrostTiger
+1830:  102-0.wav
+1831:  102-1.wav
+1832:  102-2.wav
+1833:  102-3.wav
+1835:  102-5.wav
+
+;TowerTurtle -> WoomaFighter
+1850:  030-0.wav
+1851:  030-1.wav
+1852:  030-2.wav
+1853:  030-3.wav
+
+;FinialTurtle -> WoomaFighter
+1860:  030-0.wav
+1861:  030-1.wav
+1862:  030-2.wav
+1863:  030-3.wav
+
+;TurtleKing -> ZumaArcher
+1870:  065-0.wav
+1871:  065-1.wav
+1872:  065-2.wav
+1873:  065-3.wav
+1876:  065-1.wav
+
+;DarkTurtle -> WoomaSoldier
+1880:  029-0.wav
+1881:  029-1.wav
+1882:  029-2.wav
+1883:  029-3.wav
+
+;LightTurtle -> WoomaSoldier
+1890:  029-0.wav
+1891:  029-1.wav
+1892:  029-2.wav
+1893:  029-3.wav
+1896:  029-1.wav
+
+;DarkSwordOma -> SwordOma
+1900:  119-0.wav
+1901:  119-1.wav
+1902:  119-2.wav
+1903:  119-3.wav
+
+;DarkAxeOma -> AxeOma
+1910:  118-0.wav
+1911:  118-1.wav
+1912:  118-2.wav
+1913:  118-3.wav
+
+;DarkCrossbowOma -> CrossbowOma
+1920:  120-0.wav
+1921:  120-1.wav
+1922:  120-2.wav
+1923:  120-3.wav
+
+;DarkWingedOma -> WingedOma
+1930:  121-0.wav
+1931:  121-1.wav
+1932:  121-2.wav
+1933:  121-3.wav
+1934:  121-4.wav
+
+;BoneWhoo -> BoneElite
+1940:  026-0.wav
+1941:  026-1.wav
+1942:  026-2.wav
+1943:  026-3.wav
+
+;DarkSpider -> SpittingSpider
+1950:  012-0.wav
+1951:  012-1.wav
+1952:  012-2.wav
+1953:  012-3.wav
+
+;ViscusWorm -> SandWorm
+1960:  109-0.wav
+1961:  109-1.wav
+1962:  109-2.wav
+1963:  109-3.wav
+
+;ViscusCrawler -> Dung
+1971:  027-1.wav
+1972:  027-2.wav
+1973:  027-3.wav
+
+;CrawlerLave -> CaveMaggot
+1980:  020-0.wav
+1981:  020-1.wav
+1982:  020-2.wav
+1983:  020-3.wav
+
+;DarkYob -> Yob
+1990:  008-0.wav
+1991:  008-1.wav
+1992:  008-2.wav
+1993:  008-3.wav
+
+;ValeBat -> SpiderBat
+2030:  062-0.wav
+2031:  062-1.wav
+2032:  062-2.wav
+2033:  062-3.wav
+2034:  062-4.wav
+
+;Weaver -> GangSpider
+2040:  054-0.wav
+2041:  054-1.wav
+2042:  054-2.wav
+2043:  054-3.wav
+
+;VenomWeaver -> VenomSpider
+2050:  053-0.wav
+2051:  053-1.wav
+2052:  053-2.wav
+2053:  053-3.wav
+
+;CrackingWeaver -> GreatSpider
+2060:  055-0.wav
+2061:  055-1.wav
+2062:  055-2.wav
+2063:  055-3.wav
+
+;ArmingWeaver -> LureSpider
+2070:  056-0.wav
+2071:  056-1.wav
+2072:  056-2.wav
+2073:  056-3.wav
+
+;CrystalWeaver -> CrystalSpider
+2080:  061-0.wav
+2081:  061-1.wav
+2082:  061-2.wav
+2083:  061-3.wav
+2086:  061-6.wav
+
+;FrozenZumaStatue -> ZumaStatue
+2090:  065-0.wav
+2091:  065-1.wav
+2092:  065-2.wav
+2093:  065-3.wav
+
+;FrozenZumaGuardian -> ZumaGuardian
+2100:  066-0.wav
+2101:  066-1.wav
+2102:  066-2.wav
+2103:  066-3.wav
+
+;FrozenRedZuma -> RedThunderZuma
+2110:  067-0.wav
+2111:  067-1.wav
+2112:  067-2.wav
+2113:  067-3.wav
+2115:  067-5.wav
+2116:  067-6.wav
+
+;GreaterWeaver -> RootSpider
+2120:  051-0.wav
+2121:  051-1.wav
+2122:  051-2.wav
+2123:  051-3.wav
+
+;DarkGhost -> NamelessGhost
+2260:  225-0.wav
+2261:  225-1.wav
+2262:  225-2.wav
+2263:  225-3.wav
+
+;ChaosGhost -> NamelessGhost
+2270:  225-0.wav
+2271:  225-1.wav
+2272:  225-2.wav
+2273:  225-3.wav
+
+;FlameSpear
+2381:  129-1.wav
+;;2385:  stoningstatue - 2780-att2-2.wav
+
+;FlameMage
+2390:  238-0.wav
+2392:  238-2.wav
+2393:  238-3.wav
+;;2395:  stoningstatue - 2780-att2-2.wav
+
+;FlameScythe
+2400:  238-0.wav
+2401:  56.wav
+2402:  238-2.wav
+2403:  238-3.wav
+;;2405:  stoningstatue - 2780-att2-2.wav
+
+;FlameAssassin
+2410:  238-0.wav
+2411:  56.wav
+2412:  238-2.wav
+2413:  238-3.wav
+;;2415:  stoningstatue - 2780-att2-2.wav
+
+;FlameQueen
+2420:  242-0.wav
+2421:  53.wav
+2422:  242-2.wav
+2423:  242-3.wav
+;;2425:  stoningstatue - 2780-att2-2.wav
+;;2426:  stoningstatue - 2780-att2-2.wav
+
+;HellKnight1
+2430:  242-0.wav
+2431:  228-1.wav 
+2435:  130-0.wav
+
+;HellKnight2
+2440:  242-0.wav
+2441:  228-1.wav
+2442:  243-2.wav
+2443:  243-3.wav
+2445:  130-0.wav
+
+;HellKnight3
+2450:  242-0.wav
+2451:  228-1.wav
+2452:  243-2.wav
+2453:  243-3.wav
+2455:  130-0.wav
+
+;HellKnight4
+2460:  242-0.wav
+2461:  228-1.wav
+2462:  243-2.wav
+2463:  243-3.wav
+2465:  130-0.wav
+
+;Unknown
+8301: 8300-1.wav
+8302: 8300-2.wav
+20710: M69-0.wav
+
+;Music
+30001: 30001.wav
+30002: 30002.wav
+30003: 30003.wav
+30004: 30004.wav
+30005: 30005.wav
+30006: 30006.wav
+30007: 30007.wav
+30008: 30008.wav
+30009: 30009.wav
+30010: 30010.wav
+30011: 30011.wav
+
+30101: 30101.wav
+30102: 30102.wav
+30103: 30103.wav
+30104: 30104.wav
+30105: 30105.wav
+30106: 30106.wav
+30107: 30107.wav
+30108: 30108.wav
+30109: 30109.wav
+30110: 30110.wav
+30111: 30111.wav
+30112: 30112.wav
+30113: 30113.wav
+
+31001: 31001.wav
+31002: 31002.wav
+31003: 31003.wav
+31004: 31004.wav
+31005: 31005.wav
+31006: 31006.wav
+
