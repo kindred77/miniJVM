@@ -57,7 +57,7 @@ public class MapCellInfo {
 
     CellObjects.remove(ob);
 
-    if (CellObjects.size() == 0) {
+    if (CellObjects.isEmpty()) {
       CellObjects = null;
     } else {
       sort();
@@ -77,7 +77,6 @@ public class MapCellInfo {
     if (CellObjects == null) {
       return;
     }
-
     for (int i = 0; i < CellObjects.size(); i++)
     {
       if (!CellObjects.get(i).isDead)

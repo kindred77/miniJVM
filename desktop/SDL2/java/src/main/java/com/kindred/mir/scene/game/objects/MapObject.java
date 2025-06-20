@@ -31,8 +31,9 @@ import java.util.List;
 
 /**
  * 地图上的物件通用类，包括人物，怪物，NPC，地面物品等
+ * 这些object不继承MirControlWithTexture，统一绘制到MapMainControl中,以简化层次提升性能
  */
-public abstract class MapObject extends MirControlWithTexture {
+public abstract class MapObject {
 
   public static class QueuedAction
   {
@@ -46,11 +47,8 @@ public abstract class MapObject extends MirControlWithTexture {
   public static List<MirLabel> LabelList = new ArrayList<>();
 
   //for test
-  public static UserObject User=new UserObject(null, 0l, 1);
-  static {
-    User.Movement=new Point(318,280);
-    User.OffSetMove=new Point(20,20);
-  }
+  public static UserObject User=null;
+
   public static MapObject MouseObject, TargetObject, MagicObject;
 
   protected ObjectType race;
@@ -60,7 +58,7 @@ public abstract class MapObject extends MirControlWithTexture {
   public Point CurrentLocation, MapLocation;
   public MirDirection Direction;
   public boolean isDead, isHidden, isSitDown, isSneaking;
-  public PoisonType Poison;
+  public PoisonType Poison = PoisonType.None;
   public long DeadTime;
   public byte AI;
   public boolean InTrapRock;
@@ -89,7 +87,7 @@ public abstract class MapObject extends MirControlWithTexture {
   public Rectangle DisplayRectangle;
   public int Light, DrawY;
   public long NextMotion, NextMotion2;
-  public MirAction CurrentAction;
+  public MirAction CurrentAction = MirAction.Standing;
   public boolean SkipFrames;
 
   //Sound
@@ -115,8 +113,8 @@ public abstract class MapObject extends MirControlWithTexture {
     this.race=race;
   }
 
-  protected MapObject(MirControl parent, long renderer_id, long objectID) {
-    super(parent, renderer_id);
+  protected MapObject(long objectID) {
+    //super(parent, renderer_id);
     ObjectID = objectID;
 
     for (int i = MapMainControl.Objects.size() - 1; i >= 0; i--) {
@@ -294,15 +292,16 @@ public abstract class MapObject extends MirControlWithTexture {
       text += String.format("\n{0}", chat.get(i));
     }
 
-    ChatLabel = new MirLabel(this,getRenderer(),
-        new Size(70,30),
-        new Point(100,100),
-        ChatFont,
-        text,
-        Color.White,
-        Color.Empty,
-        100
-        );
+//    ChatLabel = new MirLabel(this,getRenderer(),
+//        new Size(70,30),
+//        new Point(100,100),
+//        ChatFont,
+//        text,
+//        Color.White,
+//        Color.Empty,
+//        100
+//        );
+
 //    {
 //      AutoSize = true,
 //          BackColour = Color.Transparent,
@@ -349,15 +348,15 @@ public abstract class MapObject extends MirControlWithTexture {
       return;
     }
 
-    NameLabel = new MirLabel(this,getRenderer(),
-        new Size(70,30),
-        new Point(100,100),
-        ChatFont,
-        Name,
-        NameColor,
-        Color.Empty,
-        100
-    );
+//    NameLabel = new MirLabel(this,getRenderer(),
+//        new Size(70,30),
+//        new Point(100,100),
+//        ChatFont,
+//        Name,
+//        NameColor,
+//        Color.Empty,
+//        100
+//    );
 
 //    new MirLabel
 //    {
@@ -440,10 +439,10 @@ public abstract class MapObject extends MirControlWithTexture {
       }
     }
 
-    MirLibFactory.tryToDraw(surface,
+    MirLibFactory.Draw(surface,
         MirLibFactory.Prguse3,0,
-        ImageEffect.None,DisplayRectangle.getX() + 8,
-        DisplayRectangle.getY() - 64,null, false);
+        DisplayRectangle.getX() + 8,
+        DisplayRectangle.getY() - 64);
     //Libraries.Prguse2.Draw(0, DisplayRectangle.getX() + 8, DisplayRectangle.getY() - 64);
     int index = 1;
 
@@ -465,11 +464,11 @@ public abstract class MapObject extends MirControlWithTexture {
 //        new Point(DisplayRectangle.X + 8, DisplayRectangle.Y - 64),
 //        Color.White, false);
 
-    MirLibFactory.tryToDraw(surface,
+    MirLibFactory.Draw(surface,
         MirLibFactory.Prguse3,index,
-        ImageEffect.None,DisplayRectangle.getX() + 8,
-        DisplayRectangle.getY() - 64,
-        new Rectangle(0, 0, (int)(32 * PercentHealth / 100F), 4),false);
+        new Rectangle(0, 0, (int)(32 * PercentHealth / 100F), 4),
+        new Point(DisplayRectangle.getX() + 8, DisplayRectangle.getY() - 64),
+        Color.White, false);
   }
 
   public void drawPoison(long surface) {

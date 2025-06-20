@@ -3,6 +3,8 @@ package com.kindred.mir.libs;
 import com.kindred.mir.Settings;
 import com.kindred.mir.engine.MirJNI;
 import com.kindred.mir.libs.MirImage.ImageEffect;
+import com.kindred.mir.util.Color;
+import com.kindred.mir.util.Point;
 import com.kindred.mir.util.Rectangle;
 import java.util.AbstractMap;
 import java.util.ArrayList;
@@ -465,9 +467,6 @@ public class MirLibFactory implements Runnable{
             newMapLibIdx = newImgIdx / Settings.WEMADEMIR2_TILES_FILE_SPLIT_CNT;
             newImgIdx = newImgIdx % Settings.WEMADEMIR2_TILES_FILE_SPLIT_CNT;
             ifUsingWemadeMir2TilesFileSplit=true;
-            if(imgIdx>=20000){
-                System.out.println("bingo a split test case, original index: "+imgIdx+", newMapLibIdx: "+newMapLibIdx+", newImgIdx: "+newImgIdx);
-            }
         }
 
         if((!ifUsingWemadeMir2TilesFileSplit && null == mapLibs[newMapLibIdx])
@@ -480,7 +479,62 @@ public class MirLibFactory implements Runnable{
             : mapLibs[newMapLibIdx].GetMirImage(newImgIdx);
     }
 
-    public static void tryToDraw(
+    public static void Draw(long targetSurface,
+        MirLib lib,
+        int imgIdx,
+        int x,
+        int y) {
+        tryToDraw(targetSurface, lib, imgIdx, ImageEffect.None, x, y, null, false, false);
+    }
+
+    public static void Draw(long targetSurface,
+        MirLib lib, int imgIdx, Rectangle section, Point point, Color color, boolean offSet) {
+        if(color == Color.White || color == Color.Empty) {
+            tryToDraw(targetSurface, lib, imgIdx, ImageEffect.None, point.getX(), point.getY(), section, false, offSet);
+        } else if(color == Color.Red) {
+            tryToDraw(targetSurface, lib, imgIdx, ImageEffect.RedEffect, point.getX(), point.getY(), section, false, offSet);
+        } else if(color == Color.Green) {
+            tryToDraw(targetSurface, lib, imgIdx, ImageEffect.GreenEffect, point.getX(), point.getY(), section, false, offSet);
+        } else if(color == Color.Blue) {
+            tryToDraw(targetSurface, lib, imgIdx, ImageEffect.BlueEffect, point.getX(), point.getY(), section, false, offSet);
+        } else if(color == Color.Yellow) {
+            tryToDraw(targetSurface, lib, imgIdx, ImageEffect.YellowEffect, point.getX(), point.getY(), section, false, offSet);
+        } else if(color == Color.Gray) {
+            tryToDraw(targetSurface, lib, imgIdx, ImageEffect.GrayEffect, point.getX(), point.getY(), section, false, offSet);
+        } else {
+            throw new RuntimeException("Unsupported color");
+        }
+
+    }
+
+    public static void Draw(long targetSurface,
+        MirLib lib,
+        int imgIndex,
+        boolean isBlend,
+        int x, int y) {
+        tryToDraw(targetSurface, lib, imgIndex, ImageEffect.None, x, y, null, isBlend, false);
+    }
+
+    public static void Draw(long targetSurface,
+        MirLib lib, int index, Point point, Color color, boolean offSet) {
+        if (color == Color.White || color == Color.Empty) {
+            tryToDraw(targetSurface, lib, index, ImageEffect.None, point.getX(), point.getY(), null, false, offSet);
+        } else if (color == Color.Red) {
+            tryToDraw(targetSurface, lib, index, ImageEffect.RedEffect, point.getX(), point.getY(), null, false, offSet);
+        } else if (color == Color.Green) {
+            tryToDraw(targetSurface, lib, index, ImageEffect.GreenEffect, point.getX(), point.getY(), null, false, offSet);
+        } else if (color == Color.Blue) {
+            tryToDraw(targetSurface, lib, index, ImageEffect.BlueEffect, point.getX(), point.getY(), null, false, offSet);
+        } else if (color == Color.Yellow) {
+            tryToDraw(targetSurface, lib, index, ImageEffect.YellowEffect, point.getX(), point.getY(), null, false, offSet);
+        } else if (color == Color.Gray) {
+            tryToDraw(targetSurface, lib, index, ImageEffect.GrayEffect, point.getX(), point.getY(), null, false, offSet);
+        } else {
+            throw new RuntimeException("Unsupported color");
+        }
+    }
+
+    private static void tryToDraw(
         long targetSurface,
         MirLib lib,
         int imgIdx,
@@ -488,7 +542,8 @@ public class MirLibFactory implements Runnable{
         int x,
         int y,
         Rectangle srcRect,
-        boolean isBlend
+        boolean isBlend,
+        boolean isOffset
     ) {
         if(null != lib){
             MirImage img=null;
@@ -503,13 +558,15 @@ public class MirLibFactory implements Runnable{
             if(srcRect!=null){
                 rct=new int[]{srcRect.getLeft(),srcRect.getTop(),srcRect.getRight(),srcRect.getBottom()};
             }
+            int newX = isOffset ? x + img.getOffset().getX() : x;
+            int newY = isOffset ? y + img.getOffset().getY() : y;
             if(!isBlend) {
                 MirJNI.Mir_SurfaceBlendNormalTransparent(targetSurface,
-                    srcSurface,x, y,rct, 1,
+                    srcSurface, newX, newY , rct, 1,
                     0,0,0);
             } else {
                 MirJNI.Mir_SurfaceBlendAddTransparent(targetSurface,
-                    srcSurface, x, y, rct,
+                    srcSurface, newX, newY, rct,
                     1,0,0,0);
             }
         }

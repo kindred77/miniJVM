@@ -4,8 +4,8 @@ import com.kindred.mir.controls.MirControl;
 
 public class ItemObject extends MapObject{
 
-  protected ItemObject(MirControl parent, long renderer_id,long objectID) {
-    super(parent, renderer_id,objectID);
+  protected ItemObject(long objectID) {
+    super(objectID);
   }
 
   @Override

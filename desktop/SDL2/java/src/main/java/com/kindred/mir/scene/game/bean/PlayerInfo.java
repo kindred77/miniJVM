@@ -9,6 +9,7 @@ import com.kindred.mir.GameCommon.SpellEffect;
 import com.kindred.mir.constcode.MirEnums.MirGender;
 import com.kindred.mir.util.Color;
 import com.kindred.mir.util.Point;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.Builder;
 import lombok.Data;
@@ -25,24 +26,34 @@ public class PlayerInfo {
   private int level;
   private Point currentLocation;
   private Point mapLocation;
-  private MirDirection direction;
+  @Builder.Default
+  private MirDirection direction=MirDirection.Down;
   private byte hair;
   private int weapon;
   private int armour;
   private int Light;
-  private PoisonType poison;
-  private boolean isDead;
-  private boolean isHidden;
+  @Builder.Default
+  private PoisonType poison = PoisonType.None;
+  @Builder.Default
+  private boolean isDead=false;
+  @Builder.Default
+  private boolean isHidden=false;
   private byte wingEffect;
-  private SpellEffect currentEffect;
+  @Builder.Default
+  private SpellEffect currentEffect=SpellEffect.None;
   private short mountType;
-  private boolean isRidingMount;
-  private boolean isFishing;
+  @Builder.Default
+  private boolean isRidingMount=false;
+  @Builder.Default
+  private boolean isFishing=false;
   private short transformType;
-  private boolean isExtra;
+  @Builder.Default
+  private boolean isExtra=false;
   private int elementEffect;
   private int elementsLevel;
   private int elementOrbMax;
-  private List<BuffType> buffs;
-  private LevelEffects levelEffects;
+  @Builder.Default
+  private List<BuffType> buffs=new ArrayList<>();
+  @Builder.Default
+  private LevelEffects levelEffects=LevelEffects.None;
 }

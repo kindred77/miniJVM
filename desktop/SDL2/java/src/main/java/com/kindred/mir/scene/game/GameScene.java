@@ -8,17 +8,20 @@ import com.kindred.mir.GameCommon.ClientQuestInfo;
 import com.kindred.mir.GameCommon.ItemInfo;
 import com.kindred.mir.GameCommon.LightSetting;
 import com.kindred.mir.GameCommon.MirClass;
+import com.kindred.mir.GameCommon.MirDirection;
 import com.kindred.mir.GameCommon.PetMode;
 import com.kindred.mir.GameCommon.UserId;
 import com.kindred.mir.GameCommon.UserItem;
 import com.kindred.mir.MirMain;
 import com.kindred.mir.Settings;
+import com.kindred.mir.constcode.MirEnums.MirGender;
 import com.kindred.mir.controls.MirControl;
 import com.kindred.mir.controls.MirControlWithStaticImage;
 import com.kindred.mir.controls.MirItemCell;
 import com.kindred.mir.controls.MirLabel;
 import com.kindred.mir.scene.MirScene;
 import com.kindred.mir.scene.game.bean.OutPutMessage;
+import com.kindred.mir.scene.game.bean.PlayerInfo;
 import com.kindred.mir.scene.game.dialogs.BeltDialog;
 import com.kindred.mir.scene.game.dialogs.BigMapDialog;
 import com.kindred.mir.scene.game.dialogs.CharacterDialog;
@@ -72,6 +75,7 @@ import com.kindred.mir.scene.game.dialogs.TradeDialog;
 import com.kindred.mir.scene.game.dialogs.TrustMerchantDialog;
 import com.kindred.mir.scene.game.map.MapMainControl;
 import com.kindred.mir.scene.game.objects.MapObject;
+import com.kindred.mir.scene.game.objects.PlayerObject;
 import com.kindred.mir.scene.game.objects.UserObject;
 import com.kindred.mir.scene.game.bean.Buff;
 import com.kindred.mir.util.Color;
@@ -219,7 +223,33 @@ public class GameScene extends MirScene {
 
     public GameScene(MirControl parent, long window_id, long renderer_id,MirSceneData sceneData) throws Exception{
         super(parent, window_id, renderer_id,SceneEnumType.Game,sceneData);
-        this.mapControl=new MapMainControl(this,renderer_id,"../mir_client/map/whitevillage");
+
+        //test user
+        MapObject.User=new UserObject(1L);
+        MapObject.User.Movement=new Point(318,280);
+        MapObject.User.OffSetMove=new Point(20,20);
+        //test map
+        this.mapControl=new MapMainControl(this,renderer_id,"../mir_client/map/11");
+
+        //test player
+        //PlayerObject playerObject = new PlayerObject(1L);
+        MapObject.User.Load(PlayerInfo.builder()
+            .isDead(false)
+            .direction(MirDirection.Down)
+            .hair((byte)1)
+            .armour(1)
+            .gender(MirGender.Man)
+            .level(30)
+            .mapLocation(new Point(318,280))
+            .mirClass(MirClass.Warrior)
+            .weapon(1)
+            .name("kindred")
+            .currentLocation(new Point(318,280))
+            .build());
+
+        GetMapControl().addObject(MapObject.User);
+        //for test
+        this.process();
         this.mapControl.updateSurface();
     }
 
@@ -485,7 +515,7 @@ public class GameScene extends MirScene {
 //        }
 
         updateBuffs();
-        //mapControl.process();
+        mapControl.process();
         //mainDialog.process();
         //inventoryDialog.process();
         //gameShopDialog.process();

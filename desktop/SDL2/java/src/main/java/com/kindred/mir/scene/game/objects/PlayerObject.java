@@ -14,6 +14,7 @@ import com.kindred.mir.constcode.MirEnums.MirGender;
 import com.kindred.mir.controls.MirControl;
 import com.kindred.mir.engine.SoundList;
 import com.kindred.mir.libs.MirImage;
+import com.kindred.mir.libs.MirImage.ImageEffect;
 import com.kindred.mir.libs.MirLib;
 import com.kindred.mir.libs.MirLibFactory;
 import com.kindred.mir.scene.game.GameScene;
@@ -104,8 +105,8 @@ public class PlayerObject extends MapObject {
     return weapon == 49 || weapon == 50;
   }
 
-  protected PlayerObject(MirControl parent, long renderer_id,long objectID) {
-    super(parent, renderer_id, objectID);
+  public PlayerObject(long objectID) {
+    super(objectID);
     frames = FrameSet.Players;
   }
 
@@ -121,7 +122,7 @@ public class PlayerObject extends MapObject {
 
     CurrentLocation = info.getCurrentLocation();
     MapLocation = info.getMapLocation();
-    GameScene.Scene.GetMapControl().addObject(this);
+    //GameScene.Scene.GetMapControl().addObject(this);
 
     Direction = info.getDirection();
     hair = info.getHair();
@@ -177,6 +178,7 @@ public class PlayerObject extends MapObject {
 
   @Override
   public void draw(long surface) {
+    System.out.println(DrawFrame+"-draw---000000-----------");
     drawBehindEffects(Settings.IsEffect);
 
     //float oldOpacity = DXManager.Opacity;
@@ -230,8 +232,11 @@ public class PlayerObject extends MapObject {
   }
 
   public void drawBody(long surface) {
+    System.out.println(DrawFrame+"-drawBody---000000-----------");
     if (BodyLibrary != null) {
       //BodyLibrary.draw(DrawFrame + armourOffSet, DrawLocation, DrawColor, true);
+      System.out.println(DrawFrame+"-----"+armourOffSet+"------"+DrawLocation+"--------");
+      MirLibFactory.Draw(surface, BodyLibrary,DrawFrame + armourOffSet , DrawLocation, DrawColor, true);
     }
 
     //BodyLibrary.DrawTinted(DrawFrame + ArmourOffSet, DrawLocation, DrawColour, Color.DarkSeaGreen);
@@ -239,6 +244,7 @@ public class PlayerObject extends MapObject {
   public void drawHead(long surface) {
     if (hairLibrary != null) {
       //hairLibrary.draw(DrawFrame + hairOffSet, DrawLocation, DrawColor, true);
+      MirLibFactory.Draw(surface, hairLibrary,DrawFrame + hairOffSet, DrawLocation, DrawColor, true);
     }
   }
   public void drawWeapon(long surface) {
@@ -246,6 +252,7 @@ public class PlayerObject extends MapObject {
 
     if (weaponLibrary1 != null) {
       //weaponLibrary1.draw(DrawFrame + weaponOffSet, DrawLocation, DrawColor, true);
+      MirLibFactory.Draw(surface, weaponLibrary1,DrawFrame + weaponOffSet, DrawLocation, DrawColor, true);
     }
   }
   public void drawWeapon2(long surface) {
@@ -253,6 +260,7 @@ public class PlayerObject extends MapObject {
 
     if (weaponLibrary2 != null) {
       //weaponLibrary2.draw(DrawFrame + weaponOffSet, DrawLocation, DrawColor, true);
+      MirLibFactory.Draw(surface, weaponLibrary2,DrawFrame + weaponOffSet, DrawLocation, DrawColor, true);
     }
   }
   public void drawWings(long surface)
@@ -261,6 +269,7 @@ public class PlayerObject extends MapObject {
 
     if (wingLibrary != null) {
       //wingLibrary.drawBlend(DrawWingFrame + wingOffset, DrawLocation, DrawColor, true);
+      MirLibFactory.Draw(surface, wingLibrary,DrawWingFrame + wingOffset, DrawLocation, DrawColor, true);
     }
   }
 
@@ -271,6 +280,7 @@ public class PlayerObject extends MapObject {
 
     if (mountLibrary != null) {
       //mountLibrary.draw(DrawFrame - 416 + mountOffset, DrawLocation, DrawColor, true);
+      MirLibFactory.Draw(surface, mountLibrary,DrawFrame - 416 + mountOffset, DrawLocation, DrawColor, true);
     }
   }
 
@@ -811,7 +821,7 @@ public class PlayerObject extends MapObject {
     DrawColor = Color.White;
     if (Poison != PoisonType.None)
     {
-
+      System.out.println("-------"+Poison);
       if (MirUtil.EnumHasFlag(Poison.code(), PoisonType.Green.code()))
         DrawColor = Color.Green;
       if (MirUtil.EnumHasFlag((int)Poison.code(), (int)PoisonType.Red.code()))

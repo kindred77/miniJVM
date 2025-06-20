@@ -217,7 +217,7 @@ public class MapMainControl extends MirControlWithTexture {
     this.objectsComponent.increAnimationCount();
   }
 
-  public void process() throws Exception{
+  public void process(){
     floorComponent.processdoors();
     MapObject.User.process();
 

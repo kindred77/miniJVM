@@ -21,11 +21,19 @@ import com.kindred.sdl.constcode.*;
 public class MirMain {
 
     static class SceneProcessor implements Runnable {
+
+        public SceneProcessor(){
+            doAction();
+        }
+        private void doAction() {
+            updateTime();
+            updateEnviroment();
+        }
         public void run() {
             while (shouldRun) {
+                updateTime();
+                updateEnviroment();
                 try {
-                    updateTime();
-                    updateEnviroment();
                     Thread.sleep(10);
                 } catch (InterruptedException e) {
                     e.printStackTrace();

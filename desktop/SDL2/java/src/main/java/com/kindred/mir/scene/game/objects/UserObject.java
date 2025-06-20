@@ -60,8 +60,8 @@ public class UserObject extends PlayerObject{
   public MirDirection NextMagicDirection;
   public QueuedAction QueuedAction;
 
-  protected UserObject(MirControl parent, long renderer_id,long objectID) {
-    super(parent,renderer_id,objectID);
+  public UserObject(long objectID) {
+    super(objectID);
   }
 
 

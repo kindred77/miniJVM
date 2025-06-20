@@ -12,8 +12,8 @@ public class MonsterObject extends MapObject {
   //主人的objectID
   public long MasterID;
 
-  protected MonsterObject(MirControl parent, long renderer_id,long objectID) {
-    super(parent,renderer_id,objectID);
+  protected MonsterObject(long objectID) {
+    super(objectID);
   }
 
   @Override
