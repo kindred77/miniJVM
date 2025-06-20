@@ -48,7 +48,7 @@ public class MapFloorComponent extends MapCommonComponent {
       int userOffsetMoveX,//getUser().OffSetMove.getY()
       int userOffsetMoveY,
       long targetSurface
-  ) throws Exception{
+  ){
     int index;
     int drawY, drawX;
 

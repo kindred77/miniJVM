@@ -38,6 +38,7 @@ public class MapMainControl extends MirControlWithTexture {
   private boolean isAutoRun;
   private List<Effect> effects = new ArrayList<>();
   private int music, setMusic;
+  private boolean ifNeedRedraw=true;
 
   protected MapCellInfo[][] M2CellInfo;
   protected List<Door> doors = new ArrayList<Door>();
@@ -295,9 +296,14 @@ public class MapMainControl extends MirControlWithTexture {
 //      MapObject.MouseObject = null;
 //      updateSurface();
 //    }
+    if(ifNeedRedraw){
+      updateSurface();
+      ifNeedRedraw=true;
+    }
+
   }
 
-  public void updateSurface() throws Exception {
+  public void updateSurface(){
     int userMoveX=GameScene.getUser().Movement.getX();
     int userMoveY=GameScene.getUser().Movement.getY();
     int userOffsetMoveX=GameScene.getUser().OffSetMove.getX();

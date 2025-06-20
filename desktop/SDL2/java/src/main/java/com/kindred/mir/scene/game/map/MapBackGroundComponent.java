@@ -46,7 +46,7 @@ public class MapBackGroundComponent extends MapCommonComponent {
       int userOffsetMoveX,
       int userOffsetMoveY,
       long targetSurface
-  ) throws Exception {
+  ){
 
     if(cleanFilename.startsWith("ID1") || cleanFilename.startsWith("ID2")) {
       MirImage img = MirLibFactory.Background.GetMirImage(10);

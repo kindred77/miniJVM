@@ -248,9 +248,6 @@ public class GameScene extends MirScene {
             .build());
 
         GetMapControl().addObject(MapObject.User);
-        //for test
-        this.process();
-        this.mapControl.updateSurface();
     }
 
     public void receiveChat(String msg, ChatType chatType) {

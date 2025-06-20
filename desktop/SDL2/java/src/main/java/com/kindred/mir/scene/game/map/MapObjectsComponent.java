@@ -43,7 +43,7 @@ public class MapObjectsComponent extends MapCommonComponent {
       int userMoveY,
       int userOffsetMoveX,
       int userOffsetMoveY,
-      long targetSurface) throws Exception
+      long targetSurface)
   {
     UserObject userObject=getUser();
     for (int y = userMoveY - viewRangeY; y <= userMoveY + viewRangeY + 25; y++) {
