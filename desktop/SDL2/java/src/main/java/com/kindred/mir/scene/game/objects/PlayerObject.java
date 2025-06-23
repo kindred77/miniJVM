@@ -190,10 +190,11 @@ public class PlayerObject extends MapObject {
       if (Direction == MirDirection.Left ||
           Direction == MirDirection.Up ||
           Direction == MirDirection.UpLeft ||
-          Direction == MirDirection.DownLeft)
+          Direction == MirDirection.DownLeft) {
         drawWeapon(surface);
-      else
+      } else {
         drawWeapon2(surface);
+      }
     }
 
     drawBody(surface);
@@ -219,13 +220,15 @@ public class PlayerObject extends MapObject {
       if (Direction == MirDirection.UpRight ||
           Direction == MirDirection.Right ||
           Direction == MirDirection.DownRight ||
-          Direction == MirDirection.Down)
+          Direction == MirDirection.Down) {
         drawWeapon(surface);
-      else
+      } else {
         drawWeapon2(surface);
+      }
 
-      if (mirClass == MirClass.Archer && getHasClassWeapon())
+      if (mirClass == MirClass.Archer && getHasClassWeapon()) {
         drawWeapon2(surface);
+      }
     }
 
     //DXManager.SetOpacity(oldOpacity);
