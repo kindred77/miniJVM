@@ -10,11 +10,10 @@ import com.kindred.sdl.constcode.SDLBlendMode;
  */
 public class MirControlWithTexture extends MirControlCanBeDrawn {
 
-    protected MirTexture controlTexture;
+    protected final MirTexture controlTexture=new MirTexture();;
 
     public MirControlWithTexture(MirControl parent, long renderer_id) {
         super(parent, renderer_id);
-        controlTexture=new MirTexture();
     }
 
 
@@ -23,17 +22,21 @@ public class MirControlWithTexture extends MirControlCanBeDrawn {
 //        return size;
 //    }
 
-    /*
+    /**
     有任何影响texture渲染变动的操作都要调用此方法,
-    texture有变动则返回true
+    texture有变动则返回true.
+     注意：surface不会被销毁，需要手动销毁
      */
-    protected boolean updateTexture(long surface_id)
+    protected boolean updateTexture(long surface_id,boolean ifReleaseSurface)
     {
 //        if (controlTexture != null && !controlTexture.getIsDisposed() && !controlTexture.getSize().equals(size)) {
 //            controlTexture.dispose();
 //            return false;
 //        }
-        controlTexture.update(getRenderer(), surface_id);
+        synchronized (controlTexture) {
+            controlTexture.update(getRenderer(), surface_id,ifReleaseSurface);
+        }
+
 
         //TODO 在surface上画边框，再render
         if(getIsBorder())
@@ -64,16 +67,19 @@ public class MirControlWithTexture extends MirControlCanBeDrawn {
     {
         //beforeDrawControl();
 
-        if (controlTexture != null && controlTexture.getIsValid()) {
-            if (isBlending) {
-                MirJNI.SDL_SetTextureBlendMode(controlTexture.getTexture(), SDLBlendMode.SDL_BLENDMODE_BLEND);
+        synchronized (controlTexture) {
+            if (controlTexture.getIsValid()) {
+                if (isBlending) {
+                    MirJNI.SDL_SetTextureBlendMode(controlTexture.getTexture(), SDLBlendMode.SDL_BLENDMODE_BLEND);
+                }
+
+                Rectangle dstRect = getAbsoluteRectangle();
+
+                int[] rct = {dstRect.getX(), dstRect.getY(), dstRect.getWidth(), dstRect.getHeight()};
+                MirJNI.SDL_RenderCopy(getRenderer(), controlTexture.getTexture(), null, rct);
             }
-
-            Rectangle dstRect = getAbsoluteRectangle();
-
-            int[] rct = {dstRect.getX(), dstRect.getY(), dstRect.getWidth(), dstRect.getHeight()};
-            MirJNI.SDL_RenderCopy(getRenderer(), controlTexture.getTexture(), null, rct);
         }
+
 
 //        if (getIsBorder()) {
 //            drawBorder();

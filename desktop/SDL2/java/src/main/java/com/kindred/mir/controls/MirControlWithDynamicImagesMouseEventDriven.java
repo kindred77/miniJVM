@@ -27,35 +27,35 @@ public class MirControlWithDynamicImagesMouseEventDriven extends MirControlWithD
         this.onMouseEnter = (control, obj) -> {
             MirImage img = getEventImage(CommonEvent.EventEnum.MouseEnter);
             if(img!=null) {
-                updateTexture(img.getSurface(MirImage.ImageEffect.None));
+                updateTexture(img.getSurface(MirImage.ImageEffect.None),false);
             } else {
-                updateTexture(0L);
+                updateTexture(0L,false);
             }
         };
 
         this.onMouseLeftDown = (control, obj) -> {
             MirImage img = getEventImage(CommonEvent.EventEnum.MouseLeftDown);
             if(img!=null) {
-                updateTexture(img.getSurface(MirImage.ImageEffect.None));
+                updateTexture(img.getSurface(MirImage.ImageEffect.None),false);
             } else {
-                updateTexture(0L);
+                updateTexture(0L,false);
             }
         };
 
         this.onMouseLeftUp = (control, obj) -> {
             MirImage img = getEventImage(CommonEvent.EventEnum.MouseLeftUp);
             if(img!=null) {
-                updateTexture(img.getSurface(MirImage.ImageEffect.None));
+                updateTexture(img.getSurface(MirImage.ImageEffect.None),false);
             } else {
-                updateTexture(0L);
+                updateTexture(0L,false);
             }
         };
         this.onMouseLeave = (control, obj) -> {
             MirImage img = getEventImage(EventEnum.MouseLeave);
             if(img!=null) {
-                updateTexture(img.getSurface(MirImage.ImageEffect.None));
+                updateTexture(img.getSurface(MirImage.ImageEffect.None),false);
             } else {
-                updateTexture(0L);
+                updateTexture(0L,false);
             }
         };
     }

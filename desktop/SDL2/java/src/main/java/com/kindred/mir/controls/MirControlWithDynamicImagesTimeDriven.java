@@ -34,9 +34,9 @@ public class MirControlWithDynamicImagesTimeDriven extends MirControlWithDynamic
         if (this.index < images.length) {
             MirImage img = getEventImage(CommonEvent.EventEnum.TimeInterval);
             if(img!=null) {
-                updateTexture(img.getSurface(MirImage.ImageEffect.None));
+                updateTexture(img.getSurface(MirImage.ImageEffect.None),false);
             } else {
-                updateTexture(0L);
+                updateTexture(0L,false);
             }
             return;
         }

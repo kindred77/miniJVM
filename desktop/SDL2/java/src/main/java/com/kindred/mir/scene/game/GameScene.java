@@ -445,7 +445,7 @@ public class GameScene extends MirScene {
             if(hoverItem != cell.getItem()){
                 disposeItemLabel();
                 hoverItem = null;
-                createItemLabel(cell.getItem(),false);
+                //createItemLabel(cell.getItem(),false);
             }
         }
 
@@ -513,6 +513,7 @@ public class GameScene extends MirScene {
 
         updateBuffs();
         mapControl.process();
+
         //mainDialog.process();
         //inventoryDialog.process();
         //gameShopDialog.process();

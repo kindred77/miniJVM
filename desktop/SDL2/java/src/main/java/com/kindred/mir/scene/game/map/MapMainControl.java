@@ -38,7 +38,7 @@ public class MapMainControl extends MirControlWithTexture {
   private boolean isAutoRun;
   private List<Effect> effects = new ArrayList<>();
   private int music, setMusic;
-  private boolean ifNeedRedraw=true;
+  private volatile boolean ifNeedRedraw=true;
 
   protected MapCellInfo[][] M2CellInfo;
   protected List<Door> doors = new ArrayList<Door>();
@@ -297,8 +297,9 @@ public class MapMainControl extends MirControlWithTexture {
 //      updateSurface();
 //    }
     if(ifNeedRedraw){
+      System.out.println("--------updateSurface----------");
       updateSurface();
-      ifNeedRedraw=true;
+      //ifNeedRedraw=false;
     }
 
   }
@@ -308,10 +309,11 @@ public class MapMainControl extends MirControlWithTexture {
     int userMoveY=GameScene.getUser().Movement.getY();
     int userOffsetMoveX=GameScene.getUser().OffSetMove.getX();
     int userOffsetMoveY=GameScene.getUser().OffSetMove.getY();
+    //创建一个空的surface,把地图上所有内容画在这个surface上,注意用完需要释放掉
     long surface = MirJNI.Mir_FillRect(getSize().getWidth(),getSize().getHeight(),new int[]{0,0,0,255});
-    floorComponent.updateSurface(userMoveX, userMoveY, userOffsetMoveX, userOffsetMoveY,surface);
-    backGroundComponent.updateSurface(userMoveX, userMoveY, userOffsetMoveX, userOffsetMoveY,surface);
-    objectsComponent.updateSurface(userMoveX, userMoveY, userOffsetMoveX, userOffsetMoveY,surface);
+    //floorComponent.updateSurface(userMoveX, userMoveY, userOffsetMoveX, userOffsetMoveY,surface);
+    //backGroundComponent.updateSurface(userMoveX, userMoveY, userOffsetMoveX, userOffsetMoveY,surface);
+    //objectsComponent.updateSurface(userMoveX, userMoveY, userOffsetMoveX, userOffsetMoveY,surface);
 
 //    if (Settings.DropView || GameScene.DropViewTime > Env.Time) {
 //      for (int i = 0; i < Objects.size(); i++) {
@@ -343,6 +345,6 @@ public class MapMainControl extends MirControlWithTexture {
 //    if (MapObject.User.MouseOver(MouseLocation))
 //      MapObject.User.drawName(surface);
 
-    updateTexture(surface);
+    updateTexture(surface,true);
   }
 }

@@ -178,7 +178,6 @@ public class PlayerObject extends MapObject {
 
   @Override
   public void draw(long surface) {
-    System.out.println(DrawFrame+"-draw---000000-----------");
     drawBehindEffects(Settings.IsEffect);
 
     //float oldOpacity = DXManager.Opacity;
@@ -197,7 +196,7 @@ public class PlayerObject extends MapObject {
       }
     }
 
-    drawBody(surface);
+    //drawBody(surface);
 
     if (Direction == MirDirection.Up ||
         Direction == MirDirection.UpLeft ||
@@ -824,7 +823,6 @@ public class PlayerObject extends MapObject {
     DrawColor = Color.White;
     if (Poison != PoisonType.None)
     {
-      System.out.println("-------"+Poison);
       if (MirUtil.EnumHasFlag(Poison.code(), PoisonType.Green.code()))
         DrawColor = Color.Green;
       if (MirUtil.EnumHasFlag((int)Poison.code(), (int)PoisonType.Red.code()))

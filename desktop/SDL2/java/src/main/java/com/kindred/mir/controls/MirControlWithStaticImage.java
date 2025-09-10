@@ -50,7 +50,7 @@ public class MirControlWithStaticImage extends MirControlWithTexture{
             setSize(this.image.getTrueSize());
             //默认在正中
             setLocation(this.Center());
-            updateTexture(this.image.getSurface(MirImage.ImageEffect.None));
+            updateTexture(this.image.getSurface(MirImage.ImageEffect.None),false);
         }
     }
 
@@ -133,7 +133,7 @@ public class MirControlWithStaticImage extends MirControlWithTexture{
         }
         this.image = image;
         if (image!=null) {
-            updateTexture(image.getSurface(MirImage.ImageEffect.None));
+            updateTexture(image.getSurface(MirImage.ImageEffect.None),false);
         }
 
         onImageChanged();

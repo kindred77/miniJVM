@@ -142,7 +142,7 @@ public class MirTextBox extends MirControlWithTexture {
 //    }
 
     @Override
-    protected boolean updateTexture(long surface_id)
+    protected boolean updateTexture(long surface_id,boolean ifReleaseSurface)
     {
         MirJNI.ImGui_NewFrame();
 

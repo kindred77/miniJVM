@@ -18,7 +18,7 @@ public class MirControlWithDynamicImages extends MirControlWithTexture {
             setSize(images[0].getTrueSize());
             //默认在正中
             setLocation(this.Center());
-            super.updateTexture(images[0].getSurface(MirImage.ImageEffect.None));
+            super.updateTexture(images[0].getSurface(MirImage.ImageEffect.None),false);
         }
     }
 }

@@ -51,7 +51,7 @@ public class MirLabel extends MirControlWithTexture{
         long font_surface =Font.generateTextSurface(this.font,text,foreColor,backColor,this.wraplength);
         //MirJNI.Mir_SurfaceBlendNormal(main_surface,font_surface,0,0,1f);
         //MirJNI.SDL_FreeSurface(font_surface);
-        updateTexture(font_surface);
+        updateTexture(font_surface,true);
     }
 
     public final boolean getIsAutoSize()
@@ -191,7 +191,7 @@ public class MirLabel extends MirControlWithTexture{
         this.text = text;
 
         long font_surface =Font.generateTextSurface(this.font,text,foreColor,backColor,this.wraplength);
-        updateTexture(font_surface);
+        updateTexture(font_surface,true);
 
         onTextChanged();
     }
@@ -208,9 +208,9 @@ public class MirLabel extends MirControlWithTexture{
     }
 
     @Override
-    protected boolean updateTexture(long surface_id) {
+    protected boolean updateTexture(long surface_id,boolean ifReleaseSurface) {
 
-        controlTexture.update(getRenderer(),surface_id);
+        controlTexture.update(getRenderer(),surface_id,ifReleaseSurface);
         return true;
     }
 
