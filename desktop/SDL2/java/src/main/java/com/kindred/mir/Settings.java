@@ -64,7 +64,7 @@ public class Settings {
     public static volatile AtomicBoolean IsImguiUsed=new AtomicBoolean(false);
 
     //fonts
-    public static final String MIRFONT="FZSSJW.TTF";
+    public static final String MIRFONT=MIR_LIB_BASE_DIR + "FZSSJW.TTF";
     public static Font FONT_SIZE10;
     public static Font FONT_SIZE15;
     public static Font FONT_SIZE20;
