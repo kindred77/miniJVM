@@ -573,6 +573,9 @@ int com_kindred_sdl_SDL_SDL_IMG_LoadPNG_RW(Runtime *runtime, JClass *clazz) {
     pos += 2;
 
     SDL_Surface * surface = IMG_LoadPNG_RW(rwops);
+    if (!surface) {
+        fprintf(stderr, "Unable to create surface from PNG data! SDL Error: %s\n", SDL_GetError() );
+    }
     env->push_long(runtime->stack, (s64) (intptr_t) surface);
 
     return 0;
