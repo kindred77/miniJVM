@@ -355,7 +355,8 @@ void vm_share_wait(MiniJVM *jvm) {
 
 void vm_share_timedwait(MiniJVM *jvm, s64 ms) {
     struct timespec t;
-    timespec_get(&t, TIME_UTC);
+    //timespec_get(&t, TIME_UTC);
+    clock_gettime(CLOCK_REALTIME, &t);
     t.tv_sec += ms / 1000;
     t.tv_nsec += (ms % 1000) * 1000000;
     s32 ret = cnd_timedwait(&jvm->threadlock.thread_cond, &jvm->threadlock.mutex_lock, &t);
@@ -1841,14 +1842,16 @@ void threadinfo_destory(JavaThreadInfo *threadInfo) {
 s64 currentTimeMillis() {
 
     struct timespec tv;
-    timespec_get(&tv, TIME_UTC);
+    //timespec_get(&tv, TIME_UTC);
+    clock_gettime(CLOCK_REALTIME, &tv);
     return ((s64) tv.tv_sec) * MILL_2_SEC_SCALE + tv.tv_nsec / NANO_2_MILLS_SCALE;
 }
 
 s64 nanoTime() {
 
     struct timespec tv;
-    timespec_get(&tv, TIME_UTC);
+    //timespec_get(&tv, TIME_UTC);
+    clock_gettime(CLOCK_REALTIME, &tv);
 
     if (!nano_sec_start_at) {
         nano_sec_start_at = ((s64) tv.tv_sec) * NANO_2_SEC_SCALE + tv.tv_nsec;

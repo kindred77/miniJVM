@@ -50,10 +50,10 @@ set(SOURCE_FILES
 
 IF (APPLE)
     MESSAGE(FATAL "Not supported platform.")
+ELSEIF (MINGW OR CMAKE_SYSTEM_NAME STREQUAL "MSYS")
+    include_directories(depends/win_x64/include/ depends/win_x64/include/SDL2/)
 ELSEIF (UNIX)
     include_directories(depends/ubuntu_x64/include/ depends/ubuntu_x64/include/SDL2/)
-ELSEIF (MINGW)
-    include_directories(depends/win_x64/include/ depends/win_x64/include/SDL2/)
 ENDIF ()
 
 add_library(jni_mir SHARED ${SOURCE_FILES})
@@ -78,56 +78,7 @@ IF (APPLE)
     TARGET_LINK_LIBRARIES(jni_mir ${EXTRA_LIBS})
     TARGET_LINK_LIBRARIES(test_sdl2 ${EXTRA_LIBS})
     SET(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/../../../binary/mac_x64)
-ELSEIF (UNIX)
-    MESSAGE("linux os here.")
-    find_library(SDL2_LIB libSDL2.so PATHS "${CMAKE_SOURCE_DIR}/depends/ubuntu_x64/lib/" NO_DEFAULT_PATH)
-    find_library(SDL2_TTF_LIB libSDL2_ttf.so PATHS "${CMAKE_SOURCE_DIR}/depends/ubuntu_x64/lib/" NO_DEFAULT_PATH)
-    MARK_AS_ADVANCED(SDL2_LIB)
-    MESSAGE("${SDL2_LIB}----------${SDL2_TTF_LIB}")
-    TARGET_LINK_LIBRARIES(jni_mir PUBLIC ${SDL2_LIB} PUBLIC ${SDL2_TTF_LIB})
-    TARGET_LINK_LIBRARIES(jni_mir
-        PRIVATE
-        pthread
-        #gl
-        PRIVATE -static-libstdc++
-        )
-
-    SET(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/../../../binary/ubuntu_x64)
-    SET(DEPLIBS_SOURCE_PATH ${CMAKE_SOURCE_DIR}/depends/ubuntu_x64/lib)
-    #copy SDL2 to target
-    set(OUTPUT_DIR ${PROJECT_SOURCE_DIR}/../../../binary/ubuntu_x64)
-
-    add_custom_command(
-        OUTPUT ${OUTPUT_DIR}/libSDL2.so
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different
-            ${DEPLIBS_SOURCE_PATH}/libSDL2.so
-            ${OUTPUT_DIR}/libSDL2-2.0.so.0
-        DEPENDS jni_mir
-        COMMENT "Copying file libSDL2.so to output directory"
-    )
-    add_custom_target(copy_sdl_dll ALL DEPENDS ${OUTPUT_DIR}/libSDL2.so)
-
-    #add_custom_command(
-    #    OUTPUT ${OUTPUT_DIR}/SDL2_image.dll
-    #    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-    #        ${DEPLIBS_SOURCE_PATH}/SDL2_image.dll
-    #        ${OUTPUT_DIR}/SDL2_image.dll
-    #    DEPENDS jni_mir
-    #    COMMENT "Copying file SDL2_image.dll to output directory"
-    #)
-    #add_custom_target(copy_sdl_img_dlls ALL DEPENDS ${OUTPUT_DIR}/SDL2_image.dll)
-
-    add_custom_command(
-        OUTPUT ${OUTPUT_DIR}/libSDL2_ttf.so
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different
-            ${DEPLIBS_SOURCE_PATH}/libSDL2_ttf.so
-            ${OUTPUT_DIR}/libSDL2_ttf-2.0.so.0
-        DEPENDS jni_mir
-        COMMENT "Copying file libSDL2_ttf.so to output directory"
-    )
-    add_custom_target(copy_sdl_ttf_dlls ALL DEPENDS ${OUTPUT_DIR}/libSDL2_ttf.so)
-
-ELSEIF (MINGW)
+ELSEIF (MINGW OR CMAKE_SYSTEM_NAME STREQUAL "MSYS")
     IF (CMAKE_SIZEOF_VOID_P EQUAL 4)
         message("32bit")
         find_library(SDL2_LIB libsdl2.a "${CMAKE_SOURCE_DIR}/depends/win_i686/lib/")
@@ -213,6 +164,54 @@ ELSEIF (MINGW)
         COMMENT "Copying file SDL2_ttf.dll to output directory"
     )
     add_custom_target(copy_sdl_ttf_dlls ALL DEPENDS ${OUTPUT_DIR}/SDL2_ttf.dll)
+ELSEIF (UNIX)
+    MESSAGE("linux os here.")
+    find_library(SDL2_LIB libSDL2.so PATHS "${CMAKE_SOURCE_DIR}/depends/ubuntu_x64/lib/" NO_DEFAULT_PATH)
+    find_library(SDL2_TTF_LIB libSDL2_ttf.so PATHS "${CMAKE_SOURCE_DIR}/depends/ubuntu_x64/lib/" NO_DEFAULT_PATH)
+    MARK_AS_ADVANCED(SDL2_LIB)
+    MESSAGE("${SDL2_LIB}----------${SDL2_TTF_LIB}")
+    TARGET_LINK_LIBRARIES(jni_mir PUBLIC ${SDL2_LIB} PUBLIC ${SDL2_TTF_LIB})
+    TARGET_LINK_LIBRARIES(jni_mir
+        PRIVATE
+        pthread
+        #gl
+        PRIVATE -static-libstdc++
+        )
+
+    SET(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/../../../binary/ubuntu_x64)
+    SET(DEPLIBS_SOURCE_PATH ${CMAKE_SOURCE_DIR}/depends/ubuntu_x64/lib)
+    #copy SDL2 to target
+    set(OUTPUT_DIR ${PROJECT_SOURCE_DIR}/../../../binary/ubuntu_x64)
+
+    add_custom_command(
+        OUTPUT ${OUTPUT_DIR}/libSDL2.so
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            ${DEPLIBS_SOURCE_PATH}/libSDL2.so
+            ${OUTPUT_DIR}/libSDL2-2.0.so.0
+        DEPENDS jni_mir
+        COMMENT "Copying file libSDL2.so to output directory"
+    )
+    add_custom_target(copy_sdl_dll ALL DEPENDS ${OUTPUT_DIR}/libSDL2.so)
+
+    #add_custom_command(
+    #    OUTPUT ${OUTPUT_DIR}/SDL2_image.dll
+    #    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+    #        ${DEPLIBS_SOURCE_PATH}/SDL2_image.dll
+    #        ${OUTPUT_DIR}/SDL2_image.dll
+    #    DEPENDS jni_mir
+    #    COMMENT "Copying file SDL2_image.dll to output directory"
+    #)
+    #add_custom_target(copy_sdl_img_dlls ALL DEPENDS ${OUTPUT_DIR}/SDL2_image.dll)
+
+    add_custom_command(
+        OUTPUT ${OUTPUT_DIR}/libSDL2_ttf.so
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            ${DEPLIBS_SOURCE_PATH}/libSDL2_ttf.so
+            ${OUTPUT_DIR}/libSDL2_ttf-2.0.so.0
+        DEPENDS jni_mir
+        COMMENT "Copying file libSDL2_ttf.so to output directory"
+    )
+    add_custom_target(copy_sdl_ttf_dlls ALL DEPENDS ${OUTPUT_DIR}/libSDL2_ttf.so)
 
 ENDIF ()
 
