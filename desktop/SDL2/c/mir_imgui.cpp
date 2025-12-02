@@ -1,6 +1,6 @@
-#include "depends/include/SDL2/SDL.h"
-#include "depends/include/SDL2/SDL_rect.h"
-#include "depends/include/SDL2/SDL_image.h"
+#include "SDL2/SDL.h"
+#include "SDL2/SDL_rect.h"
+#include "SDL2/SDL_image.h"
 
 #include "imgui.h"
 #include "imgui_internal.h"

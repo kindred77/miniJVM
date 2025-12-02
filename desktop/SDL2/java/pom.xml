@@ -135,7 +135,7 @@
             <systemPath>${basedir}/../../../binary/lib/minijvm_rt.jar</systemPath>
         </dependency>
 
-        <dependency>
+        <!--<dependency>
             <groupId>io.github.digitalgust</groupId>
             <artifactId>glfw_gui</artifactId>
             <version>1.1.7</version>
@@ -149,7 +149,7 @@
             <version>1.1.14</version>
             <scope>system</scope>
             <systemPath>${basedir}/../../../binary/libex/xgui.jar</systemPath>
-        </dependency>
+        </dependency>-->
 
         <!-- <dependency>
             <groupId>io.github.digitalgust</groupId>

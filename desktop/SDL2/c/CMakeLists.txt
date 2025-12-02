@@ -1,11 +1,11 @@
 cmake_minimum_required(VERSION 3.8)
-project(jni_sdl2)
+project(jni_sdl2 C CXX)
 
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_C_STANDARD 99)
 
-include_directories(depends/include/ depends/include/SDL2/ imgui/ kiss/ imgui/backends/ ../../../minijvm/c/jvm)
+include_directories(imgui/ kiss/ imgui/backends/ ../../../minijvm/c/jvm)
 
 set(SOURCE_FILES
         media.h
@@ -48,6 +48,14 @@ set(SOURCE_FILES
 #     kiss/kiss_example1.c
 # )
 
+IF (APPLE)
+    MESSAGE(FATAL "Not supported platform.")
+ELSEIF (UNIX)
+    include_directories(depends/ubuntu_x64/include/ depends/ubuntu_x64/include/SDL2/)
+ELSEIF (MINGW)
+    include_directories(depends/win_x64/include/ depends/win_x64/include/SDL2/)
+ENDIF ()
+
 add_library(jni_mir SHARED ${SOURCE_FILES})
 
 
@@ -62,7 +70,7 @@ MESSAGE(STATUS "CMAKE_SOURCE_DIR  :${CMAKE_SOURCE_DIR}")
 
 
 IF (APPLE)
-    MESSAGE("apple os here(not supported yet).")
+    MESSAGE(FATAL "Not supported platform.")
     find_library(SDL2_LIB libsdl2.a depends/lib/mac_x64/)
     MARK_AS_ADVANCED(SDL2_LIB)
     SET(EXTRA_LIBS ${SDL2_LIB})
@@ -71,25 +79,66 @@ IF (APPLE)
     TARGET_LINK_LIBRARIES(test_sdl2 ${EXTRA_LIBS})
     SET(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/../../../binary/mac_x64)
 ELSEIF (UNIX)
-    MESSAGE("linux os here(not supported yet).")
-    find_library(SDL2_LIB libsdl2.a "${CMAKE_SOURCE_DIR}/depends/lib/centos_x64/")
+    MESSAGE("linux os here-----------${CMAKE_SOURCE_DIR}")
+    find_library(SDL2_LIB libSDL2.so "${CMAKE_SOURCE_DIR}/depends/ubuntu_x64/lib/")
+    find_library(SDL2_TTF_LIB libSDL2_ttf.so "${CMAKE_SOURCE_DIR}/depends/ubuntu_x64/lib/")
     MARK_AS_ADVANCED(SDL2_LIB)
     TARGET_LINK_LIBRARIES(jni_mir PUBLIC ${SDL2_LIB} PUBLIC ${SDL2_IMG_LIB})
-    TARGET_LINK_LIBRARIES(jni_mir PRIVATE pthread gl)
-    SET(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/../../../binary/centos_x64)
+    TARGET_LINK_LIBRARIES(jni_mir
+        PRIVATE
+        pthread
+        #gl
+        PRIVATE -static-libstdc++
+        )
+
+    SET(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/../../../binary/ubuntu_x64)
+    SET(DEPLIBS_SOURCE_PATH ${CMAKE_SOURCE_DIR}/depends/ubuntu_x64/lib)
+    #copy SDL2 to target
+    set(OUTPUT_DIR ${PROJECT_SOURCE_DIR}/../../../binary/ubuntu_x64)
+
+    add_custom_command(
+        OUTPUT ${OUTPUT_DIR}/libSDL2.so
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            ${DEPLIBS_SOURCE_PATH}/libSDL2.so
+            ${OUTPUT_DIR}/libSDL2.so
+        DEPENDS jni_mir
+        COMMENT "Copying file libSDL2.so to output directory"
+    )
+    add_custom_target(copy_sdl_dll ALL DEPENDS ${OUTPUT_DIR}/libSDL2.so)
+
+    #add_custom_command(
+    #    OUTPUT ${OUTPUT_DIR}/SDL2_image.dll
+    #    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+    #        ${DEPLIBS_SOURCE_PATH}/SDL2_image.dll
+    #        ${OUTPUT_DIR}/SDL2_image.dll
+    #    DEPENDS jni_mir
+    #    COMMENT "Copying file SDL2_image.dll to output directory"
+    #)
+    #add_custom_target(copy_sdl_img_dlls ALL DEPENDS ${OUTPUT_DIR}/SDL2_image.dll)
+
+    add_custom_command(
+        OUTPUT ${OUTPUT_DIR}/libSDL2_ttf.so
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            ${DEPLIBS_SOURCE_PATH}/libSDL2_ttf.so
+            ${OUTPUT_DIR}/libSDL2_ttf.so
+        DEPENDS jni_mir
+        COMMENT "Copying file libSDL2_ttf.so to output directory"
+    )
+    add_custom_target(copy_sdl_ttf_dlls ALL DEPENDS ${OUTPUT_DIR}/libSDL2_ttf.so)
+
 ELSEIF (MINGW)
     IF (CMAKE_SIZEOF_VOID_P EQUAL 4)
         message("32bit")
-        find_library(SDL2_LIB libsdl2.a "${CMAKE_SOURCE_DIR}/depends/lib/win_i686/")
+        find_library(SDL2_LIB libsdl2.a "${CMAKE_SOURCE_DIR}/depends/win_i686/lib/")
         SET(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/../../../binary/win32)
-        SET(DEPLIBS_SOURCE_PATH ${CMAKE_SOURCE_DIR}/depends/lib/win_i686)
+        SET(DEPLIBS_SOURCE_PATH ${CMAKE_SOURCE_DIR}/depends/win_i686/lib)
     elseif (CMAKE_SIZEOF_VOID_P EQUAL 8)
         message("64bit")
-        find_library(SDL2_LIB SDL2.dll "${CMAKE_SOURCE_DIR}/depends/lib/win_x64/")
-        find_library(SDL2_IMG_LIB SDL2_image.dll "${CMAKE_SOURCE_DIR}/depends/lib/win_x64/")
-        find_library(SDL2_TTF_LIB SDL2_ttf.dll "${CMAKE_SOURCE_DIR}/depends/lib/win_x64/")
+        find_library(SDL2_LIB SDL2.dll "${CMAKE_SOURCE_DIR}/depends/win_x64/lib/")
+        find_library(SDL2_IMG_LIB SDL2_image.dll "${CMAKE_SOURCE_DIR}/depends/win_x64/lib/")
+        find_library(SDL2_TTF_LIB SDL2_ttf.dll "${CMAKE_SOURCE_DIR}/depends/win_x64/lib/")
         SET(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/../../../binary/win_x64)
-        SET(DEPLIBS_SOURCE_PATH ${CMAKE_SOURCE_DIR}/depends/lib/win_x64)
+        SET(DEPLIBS_SOURCE_PATH ${CMAKE_SOURCE_DIR}/depends/win_x64/lib)
     endif ()
     message(${SDL2_LIB})
     MARK_AS_ADVANCED(SDL2_LIB)

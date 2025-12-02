@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <string.h>
-#include "depends/include/SDL2/SDL.h"
-#include "depends/include/SDL2/SDL_rect.h"
-#include "depends/include/SDL2/SDL_image.h"
+#include "SDL2/SDL.h"
+#include "SDL2/SDL_rect.h"
+#include "SDL2/SDL_image.h"
 
 #include "kiss_sdl.h"
 

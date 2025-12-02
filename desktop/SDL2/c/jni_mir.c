@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <string.h>
-#include "depends/include/SDL2/SDL.h"
-#include "depends/include/SDL2/SDL_rect.h"
-#include "depends/include/SDL2/SDL_image.h"
+#include "SDL2/SDL.h"
+#include "SDL2/SDL_rect.h"
+#include "SDL2/SDL_image.h"
 
 #include "jvm.h"
 #include "media.h"
@@ -188,7 +188,7 @@ void surfaceBlackEffect_ARGB8888(Uint32 * pixels, const SDL_PixelFormat* format,
             SDL_GetRGBA(pixels[index], format, &red, &green, &blue, &alpha);
 
             int a4=(int)((double)((red+green+blue)/3*0.6)+0.5);
-            red=max(a4,1);
+            red=SDL_max(a4,1);
             green=red;
             blue=red;
 
@@ -210,7 +210,7 @@ void surfaceBlackEffect_RGB24(Uint8 * pixels, int width, int height, int pitch) 
             Uint8 blue = pixels[index + 2];
 
             int a4=(int)((double)((red+green+blue)/3*0.6)+0.5);
-            red=max(a4,1);
+            red=SDL_max(a4,1);
             green=red;
             blue=red;
 
@@ -281,7 +281,7 @@ void surfaceWhiteEffect_ARGB8888(Uint32 * pixels, const SDL_PixelFormat* format,
             SDL_GetRGBA(pixels[index], format, &red, &green, &blue, &alpha);
 
             int a4=(int)((double)((red+green+blue)/3*0.6)+0.5);
-            red=min(a4,255);
+            red=SDL_min(a4,255);
             green=red;
             blue=red;
 
@@ -303,7 +303,7 @@ void surfaceWhiteEffect_RGB24(Uint8 * pixels, int width, int height, int pitch) 
             Uint8 blue = pixels[index + 2];
 
             int a4=(int)((double)((red+green+blue)/3*0.6)+0.5);
-            red=min(a4,255);
+            red=SDL_min(a4,255);
             green=red;
             blue=red;
 
@@ -370,7 +370,7 @@ void surfaceRedEffect_ARGB8888(Uint32 * pixels, const SDL_PixelFormat* format, i
             SDL_GetRGBA(pixels[index], format, &red, &green, &blue, &alpha);
 
             int a4=(int)((double)(red+green+blue)/3 + 0.5);
-            red=max(a4,0x20);
+            red=SDL_max(a4,0x20);
             green=0;
             blue=0;
 
@@ -392,7 +392,7 @@ void surfaceRedEffect_RGB24(Uint8 * pixels, int width, int height, int pitch) {
             Uint8 blue = pixels[index + 2];
 
             int a4=(int)((double)(red+green+blue)/3 + 0.5);
-            red=max(a4,0x20);
+            red=SDL_max(a4,0x20);
             green=0;
             blue=0;
 
@@ -460,7 +460,7 @@ void surfaceGreenEffect_ARGB8888(Uint32 * pixels, const SDL_PixelFormat* format,
 
             int a4=(int)((double)(red+green+blue)/3 + 0.5);
             red=0;
-            green=max(a4,0x20);
+            green=SDL_max(a4,0x20);
             blue=0;
 
             //pixels[index] = (alpha << 24) | (red << 16) | (green << 8) | blue;
@@ -482,7 +482,7 @@ void surfaceGreenEffect_RGB24(Uint8 * pixels, int width, int height, int pitch) 
 
             int a4=(int)((double)(red+green+blue)/3+0.5);
             red=0;
-            green=max(a4,0x20);
+            green=SDL_max(a4,0x20);
             blue=0;
 
             // 将处理后的颜色值重新写回像素数据
@@ -550,7 +550,7 @@ void surfaceBlueEffect_ARGB8888(Uint32 * pixels, const SDL_PixelFormat* format, 
             int a4=(int)((double)(red+green+blue)/3 + 0.5);
             red=0;
             green=0;
-            blue=max(a4,0x08);
+            blue=SDL_max(a4,0x08);
 
             //pixels[index] = (alpha << 24) | (red << 16) | (green << 8) | blue;
             pixels[index] = SDL_MapRGBA(format, red, green, blue, alpha);
@@ -572,7 +572,7 @@ void surfaceBlueEffect_RGB24(Uint8 * pixels, int width, int height, int pitch) {
             int a4=(int)((double)(red+green+blue)/3+0.5);
             red=0;
             green=0;
-            blue=max(a4,0x08);
+            blue=SDL_max(a4,0x08);
 
             // 将处理后的颜色值重新写回像素数据
             pixels[index] = red;
@@ -814,9 +814,9 @@ void surfaceBrightEffect_ARGB8888(Uint32 * pixels, const SDL_PixelFormat* format
             Uint8 alpha, red, green, blue;
             SDL_GetRGBA(pixels[index], format, &red, &green, &blue, &alpha);
 
-            red=(Uint8)min((int)((double)(red*1.3)+0.5),255);
-            green=(Uint8)min((int)((double)(green*1.3)+0.5),255);
-            blue=(Uint8)min((int)((double)(blue*1.3)+0.5),255);
+            red=(Uint8)SDL_min((int)((double)(red*1.3)+0.5),255);
+            green=(Uint8)SDL_min((int)((double)(green*1.3)+0.5),255);
+            blue=(Uint8)SDL_min((int)((double)(blue*1.3)+0.5),255);
 
             //pixels[index] = (alpha << 24) | (red << 16) | (green << 8) | blue;
             pixels[index] = SDL_MapRGBA(format, red, green, blue, alpha);
@@ -835,9 +835,9 @@ void surfaceBrightEffect_RGB24(Uint8 * pixels, int width, int height, int pitch)
             Uint8 green = pixels[index + 1];
             Uint8 blue = pixels[index + 2];
 
-            red=(Uint8)min((int)((double)(red*1.3)+0.5),255);
-            green=(Uint8)min((int)((double)(green*1.3)+0.5),255);
-            blue=(Uint8)min((int)((double)(blue*1.3)+0.5),255);
+            red=(Uint8)SDL_min((int)((double)(red*1.3)+0.5),255);
+            green=(Uint8)SDL_min((int)((double)(green*1.3)+0.5),255);
+            blue=(Uint8)SDL_min((int)((double)(blue*1.3)+0.5),255);
 
             // 将处理后的颜色值重新写回像素数据
             pixels[index] = red;
@@ -1652,13 +1652,13 @@ int com_kindred_sdl_SDL_Mir_SurfaceBlendAdd(Runtime *runtime, JClass *clazz) {
                 float fb = sb * alpha;
 
                 dst_pixels[_idx_this] = SDL_MapRGBA(dst_surface->format, 
-                    (Uint8) min(255, fr*fr/255+dr), 
-                    (Uint8) min(255, fg*fg/255+dg), 
-                    (Uint8) min(255, fb*fb/255+db), 
+                    (Uint8) SDL_min(255, fr*fr/255+dr),
+                    (Uint8) SDL_min(255, fg*fg/255+dg),
+                    (Uint8) SDL_min(255, fb*fb/255+db),
                     da);
-                // dst_pixels[_idx_this] = (da << 24) | ((Uint8) min(255, fr*fr/255+dr) << 16) 
-                //     | ((Uint8) min(255, fg*fg/255+dg) << 8) 
-                //     | (Uint8) min(255, fb*fb/255+db);
+                // dst_pixels[_idx_this] = (da << 24) | ((Uint8) SDL_min(255, fr*fr/255+dr) << 16)
+                //     | ((Uint8) SDL_min(255, fg*fg/255+dg) << 8)
+                //     | (Uint8) SDL_min(255, fb*fb/255+db);
 
             }
         }
@@ -1789,14 +1789,14 @@ int com_kindred_sdl_SDL_Mir_SurfaceBlendAddTransparent(Runtime *runtime, JClass 
                 if (r == sr && g == sg && b == sb || !sa) continue;
 
                 dst_pixels[_idx_this] = SDL_MapRGBA(dst_surface->format, 
-                    (Uint8) min(255, fr*fr/255+dr), 
-                    (Uint8) min(255, fg*fg/255+dg), 
-                    (Uint8) min(255, fb*fb/255+db), 
+                    (Uint8) SDL_min(255, fr*fr/255+dr),
+                    (Uint8) SDL_min(255, fg*fg/255+dg),
+                    (Uint8) SDL_min(255, fb*fb/255+db),
                     da);
 
-                // dst_pixels[_idx_this] = (da << 24) | ((Uint8) min(255, fr*fr/255+dr) << 16) 
-                //     | ((Uint8) min(255, fg*fg/255+dg) << 8) 
-                //     | (Uint8) min(255, fb*fb/255+db);
+                // dst_pixels[_idx_this] = (da << 24) | ((Uint8) SDL_min(255, fr*fr/255+dr) << 16)
+                //     | ((Uint8) SDL_min(255, fg*fg/255+dg) << 8)
+                //     | (Uint8) SDL_min(255, fb*fb/255+db);
             }
         }
     }
