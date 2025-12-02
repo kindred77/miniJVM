@@ -79,11 +79,12 @@ IF (APPLE)
     TARGET_LINK_LIBRARIES(test_sdl2 ${EXTRA_LIBS})
     SET(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/../../../binary/mac_x64)
 ELSEIF (UNIX)
-    MESSAGE("linux os here-----------${CMAKE_SOURCE_DIR}")
-    find_library(SDL2_LIB libSDL2.so "${CMAKE_SOURCE_DIR}/depends/ubuntu_x64/lib/")
-    find_library(SDL2_TTF_LIB libSDL2_ttf.so "${CMAKE_SOURCE_DIR}/depends/ubuntu_x64/lib/")
+    MESSAGE("linux os here.")
+    find_library(SDL2_LIB libSDL2.so PATHS "${CMAKE_SOURCE_DIR}/depends/ubuntu_x64/lib/" NO_DEFAULT_PATH)
+    find_library(SDL2_TTF_LIB libSDL2_ttf.so PATHS "${CMAKE_SOURCE_DIR}/depends/ubuntu_x64/lib/" NO_DEFAULT_PATH)
     MARK_AS_ADVANCED(SDL2_LIB)
-    TARGET_LINK_LIBRARIES(jni_mir PUBLIC ${SDL2_LIB} PUBLIC ${SDL2_IMG_LIB})
+    MESSAGE("${SDL2_LIB}----------${SDL2_TTF_LIB}")
+    TARGET_LINK_LIBRARIES(jni_mir PUBLIC ${SDL2_LIB} PUBLIC ${SDL2_TTF_LIB})
     TARGET_LINK_LIBRARIES(jni_mir
         PRIVATE
         pthread
@@ -100,7 +101,7 @@ ELSEIF (UNIX)
         OUTPUT ${OUTPUT_DIR}/libSDL2.so
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
             ${DEPLIBS_SOURCE_PATH}/libSDL2.so
-            ${OUTPUT_DIR}/libSDL2.so
+            ${OUTPUT_DIR}/libSDL2-2.0.so.0
         DEPENDS jni_mir
         COMMENT "Copying file libSDL2.so to output directory"
     )
@@ -120,7 +121,7 @@ ELSEIF (UNIX)
         OUTPUT ${OUTPUT_DIR}/libSDL2_ttf.so
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
             ${DEPLIBS_SOURCE_PATH}/libSDL2_ttf.so
-            ${OUTPUT_DIR}/libSDL2_ttf.so
+            ${OUTPUT_DIR}/libSDL2_ttf-2.0.so.0
         DEPENDS jni_mir
         COMMENT "Copying file libSDL2_ttf.so to output directory"
     )
