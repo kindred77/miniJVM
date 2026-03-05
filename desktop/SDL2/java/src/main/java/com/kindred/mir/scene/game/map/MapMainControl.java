@@ -297,9 +297,9 @@ public class MapMainControl extends MirControlWithTexture {
 //      updateSurface();
 //    }
     if(ifNeedRedraw){
-      System.out.println("--------updateSurface----------");
+      //System.out.println("--------updateSurface----------");
       updateSurface();
-      //ifNeedRedraw=false;
+      ifNeedRedraw=false;
     }
 
   }
@@ -311,9 +311,9 @@ public class MapMainControl extends MirControlWithTexture {
     int userOffsetMoveY=GameScene.getUser().OffSetMove.getY();
     //创建一个空的surface,把地图上所有内容画在这个surface上,注意用完需要释放掉
     long surface = MirJNI.Mir_FillRect(getSize().getWidth(),getSize().getHeight(),new int[]{0,0,0,255});
-    //floorComponent.updateSurface(userMoveX, userMoveY, userOffsetMoveX, userOffsetMoveY,surface);
-    //backGroundComponent.updateSurface(userMoveX, userMoveY, userOffsetMoveX, userOffsetMoveY,surface);
-    //objectsComponent.updateSurface(userMoveX, userMoveY, userOffsetMoveX, userOffsetMoveY,surface);
+    floorComponent.updateSurface(userMoveX, userMoveY, userOffsetMoveX, userOffsetMoveY,surface);
+    backGroundComponent.updateSurface(userMoveX, userMoveY, userOffsetMoveX, userOffsetMoveY,surface);
+    objectsComponent.updateSurface(userMoveX, userMoveY, userOffsetMoveX, userOffsetMoveY,surface);
 
 //    if (Settings.DropView || GameScene.DropViewTime > Env.Time) {
 //      for (int i = 0; i < Objects.size(); i++) {

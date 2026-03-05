@@ -229,7 +229,7 @@ public class GameScene extends MirScene {
         MapObject.User.Movement=new Point(318,280);
         MapObject.User.OffSetMove=new Point(20,20);
         //test map
-        this.mapControl=new MapMainControl(this,renderer_id,"../mir_client/map/11");
+        this.mapControl=new MapMainControl(this,renderer_id,"../mir_client/map/1");
 
         //test player
         //PlayerObject playerObject = new PlayerObject(1L);
